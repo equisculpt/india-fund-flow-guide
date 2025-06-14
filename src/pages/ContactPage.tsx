@@ -64,7 +64,7 @@ const ContactPage = () => {
                   <Mail className="h-8 w-8 text-amber-600" />
                   <div>
                     <h3 className="font-semibold">Email</h3>
-                    <p className="text-gray-600">support@equisculpt.com</p>
+                    <p className="text-gray-600">hello@equisculpt.in</p>
                   </div>
                 </div>
               </CardContent>
@@ -76,7 +76,7 @@ const ContactPage = () => {
                   <Phone className="h-8 w-8 text-amber-600" />
                   <div>
                     <h3 className="font-semibold">Phone</h3>
-                    <p className="text-gray-600">+91 9876543210</p>
+                    <p className="text-gray-600">+91 7760997030</p>
                   </div>
                 </div>
               </CardContent>
@@ -88,7 +88,7 @@ const ContactPage = () => {
                   <MapPin className="h-8 w-8 text-amber-600" />
                   <div>
                     <h3 className="font-semibold">Office</h3>
-                    <p className="text-gray-600">Mumbai, Maharashtra, India</p>
+                    <p className="text-gray-600">Hyderabad, Telangana, India</p>
                   </div>
                 </div>
               </CardContent>

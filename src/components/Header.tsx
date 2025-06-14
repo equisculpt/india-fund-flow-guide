@@ -15,6 +15,13 @@ const Header = () => {
     logout();
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -29,12 +36,18 @@ const Header = () => {
                 Dashboard
               </Link>
             )}
-            <a href="#funds" className="text-gray-600 hover:text-amber-600 transition-colors">
+            <button 
+              onClick={() => scrollToSection('funds')} 
+              className="text-gray-600 hover:text-amber-600 transition-colors cursor-pointer"
+            >
               Mutual Funds
-            </a>
-            <a href="#calculator" className="text-gray-600 hover:text-amber-600 transition-colors">
+            </button>
+            <button 
+              onClick={() => scrollToSection('calculator')} 
+              className="text-gray-600 hover:text-amber-600 transition-colors cursor-pointer"
+            >
               SIP Calculator
-            </a>
+            </button>
             {isAuthenticated && (
               <Link to="/referrals" className="text-gray-600 hover:text-amber-600 transition-colors">
                 Referrals
