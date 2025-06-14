@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -74,6 +73,18 @@ const AgentDashboard = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Agent Dashboard</h1>
           <p className="text-gray-600">Monitor your clients and commission earnings</p>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mb-8">
+          <div className="flex gap-4">
+            <a 
+              href="/onboard" 
+              className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200"
+            >
+              Onboard New Client
+            </a>
+          </div>
         </div>
 
         {/* Stats Cards */}

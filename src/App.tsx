@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import AgentDashboard from "./components/AgentDashboard";
 import ReferralPage from "./pages/ReferralPage";
 import ComprehensiveDashboard from "./pages/ComprehensiveDashboard";
+import OnboardingPage from "./pages/OnboardingPage";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/dashboard" element={<ComprehensiveDashboard />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
           <Route path="/referrals" element={<ReferralPage />} />
+          <Route path="/onboard" element={<OnboardingPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
