@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, TrendingUp, Shield, Users } from "lucide-react";
+import { ArrowRight, TrendingUp, Shield, Users, Gift } from "lucide-react";
 
 const HeroSection = () => {
   return (
@@ -9,14 +9,24 @@ const HeroSection = () => {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Start Your
-              <span className="text-blue-600 block">Mutual Fund Journey</span>
-              with Confidence
+              Invest Smart,
+              <span className="text-blue-600 block">Earn Rewards</span>
+              with Every SIP
             </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Invest in India's top-performing mutual funds with zero commission. 
-              Build wealth systematically with our expert-curated fund selection.
+            <p className="text-xl text-gray-600 mb-6 leading-relaxed">
+              Get professional mutual fund investment guidance with regular funds, 
+              plus earn <strong>0.2% gift cards</strong> on your equity investments every year.
             </p>
+            
+            <div className="bg-gradient-to-r from-teal-50 to-green-50 p-4 rounded-lg mb-8 border border-teal-200">
+              <div className="flex items-center space-x-3">
+                <Gift className="h-8 w-8 text-teal-600" />
+                <div>
+                  <h3 className="font-bold text-gray-900">🎁 Exclusive Reward Program</h3>
+                  <p className="text-gray-700">Earn gift cards worth 0.2% of your equity mutual fund investments annually!</p>
+                </div>
+              </div>
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg px-8">
@@ -41,21 +51,21 @@ const HeroSection = () => {
                   <Shield className="h-8 w-8 text-blue-600" />
                 </div>
                 <div className="text-2xl font-bold text-gray-900">100%</div>
-                <div className="text-sm text-gray-600">Safe & Secure</div>
+                <div className="text-sm text-gray-600">Professional Support</div>
               </div>
               <div className="text-center">
                 <div className="flex justify-center mb-2">
-                  <Users className="h-8 w-8 text-purple-600" />
+                  <Gift className="h-8 w-8 text-teal-600" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900">50L+</div>
-                <div className="text-sm text-gray-600">Happy Investors</div>
+                <div className="text-2xl font-bold text-gray-900">0.2%</div>
+                <div className="text-sm text-gray-600">Gift Card Rewards</div>
               </div>
             </div>
           </div>
           
           <div className="relative">
             <div className="bg-white rounded-2xl shadow-2xl p-8">
-              <h3 className="text-xl font-semibold mb-6 text-center">Investment Portfolio</h3>
+              <h3 className="text-xl font-semibold mb-6 text-center">Investment Portfolio + Rewards</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
                   <div>
@@ -79,6 +89,19 @@ const HeroSection = () => {
                   <div className="text-green-600 font-semibold">+15.8%</div>
                 </div>
               </div>
+              
+              {/* Gift Card Reward Display */}
+              <div className="mt-4 p-4 bg-gradient-to-r from-teal-100 to-green-100 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Gift className="h-5 w-5 text-teal-600" />
+                    <span className="font-medium text-gray-900">Annual Gift Cards</span>
+                  </div>
+                  <span className="font-bold text-teal-600">₹100</span>
+                </div>
+                <div className="text-xs text-gray-600 mt-1">0.2% of ₹50,000 equity investments</div>
+              </div>
+              
               <div className="mt-6 p-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-white text-center">
                 <div className="text-lg font-semibold">Total Portfolio Value</div>
                 <div className="text-2xl font-bold">₹58,750</div>

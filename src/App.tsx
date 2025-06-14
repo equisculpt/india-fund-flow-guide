@@ -13,6 +13,10 @@ import ReferralPage from "./pages/ReferralPage";
 import ComprehensiveDashboard from "./pages/ComprehensiveDashboard";
 import OnboardingPage from "./pages/OnboardingPage";
 import WhatsAppBotPage from "./pages/WhatsAppBotPage";
+import ContactPage from "./pages/ContactPage";
+import AboutPage from "./pages/AboutPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +29,10 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms-of-service" element={<TermsOfServicePage />} />
             <Route 
               path="/dashboard" 
               element={

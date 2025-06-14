@@ -5,7 +5,8 @@ import InvestmentCalculator from "@/components/InvestmentCalculator";
 import BreweryLogo from "@/components/BreweryLogo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, Shield, TrendingUp, Users, Award, Clock } from "lucide-react";
+import { CheckCircle, Shield, TrendingUp, Users, Award, Clock, Gift } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const topFunds = [
@@ -86,7 +87,7 @@ const Index = () => {
     {
       icon: <Shield className="h-8 w-8 text-green-600" />,
       title: "Professional Management",
-      description: "Expert fund managers research and manage your investments"
+      description: "Expert fund managers research and manage your investments with regular fund support"
     },
     {
       icon: <Users className="h-8 w-8 text-purple-600" />,
@@ -104,9 +105,9 @@ const Index = () => {
       description: "Start with as low as ₹500 per month through SIP"
     },
     {
-      icon: <CheckCircle className="h-8 w-8 text-teal-600" />,
-      title: "Tax Benefits",
-      description: "ELSS funds offer tax deductions up to ₹1.5 lakh under 80C"
+      icon: <Gift className="h-8 w-8 text-teal-600" />,
+      title: "Gift Card Rewards",
+      description: "Earn 0.2% of your equity investments as gift cards every year"
     }
   ];
 
@@ -115,12 +116,31 @@ const Index = () => {
       <Header />
       <HeroSection />
       
+      {/* Gift Card Highlight Section - NEW */}
+      <section className="py-12 bg-gradient-to-r from-teal-50 to-green-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-4xl mx-auto">
+            <div className="flex justify-center mb-4">
+              <Gift className="h-16 w-16 text-teal-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">🎁 Our Unique Reward Program</h2>
+            <p className="text-xl text-gray-700 mb-4">
+              <strong>Get 0.2% of your equity mutual fund investments back as gift cards every year!</strong>
+            </p>
+            <p className="text-lg text-gray-600">
+              This is our way of thanking you for choosing us as your investment partner. 
+              The more you invest, the more you earn in gift cards - it's our unique selling proposition!
+            </p>
+          </div>
+        </div>
+      </section>
+      
       {/* Top Mutual Funds Section */}
       <section id="funds" className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Top Performing Mutual Funds</h2>
-            <p className="text-xl text-gray-600">Handpicked funds with consistent track record</p>
+            <p className="text-xl text-gray-600">Handpicked regular funds with professional support and consistent track record</p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -143,9 +163,9 @@ const Index = () => {
       <section id="about" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Invest in Mutual Funds?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Invest with Equisculpt Ventures?</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Mutual funds offer a simple, efficient way to build wealth over time with professional management and diversified risk
+              We offer regular mutual funds with professional management and an exclusive reward program that gives you more value for your investments
             </p>
           </div>
           
@@ -170,15 +190,17 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Your Investment Journey?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Join millions of Indians who are building wealth through mutual funds
+            Join thousands of Indians who are building wealth through mutual funds and earning gift card rewards
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" className="bg-white text-amber-600 hover:bg-gray-100 px-8">
               Start Investing Now
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-amber-600 px-8">
-              Schedule a Call
-            </Button>
+            <Link to="/contact">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-amber-600 px-8">
+                Schedule a Call
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -192,43 +214,43 @@ const Index = () => {
                 <BreweryLogo size="md" />
               </div>
               <p className="text-gray-400">
-                Making mutual fund investments simple and accessible for every Indian.
+                Making mutual fund investments rewarding and accessible for every Indian with our unique gift card program.
               </p>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Products</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Mutual Funds</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">SIP Calculator</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Tax Saving Funds</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Goal Planning</a></li>
+                <li><a href="#funds" className="hover:text-white transition-colors">Mutual Funds</a></li>
+                <li><a href="#calculator" className="hover:text-white transition-colors">SIP Calculator</a></li>
+                <li><Link to="/referrals" className="hover:text-white transition-colors">Referral Program</Link></li>
+                <li><Link to="/whatsapp-bot" className="hover:text-white transition-colors">WhatsApp Bot</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Learning Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Market Insights</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Fund Research</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Investment Guide</a></li>
+                <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
+                <li><a href="#funds" className="hover:text-white transition-colors">Fund Research</a></li>
+                <li><a href="#about" className="hover:text-white transition-colors">Investment Guide</a></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+                <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Support</Link></li>
+                <li><a href="https://www.sebi.gov.in/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">SEBI</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Equisculpt Ventures. All rights reserved. | Mutual Fund investments are subject to market risks.</p>
+            <p>&copy; 2024 Equisculpt Ventures. All rights reserved. | Mutual Fund investments are subject to market risks. Please read all scheme documents carefully before investing.</p>
           </div>
         </div>
       </footer>

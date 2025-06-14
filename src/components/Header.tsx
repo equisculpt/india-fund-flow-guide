@@ -5,6 +5,7 @@ import { useState } from "react";
 import LoginModal from "./LoginModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogOut, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -18,13 +19,15 @@ const Header = () => {
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <BreweryLogo size="md" />
+          <Link to="/">
+            <BreweryLogo size="md" />
+          </Link>
           
           <nav className="hidden md:flex items-center space-x-6">
             {isAuthenticated && (
-              <a href="/dashboard" className="text-gray-600 hover:text-amber-600 transition-colors">
+              <Link to="/dashboard" className="text-gray-600 hover:text-amber-600 transition-colors">
                 Dashboard
-              </a>
+              </Link>
             )}
             <a href="#funds" className="text-gray-600 hover:text-amber-600 transition-colors">
               Mutual Funds
@@ -33,16 +36,16 @@ const Header = () => {
               SIP Calculator
             </a>
             {isAuthenticated && (
-              <a href="/referrals" className="text-gray-600 hover:text-amber-600 transition-colors">
+              <Link to="/referrals" className="text-gray-600 hover:text-amber-600 transition-colors">
                 Referrals
-              </a>
+              </Link>
             )}
-            <a href="/whatsapp-bot" className="text-gray-600 hover:text-amber-600 transition-colors">
+            <Link to="/whatsapp-bot" className="text-gray-600 hover:text-amber-600 transition-colors">
               WhatsApp Bot
-            </a>
-            <a href="#about" className="text-gray-600 hover:text-amber-600 transition-colors">
+            </Link>
+            <Link to="/about" className="text-gray-600 hover:text-amber-600 transition-colors">
               About
-            </a>
+            </Link>
           </nav>
           
           <div className="flex items-center space-x-3">
