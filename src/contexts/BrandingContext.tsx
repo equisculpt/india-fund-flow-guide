@@ -11,12 +11,14 @@ interface BrandConfig {
   contactPhone: string;
   address: string;
   agentId?: string;
+  isWhiteLabel: boolean;
 }
 
 interface BrandingContextType {
   brandConfig: BrandConfig;
   setBrandConfig: (config: BrandConfig) => void;
   isWhiteLabel: boolean;
+  agentId?: string;
 }
 
 const defaultBrandConfig: BrandConfig = {
@@ -27,7 +29,8 @@ const defaultBrandConfig: BrandConfig = {
   domain: "sipbrewery.com",
   contactEmail: "support@sipbrewery.com",
   contactPhone: "+91-9876543210",
-  address: "Mumbai, India"
+  address: "Mumbai, India",
+  isWhiteLabel: false
 };
 
 const BrandingContext = createContext<BrandingContextType | undefined>(undefined);
@@ -35,32 +38,63 @@ const BrandingContext = createContext<BrandingContextType | undefined>(undefined
 export const BrandingProvider = ({ children }: { children: React.ReactNode }) => {
   const [brandConfig, setBrandConfig] = useState<BrandConfig>(defaultBrandConfig);
   const [isWhiteLabel, setIsWhiteLabel] = useState(false);
+  const [agentId, setAgentId] = useState<string | undefined>();
 
   useEffect(() => {
     // Check URL parameters or subdomain for white-label configuration
     const urlParams = new URLSearchParams(window.location.search);
-    const agentId = urlParams.get('agent');
+    const urlAgentId = urlParams.get('agent');
     const subdomain = window.location.hostname.split('.')[0];
     
-    if (agentId || subdomain !== 'localhost') {
-      // Load agent's branding configuration
-      loadAgentBranding(agentId || subdomain);
+    if (urlAgentId || (subdomain !== 'localhost' && subdomain !== 'sipbrewery')) {
+      const detectedAgentId = urlAgentId || subdomain;
+      setAgentId(detectedAgentId);
+      loadAgentBranding(detectedAgentId);
       setIsWhiteLabel(true);
     }
   }, []);
 
   const loadAgentBranding = async (agentId: string) => {
     try {
-      // In a real implementation, this would fetch from Firebase/Supabase
-      console.log('Loading branding for agent:', agentId);
-      // For now, we'll use a demo configuration
+      console.log('Loading white-label branding for agent:', agentId);
+      
+      // In production, this would fetch from Firebase/database
+      // For demo, using mock data based on agent ID
+      const mockAgentBranding: Record<string, Partial<BrandConfig>> = {
+        'demo-agent': {
+          companyName: "WealthMax Financial",
+          logo: "/placeholder.svg",
+          primaryColor: "#059669",
+          secondaryColor: "#DC2626",
+          contactEmail: "support@wealthmax.com",
+          contactPhone: "+91-9876543211",
+          address: "Delhi, India",
+          isWhiteLabel: true,
+          agentId: 'demo-agent'
+        }
+      };
+
+      const agentBranding = mockAgentBranding[agentId];
+      if (agentBranding) {
+        setBrandConfig(prev => ({
+          ...prev,
+          ...agentBranding,
+          isWhiteLabel: true,
+          agentId
+        }));
+      }
     } catch (error) {
       console.error('Error loading agent branding:', error);
     }
   };
 
   return (
-    <BrandingContext.Provider value={{ brandConfig, setBrandConfig, isWhiteLabel }}>
+    <BrandingContext.Provider value={{ 
+      brandConfig, 
+      setBrandConfig, 
+      isWhiteLabel, 
+      agentId 
+    }}>
       {children}
     </BrandingContext.Provider>
   );

@@ -1,4 +1,5 @@
-import Header from "@/components/Header";
+import DynamicBrandedHeader from "@/components/DynamicBrandedHeader";
+import RewardsBanner from "@/components/RewardsBanner";
 import HeroSection from "@/components/HeroSection";
 import FundCard from "@/components/FundCard";
 import InvestmentCalculator from "@/components/InvestmentCalculator";
@@ -7,8 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Shield, TrendingUp, Users, Award, Clock, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useBranding } from "@/contexts/BrandingContext";
 
 const Index = () => {
+  const { brandConfig, isWhiteLabel } = useBranding();
+
   const topFunds = [
     {
       name: "HDFC Top 100 Fund",
@@ -86,7 +90,7 @@ const Index = () => {
     },
     {
       icon: <Shield className="h-8 w-8 text-green-600" />,
-      title: "Professional Management",
+      title: "Professional Management", 
       description: "Expert fund managers research and manage your investments with regular fund support"
     },
     {
@@ -103,37 +107,25 @@ const Index = () => {
       icon: <Clock className="h-8 w-8 text-red-600" />,
       title: "Systematic Investment",
       description: "Start with as low as ₹500 per month through SIP"
-    },
-    {
-      icon: <Gift className="h-8 w-8 text-teal-600" />,
-      title: "Gift Card Rewards",
-      description: "Earn 0.2% of your equity investments as gift cards every year"
     }
   ];
 
+  // Add gift card benefit only for direct clients
+  if (!isWhiteLabel) {
+    benefits.push({
+      icon: <Gift className="h-8 w-8 text-teal-600" />,
+      title: "Gift Card Rewards",
+      description: "Earn 0.2% of your equity investments as gift cards every year"
+    });
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <DynamicBrandedHeader />
       <HeroSection />
       
-      {/* Gift Card Highlight Section - NEW */}
-      <section className="py-12 bg-gradient-to-r from-teal-50 to-green-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="flex justify-center mb-4">
-              <Gift className="h-16 w-16 text-teal-600" />
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">🎁 Our Unique Reward Program</h2>
-            <p className="text-xl text-gray-700 mb-4">
-              <strong>Get 0.2% of your equity mutual fund investments back as gift cards every year!</strong>
-            </p>
-            <p className="text-lg text-gray-600">
-              This is our way of thanking you for choosing us as your investment partner. 
-              The more you invest, the more you earn in gift cards - it's our unique selling proposition!
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Rewards banner - only for direct clients */}
+      <RewardsBanner />
       
       {/* Top Mutual Funds Section */}
       <section id="funds" className="py-16">
@@ -163,9 +155,11 @@ const Index = () => {
       <section id="about" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Invest with Equisculpt Ventures?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Why Invest with {isWhiteLabel ? brandConfig.companyName : "Equisculpt Ventures"}?
+            </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We offer regular mutual funds with professional management and an exclusive reward program that gives you more value for your investments
+              We offer regular mutual funds with professional management{!isWhiteLabel && " and an exclusive reward program that gives you more value for your investments"}
             </p>
           </div>
           
@@ -190,7 +184,7 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Your Investment Journey?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Join thousands of Indians who are building wealth through mutual funds and earning gift card rewards
+            Join thousands of Indians who are building wealth through mutual funds{!isWhiteLabel && " and earning gift card rewards"}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" className="bg-white text-amber-600 hover:bg-gray-100 px-8">
@@ -211,10 +205,17 @@ const Index = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="mb-4">
-                <BreweryLogo size="md" />
+                {isWhiteLabel ? (
+                  <div className="flex items-center space-x-2">
+                    <img src={brandConfig.logo} alt={brandConfig.companyName} className="h-8 w-8" />
+                    <span className="text-xl font-bold">{brandConfig.companyName}</span>
+                  </div>
+                ) : (
+                  <BreweryLogo size="md" />
+                )}
               </div>
               <p className="text-gray-400">
-                Making mutual fund investments rewarding and accessible for every Indian with our unique gift card program.
+                Making mutual fund investments {!isWhiteLabel && "rewarding and "}accessible for every Indian{!isWhiteLabel && " with our unique gift card program"}.
               </p>
             </div>
             
@@ -223,7 +224,7 @@ const Index = () => {
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#funds" className="hover:text-white transition-colors">Mutual Funds</a></li>
                 <li><a href="#calculator" className="hover:text-white transition-colors">SIP Calculator</a></li>
-                <li><Link to="/referrals" className="hover:text-white transition-colors">Referral Program</Link></li>
+                {!isWhiteLabel && <li><Link to="/referrals" className="hover:text-white transition-colors">Referral Program</Link></li>}
                 <li><Link to="/whatsapp-bot" className="hover:text-white transition-colors">WhatsApp Bot</Link></li>
               </ul>
             </div>
@@ -250,7 +251,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Equisculpt Ventures. All rights reserved. | Mutual Fund investments are subject to market risks. Please read all scheme documents carefully before investing.</p>
+            <p>&copy; 2024 {isWhiteLabel ? brandConfig.companyName : "Equisculpt Ventures"}. All rights reserved. | Mutual Fund investments are subject to market risks. Please read all scheme documents carefully before investing.</p>
           </div>
         </div>
       </footer>
