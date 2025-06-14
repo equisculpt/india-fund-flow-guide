@@ -1,16 +1,16 @@
-
 import { useState } from "react";
 import Header from "@/components/Header";
 import PortfolioDashboard from "@/components/PortfolioDashboard";
 import GoalBasedInvesting from "@/components/GoalBasedInvesting";
 import AIInvestmentChat from "@/components/AIInvestmentChat";
+import AIPortfolioOptimizer from "@/components/AIPortfolioOptimizer";
 import AdvancedFundFilters from "@/components/AdvancedFundFilters";
 import FundCard from "@/components/FundCard";
 import ReferralSystem from "@/components/ReferralSystem";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Target, MessageCircle, Filter, Users, BarChart3 } from "lucide-react";
+import { TrendingUp, Target, MessageCircle, Filter, Users, BarChart3, Brain } from "lucide-react";
 
 const ComprehensiveDashboard = () => {
   const [selectedFilters, setSelectedFilters] = useState({});
@@ -95,10 +95,14 @@ const ComprehensiveDashboard = () => {
         </div>
 
         <Tabs defaultValue="portfolio" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="portfolio" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               Portfolio
+            </TabsTrigger>
+            <TabsTrigger value="ai-optimizer" className="flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              AI Optimizer
             </TabsTrigger>
             <TabsTrigger value="explore" className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
@@ -124,6 +128,10 @@ const ComprehensiveDashboard = () => {
 
           <TabsContent value="portfolio">
             <PortfolioDashboard />
+          </TabsContent>
+
+          <TabsContent value="ai-optimizer">
+            <AIPortfolioOptimizer />
           </TabsContent>
 
           <TabsContent value="explore">

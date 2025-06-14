@@ -1,10 +1,32 @@
-
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import ReferralSystem from "@/components/ReferralSystem";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gift, Users, TrendingUp, Award } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const ReferralPage = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please login to access the referral system",
+        variant: "destructive",
+      });
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate, toast]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
   const referralBenefits = [
     {
       icon: <Gift className="h-8 w-8 text-amber-600" />,

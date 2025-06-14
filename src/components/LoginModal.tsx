@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, Users } from "lucide-react";
 import BreweryLogo from "./BreweryLogo";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -17,12 +19,40 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [loginType, setLoginType] = useState<"customer" | "agent">("customer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const { toast } = useToast();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(`${loginType} login:`, { email, password });
-    // TODO: Implement actual authentication logic
-    onClose();
+    setIsLoading(true);
+    
+    try {
+      const success = await login(email, password, loginType);
+      if (success) {
+        toast({
+          title: "Login Successful",
+          description: `Welcome back! You're logged in as ${loginType}.`,
+        });
+        onClose();
+        setEmail("");
+        setPassword("");
+      } else {
+        toast({
+          title: "Login Failed",
+          description: "Invalid credentials. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Login Error",
+        description: "An error occurred during login. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -108,8 +138,9 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             <Button 
               type="submit" 
               className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
+              disabled={isLoading}
             >
-              {loginType === "customer" ? "Login as Customer" : "Login as Agent"}
+              {isLoading ? "Logging in..." : `Login as ${loginType === "customer" ? "Customer" : "Agent"}`}
             </Button>
           </form>
 
