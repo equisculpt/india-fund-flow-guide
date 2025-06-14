@@ -20,6 +20,9 @@ const Header = () => {
             <a href="#calculator" className="text-gray-600 hover:text-amber-600 transition-colors">
               SIP Calculator
             </a>
+            <a href="/referrals" className="text-gray-600 hover:text-amber-600 transition-colors">
+              Referrals
+            </a>
             <a href="#about" className="text-gray-600 hover:text-amber-600 transition-colors">
               About
             </a>
