@@ -1,3 +1,4 @@
+
 export class WhatsAppBotService {
   static async handleIncomingMessage(whatsappMessage: any): Promise<string> {
     const { from, message } = whatsappMessage;
@@ -49,9 +50,9 @@ export class WhatsAppBotService {
     return `Investment of ${amount} placed for user ${userId}`;
   }
 
-  static getPortfolioInfo(userId: string) {
+  static getPortfolioInfo(userId: string): string {
     // Mock portfolio data - in real implementation, this would fetch from database
-    return {
+    const portfolioData = {
       totalValue: 156750,
       totalInvested: 120000,
       totalGains: 36750,
@@ -73,6 +74,16 @@ export class WhatsAppBotService {
         }
       ]
     };
+
+    // Format portfolio data as a string response
+    return `📊 *Portfolio Summary for ${userId}*\n\n` +
+           `💰 Current Value: ₹${portfolioData.totalValue.toLocaleString()}\n` +
+           `📈 Total Invested: ₹${portfolioData.totalInvested.toLocaleString()}\n` +
+           `🎯 Total Gains: ₹${portfolioData.totalGains.toLocaleString()} (${portfolioData.gainPercentage}%)\n\n` +
+           `*Holdings:*\n` +
+           portfolioData.holdings.map(holding => 
+             `• ${holding.name}: ₹${holding.currentValue.toLocaleString()} (+${holding.gainPercentage}%)`
+           ).join('\n');
   }
 
   static async handlePayment(userId: string, amount: string): Promise<string> {
