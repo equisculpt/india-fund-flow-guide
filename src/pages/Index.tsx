@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import FundCard from "@/components/FundCard";
 import InvestmentCalculator from "@/components/InvestmentCalculator";
+import BreweryLogo from "@/components/BreweryLogo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Shield, TrendingUp, Users, Award, Clock } from "lucide-react";
@@ -165,17 +166,17 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700 text-white">
+      <section className="py-16 bg-gradient-to-r from-amber-500 to-orange-600 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Your Investment Journey?</h2>
           <p className="text-xl mb-8 opacity-90">
             Join millions of Indians who are building wealth through mutual funds
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8">
+            <Button size="lg" className="bg-white text-amber-600 hover:bg-gray-100 px-8">
               Start Investing Now
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-amber-600 px-8">
               Schedule a Call
             </Button>
           </div>
@@ -187,11 +188,8 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="bg-blue-600 text-white rounded-lg p-2 font-bold text-xl">
-                  SB
-                </div>
-                <span className="text-xl font-bold">SIP Brewery</span>
+              <div className="mb-4">
+                <BreweryLogo size="md" />
               </div>
               <p className="text-gray-400">
                 Making mutual fund investments simple and accessible for every Indian.
