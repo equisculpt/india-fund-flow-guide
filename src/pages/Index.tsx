@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import FundCard from "@/components/FundCard";
@@ -190,9 +189,9 @@ const Index = () => {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <div className="bg-blue-600 text-white rounded-lg p-2 font-bold text-xl">
-                  MF
+                  SB
                 </div>
-                <span className="text-xl font-bold">InvestIndia</span>
+                <span className="text-xl font-bold">SIP Brewery</span>
               </div>
               <p className="text-gray-400">
                 Making mutual fund investments simple and accessible for every Indian.
@@ -231,7 +230,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 InvestIndia. All rights reserved. | Mutual Fund investments are subject to market risks.</p>
+            <p>&copy; 2024 Equisculpt Ventures. All rights reserved. | Mutual Fund investments are subject to market risks.</p>
           </div>
         </div>
       </footer>
