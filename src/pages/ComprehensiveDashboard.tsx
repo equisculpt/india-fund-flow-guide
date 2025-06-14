@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import PortfolioDashboard from "@/components/PortfolioDashboard";
 import GoalBasedInvesting from "@/components/GoalBasedInvesting";
@@ -11,10 +12,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Target, MessageCircle, Filter, Users, BarChart3, Brain } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const ComprehensiveDashboard = () => {
   const [selectedFilters, setSelectedFilters] = useState({});
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   
+  useEffect(() => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please login to access the dashboard",
+        variant: "destructive",
+      });
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate, toast]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
   const allFunds = [
     {
       name: "HDFC Top 100 Fund",
