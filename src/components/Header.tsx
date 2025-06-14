@@ -35,6 +35,9 @@ const Header = () => {
                 Referrals
               </a>
             )}
+            <a href="/whatsapp-bot" className="text-gray-600 hover:text-amber-600 transition-colors">
+              WhatsApp Bot
+            </a>
             <a href="#about" className="text-gray-600 hover:text-amber-600 transition-colors">
               About
             </a>
