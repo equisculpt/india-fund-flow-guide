@@ -1,40 +1,11 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Users, TrendingUp, DollarSign, Percent } from "lucide-react";
 import BreweryLogo from "./BreweryLogo";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 
 const AgentDashboard = () => {
-  const { isAuthenticated, user } = useAuth();
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please login to access the agent dashboard",
-        variant: "destructive",
-      });
-      navigate("/");
-    } else if (user?.type !== 'agent') {
-      toast({
-        title: "Access Denied",
-        description: "Agent access required for this dashboard",
-        variant: "destructive",
-      });
-      navigate("/dashboard");
-    }
-  }, [isAuthenticated, user, navigate, toast]);
-
-  if (!isAuthenticated || user?.type !== 'agent') {
-    return null;
-  }
-
   // Mock data - in real app, this would come from API
   const agentStats = {
     totalClients: 45,
