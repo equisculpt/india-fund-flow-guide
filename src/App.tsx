@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
+import { BrandingProvider } from "@/contexts/BrandingContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -22,56 +24,59 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-            <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <ComprehensiveDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/agent-dashboard" 
-              element={
-                <ProtectedRoute requiredUserType="agent">
-                  <AgentDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/referrals" 
-              element={
-                <ProtectedRoute>
-                  <ReferralPage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/onboard" 
-              element={
-                <ProtectedRoute requiredUserType="agent">
-                  <OnboardingPage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <BrandingProvider>
+      <AuthProvider>
+        <EnhancedAuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <ProtectedRoute>
+                      <ComprehensiveDashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/agent-dashboard" 
+                  element={
+                    <ProtectedRoute requiredUserType="agent">
+                      <AgentDashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/referrals" 
+                  element={
+                    <ProtectedRoute>
+                      <ReferralPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/onboard" 
+                  element={
+                    <ProtectedRoute requiredUserType="agent">
+                      <OnboardingPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </EnhancedAuthProvider>
+      </AuthProvider>
+    </BrandingProvider>
   </QueryClientProvider>
 );
 
