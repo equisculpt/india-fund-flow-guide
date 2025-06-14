@@ -14,6 +14,9 @@ const Header = () => {
           <BreweryLogo size="md" />
           
           <nav className="hidden md:flex items-center space-x-6">
+            <a href="/dashboard" className="text-gray-600 hover:text-amber-600 transition-colors">
+              Dashboard
+            </a>
             <a href="#funds" className="text-gray-600 hover:text-amber-600 transition-colors">
               Mutual Funds
             </a>

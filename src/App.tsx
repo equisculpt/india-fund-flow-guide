@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AgentDashboard from "./components/AgentDashboard";
 import ReferralPage from "./pages/ReferralPage";
+import ComprehensiveDashboard from "./pages/ComprehensiveDashboard";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/dashboard" element={<ComprehensiveDashboard />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
           <Route path="/referrals" element={<ReferralPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
