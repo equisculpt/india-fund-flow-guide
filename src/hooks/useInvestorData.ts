@@ -57,7 +57,7 @@ export const useFeaturedReviews = () => {
         .limit(10);
       
       if (error) throw error;
-      return data as InvestorReview[];
+      return (data || []) as InvestorReview[];
     },
     refetchInterval: 60000, // Refetch every minute
   });
@@ -77,7 +77,7 @@ export const useAllReviews = () => {
         .limit(50);
       
       if (error) throw error;
-      return data as InvestorReview[];
+      return (data || []) as InvestorReview[];
     },
   });
 };
