@@ -49,7 +49,7 @@ export const useFeaturedReviews = () => {
         .from('investor_reviews')
         .select(`
           *,
-          profiles(full_name)
+          profiles!inner(full_name)
         `)
         .eq('rating', 5)
         .eq('is_featured', true)
@@ -57,7 +57,10 @@ export const useFeaturedReviews = () => {
         .limit(10);
       
       if (error) throw error;
-      return (data || []) as InvestorReview[];
+      return (data || []).map(item => ({
+        ...item,
+        profiles: item.profiles ? { full_name: item.profiles.full_name } : null
+      })) as InvestorReview[];
     },
     refetchInterval: 60000, // Refetch every minute
   });
@@ -71,13 +74,16 @@ export const useAllReviews = () => {
         .from('investor_reviews')
         .select(`
           *,
-          profiles(full_name)
+          profiles!inner(full_name)
         `)
         .order('created_at', { ascending: false })
         .limit(50);
       
       if (error) throw error;
-      return (data || []) as InvestorReview[];
+      return (data || []).map(item => ({
+        ...item,
+        profiles: item.profiles ? { full_name: item.profiles.full_name } : null
+      })) as InvestorReview[];
     },
   });
 };
