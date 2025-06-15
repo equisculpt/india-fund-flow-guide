@@ -41,16 +41,38 @@ export const BrandingProvider = ({ children }: { children: React.ReactNode }) =>
   const [agentId, setAgentId] = useState<string | undefined>();
 
   useEffect(() => {
-    // Check URL parameters or subdomain for white-label configuration
+    // Check URL parameters for white-label configuration
     const urlParams = new URLSearchParams(window.location.search);
     const urlAgentId = urlParams.get('agent');
-    const subdomain = window.location.hostname.split('.')[0];
+    const hostname = window.location.hostname;
     
-    if (urlAgentId || (subdomain !== 'localhost' && subdomain !== 'sipbrewery')) {
-      const detectedAgentId = urlAgentId || subdomain;
-      setAgentId(detectedAgentId);
-      loadAgentBranding(detectedAgentId);
+    console.log('Checking white-label detection:', { urlAgentId, hostname });
+    
+    // Only trigger white-label mode if there's an explicit agent parameter
+    // or if it's a genuine agent subdomain (not Lovable preview domains)
+    if (urlAgentId) {
+      console.log('White-label mode activated via URL parameter:', urlAgentId);
+      setAgentId(urlAgentId);
+      loadAgentBranding(urlAgentId);
       setIsWhiteLabel(true);
+    } else {
+      // Check for genuine agent subdomains (excluding Lovable preview domains)
+      const subdomain = hostname.split('.')[0];
+      const isLovablePreview = hostname.includes('lovable.app') || hostname.includes('preview');
+      const isLocalhost = hostname === 'localhost' || hostname.startsWith('127.0.0.1');
+      const isDirectDomain = subdomain === 'sipbrewery' || subdomain === 'www';
+      
+      if (!isLovablePreview && !isLocalhost && !isDirectDomain && subdomain && subdomain !== hostname) {
+        console.log('White-label mode activated via subdomain:', subdomain);
+        setAgentId(subdomain);
+        loadAgentBranding(subdomain);
+        setIsWhiteLabel(true);
+      } else {
+        console.log('Direct client mode - showing SIP Brewery branding');
+        setIsWhiteLabel(false);
+        setAgentId(undefined);
+        setBrandConfig(defaultBrandConfig);
+      }
     }
   }, []);
 
