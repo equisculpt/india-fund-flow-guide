@@ -5,13 +5,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  // These will need to be set in your Firebase project
-  apiKey: "your-api-key",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "your-sender-id",
-  appId: "your-app-id"
+  apiKey: "AIzaSyD4k1A2NxvF1a5xKsKkkH9vFwQ49cnz5PQ",
+  authDomain: "sipbrewery-cdabd.firebaseapp.com",
+  projectId: "sipbrewery-cdabd",
+  storageBucket: "sipbrewery-cdabd.firebasestorage.app",
+  messagingSenderId: "707057164856",
+  appId: "1:707057164856:web:59b0b90cbb5ddb55a57ccd"
 };
 
 const app = initializeApp(firebaseConfig);
