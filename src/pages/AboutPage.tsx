@@ -2,8 +2,11 @@
 import Header from "@/components/Header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Users, Award, TrendingUp } from "lucide-react";
+import { useBranding } from "@/contexts/BrandingContext";
 
 const AboutPage = () => {
+  const { brandConfig } = useBranding();
+
   const values = [
     {
       icon: <Shield className="h-12 w-12 text-blue-600" />,
@@ -33,7 +36,7 @@ const AboutPage = () => {
       
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">About Equisculpt Ventures</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">About {brandConfig.companyName}</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Your trusted partner in mutual fund investments, helping Indians build wealth through smart investment choices.
           </p>
@@ -45,7 +48,7 @@ const AboutPage = () => {
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
               <p className="text-gray-600 mb-4">
-                Founded with a mission to make mutual fund investing accessible to every Indian, Equisculpt Ventures has been helping individuals and families achieve their financial goals through systematic investment planning.
+                Founded with a mission to make mutual fund investing accessible to every Indian, {brandConfig.companyName} has been helping individuals and families achieve their financial goals through systematic investment planning.
               </p>
               <p className="text-gray-600 mb-4">
                 We understand that investing can be overwhelming, which is why we've simplified the process and made it more rewarding with our unique wallet credit program.
@@ -87,7 +90,7 @@ const AboutPage = () => {
 
         {/* Why Choose Us */}
         <section className="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-2xl p-12 text-center">
-          <h2 className="text-3xl font-bold mb-6">Why Choose Equisculpt Ventures?</h2>
+          <h2 className="text-3xl font-bold mb-6">Why Choose {brandConfig.companyName}?</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-xl font-semibold mb-2">Expert Guidance</h3>
