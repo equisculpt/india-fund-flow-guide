@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,7 @@ import {
   Clock,
   Copy,
   Send,
-  Assessment
+  ClipboardList
 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useToast } from "@/hooks/use-toast";
@@ -417,7 +416,7 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
                   Now let's assess your risk profile as per AMFI guidelines to recommend suitable investment options.
                 </p>
                 <Button onClick={() => setStep(5)} className="w-full">
-                  <Assessment className="h-4 w-4 mr-2" />
+                  <ClipboardList className="h-4 w-4 mr-2" />
                   Start Risk Profiling
                 </Button>
               </div>
