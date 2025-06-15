@@ -1,10 +1,10 @@
-
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import FundCard from "@/components/FundCard";
 import InvestmentCalculator from "@/components/InvestmentCalculator";
 import ComplianceFooter from "@/components/ComplianceFooter";
 import BreweryLogo from "@/components/BreweryLogo";
+import ReviewModal from "@/components/ReviewModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Shield, TrendingUp, Users, Award, Clock, Gift, Target, Trophy, Star, ArrowRight, Sparkles, Zap } from "lucide-react";
@@ -12,11 +12,18 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useInvestorStats, useFeaturedReviews } from "@/hooks/useInvestorData";
+import { useReviewPrompt } from "@/hooks/useReviewPrompt";
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  
+  // Real investor data
+  const { data: investorStats } = useInvestorStats();
+  const { data: featuredReviews } = useFeaturedReviews();
+  const { shouldShowReview, dismissReview } = useReviewPrompt();
 
   // Listen for login modal trigger
   useEffect(() => {
@@ -167,40 +174,77 @@ const Index = () => {
     }
   ];
 
-  const testimonials = [
+  // Use real testimonials from featured reviews, fallback to default if none
+  const testimonials = featuredReviews && featuredReviews.length > 0 ? 
+    featuredReviews.map(review => ({
+      name: review.profiles?.full_name || 'Anonymous Investor',
+      location: 'India', // Could be enhanced with location data
+      text: review.ai_enhanced_text || review.review_text,
+      investment: review.monthly_sip_amount ? 
+        `₹${review.monthly_sip_amount.toLocaleString('en-IN')} monthly SIP` : 
+        review.investment_amount ? 
+        `₹${review.investment_amount.toLocaleString('en-IN')} portfolio` :
+        'Happy Investor'
+    })) : [
     {
-      name: "Rahul Sharma",
-      location: "Mumbai",
-      text: "Earned ₹15,000 wallet credits in my first year! The SIP streak feature kept me disciplined.",
-      investment: "₹25,000 monthly SIP"
-    },
-    {
-      name: "Priya Patel",
-      location: "Bangalore", 
-      text: "Professional guidance helped me choose the right funds. Already seeing 18% returns!",
-      investment: "₹50,000 portfolio"
-    },
-    {
-      name: "Amit Kumar",
-      location: "Delhi",
-      text: "The gamification makes investing fun. Love tracking my progress and earning rewards!",
-      investment: "₹10,000 monthly SIP"
+      name: "Getting Started",
+      location: "India",
+      text: "Be among the first to share your investment experience with SIP Brewery!",
+      investment: "Start your journey"
     }
   ];
 
   // Auto-rotate testimonials
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
+    if (testimonials.length > 1) {
+      const timer = setInterval(() => {
+        setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+      }, 4000);
+      return () => clearInterval(timer);
+    }
+  }, [testimonials.length]);
+
+  // Format numbers for display
+  const formatAmount = (amount: number) => {
+    if (amount >= 10000000) {
+      return `₹${(amount / 10000000).toFixed(1)}Cr`;
+    } else if (amount >= 100000) {
+      return `₹${(amount / 100000).toFixed(1)}L`;
+    }
+    return `₹${amount.toLocaleString('en-IN')}`;
+  };
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <HeroSection />
       
+      {/* Live Investor Stats Section */}
+      {investorStats && (
+        <section className="py-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-4 gap-6 text-center">
+              <div>
+                <h3 className="text-2xl md:text-3xl font-bold">{investorStats.total_investors.toLocaleString('en-IN')}+</h3>
+                <p className="text-blue-100">Happy Investors</p>
+              </div>
+              <div>
+                <h3 className="text-2xl md:text-3xl font-bold">{formatAmount(investorStats.total_amount_invested)}</h3>
+                <p className="text-blue-100">Total Invested</p>
+              </div>
+              <div>
+                <h3 className="text-2xl md:text-3xl font-bold">{investorStats.average_rating.toFixed(1)}/5</h3>
+                <p className="text-blue-100">Average Rating</p>
+              </div>
+              <div>
+                <h3 className="text-2xl md:text-3xl font-bold">{investorStats.total_reviews}+</h3>
+                <p className="text-blue-100">Reviews</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Enhanced Rewards Section */}
       <section className="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -277,12 +321,19 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Enhanced Testimonials Section */}
+      {/* Enhanced Testimonials Section with Real Data */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">What Our Investors Say</h2>
-            <p className="text-xl text-gray-600">Real stories from real investors</p>
+            <p className="text-xl text-gray-600">
+              Real stories from real investors
+              {investorStats && (
+                <span className="block text-lg text-blue-600 mt-2">
+                  Based on {investorStats.total_reviews} genuine reviews • Average rating: {investorStats.average_rating.toFixed(1)}/5
+                </span>
+              )}
+            </p>
           </div>
           
           <div className="max-w-4xl mx-auto">
@@ -294,7 +345,9 @@ const Index = () => {
                       <Star key={i} className="h-6 w-6 fill-current" />
                     ))}
                   </div>
-                  <span className="text-gray-600 font-medium">5.0 Rating</span>
+                  <span className="text-gray-600 font-medium">
+                    {featuredReviews && featuredReviews.length > 0 ? '5.0 Rating' : 'Be the first to review!'}
+                  </span>
                 </div>
                 
                 <blockquote className="text-xl italic text-gray-700 mb-6">
@@ -312,17 +365,19 @@ const Index = () => {
                   </div>
                 </div>
                 
-                <div className="flex justify-center mt-6 space-x-2">
-                  {testimonials.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentTestimonial(index)}
-                      className={`w-3 h-3 rounded-full transition-all ${
-                        index === currentTestimonial ? 'bg-blue-600' : 'bg-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
+                {testimonials.length > 1 && (
+                  <div className="flex justify-center mt-6 space-x-2">
+                    {testimonials.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentTestimonial(index)}
+                        className={`w-3 h-3 rounded-full transition-all ${
+                          index === currentTestimonial ? 'bg-blue-600' : 'bg-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -457,7 +512,7 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Start Your Investment Journey?</h2>
           <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
-            Join 50,000+ Indians who are building wealth through mutual funds and earning wallet credit rewards. 
+            Join {investorStats ? `${investorStats.total_investors.toLocaleString('en-IN')}+` : '50,000+'} Indians who are building wealth through mutual funds and earning wallet credit rewards. 
             <span className="font-bold text-yellow-300"> Start with just ₹500!</span>
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6">
@@ -569,6 +624,9 @@ const Index = () => {
       </footer>
 
       <ComplianceFooter />
+      
+      {/* Review Modal */}
+      <ReviewModal open={shouldShowReview} onOpenChange={dismissReview} />
     </div>
   );
 };

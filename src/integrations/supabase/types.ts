@@ -190,6 +190,72 @@ export type Database = {
           },
         ]
       }
+      investor_reviews: {
+        Row: {
+          ai_enhanced_text: string | null
+          created_at: string
+          id: string
+          investment_amount: number | null
+          is_featured: boolean | null
+          monthly_sip_amount: number | null
+          rating: number
+          review_text: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_enhanced_text?: string | null
+          created_at?: string
+          id?: string
+          investment_amount?: number | null
+          is_featured?: boolean | null
+          monthly_sip_amount?: number | null
+          rating: number
+          review_text: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_enhanced_text?: string | null
+          created_at?: string
+          id?: string
+          investment_amount?: number | null
+          is_featured?: boolean | null
+          monthly_sip_amount?: number | null
+          rating?: number
+          review_text?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      investor_stats: {
+        Row: {
+          average_rating: number | null
+          id: string
+          last_updated: string | null
+          total_amount_invested: number | null
+          total_investors: number | null
+          total_reviews: number | null
+        }
+        Insert: {
+          average_rating?: number | null
+          id?: string
+          last_updated?: string | null
+          total_amount_invested?: number | null
+          total_investors?: number | null
+          total_reviews?: number | null
+        }
+        Update: {
+          average_rating?: number | null
+          id?: string
+          last_updated?: string | null
+          total_amount_invested?: number | null
+          total_investors?: number | null
+          total_reviews?: number | null
+        }
+        Relationships: []
+      }
       mutual_funds: {
         Row: {
           amc_name: string
