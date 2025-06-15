@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,10 +22,12 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useToast } from "@/hooks/use-toast";
 import RiskProfiling from "./RiskProfiling";
 import RiskProfileResults from "./RiskProfileResults";
+import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 
 interface AgentClientOnboardingProps {
   isAgent?: boolean;
   agentId?: string;
+  socialLoginUser?: any;
 }
 
 interface RiskProfile {
@@ -33,18 +36,20 @@ interface RiskProfile {
   suitableFunds: string[];
 }
 
-const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardingProps) => {
+const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: AgentClientOnboardingProps) => {
   const [activeTab, setActiveTab] = useState("self-onboard");
   const [step, setStep] = useState(1);
   const [isVerifying, setIsVerifying] = useState(false);
   const [kycStatus, setKycStatus] = useState<"pending" | "processing" | "verified" | "failed">("pending");
   const [riskProfile, setRiskProfile] = useState<RiskProfile | null>(null);
+  const [autoKycEnabled, setAutoKycEnabled] = useState(true); // Enable automatic KYC
   const { toast } = useToast();
+  const { completeOnboarding } = useEnhancedAuth();
 
-  // Form states
+  // Form states - pre-populate if social login user
   const [clientData, setClientData] = useState({
-    fullName: "",
-    email: "",
+    fullName: socialLoginUser?.name || "",
+    email: socialLoginUser?.email || "",
     phone: "",
     panNumber: "",
     aadhaarNumber: "",
@@ -57,6 +62,13 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
   });
   const [otp, setOtp] = useState("");
   const [onboardingLink, setOnboardingLink] = useState("");
+
+  // If social login user, skip to step 1 (phone verification)
+  useEffect(() => {
+    if (socialLoginUser) {
+      setStep(1);
+    }
+  }, [socialLoginUser]);
 
   const handleSendOTP = async () => {
     if (!clientData.phone) {
@@ -105,15 +117,28 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
   const handleKYCSubmit = async () => {
     setKycStatus("processing");
     
-    // Simulate KYC processing with instant verification
+    // Simulate KYC processing with automatic verification
+    const kycDelay = autoKycEnabled ? 2000 : 5000; // Faster if auto-KYC enabled
+    
     setTimeout(() => {
-      setKycStatus("verified");
-      setStep(4);
-      toast({
-        title: "KYC Verified",
-        description: "Your KYC has been verified successfully. Let's assess your risk profile!",
-      });
-    }, 3000);
+      if (autoKycEnabled) {
+        // Automatic KYC verification
+        setKycStatus("verified");
+        setStep(4);
+        toast({
+          title: "KYC Auto-Verified",
+          description: "Your KYC has been automatically verified using our AI system!",
+        });
+      } else {
+        // Manual verification (still instant for demo)
+        setKycStatus("verified");
+        setStep(4);
+        toast({
+          title: "KYC Verified",
+          description: "Your KYC has been verified successfully",
+        });
+      }
+    }, kycDelay);
   };
 
   const handleRiskProfileComplete = (profile: RiskProfile) => {
@@ -127,6 +152,20 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
 
   const handleRiskProfileContinue = () => {
     setStep(6);
+  };
+
+  const handleFinalizeOnboarding = () => {
+    // Complete onboarding in context
+    completeOnboarding({
+      phoneNumber: clientData.phone,
+      kycStatus: 'verified',
+      riskProfile: riskProfile?.category,
+    });
+    
+    // Redirect to dashboard
+    setTimeout(() => {
+      window.location.href = '/dashboard';
+    }, 1000);
   };
 
   const generateOnboardingLink = () => {
@@ -149,8 +188,8 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
   const renderKYCStatus = () => {
     const statusConfig = {
       pending: { color: "bg-gray-100 text-gray-800", icon: Clock, text: "Pending" },
-      processing: { color: "bg-blue-100 text-blue-800", icon: Clock, text: "Processing" },
-      verified: { color: "bg-green-100 text-green-800", icon: CheckCircle, text: "Verified" },
+      processing: { color: "bg-blue-100 text-blue-800", icon: Clock, text: autoKycEnabled ? "Auto-Verifying..." : "Processing" },
+      verified: { color: "bg-green-100 text-green-800", icon: CheckCircle, text: autoKycEnabled ? "Auto-Verified" : "Verified" },
       failed: { color: "bg-red-100 text-red-800", icon: Shield, text: "Failed" }
     };
 
@@ -168,8 +207,27 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Client Onboarding</h1>
-        <p className="text-gray-600">Quick and secure client onboarding with instant KYC verification and risk profiling</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          {socialLoginUser ? "Complete Your Profile" : "Client Onboarding"}
+        </h1>
+        <p className="text-gray-600">
+          {socialLoginUser 
+            ? "Complete your onboarding with instant KYC verification and risk profiling"
+            : "Quick and secure client onboarding with instant KYC verification and risk profiling"
+          }
+        </p>
+        
+        {autoKycEnabled && (
+          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <span className="text-sm text-green-800 font-medium">Automatic KYC Verification Enabled</span>
+            </div>
+            <p className="text-xs text-green-700 mt-1">
+              Your documents will be verified instantly using our AI-powered KYC system
+            </p>
+          </div>
+        )}
       </div>
 
       {isAgent && (
@@ -253,7 +311,7 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
           <CardTitle className="flex items-center justify-between">
             <span className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              Complete Your Onboarding
+              {socialLoginUser ? "Complete Your Profile" : "Complete Your Onboarding"}
             </span>
             {renderKYCStatus()}
           </CardTitle>
@@ -270,6 +328,7 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
                     value={clientData.fullName}
                     onChange={(e) => setClientData({...clientData, fullName: e.target.value})}
                     placeholder="Enter your full name"
+                    disabled={!!socialLoginUser?.name}
                   />
                 </div>
                 <div>
@@ -280,10 +339,11 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
                     value={clientData.email}
                     onChange={(e) => setClientData({...clientData, email: e.target.value})}
                     placeholder="Enter your email"
+                    disabled={!!socialLoginUser?.email}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone">Phone Number *</Label>
                   <Input
                     id="phone"
                     value={clientData.phone}
@@ -449,9 +509,16 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
                   <p className="text-sm text-blue-800">
                     <strong>Your Risk Profile:</strong> {riskProfile.category} Investor
                   </p>
+                  {autoKycEnabled && (
+                    <p className="text-xs text-blue-700 mt-1">
+                      KYC verified automatically using AI-powered verification
+                    </p>
+                  )}
                 </div>
               )}
-              <Button className="w-full">Start Investing</Button>
+              <Button onClick={handleFinalizeOnboarding} className="w-full">
+                Go to Dashboard
+              </Button>
             </div>
           )}
         </CardContent>

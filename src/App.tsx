@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -78,11 +77,7 @@ const App = () => (
                   />
                   <Route 
                     path="/onboard" 
-                    element={
-                      <ProtectedRoute requiredUserType="agent">
-                        <OnboardingPage />
-                      </ProtectedRoute>
-                    } 
+                    element={<OnboardingPage />}
                   />
                   <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                   <Route path="*" element={<NotFound />} />

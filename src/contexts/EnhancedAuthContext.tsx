@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User as FirebaseUser, onAuthStateChanged } from 'firebase/auth';
 import { auth, signInWithGoogle, signInWithFacebook, logout as firebaseLogout } from '@/services/firebase';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
   id: string;
@@ -13,6 +14,8 @@ interface User {
   phoneNumber?: string;
   companyName?: string;
   licenseNumber?: string;
+  isOnboardingComplete?: boolean;
+  kycStatus?: 'pending' | 'processing' | 'verified' | 'failed';
   whitelabelConfig?: {
     domain: string;
     companyName: string;
@@ -28,6 +31,7 @@ interface EnhancedAuthContextType {
   loginWithGoogle: () => Promise<boolean>;
   loginWithFacebook: () => Promise<boolean>;
   logout: () => void;
+  completeOnboarding: (userData: Partial<User>) => void;
   isAuthenticated: boolean;
   loading: boolean;
 }
@@ -45,17 +49,33 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
       setFirebaseUser(firebaseUser);
       
       if (firebaseUser) {
-        // Create or fetch user profile
-        const userProfile: User = {
-          id: firebaseUser.uid,
-          email: firebaseUser.email || '',
-          name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || '',
-          type: 'customer', // Default type, can be updated based on database
-          avatar: firebaseUser.photoURL || undefined,
-        };
-        setUser(userProfile);
+        // Check if user profile exists in localStorage
+        const existingUser = localStorage.getItem(`user_${firebaseUser.uid}`);
+        
+        if (existingUser) {
+          const userProfile = JSON.parse(existingUser);
+          setUser(userProfile);
+        } else {
+          // New user from social login - create incomplete profile
+          const userProfile: User = {
+            id: firebaseUser.uid,
+            email: firebaseUser.email || '',
+            name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || '',
+            type: 'customer',
+            avatar: firebaseUser.photoURL || undefined,
+            isOnboardingComplete: false,
+            kycStatus: 'pending'
+          };
+          setUser(userProfile);
+          
+          // Redirect to onboarding for new users
+          setTimeout(() => {
+            window.location.href = '/onboard';
+          }, 1000);
+        }
       } else {
         setUser(null);
+        localStorage.removeItem('user');
       }
       
       setLoading(false);
@@ -71,11 +91,14 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
         id: '1',
         email,
         name: email.split('@')[0],
-        type
+        type,
+        isOnboardingComplete: true,
+        kycStatus: 'verified'
       };
       
       setUser(mockUser);
       localStorage.setItem('user', JSON.stringify(mockUser));
+      localStorage.setItem(`user_${mockUser.id}`, JSON.stringify(mockUser));
       return true;
     } catch (error) {
       console.error('Login error:', error);
@@ -86,12 +109,15 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
   const loginWithGoogle = async (): Promise<boolean> => {
     try {
       const result = await signInWithGoogle();
+      console.log('Google login result:', result);
+      
       toast({
-        title: "Login Successful",
-        description: "Welcome! You're now logged in with Google.",
+        title: "Google Login Successful",
+        description: "Redirecting to complete your profile...",
       });
       return true;
     } catch (error: any) {
+      console.error('Google login error:', error);
       toast({
         title: "Login Failed",
         description: error.message || "Failed to login with Google",
@@ -104,12 +130,15 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
   const loginWithFacebook = async (): Promise<boolean> => {
     try {
       const result = await signInWithFacebook();
+      console.log('Facebook login result:', result);
+      
       toast({
-        title: "Login Successful",
-        description: "Welcome! You're now logged in with Facebook.",
+        title: "Facebook Login Successful", 
+        description: "Redirecting to complete your profile...",
       });
       return true;
     } catch (error: any) {
+      console.error('Facebook login error:', error);
       toast({
         title: "Login Failed",
         description: error.message || "Failed to login with Facebook",
@@ -119,11 +148,33 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
     }
   };
 
+  const completeOnboarding = (userData: Partial<User>) => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        ...userData,
+        isOnboardingComplete: true,
+        kycStatus: 'verified' as const // Auto-verify KYC for demo
+      };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      localStorage.setItem(`user_${updatedUser.id}`, JSON.stringify(updatedUser));
+      
+      toast({
+        title: "Onboarding Complete",
+        description: "Your account has been verified successfully!",
+      });
+    }
+  };
+
   const logout = async () => {
     try {
       await firebaseLogout();
       setUser(null);
       localStorage.removeItem('user');
+      if (firebaseUser) {
+        localStorage.removeItem(`user_${firebaseUser.uid}`);
+      }
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -137,7 +188,8 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
       loginWithGoogle,
       loginWithFacebook,
       logout,
-      isAuthenticated: !!user,
+      completeOnboarding,
+      isAuthenticated: !!user && user.isOnboardingComplete,
       loading
     }}>
       {children}
