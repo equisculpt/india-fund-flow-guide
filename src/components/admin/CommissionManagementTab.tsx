@@ -226,36 +226,6 @@ const CommissionManagementTab = () => {
       </CardContent>
     </Card>
   );
-
-  async function updateCommissionStatus(commissionId: string, status: 'paid' | 'cancelled') {
-    try {
-      const updateData: any = { status };
-      if (status === 'paid') {
-        updateData.payment_date = new Date().toISOString().split('T')[0];
-      }
-
-      const { error } = await supabase
-        .from('commissions')
-        .update(updateData)
-        .eq('id', commissionId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `Commission marked as ${status}`,
-      });
-
-      fetchCommissions();
-    } catch (error) {
-      console.error('Error updating commission status:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update commission status",
-        variant: "destructive",
-      });
-    }
-  }
 };
 
 export default CommissionManagementTab;
