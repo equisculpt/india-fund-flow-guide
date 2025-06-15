@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import FundCard from "@/components/FundCard";
@@ -16,14 +17,26 @@ import { useInvestorStats, useFeaturedReviews } from "@/hooks/useInvestorData";
 import { useReviewPrompt } from "@/hooks/useReviewPrompt";
 
 const Index = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [showUserTypeModal, setShowUserTypeModal] = useState(false);
   
   // Real investor data
   const { data: investorStats } = useInvestorStats();
   const { data: featuredReviews } = useFeaturedReviews();
   const { shouldShowReview, dismissReview } = useReviewPrompt();
+
+  // Check for first-time visitors and show user type selection
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('sipbrewery_visited');
+    const isFirstVisit = !hasVisited && !isAuthenticated;
+    
+    if (isFirstVisit) {
+      setShowUserTypeModal(true);
+      localStorage.setItem('sipbrewery_visited', 'true');
+    }
+  }, [isAuthenticated]);
 
   // Listen for login modal trigger
   useEffect(() => {
@@ -38,7 +51,18 @@ const Index = () => {
     if (isAuthenticated) {
       navigate('/dashboard');
     } else {
-      // Trigger login modal
+      setShowUserTypeModal(true);
+    }
+  };
+
+  const handleUserTypeSelection = (userType: 'client' | 'agent') => {
+    setShowUserTypeModal(false);
+    if (userType === 'agent') {
+      navigate('/agent-home');
+    } else {
+      // Trigger login modal for client
+      const event = new CustomEvent('openLogin');
+      window.dispatchEvent(event);
     }
   };
 
@@ -627,6 +651,41 @@ const Index = () => {
       
       {/* Review Modal */}
       <ReviewModal open={shouldShowReview} onOpenChange={dismissReview} />
+
+      {/* User Type Selection Modal */}
+      {showUserTypeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4" onClick={() => setShowUserTypeModal(false)}>
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="text-center mb-6">
+              <div className="flex justify-center mb-4">
+                <BreweryLogo size="lg" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Welcome to SIP Brewery!</h3>
+              <p className="text-gray-600">Please select your account type to continue</p>
+            </div>
+            <div className="space-y-4">
+              <Button 
+                onClick={() => handleUserTypeSelection('client')}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg"
+              >
+                I'm an Investor (Client)
+              </Button>
+              <Button 
+                onClick={() => handleUserTypeSelection('agent')}
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg"
+              >
+                I'm a Financial Advisor (Agent)
+              </Button>
+            </div>
+            <button 
+              onClick={() => setShowUserTypeModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

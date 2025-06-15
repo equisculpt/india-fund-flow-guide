@@ -22,7 +22,7 @@ export interface InvestorReview {
   created_at: string;
   profiles?: {
     full_name: string;
-  };
+  } | null;
 }
 
 export const useInvestorStats = () => {
@@ -49,7 +49,7 @@ export const useFeaturedReviews = () => {
         .from('investor_reviews')
         .select(`
           *,
-          profiles!inner(full_name)
+          profiles(full_name)
         `)
         .eq('rating', 5)
         .eq('is_featured', true)
@@ -71,7 +71,7 @@ export const useAllReviews = () => {
         .from('investor_reviews')
         .select(`
           *,
-          profiles!inner(full_name)
+          profiles(full_name)
         `)
         .order('created_at', { ascending: false })
         .limit(50);
