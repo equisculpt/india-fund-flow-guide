@@ -15,15 +15,17 @@ const HeroSection = () => {
             </h1>
             <p className="text-xl text-gray-600 mb-6 leading-relaxed">
               Get professional mutual fund investment guidance with regular funds, 
-              plus earn <strong>0.2% gift cards</strong> on your equity investments every year.
+              plus earn <strong>wallet credits</strong> through our exclusive reward programs.
             </p>
             
             <div className="bg-gradient-to-r from-teal-50 to-green-50 p-4 rounded-lg mb-8 border border-teal-200">
               <div className="flex items-center space-x-3">
                 <Gift className="h-8 w-8 text-teal-600" />
                 <div>
-                  <h3 className="font-bold text-gray-900">🎁 Exclusive Reward Program</h3>
-                  <p className="text-gray-700">Earn gift cards worth 0.2% of your equity mutual fund investments annually!</p>
+                  <h3 className="font-bold text-gray-900">🎁 Exclusive Reward Programs</h3>
+                  <p className="text-gray-700">
+                    Earn up to ₹20,000 wallet credits for 12 uninterrupted SIPs or ₹50,000 for portfolio transfers!
+                  </p>
                 </div>
               </div>
             </div>
@@ -57,8 +59,8 @@ const HeroSection = () => {
                 <div className="flex justify-center mb-2">
                   <Gift className="h-8 w-8 text-teal-600" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900">0.2%</div>
-                <div className="text-sm text-gray-600">Gift Card Rewards</div>
+                <div className="text-2xl font-bold text-gray-900">₹50K</div>
+                <div className="text-sm text-gray-600">Max Wallet Credits</div>
               </div>
             </div>
           </div>
@@ -90,16 +92,16 @@ const HeroSection = () => {
                 </div>
               </div>
               
-              {/* Gift Card Reward Display */}
+              {/* Wallet Credit Reward Display */}
               <div className="mt-4 p-4 bg-gradient-to-r from-teal-100 to-green-100 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Gift className="h-5 w-5 text-teal-600" />
-                    <span className="font-medium text-gray-900">Annual Gift Cards</span>
+                    <span className="font-medium text-gray-900">Wallet Credits Earned</span>
                   </div>
-                  <span className="font-bold text-teal-600">₹100</span>
+                  <span className="font-bold text-teal-600">₹15,000</span>
                 </div>
-                <div className="text-xs text-gray-600 mt-1">0.2% of ₹50,000 equity investments</div>
+                <div className="text-xs text-gray-600 mt-1">Portfolio transfer + SIP rewards</div>
               </div>
               
               <div className="mt-6 p-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-white text-center">

@@ -107,8 +107,8 @@ const Index = () => {
     },
     {
       icon: <Gift className="h-8 w-8 text-teal-600" />,
-      title: "Gift Card Rewards",
-      description: "Earn 0.2% of your equity investments as gift cards every year"
+      title: "Wallet Credit Rewards",
+      description: "Earn up to ₹50,000 wallet credits through our exclusive reward programs"
     }
   ];
 
@@ -124,13 +124,24 @@ const Index = () => {
             <div className="flex justify-center mb-4">
               <Gift className="h-16 w-16 text-teal-600" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">🎁 Our Unique Reward Program</h2>
-            <p className="text-xl text-gray-700 mb-4">
-              <strong>Get 0.2% of your equity mutual fund investments back as gift cards every year!</strong>
-            </p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">🎁 Our Exclusive Reward Programs</h2>
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">SIP Streak Rewards</h3>
+                <p className="text-lg text-gray-700">
+                  <strong>Earn up to ₹20,000 wallet credits</strong> for completing 12 consecutive SIPs without any break!
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Portfolio Transfer Bonus</h3>
+                <p className="text-lg text-gray-700">
+                  <strong>Get ₹50,000 wallet credits</strong> when you move your existing portfolio to SIP Brewery!
+                </p>
+              </div>
+            </div>
             <p className="text-lg text-gray-600">
-              This is our way of thanking you for choosing us as your investment partner. 
-              The more you invest, the more you earn in gift cards - it's our unique selling proposition!
+              These wallet credits can be used for future investments or redeemed as per our terms. 
+              It's our unique way of rewarding your investment discipline!
             </p>
           </div>
         </div>
@@ -168,7 +179,7 @@ const Index = () => {
               Why Invest with Equisculpt Ventures?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We offer regular mutual funds with professional management and an exclusive reward program that gives you more value for your investments
+              We offer regular mutual funds with professional management and exclusive reward programs that give you more value for your investments
             </p>
           </div>
           
@@ -193,7 +204,7 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Your Investment Journey?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Join thousands of Indians who are building wealth through mutual funds and earning gift card rewards
+            Join thousands of Indians who are building wealth through mutual funds and earning wallet credit rewards
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" className="bg-white text-amber-600 hover:bg-gray-100 px-8">
@@ -217,7 +228,7 @@ const Index = () => {
                 <BreweryLogo size="md" />
               </div>
               <p className="text-gray-400">
-                Making mutual fund investments rewarding and accessible for every Indian with our unique gift card program.
+                Making mutual fund investments rewarding and accessible for every Indian with our unique wallet credit programs.
               </p>
             </div>
             
