@@ -24,7 +24,7 @@ const HeroSection = () => {
                 <div>
                   <h3 className="font-bold text-gray-900">🎁 Exclusive Reward Programs</h3>
                   <p className="text-gray-700">
-                    Earn up to ₹20,000 wallet credits for 12 uninterrupted SIPs or ₹50,000 for portfolio transfers!
+                    Earn up to ₹20,000 wallet credits for 12 uninterrupted SIPs AND up to ₹50,000 for portfolio transfers!
                   </p>
                 </div>
               </div>
@@ -59,7 +59,7 @@ const HeroSection = () => {
                 <div className="flex justify-center mb-2">
                   <Gift className="h-8 w-8 text-teal-600" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900">₹50K</div>
+                <div className="text-2xl font-bold text-gray-900">Up to ₹70K</div>
                 <div className="text-sm text-gray-600">Max Wallet Credits</div>
               </div>
             </div>

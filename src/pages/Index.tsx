@@ -108,7 +108,7 @@ const Index = () => {
     {
       icon: <Gift className="h-8 w-8 text-teal-600" />,
       title: "Wallet Credit Rewards",
-      description: "Earn up to ₹50,000 wallet credits through our exclusive reward programs"
+      description: "Earn up to ₹70,000 wallet credits through our exclusive reward programs"
     }
   ];
 
@@ -135,13 +135,13 @@ const Index = () => {
               <div className="bg-white p-6 rounded-lg shadow-md">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Portfolio Transfer Bonus</h3>
                 <p className="text-lg text-gray-700">
-                  <strong>Get ₹50,000 wallet credits</strong> when you move your existing portfolio to SIP Brewery!
+                  <strong>Get up to ₹50,000 wallet credits</strong> when you move your existing portfolio to SIP Brewery!
                 </p>
               </div>
             </div>
             <p className="text-lg text-gray-600">
               These wallet credits can be used for future investments or redeemed as per our terms. 
-              It's our unique way of rewarding your investment discipline!
+              It's our unique way of rewarding your investment discipline! <strong>You can earn both rewards!</strong>
             </p>
           </div>
         </div>

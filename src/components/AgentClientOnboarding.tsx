@@ -15,14 +15,23 @@ import {
   CheckCircle, 
   Clock,
   Copy,
-  Send
+  Send,
+  Assessment
 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useToast } from "@/hooks/use-toast";
+import RiskProfiling from "./RiskProfiling";
+import RiskProfileResults from "./RiskProfileResults";
 
 interface AgentClientOnboardingProps {
   isAgent?: boolean;
   agentId?: string;
+}
+
+interface RiskProfile {
+  category: 'Conservative' | 'Moderate' | 'Aggressive';
+  score: number;
+  suitableFunds: string[];
 }
 
 const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardingProps) => {
@@ -30,6 +39,7 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
   const [step, setStep] = useState(1);
   const [isVerifying, setIsVerifying] = useState(false);
   const [kycStatus, setKycStatus] = useState<"pending" | "processing" | "verified" | "failed">("pending");
+  const [riskProfile, setRiskProfile] = useState<RiskProfile | null>(null);
   const { toast } = useToast();
 
   // Form states
@@ -102,9 +112,22 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
       setStep(4);
       toast({
         title: "KYC Verified",
-        description: "Your KYC has been verified successfully. You can now start investing!",
+        description: "Your KYC has been verified successfully. Let's assess your risk profile!",
       });
     }, 3000);
+  };
+
+  const handleRiskProfileComplete = (profile: RiskProfile) => {
+    setRiskProfile(profile);
+    setStep(5);
+    toast({
+      title: "Risk Profile Complete",
+      description: `You've been categorized as a ${profile.category} investor`,
+    });
+  };
+
+  const handleRiskProfileContinue = () => {
+    setStep(6);
   };
 
   const generateOnboardingLink = () => {
@@ -147,7 +170,7 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
     <div className="max-w-4xl mx-auto p-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Client Onboarding</h1>
-        <p className="text-gray-600">Quick and secure client onboarding with instant KYC verification</p>
+        <p className="text-gray-600">Quick and secure client onboarding with instant KYC verification and risk profiling</p>
       </div>
 
       {isAgent && (
@@ -384,12 +407,51 @@ const AgentClientOnboarding = ({ isAgent = false, agentId }: AgentClientOnboardi
           )}
 
           {step === 4 && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-green-800 mb-2">KYC Verified Successfully!</h3>
+                <p className="text-gray-600 mb-6">
+                  Now let's assess your risk profile as per AMFI guidelines to recommend suitable investment options.
+                </p>
+                <Button onClick={() => setStep(5)} className="w-full">
+                  <Assessment className="h-4 w-4 mr-2" />
+                  Start Risk Profiling
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {step === 5 && (
+            <RiskProfiling onComplete={handleRiskProfileComplete} />
+          )}
+
+          {step === 6 && riskProfile && (
+            <RiskProfileResults 
+              riskProfile={riskProfile} 
+              onContinue={handleRiskProfileContinue} 
+            />
+          )}
+
+          {step === 7 && (
             <div className="text-center space-y-4">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-lg font-semibold text-green-800">Onboarding Complete!</h3>
-              <p className="text-gray-600">Your account has been successfully verified. You can now start investing in mutual funds.</p>
+              <p className="text-gray-600">
+                Your account has been successfully verified and your risk profile has been assessed. 
+                You can now start investing in suitable mutual funds.
+              </p>
+              {riskProfile && (
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Your Risk Profile:</strong> {riskProfile.category} Investor
+                  </p>
+                </div>
+              )}
               <Button className="w-full">Start Investing</Button>
             </div>
           )}
