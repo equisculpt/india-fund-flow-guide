@@ -329,6 +329,7 @@ export type Database = {
           phone: string | null
           referral_code: string | null
           referred_by: string | null
+          total_referral_earnings: number | null
           updated_at: string | null
           user_type: string
         }
@@ -344,6 +345,7 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by?: string | null
+          total_referral_earnings?: number | null
           updated_at?: string | null
           user_type: string
         }
@@ -359,6 +361,7 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by?: string | null
+          total_referral_earnings?: number | null
           updated_at?: string | null
           user_type?: string
         }
@@ -373,6 +376,67 @@ export type Database = {
           {
             foreignKeyName: "profiles_referred_by_fkey"
             columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_commissions: {
+        Row: {
+          commission_amount: number
+          commission_rate: number | null
+          created_at: string | null
+          id: string
+          investment_id: string | null
+          max_commission: number | null
+          paid_at: string | null
+          referee_id: string | null
+          referrer_id: string | null
+          status: string | null
+        }
+        Insert: {
+          commission_amount: number
+          commission_rate?: number | null
+          created_at?: string | null
+          id?: string
+          investment_id?: string | null
+          max_commission?: number | null
+          paid_at?: string | null
+          referee_id?: string | null
+          referrer_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          commission_amount?: number
+          commission_rate?: number | null
+          created_at?: string | null
+          id?: string
+          investment_id?: string | null
+          max_commission?: number | null
+          paid_at?: string | null
+          referee_id?: string | null
+          referrer_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_commissions_investment_id_fkey"
+            columns: ["investment_id"]
+            isOneToOne: false
+            referencedRelation: "investments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_commissions_referee_id_fkey"
+            columns: ["referee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_commissions_referrer_id_fkey"
+            columns: ["referrer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

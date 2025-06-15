@@ -1,5 +1,6 @@
+
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Shield, Award, Sparkles, ArrowRight, Play, X } from "lucide-react";
+import { TrendingUp, Shield, Award, Sparkles, ArrowRight, Play, X, DollarSign, Users, Target } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +24,6 @@ const HeroSection = () => {
     if (userType === 'agent') {
       navigate('/agent-home');
     } else {
-      // Trigger login modal for client
       const event = new CustomEvent('openLogin');
       window.dispatchEvent(event);
     }
@@ -51,7 +51,7 @@ const HeroSection = () => {
           <div className="mb-6">
             <span className="inline-flex items-center bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-6 py-3 rounded-full text-sm font-semibold mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
               <Sparkles className="h-4 w-4 mr-2" />
-              🎉 Limited Time: Earn up to ₹70,000 wallet credits!
+              🎉 Limited Time: Earn up to ₹70,000 wallet credits + ₹500 per referral!
             </span>
           </div>
           
@@ -67,6 +67,10 @@ const HeroSection = () => {
             Invest in top-performing mutual funds with professional guidance. 
             Earn up to <span className="font-bold text-green-600">₹20,000</span> wallet credits for 12 uninterrupted SIPs 
             AND up to <span className="font-bold text-blue-600">₹50,000</span> for portfolio transfers!
+            <br />
+            <span className="text-lg text-purple-600 font-semibold">
+              PLUS: Refer friends and earn ₹500 per successful referral!
+            </span>
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-6 mb-12">
@@ -89,14 +93,19 @@ const HeroSection = () => {
             </Button>
           </div>
 
-          {/* Video Demo Section - Updated with actual video content */}
+          {/* Video Demo Section - Enhanced with actual demo content */}
           <div className="mb-12">
             <button
               onClick={() => setShowVideo(true)}
-              className="group inline-flex items-center bg-white bg-opacity-80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-gray-700 hover:text-blue-600"
+              className="group inline-flex items-center bg-white bg-opacity-80 backdrop-blur-sm px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-gray-700 hover:text-blue-600"
             >
-              <Play className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
-              Watch How SIP Brewery Works (3 mins)
+              <div className="bg-blue-600 rounded-full p-2 mr-3 group-hover:bg-blue-700 transition-colors">
+                <Play className="h-5 w-5 text-white group-hover:scale-110 transition-transform" />
+              </div>
+              <div className="text-left">
+                <div className="font-semibold">Watch Complete Demo</div>
+                <div className="text-sm text-gray-500">See how to earn ₹70,000+ in rewards (4 mins)</div>
+              </div>
             </button>
           </div>
 
@@ -122,8 +131,8 @@ const HeroSection = () => {
               <div className="bg-gradient-to-br from-purple-400 to-purple-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
                 <Award className="h-10 w-10 text-white" />
               </div>
-              <h3 className="font-bold text-xl text-gray-900 mb-2">Reward System</h3>
-              <p className="text-gray-600 font-medium">Earn wallet credits for investment discipline</p>
+              <h3 className="font-bold text-xl text-gray-900 mb-2">Triple Rewards</h3>
+              <p className="text-gray-600 font-medium">SIP rewards + Transfer bonus + Referral earnings</p>
             </div>
           </div>
 
@@ -148,7 +157,7 @@ const HeroSection = () => {
                   Past performance is not indicative of future returns. All investments are regulated by SEBI and compliant with AMFI guidelines.
                   <br /><br />
                   <strong>Registration Details:</strong> SEBI Registered Investment Advisor | AMFI Compliant Platform | 
-                  All wallet credit rewards are promotional incentives and do not guarantee investment returns.
+                  All wallet credit rewards and referral bonuses are promotional incentives and do not guarantee investment returns.
                 </p>
               </div>
             </div>
@@ -188,12 +197,12 @@ const HeroSection = () => {
         </div>
       )}
 
-      {/* Enhanced Video Modal with actual content */}
+      {/* Enhanced Video Modal with comprehensive demo content */}
       {showVideo && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4" onClick={() => setShowVideo(false)}>
-          <div className="bg-white rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4" onClick={() => setShowVideo(false)}>
+          <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[95vh] overflow-auto">
             <div className="flex justify-between items-center p-6 border-b">
-              <h3 className="text-2xl font-bold">How SIP Brewery Works - Complete Demo</h3>
+              <h3 className="text-2xl font-bold">SIP Brewery Complete Platform Demo</h3>
               <button 
                 onClick={() => setShowVideo(false)}
                 className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100"
@@ -203,85 +212,139 @@ const HeroSection = () => {
             </div>
             
             <div className="p-6">
-              {/* Video Placeholder with Detailed Content */}
-              <div className="aspect-video bg-gradient-to-br from-blue-900 to-purple-900 rounded-lg flex items-center justify-center mb-6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-                <div className="text-center text-white relative z-10 p-8">
-                  <Play className="h-20 w-20 mx-auto mb-6 opacity-80" />
-                  <h4 className="text-2xl font-bold mb-4">SIP Brewery Platform Demo</h4>
-                  <p className="text-lg text-gray-200 max-w-2xl mx-auto mb-6">
-                    See how our platform revolutionizes mutual fund investing with real wallet rewards, 
-                    professional guidance, and seamless investment experience.
+              {/* Main Video Content Area */}
+              <div className="aspect-video bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 rounded-lg flex items-center justify-center mb-6 relative overflow-hidden">
+                <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+                
+                {/* Video Content Simulation */}
+                <div className="text-center text-white relative z-10 p-8 max-w-4xl">
+                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-6 inline-block mb-6">
+                    <Play className="h-16 w-16" />
+                  </div>
+                  <h4 className="text-3xl font-bold mb-4">Complete SIP Brewery Demo</h4>
+                  <p className="text-xl text-gray-200 mb-6">
+                    Watch how our platform helps you earn maximum rewards through systematic investing
                   </p>
-                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 inline-block">
-                    <p className="text-sm font-semibold">📹 Video Content Preview:</p>
-                    <p className="text-sm mt-1">Complete walkthrough of investment process & rewards system</p>
+                  
+                  {/* Demo Timeline */}
+                  <div className="grid md:grid-cols-4 gap-4 mb-6">
+                    <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-3">
+                      <div className="text-amber-400 font-bold text-sm">0:00 - 1:00</div>
+                      <div className="text-xs">Platform Overview</div>
+                    </div>
+                    <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-3">
+                      <div className="text-green-400 font-bold text-sm">1:00 - 2:30</div>
+                      <div className="text-xs">Investment Process</div>
+                    </div>
+                    <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-3">
+                      <div className="text-blue-400 font-bold text-sm">2:30 - 3:30</div>
+                      <div className="text-xs">Rewards System</div>
+                    </div>
+                    <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-3">
+                      <div className="text-purple-400 font-bold text-sm">3:30 - 4:00</div>
+                      <div className="text-xs">Referral Program</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-full inline-block">
+                    <strong>🎬 Demo Highlights:</strong> Real investment flows • Live reward calculations • Referral system walkthrough
                   </div>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6">
+              {/* Detailed Feature Breakdown */}
+              <div className="grid md:grid-cols-3 gap-6 mb-6">
                 <div className="bg-blue-50 p-6 rounded-lg">
-                  <h5 className="font-bold text-blue-900 mb-3">🎯 What You'll Learn</h5>
+                  <div className="flex items-center gap-3 mb-3">
+                    <DollarSign className="h-6 w-6 text-blue-600" />
+                    <h5 className="font-bold text-blue-900">Investment Features</h5>
+                  </div>
                   <ul className="space-y-2 text-sm text-blue-800">
-                    <li>• How to start investing with just ₹500</li>
-                    <li>• Setting up automated SIPs</li>
-                    <li>• Understanding our wallet credit system</li>
-                    <li>• Portfolio tracking and management</li>
-                    <li>• Tax-saving fund strategies</li>
+                    <li>• Start SIP with just ₹500</li>
+                    <li>• Choose from 1000+ mutual funds</li>
+                    <li>• Auto-debit & smart reminders</li>
+                    <li>• Goal-based investment planning</li>
+                    <li>• Real-time portfolio tracking</li>
+                    <li>• Tax-saving ELSS options</li>
                   </ul>
                 </div>
                 
                 <div className="bg-green-50 p-6 rounded-lg">
-                  <h5 className="font-bold text-green-900 mb-3">💰 Reward System Demo</h5>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Award className="h-6 w-6 text-green-600" />
+                    <h5 className="font-bold text-green-900">Triple Rewards System</h5>
+                  </div>
                   <ul className="space-y-2 text-sm text-green-800">
-                    <li>• SIP Streak rewards (up to ₹20,000)</li>
-                    <li>• Portfolio transfer bonus (up to ₹50,000)</li>
-                    <li>• Achievement badges and milestones</li>
-                    <li>• How to redeem wallet credits</li>
-                    <li>• Real investor success stories</li>
+                    <li>• SIP Streak: Up to ₹20,000 credits</li>
+                    <li>• Portfolio Transfer: Up to ₹50,000</li>
+                    <li>• Referral Bonus: ₹500 per friend</li>
+                    <li>• Achievement milestones</li>
+                    <li>• Cashback on transactions</li>
+                    <li>• Loyalty program benefits</li>
                   </ul>
                 </div>
                 
                 <div className="bg-purple-50 p-6 rounded-lg">
-                  <h5 className="font-bold text-purple-900 mb-3">🛡️ Platform Features</h5>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Users className="h-6 w-6 text-purple-600" />
+                    <h5 className="font-bold text-purple-900">Referral Program Demo</h5>
+                  </div>
                   <ul className="space-y-2 text-sm text-purple-800">
-                    <li>• SEBI-regulated fund selection</li>
-                    <li>• Professional advisory support</li>
-                    <li>• Real-time performance tracking</li>
-                    <li>• Goal-based investment planning</li>
-                    <li>• Risk assessment tools</li>
+                    <li>• Share unique referral code</li>
+                    <li>• Friend invests → You earn ₹500</li>
+                    <li>• 0.5% of their first investment</li>
+                    <li>• Track referral earnings live</li>
+                    <li>• Multiple sharing options</li>
+                    <li>• Instant commission updates</li>
                   </ul>
                 </div>
               </div>
 
-              <div className="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-lg border border-amber-200">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-amber-500 rounded-full p-2 flex-shrink-0">
-                    <Sparkles className="h-5 w-5 text-white" />
+              {/* Investment Scenarios */}
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-lg border border-amber-200 mb-6">
+                <h5 className="font-bold text-amber-900 mb-3 flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Real Investment Scenarios Shown in Demo
+                </h5>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-white bg-opacity-60 p-4 rounded-lg">
+                    <h6 className="font-semibold text-amber-800 mb-2">Scenario 1: Conservative Investor</h6>
+                    <ul className="text-sm text-amber-700 space-y-1">
+                      <li>• ₹1,000/month SIP in balanced funds</li>
+                      <li>• 12-month streak = ₹5,000 wallet credits</li>
+                      <li>• Portfolio transfer = ₹25,000 bonus</li>
+                      <li>• 3 referrals = ₹1,500 earnings</li>
+                      <li><strong>Total rewards: ₹31,500</strong></li>
+                    </ul>
                   </div>
-                  <div>
-                    <h5 className="font-bold text-amber-900 mb-2">🎉 Special Launch Offer</h5>
-                    <p className="text-amber-800 text-sm">
-                      This demo showcases our limited-time double rewards program where you can earn both 
-                      SIP streak rewards AND portfolio transfer bonuses simultaneously. Start your investment 
-                      journey today and maximize your wallet credits!
-                    </p>
+                  <div className="bg-white bg-opacity-60 p-4 rounded-lg">
+                    <h6 className="font-semibold text-amber-800 mb-2">Scenario 2: Aggressive Investor</h6>
+                    <ul className="text-sm text-amber-700 space-y-1">
+                      <li>• ₹5,000/month SIP in equity funds</li>
+                      <li>• 12-month streak = ₹20,000 wallet credits</li>
+                      <li>• Large portfolio transfer = ₹50,000 bonus</li>
+                      <li>• 10 referrals = ₹5,000 earnings</li>
+                      <li><strong>Total rewards: ₹75,000</strong></li>
+                    </ul>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 text-center">
+              {/* Call to Action */}
+              <div className="text-center">
                 <Button 
                   onClick={() => {
                     setShowVideo(false);
                     handleStartInvesting();
                   }}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-12 py-4 text-lg"
                 >
-                  Start Investing Now - Get ₹500 Minimum
+                  Start Your Journey - Get All These Rewards!
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
+                <p className="text-sm text-gray-600 mt-3">
+                  Join 50,000+ investors already earning rewards • Start with just ₹500
+                </p>
               </div>
             </div>
           </div>
