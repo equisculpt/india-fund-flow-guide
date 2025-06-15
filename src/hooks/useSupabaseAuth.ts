@@ -55,7 +55,14 @@ export const useSupabaseAuth = () => {
         .single();
 
       if (error) throw error;
-      setProfile(data);
+      
+      // Type assertion to ensure user_type matches our interface
+      const typedProfile: UserProfile = {
+        ...data,
+        user_type: data.user_type as 'customer' | 'agent' | 'admin'
+      };
+      
+      setProfile(typedProfile);
     } catch (error) {
       console.error('Error fetching profile:', error);
     } finally {

@@ -45,27 +45,72 @@ const InvestmentOverviewTab = () => {
 
   const fetchInvestments = async () => {
     try {
-      const { data, error } = await supabase
+      // First get all investments
+      const { data: investmentsData, error } = await supabase
         .from('investments')
-        .select(`
-          *,
-          user:user_id(full_name, phone),
-          agent:agent_id(full_name),
-          fund:fund_id(scheme_name)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      const formattedInvestments = data?.map(investment => ({
-        ...investment,
-        user_name: investment.user?.full_name || 'Unknown User',
-        user_phone: investment.user?.phone,
-        agent_name: investment.agent?.full_name,
-        fund_name: investment.fund?.scheme_name || 'Unknown Fund',
-      })) || [];
+      // Then get related data for each investment
+      const enrichedInvestments = await Promise.all(
+        investmentsData?.map(async (investment) => {
+          // Get user data
+          let userName = 'Unknown User';
+          let userPhone = '';
+          if (investment.user_id) {
+            const { data: user } = await supabase
+              .from('profiles')
+              .select('full_name, phone')
+              .eq('id', investment.user_id)
+              .single();
+            
+            if (user) {
+              userName = user.full_name;
+              userPhone = user.phone || '';
+            }
+          }
 
-      setInvestments(formattedInvestments);
+          // Get agent data
+          let agentName = '';
+          if (investment.agent_id) {
+            const { data: agent } = await supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', investment.agent_id)
+              .single();
+            
+            if (agent) {
+              agentName = agent.full_name;
+            }
+          }
+
+          // Get fund data
+          let fundName = 'Unknown Fund';
+          if (investment.fund_id) {
+            const { data: fund } = await supabase
+              .from('mutual_funds')
+              .select('scheme_name')
+              .eq('id', investment.fund_id)
+              .single();
+            
+            if (fund) {
+              fundName = fund.scheme_name;
+            }
+          }
+
+          return {
+            ...investment,
+            user_name: userName,
+            user_phone: userPhone,
+            agent_name: agentName,
+            fund_name: fundName,
+          };
+        }) || []
+      );
+
+      setInvestments(enrichedInvestments);
     } catch (error) {
       console.error('Error fetching investments:', error);
       toast({

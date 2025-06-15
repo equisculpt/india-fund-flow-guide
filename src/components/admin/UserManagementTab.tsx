@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Eye, Edit, Phone, Mail } from 'lucide-react';
+import { Search, Phone } from 'lucide-react';
 
 interface UserData {
   id: string;
@@ -45,25 +45,47 @@ const UserManagementTab = () => {
 
   const fetchUsers = async () => {
     try {
-      const { data, error } = await supabase
+      // First get all customer profiles
+      const { data: customers, error: customersError } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          agent:agent_id(full_name),
-          investments(total_invested)
-        `)
+        .select('*')
         .eq('user_type', 'customer')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (customersError) throw customersError;
 
-      const formattedUsers = data?.map(user => ({
-        ...user,
-        agent_name: user.agent?.full_name,
-        total_investments: user.investments?.reduce((sum: number, inv: any) => sum + (inv.total_invested || 0), 0) || 0
-      })) || [];
+      // Then get agent names for those who have agents
+      const customersWithAgents = await Promise.all(
+        customers?.map(async (customer) => {
+          let agentName = null;
+          
+          if (customer.agent_id) {
+            const { data: agent } = await supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', customer.agent_id)
+              .single();
+            
+            agentName = agent?.full_name;
+          }
 
-      setUsers(formattedUsers);
+          // Get total investments
+          const { data: investments } = await supabase
+            .from('investments')
+            .select('total_invested')
+            .eq('user_id', customer.id);
+
+          const totalInvestments = investments?.reduce((sum, inv) => sum + (inv.total_invested || 0), 0) || 0;
+
+          return {
+            ...customer,
+            agent_name: agentName,
+            total_investments: totalInvestments
+          };
+        }) || []
+      );
+
+      setUsers(customersWithAgents);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
