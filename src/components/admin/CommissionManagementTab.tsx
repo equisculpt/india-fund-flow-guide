@@ -18,6 +18,8 @@ interface CommissionData {
   base_commission_rate: number;
   agent_share_percentage: number;
   calculated_commission: number;
+  commission_tier: string;
+  actual_commission_rate: number;
   status: string;
   created_at: string;
   payment_date?: string;
@@ -60,6 +62,9 @@ const CommissionManagementTab = () => {
         agent_name: commission.agent?.full_name || 'Unknown Agent',
         agent_phone: commission.agent?.phone,
         fund_name: commission.fund?.scheme_name || 'Unknown Fund',
+        // Use new commission structure data
+        commission_tier: commission.commission_tier || 'STANDARD',
+        actual_commission_rate: commission.actual_commission_rate || commission.agent_share_percentage || 80.00,
       })) || [];
 
       setCommissions(formattedCommissions);
@@ -122,7 +127,7 @@ const CommissionManagementTab = () => {
       <CardHeader>
         <CardTitle>Commission Management</CardTitle>
         <CardDescription>
-          Live commission tracking and payment management. 
+          Agent commission tracking with tier system (80% Standard, 90% Premium for 5+ recruits). 
           Total Pending: ₹{totalPending.toLocaleString()} | Total Paid: ₹{totalPaid.toLocaleString()}
         </CardDescription>
         <div className="flex items-center space-x-2">
@@ -142,7 +147,7 @@ const CommissionManagementTab = () => {
               <TableHead>Agent</TableHead>
               <TableHead>Fund</TableHead>
               <TableHead>Investment</TableHead>
-              <TableHead>Base Rate</TableHead>
+              <TableHead>Tier</TableHead>
               <TableHead>Agent Share</TableHead>
               <TableHead>Commission</TableHead>
               <TableHead>Status</TableHead>
@@ -163,8 +168,12 @@ const CommissionManagementTab = () => {
                 </TableCell>
                 <TableCell className="max-w-[200px] truncate">{commission.fund_name}</TableCell>
                 <TableCell>₹{commission.investment_amount?.toLocaleString() || '0'}</TableCell>
-                <TableCell>{commission.base_commission_rate || 0}%</TableCell>
-                <TableCell>{commission.agent_share_percentage || 0}%</TableCell>
+                <TableCell>
+                  <Badge variant={commission.commission_tier === 'PREMIUM' ? 'default' : 'secondary'}>
+                    {commission.commission_tier || 'STANDARD'}
+                  </Badge>
+                </TableCell>
+                <TableCell>{commission.actual_commission_rate || commission.agent_share_percentage || 80}%</TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-1">
                     <DollarSign className="w-4 h-4" />
