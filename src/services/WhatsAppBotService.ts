@@ -1,4 +1,3 @@
-
 export class WhatsAppBotService {
   static async handleIncomingMessage(whatsappMessage: any): Promise<string> {
     const { from, message } = whatsappMessage;
@@ -315,6 +314,121 @@ export class WhatsAppBotService {
         } else {
           return `Please type *CONFIRM* to complete registration or *EDIT* to modify details.`;
         }
+
+      default:
+        await WhatsAppBotService.clearUserState(userId);
+        return `Something went wrong. Type *menu* to return to main menu.`;
+    }
+  }
+
+  static async handleInvestmentFlow(userId: string, message: string, step: string): Promise<string> {
+    switch (step) {
+      case 'fund_selection':
+        if (message === 'a') {
+          await WhatsAppBotService.setUserState(userId, { inFlow: true, flowType: 'investment', step: 'amount' });
+          return `💰 *HDFC Top 100 Fund Selected*\n\n` +
+                 `Fund Details:\n` +
+                 `• 5-star rated fund\n` +
+                 `• 15.2% annual returns\n` +
+                 `• Large Cap category\n\n` +
+                 `Please enter investment amount (minimum ₹500):`;
+        }
+        return `Please select a valid fund option (A-E)`;
+
+      case 'amount':
+        const amount = parseInt(message);
+        if (isNaN(amount) || amount < 500) {
+          return `❌ Invalid amount. Please enter minimum ₹500:`;
+        }
+        await WhatsAppBotService.setUserState(userId, { inFlow: true, flowType: 'investment', step: 'confirm' });
+        return `✅ Amount: ₹${amount.toLocaleString()}\n\n` +
+               `*Investment Summary:*\n` +
+               `Fund: HDFC Top 100 Fund\n` +
+               `Amount: ₹${amount.toLocaleString()}\n` +
+               `Type: One-time Investment\n\n` +
+               `Type *INVEST* to proceed or *CANCEL* to abort.`;
+
+      case 'confirm':
+        if (message === 'invest') {
+          await WhatsAppBotService.clearUserState(userId);
+          return `🎉 *Investment Successful!*\n\n` +
+                 `Your investment has been processed.\n` +
+                 `Transaction ID: INV${Date.now()}\n\n` +
+                 `You will receive units within 1-2 business days.\n\n` +
+                 `Type *4* to view portfolio or *menu* for main menu.`;
+        } else if (message === 'cancel') {
+          await WhatsAppBotService.clearUserState(userId);
+          return `❌ Investment cancelled. Type *menu* to return to main menu.`;
+        }
+        return `Please type *INVEST* to proceed or *CANCEL* to abort.`;
+
+      default:
+        await WhatsAppBotService.clearUserState(userId);
+        return `Something went wrong. Type *menu* to return to main menu.`;
+    }
+  }
+
+  static async handleSIPFlow(userId: string, message: string, step: string): Promise<string> {
+    switch (step) {
+      case 'fund_selection':
+        if (message === 'a') {
+          await WhatsAppBotService.setUserState(userId, { inFlow: true, flowType: 'sip', step: 'amount' });
+          return `🔄 *SBI Small Cap Fund Selected for SIP*\n\n` +
+                 `Fund Details:\n` +
+                 `• High growth potential\n` +
+                 `• 18.5% annual returns\n` +
+                 `• Small Cap category\n\n` +
+                 `Please enter monthly SIP amount (minimum ₹500):`;
+        }
+        return `Please select a valid fund option (A-E)`;
+
+      case 'amount':
+        const amount = parseInt(message);
+        if (isNaN(amount) || amount < 500) {
+          return `❌ Invalid amount. Please enter minimum ₹500:`;
+        }
+        await WhatsAppBotService.setUserState(userId, { inFlow: true, flowType: 'sip', step: 'date' });
+        return `✅ Monthly Amount: ₹${amount.toLocaleString()}\n\n` +
+               `Please select SIP date (1-28):\n` +
+               `*A* - 1st of every month\n` +
+               `*B* - 5th of every month\n` +
+               `*C* - 10th of every month\n` +
+               `*D* - 15th of every month\n` +
+               `*E* - Custom date\n\n` +
+               `Reply with your choice (A-E)`;
+
+      case 'date':
+        let sipDate = '';
+        switch (message) {
+          case 'a': sipDate = '1st'; break;
+          case 'b': sipDate = '5th'; break;
+          case 'c': sipDate = '10th'; break;
+          case 'd': sipDate = '15th'; break;
+          default: return `Please select a valid date option (A-E)`;
+        }
+        
+        await WhatsAppBotService.setUserState(userId, { inFlow: true, flowType: 'sip', step: 'confirm' });
+        return `✅ SIP Date: ${sipDate} of every month\n\n` +
+               `*SIP Summary:*\n` +
+               `Fund: SBI Small Cap Fund\n` +
+               `Monthly Amount: ₹${message}\n` +
+               `SIP Date: ${sipDate}\n` +
+               `Duration: Until cancelled\n\n` +
+               `Type *START* to begin SIP or *CANCEL* to abort.`;
+
+      case 'confirm':
+        if (message === 'start') {
+          await WhatsAppBotService.clearUserState(userId);
+          return `🎉 *SIP Started Successfully!*\n\n` +
+                 `Your SIP has been activated.\n` +
+                 `SIP ID: SIP${Date.now()}\n\n` +
+                 `First deduction will happen on the next SIP date.\n\n` +
+                 `Type *5* to manage SIPs or *menu* for main menu.`;
+        } else if (message === 'cancel') {
+          await WhatsAppBotService.clearUserState(userId);
+          return `❌ SIP setup cancelled. Type *menu* to return to main menu.`;
+        }
+        return `Please type *START* to begin SIP or *CANCEL* to abort.`;
 
       default:
         await WhatsAppBotService.clearUserState(userId);
