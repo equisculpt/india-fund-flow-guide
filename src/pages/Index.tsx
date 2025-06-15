@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import FundCard from "@/components/FundCard";
@@ -6,7 +5,7 @@ import InvestmentCalculator from "@/components/InvestmentCalculator";
 import BreweryLogo from "@/components/BreweryLogo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, Shield, TrendingUp, Users, Award, Clock, Gift } from "lucide-react";
+import { CheckCircle, Shield, TrendingUp, Users, Award, Clock, Gift, Target, Trophy, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -112,6 +111,27 @@ const Index = () => {
     }
   ];
 
+  const gamificationFeatures = [
+    {
+      icon: <Trophy className="h-12 w-12 text-yellow-500" />,
+      title: "SIP Champion",
+      description: "Complete 12 consecutive SIPs and earn the SIP Champion badge + up to ₹20,000 wallet credits",
+      badge: "Achievement Badge"
+    },
+    {
+      icon: <Target className="h-12 w-12 text-blue-500" />,
+      title: "Portfolio Master",
+      description: "Transfer your existing portfolio and unlock Portfolio Master status + up to ₹50,000 wallet credits",
+      badge: "Elite Status"
+    },
+    {
+      icon: <Star className="h-12 w-12 text-purple-500" />,
+      title: "Investment Milestones",
+      description: "Track your investment journey with milestone rewards and progress indicators",
+      badge: "Progress Tracker"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -143,6 +163,48 @@ const Index = () => {
               These wallet credits can be used for future investments or redeemed as per our terms. 
               It's our unique way of rewarding your investment discipline! <strong>You can earn both rewards!</strong>
             </p>
+          </div>
+        </div>
+      </section>
+      
+      {/* Gamification Section - AMFI Compliant */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Achievement System & Investor Rewards
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Track your investment journey with our AMFI-compliant achievement system designed to encourage disciplined investing
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            {gamificationFeatures.map((feature, index) => (
+              <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300 border-2 hover:border-blue-200">
+                <CardContent className="p-6">
+                  <div className="flex justify-center mb-4">
+                    {feature.icon}
+                  </div>
+                  <div className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-3">
+                    {feature.badge}
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Important Disclaimer</h3>
+              <p className="text-sm text-gray-600">
+                These rewards are incentives for disciplined investing and portfolio management. 
+                All mutual fund investments are subject to market risks. Please read scheme documents carefully. 
+                Rewards do not guarantee investment returns. This system complies with AMFI and SEBI guidelines for investor education and engagement.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -211,7 +273,7 @@ const Index = () => {
               Start Investing Now
             </Button>
             <Link to="/contact">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-amber-600 px-8">
+              <Button size="lg" className="bg-amber-700 text-white hover:bg-amber-800 border-2 border-amber-700 hover:border-amber-800 px-8">
                 Schedule a Call
               </Button>
             </Link>
@@ -230,6 +292,11 @@ const Index = () => {
               <p className="text-gray-400">
                 Making mutual fund investments rewarding and accessible for every Indian with our unique wallet credit programs.
               </p>
+              <div className="mt-4 text-xs text-gray-500">
+                <p>SEBI Registered Investment Advisor</p>
+                <p>AMFI Compliant Platform</p>
+                <p>All investments subject to market risks</p>
+              </div>
             </div>
             
             <div>
@@ -264,7 +331,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Equisculpt Ventures. All rights reserved. | Mutual Fund investments are subject to market risks. Please read all scheme documents carefully before investing.</p>
+            <p>&copy; 2024 Equisculpt Ventures. All rights reserved. | Mutual Fund investments are subject to market risks. Please read all scheme documents carefully before investing. | SEBI Registered | AMFI Compliant</p>
           </div>
         </div>
       </footer>
