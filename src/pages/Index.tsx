@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import FundCard from "@/components/FundCard";
@@ -417,7 +418,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Equisculpt Ventures?
+              Why Choose SIP Brewery?
             </h2>
             <p className="text-xl text-gray-600 max-w-4xl mx-auto">
               We offer regular mutual funds with professional management and exclusive reward programs 
@@ -556,6 +557,12 @@ const Index = () => {
                 Past performance is not indicative of future returns. SEBI Registered Investment Advisor | AMFI Compliant | 
                 All wallet credits are promotional offers and do not guarantee investment returns.
               </p>
+              <div className="mt-4 pt-4 border-t border-gray-800">
+                <p className="text-xs text-gray-500">
+                  SIP Brewery is a trademark of Equisculpt Ventures Pvt. Ltd. | 
+                  Equisculpt Ventures Pvt. Ltd. is an AMFI Registered Mutual Fund Distributor
+                </p>
+              </div>
             </div>
           </div>
         </div>
