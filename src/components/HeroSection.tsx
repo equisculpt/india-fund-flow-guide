@@ -81,7 +81,7 @@ const HeroSection = () => {
           <div className="mb-6">
             <span className="inline-flex items-center bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-6 py-3 rounded-full text-sm font-semibold mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
               <Sparkles className="h-4 w-4 mr-2" />
-              🎉 Limited Time: Earn up to ₹70,000 wallet credits + ₹500 per referral!
+              🎉 Limited Time: Earn up to ₹70,000 wallet credits + up to ₹500 per referral!
             </span>
           </div>
           
@@ -99,7 +99,7 @@ const HeroSection = () => {
             AND up to <span className="font-bold text-blue-600">₹50,000</span> for portfolio transfers!
             <br />
             <span className="text-lg text-purple-600 font-semibold">
-              PLUS: Refer friends and earn ₹500 per successful referral!
+              PLUS: Refer friends and earn up to ₹500 per successful referral!
             </span>
           </p>
           
