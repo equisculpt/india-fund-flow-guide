@@ -4,11 +4,12 @@ import BreweryLogo from "./BreweryLogo";
 import { useState } from "react";
 import LoginModal from "./LoginModal";
 import { useAuth } from "@/contexts/AuthContext";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [showLogin, setShowLogin] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,10 +19,9 @@ const Header = () => {
   };
 
   const scrollToSection = (sectionId: string) => {
-    // If we're not on the home page, navigate there first
+    setIsMobileMenuOpen(false);
     if (location.pathname !== '/') {
       navigate('/', { replace: true });
-      // Wait for navigation to complete, then scroll
       setTimeout(() => {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -29,7 +29,6 @@ const Header = () => {
         }
       }, 100);
     } else {
-      // If we're already on home page, just scroll
       const element = document.getElementById(sectionId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
@@ -37,51 +36,81 @@ const Header = () => {
     }
   };
 
+  const handleStartInvesting = () => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    } else {
+      setShowLogin(true);
+    }
+  };
+
   return (
-    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+    <header className="bg-white/95 backdrop-blur-sm shadow-lg border-b border-blue-100 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/">
+          <Link to="/" className="hover:scale-105 transition-transform duration-200">
             <BreweryLogo size="md" />
           </Link>
           
-          <nav className="hidden md:flex items-center space-x-6">
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-8">
             {isAuthenticated && (
-              <Link to="/dashboard" className="text-gray-600 hover:text-amber-600 transition-colors">
+              <Link 
+                to="/dashboard" 
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 hover:scale-105 transform"
+              >
                 Dashboard
               </Link>
             )}
             <button 
               onClick={() => scrollToSection('funds')} 
-              className="text-gray-600 hover:text-amber-600 transition-colors cursor-pointer"
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 hover:scale-105 transform cursor-pointer"
             >
               Mutual Funds
             </button>
             <button 
               onClick={() => scrollToSection('calculator')} 
-              className="text-gray-600 hover:text-amber-600 transition-colors cursor-pointer"
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 hover:scale-105 transform cursor-pointer"
             >
               SIP Calculator
             </button>
             {isAuthenticated && (
-              <Link to="/referrals" className="text-gray-600 hover:text-amber-600 transition-colors">
+              <Link 
+                to="/referrals" 
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 hover:scale-105 transform"
+              >
                 Referrals
               </Link>
             )}
-            <Link to="/whatsapp-bot" className="text-gray-600 hover:text-amber-600 transition-colors">
+            <Link 
+              to="/whatsapp-bot" 
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 hover:scale-105 transform"
+            >
               WhatsApp Bot
             </Link>
-            <Link to="/about" className="text-gray-600 hover:text-amber-600 transition-colors">
+            <Link 
+              to="/about" 
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 hover:scale-105 transform"
+            >
               About
             </Link>
           </nav>
+
+          {/* Mobile menu button */}
+          <button
+            className="lg:hidden p-2 text-gray-600 hover:text-blue-600 transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
           
-          <div className="flex items-center space-x-3">
+          {/* Desktop Auth Section */}
+          <div className="hidden lg:flex items-center space-x-3">
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
-                <div className="flex items-center space-x-2">
-                  <User className="h-4 w-4 text-gray-600" />
-                  <span className="text-sm text-gray-600">
+                <div className="flex items-center space-x-2 bg-blue-50 px-3 py-2 rounded-full">
+                  <User className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-800">
                     {user?.name} ({user?.type})
                   </span>
                 </div>
@@ -89,7 +118,7 @@ const Header = () => {
                   variant="ghost" 
                   size="sm"
                   onClick={handleLogout}
-                  className="text-gray-600"
+                  className="text-gray-600 hover:text-red-600 hover:bg-red-50"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout
@@ -99,14 +128,14 @@ const Header = () => {
               <>
                 <Button 
                   variant="ghost" 
-                  className="text-gray-600"
+                  className="text-gray-700 hover:text-blue-600 font-medium"
                   onClick={() => setShowLogin(true)}
                 >
                   Login
                 </Button>
                 <Button 
-                  className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
-                  onClick={() => setShowLogin(true)}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                  onClick={handleStartInvesting}
                 >
                   Start Investing
                 </Button>
@@ -114,6 +143,103 @@ const Header = () => {
             )}
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden mt-4 pb-4 border-t border-gray-200">
+            <nav className="flex flex-col space-y-4 mt-4">
+              {isAuthenticated && (
+                <Link 
+                  to="/dashboard" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              )}
+              <button 
+                onClick={() => scrollToSection('funds')} 
+                className="text-left text-gray-700 hover:text-blue-600 font-medium transition-colors py-2"
+              >
+                Mutual Funds
+              </button>
+              <button 
+                onClick={() => scrollToSection('calculator')} 
+                className="text-left text-gray-700 hover:text-blue-600 font-medium transition-colors py-2"
+              >
+                SIP Calculator
+              </button>
+              {isAuthenticated && (
+                <Link 
+                  to="/referrals" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Referrals
+                </Link>
+              )}
+              <Link 
+                to="/whatsapp-bot" 
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                WhatsApp Bot
+              </Link>
+              <Link 
+                to="/about" 
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              
+              {/* Mobile Auth Section */}
+              <div className="pt-4 border-t border-gray-200 mt-4">
+                {isAuthenticated ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2 bg-blue-50 px-3 py-2 rounded-lg">
+                      <User className="h-4 w-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-800">
+                        {user?.name} ({user?.type})
+                      </span>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={handleLogout}
+                      className="w-full text-gray-600 hover:text-red-600 hover:bg-red-50"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <Button 
+                      variant="ghost" 
+                      className="w-full text-gray-700 hover:text-blue-600"
+                      onClick={() => {
+                        setShowLogin(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      Login
+                    </Button>
+                    <Button 
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                      onClick={() => {
+                        handleStartInvesting();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      Start Investing
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </nav>
+          </div>
+        )}
       </div>
       
       <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} />
