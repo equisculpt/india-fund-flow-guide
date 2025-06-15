@@ -1,15 +1,17 @@
-
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Shield, Award, Sparkles, ArrowRight, Play, X, DollarSign, Users, Target } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useInvestorStats } from "@/hooks/useInvestorData";
+import DemoSlideshow from "./DemoSlideshow";
 
 const HeroSection = () => {
-  const [showVideo, setShowVideo] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { data: investorStats } = useInvestorStats();
 
   const handleStartInvesting = () => {
     if (isAuthenticated) {
@@ -35,6 +37,34 @@ const HeroSection = () => {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  // Format stats with real data or show meaningful defaults
+  const formatStats = () => {
+    if (investorStats) {
+      const formatAmount = (amount: number) => {
+        if (amount >= 10000000) {
+          return `₹${(amount / 10000000).toFixed(1)}Cr`;
+        } else if (amount >= 100000) {
+          return `₹${(amount / 100000).toFixed(1)}L`;
+        }
+        return `₹${amount.toLocaleString('en-IN')}`;
+      };
+
+      return {
+        investors: `${investorStats.total_investors.toLocaleString('en-IN')}+`,
+        amount: formatAmount(investorStats.total_amount_invested),
+        rating: `${investorStats.average_rating.toFixed(1)}★`
+      };
+    }
+    
+    return {
+      investors: "Growing Community",
+      amount: "₹1Cr+ AUM",
+      rating: "4.8★ Rated"
+    };
+  };
+
+  const stats = formatStats();
 
   return (
     <section className="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 overflow-hidden">
@@ -93,10 +123,10 @@ const HeroSection = () => {
             </Button>
           </div>
 
-          {/* Video Demo Section - Fixed with actual video */}
+          {/* Video Demo Section - Updated */}
           <div className="mb-12">
             <button
-              onClick={() => setShowVideo(true)}
+              onClick={() => setShowDemo(true)}
               className="group inline-flex items-center bg-white bg-opacity-80 backdrop-blur-sm px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-gray-700 hover:text-blue-600"
             >
               <div className="bg-blue-600 rounded-full p-2 mr-3 group-hover:bg-blue-700 transition-colors">
@@ -136,13 +166,13 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Trust Indicators */}
+          {/* Trust Indicators - Updated with real stats */}
           <div className="flex flex-wrap justify-center items-center gap-8 mb-8 opacity-70">
-            <div className="text-sm font-medium text-gray-600">Trusted by 50,000+ investors</div>
+            <div className="text-sm font-medium text-gray-600">{stats.investors} investors</div>
             <div className="w-px h-6 bg-gray-300"></div>
-            <div className="text-sm font-medium text-gray-600">₹500+ Crores invested</div>
+            <div className="text-sm font-medium text-gray-600">{stats.amount} invested</div>
             <div className="w-px h-6 bg-gray-300"></div>
-            <div className="text-sm font-medium text-gray-600">4.8★ User Rating</div>
+            <div className="text-sm font-medium text-gray-600">{stats.rating} User Rating</div>
           </div>
 
           {/* Enhanced Compliance Notice */}
@@ -197,93 +227,8 @@ const HeroSection = () => {
         </div>
       )}
 
-      {/* Working Video Modal with actual video player */}
-      {showVideo && (
-        <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4" onClick={() => setShowVideo(false)}>
-          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-auto">
-            <div className="flex justify-between items-center p-6 border-b">
-              <h3 className="text-2xl font-bold">SIP Brewery Platform Demo</h3>
-              <button 
-                onClick={() => setShowVideo(false)}
-                className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            
-            <div className="p-6">
-              {/* Actual video player */}
-              <div className="aspect-video bg-black rounded-lg mb-6 overflow-hidden">
-                <video 
-                  className="w-full h-full object-cover"
-                  controls
-                  autoPlay
-                  muted
-                  preload="metadata"
-                >
-                  {/* Sample demo video - you can replace this with your actual demo video URL */}
-                  <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-                  
-                  {/* Fallback content if video doesn't load */}
-                  <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white">
-                    <div className="text-center p-8">
-                      <Play className="h-16 w-16 mx-auto mb-4 opacity-70" />
-                      <h4 className="text-xl font-bold mb-2">Demo Video Coming Soon</h4>
-                      <p className="text-gray-300">
-                        Our comprehensive platform demo video will be available shortly. 
-                        <br />
-                        It will showcase the complete investment journey and rewards system.
-                      </p>
-                    </div>
-                  </div>
-                </video>
-              </div>
-
-              {/* Video description */}
-              <div className="space-y-4">
-                <h4 className="text-xl font-bold text-gray-900">What you'll learn in this demo:</h4>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h5 className="font-semibold text-blue-900 mb-2">Platform Features</h5>
-                    <ul className="text-sm text-blue-800 space-y-1">
-                      <li>• Complete investment process</li>
-                      <li>• Fund selection and SIP setup</li>
-                      <li>• Portfolio tracking dashboard</li>
-                      <li>• Goal-based investing</li>
-                    </ul>
-                  </div>
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <h5 className="font-semibold text-green-900 mb-2">Rewards System</h5>
-                    <ul className="text-sm text-green-800 space-y-1">
-                      <li>• SIP streak rewards walkthrough</li>
-                      <li>• Portfolio transfer bonuses</li>
-                      <li>• Referral program demonstration</li>
-                      <li>• Earning up to ₹70,000 credits</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Call to action */}
-              <div className="text-center mt-6 pt-6 border-t">
-                <Button 
-                  onClick={() => {
-                    setShowVideo(false);
-                    handleStartInvesting();
-                  }}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
-                >
-                  Start Your Investment Journey
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-                <p className="text-sm text-gray-600 mt-2">
-                  Join thousands of investors already earning rewards
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Updated Demo Component */}
+      <DemoSlideshow isOpen={showDemo} onClose={() => setShowDemo(false)} />
     </section>
   );
 };
