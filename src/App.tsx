@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +18,8 @@ import ContactPage from "./pages/ContactPage";
 import AboutPage from "./pages/AboutPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
+import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
+import AdminPage from "./pages/AdminPage";
 
 const queryClient = new QueryClient();
 
@@ -27,53 +28,56 @@ const App = () => (
     <BrandingProvider>
       <AuthProvider>
         <EnhancedAuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <ProtectedRoute>
-                      <ComprehensiveDashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/agent-dashboard" 
-                  element={
-                    <ProtectedRoute requiredUserType="agent">
-                      <AgentDashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/referrals" 
-                  element={
-                    <ProtectedRoute>
-                      <ReferralPage />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/onboard" 
-                  element={
-                    <ProtectedRoute requiredUserType="agent">
-                      <OnboardingPage />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
+          <SupabaseAuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                  <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+                  <Route path="/admin" element={<AdminPage />} />
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <ProtectedRoute>
+                        <ComprehensiveDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/agent-dashboard" 
+                    element={
+                      <ProtectedRoute requiredUserType="agent">
+                        <AgentDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/referrals" 
+                    element={
+                      <ProtectedRoute>
+                        <ReferralPage />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/onboard" 
+                    element={
+                      <ProtectedRoute requiredUserType="agent">
+                        <OnboardingPage />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </SupabaseAuthProvider>
         </EnhancedAuthProvider>
       </AuthProvider>
     </BrandingProvider>
