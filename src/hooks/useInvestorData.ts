@@ -49,7 +49,7 @@ export const useFeaturedReviews = () => {
         .from('investor_reviews')
         .select(`
           *,
-          profiles!inner(full_name)
+          profiles(full_name)
         `)
         .eq('rating', 5)
         .eq('is_featured', true)
@@ -57,9 +57,17 @@ export const useFeaturedReviews = () => {
         .limit(10);
       
       if (error) throw error;
-      return (data || []).map(item => ({
+      
+      // Type guard to ensure we have valid data
+      const validData = (data || []).filter((item): item is any => {
+        return item && typeof item === 'object' && !('error' in item);
+      });
+      
+      return validData.map((item: any) => ({
         ...item,
-        profiles: item.profiles ? { full_name: item.profiles.full_name } : null
+        profiles: item.profiles && typeof item.profiles === 'object' && 'full_name' in item.profiles 
+          ? { full_name: item.profiles.full_name } 
+          : null
       })) as InvestorReview[];
     },
     refetchInterval: 60000, // Refetch every minute
@@ -74,15 +82,23 @@ export const useAllReviews = () => {
         .from('investor_reviews')
         .select(`
           *,
-          profiles!inner(full_name)
+          profiles(full_name)
         `)
         .order('created_at', { ascending: false })
         .limit(50);
       
       if (error) throw error;
-      return (data || []).map(item => ({
+      
+      // Type guard to ensure we have valid data
+      const validData = (data || []).filter((item): item is any => {
+        return item && typeof item === 'object' && !('error' in item);
+      });
+      
+      return validData.map((item: any) => ({
         ...item,
-        profiles: item.profiles ? { full_name: item.profiles.full_name } : null
+        profiles: item.profiles && typeof item.profiles === 'object' && 'full_name' in item.profiles 
+          ? { full_name: item.profiles.full_name } 
+          : null
       })) as InvestorReview[];
     },
   });
