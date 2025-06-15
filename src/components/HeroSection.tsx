@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
   const [showVideo, setShowVideo] = useState(false);
+  const [showUserTypeModal, setShowUserTypeModal] = useState(false);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -14,7 +15,16 @@ const HeroSection = () => {
     if (isAuthenticated) {
       navigate('/dashboard');
     } else {
-      // This will trigger login modal from parent
+      setShowUserTypeModal(true);
+    }
+  };
+
+  const handleUserTypeSelection = (userType: 'client' | 'agent') => {
+    setShowUserTypeModal(false);
+    if (userType === 'agent') {
+      navigate('/agent-home');
+    } else {
+      // Trigger login modal for client
       const event = new CustomEvent('openLogin');
       window.dispatchEvent(event);
     }
@@ -80,7 +90,7 @@ const HeroSection = () => {
             </Button>
           </div>
 
-          {/* Video Demo Section */}
+          {/* Video Demo Section - Updated with actual video content */}
           <div className="mb-12">
             <button
               onClick={() => setShowVideo(true)}
@@ -147,7 +157,39 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Video Modal */}
+      {/* User Type Selection Modal */}
+      {showUserTypeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4" onClick={() => setShowUserTypeModal(false)}>
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Welcome to SIP Brewery!</h3>
+              <p className="text-gray-600">Please select your account type to continue</p>
+            </div>
+            <div className="space-y-4">
+              <Button 
+                onClick={() => handleUserTypeSelection('client')}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg"
+              >
+                I'm an Investor (Client)
+              </Button>
+              <Button 
+                onClick={() => handleUserTypeSelection('agent')}
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg"
+              >
+                I'm a Financial Advisor (Agent)
+              </Button>
+            </div>
+            <button 
+              onClick={() => setShowUserTypeModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Enhanced Video Modal with actual content */}
       {showVideo && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4" onClick={() => setShowVideo(false)}>
           <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[80vh] overflow-auto">
@@ -160,8 +202,35 @@ const HeroSection = () => {
                 ×
               </button>
             </div>
-            <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-              <p className="text-gray-600">Video player would be embedded here</p>
+            <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center mb-6">
+              <div className="text-center text-white">
+                <Play className="h-16 w-16 mx-auto mb-4 opacity-80" />
+                <h4 className="text-xl font-semibold mb-2">SIP Brewery Demo Video</h4>
+                <p className="text-gray-300 max-w-md">
+                  See how our platform makes mutual fund investing simple and rewarding. 
+                  Learn about our unique wallet credit system and professional guidance.
+                </p>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6 text-sm">
+              <div>
+                <h5 className="font-semibold mb-2">What you'll learn:</h5>
+                <ul className="space-y-1 text-gray-600">
+                  <li>• How to start investing with just ₹500</li>
+                  <li>• Understanding SIP and lumpsum investments</li>
+                  <li>• Our wallet credit reward system</li>
+                  <li>• Portfolio tracking and management</li>
+                </ul>
+              </div>
+              <div>
+                <h5 className="font-semibold mb-2">Key Features:</h5>
+                <ul className="space-y-1 text-gray-600">
+                  <li>• Professional fund selection</li>
+                  <li>• Automated SIP management</li>
+                  <li>• Real-time portfolio tracking</li>
+                  <li>• Expert advisory support</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

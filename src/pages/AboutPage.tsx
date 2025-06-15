@@ -48,7 +48,7 @@ const AboutPage = () => {
                 Founded with a mission to make mutual fund investing accessible to every Indian, Equisculpt Ventures has been helping individuals and families achieve their financial goals through systematic investment planning.
               </p>
               <p className="text-gray-600 mb-4">
-                We understand that investing can be overwhelming, which is why we've simplified the process and made it more rewarding with our unique gift card program.
+                We understand that investing can be overwhelming, which is why we've simplified the process and made it more rewarding with our unique wallet credit program.
               </p>
               <p className="text-gray-600">
                 Our team of financial experts carefully curates investment options and provides personalized guidance to help you make informed decisions.
@@ -57,7 +57,7 @@ const AboutPage = () => {
             <div className="bg-gradient-to-br from-amber-50 to-orange-100 p-8 rounded-2xl">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">🎁 Our Unique Promise</h3>
               <p className="text-gray-700 text-lg">
-                We reward your investment journey with <strong>0.2% of your equity mutual fund investments</strong> as gift cards every year - our way of saying thank you for trusting us with your financial future.
+                We reward your investment discipline with <strong>up to ₹70,000 wallet credits</strong> through our SIP streak rewards and portfolio transfer bonuses - our way of saying thank you for trusting us with your financial future.
               </p>
             </div>
           </div>
@@ -94,8 +94,8 @@ const AboutPage = () => {
               <p className="opacity-90">Professional advice from certified financial experts</p>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-2">Reward Program</h3>
-              <p className="opacity-90">Earn 0.2% gift cards on your equity investments annually</p>
+              <h3 className="text-xl font-semibold mb-2">Wallet Credit Rewards</h3>
+              <p className="opacity-90">Earn up to ₹70,000 wallet credits for investment discipline</p>
             </div>
             <div>
               <h3 className="text-xl font-semibold mb-2">Regular Funds</h3>

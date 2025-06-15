@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +19,7 @@ import ContactPage from "./pages/ContactPage";
 import AboutPage from "./pages/AboutPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
+import AgentHomePage from "./pages/AgentHomePage";
 import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
 import AdminPage from "./pages/AdminPage";
 
@@ -39,6 +41,7 @@ const App = () => (
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                   <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+                  <Route path="/agent-home" element={<AgentHomePage />} />
                   <Route path="/admin" element={<AdminPage />} />
                   <Route 
                     path="/dashboard" 
