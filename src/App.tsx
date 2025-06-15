@@ -20,6 +20,7 @@ import AboutPage from "./pages/AboutPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import AgentHomePage from "./pages/AgentHomePage";
+import AIPortfolioDashboard from "./pages/AIPortfolioDashboard";
 import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
 import AdminPage from "./pages/AdminPage";
 
@@ -48,6 +49,14 @@ const App = () => (
                     element={
                       <ProtectedRoute>
                         <ComprehensiveDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/ai-portfolio" 
+                    element={
+                      <ProtectedRoute>
+                        <AIPortfolioDashboard />
                       </ProtectedRoute>
                     } 
                   />

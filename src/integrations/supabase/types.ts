@@ -44,6 +44,59 @@ export type Database = {
           },
         ]
       }
+      ai_portfolio_insights: {
+        Row: {
+          action_required: boolean | null
+          created_at: string | null
+          data_points: Json | null
+          expires_at: string | null
+          id: string
+          insight_type: string
+          is_read: boolean | null
+          is_sent: boolean | null
+          message: string
+          priority: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          action_required?: boolean | null
+          created_at?: string | null
+          data_points?: Json | null
+          expires_at?: string | null
+          id?: string
+          insight_type: string
+          is_read?: boolean | null
+          is_sent?: boolean | null
+          message: string
+          priority?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          action_required?: boolean | null
+          created_at?: string | null
+          data_points?: Json | null
+          expires_at?: string | null
+          id?: string
+          insight_type?: string
+          is_read?: boolean | null
+          is_sent?: boolean | null
+          message?: string
+          priority?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_portfolio_insights_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       commissions: {
         Row: {
           agent_id: string | null
@@ -316,6 +369,112 @@ export type Database = {
         }
         Relationships: []
       }
+      peer_comparisons: {
+        Row: {
+          analysis_date: string
+          bottom_10_percent_returns: number
+          comparison_period: string
+          created_at: string | null
+          id: string
+          peer_average_returns: number
+          risk_category: string
+          top_10_percent_returns: number
+          total_peers: number
+          user_id: string | null
+          user_rank: number
+          user_returns: number
+        }
+        Insert: {
+          analysis_date?: string
+          bottom_10_percent_returns: number
+          comparison_period: string
+          created_at?: string | null
+          id?: string
+          peer_average_returns: number
+          risk_category: string
+          top_10_percent_returns: number
+          total_peers: number
+          user_id?: string | null
+          user_rank: number
+          user_returns: number
+        }
+        Update: {
+          analysis_date?: string
+          bottom_10_percent_returns?: number
+          comparison_period?: string
+          created_at?: string | null
+          id?: string
+          peer_average_returns?: number
+          risk_category?: string
+          top_10_percent_returns?: number
+          total_peers?: number
+          user_id?: string | null
+          user_rank?: number
+          user_returns?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "peer_comparisons_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolio_analytics: {
+        Row: {
+          analysis_date: string
+          benchmark_comparison: number
+          created_at: string | null
+          id: string
+          peer_percentile: number
+          portfolio_value: number
+          return_percentage: number
+          risk_score: number
+          sharpe_ratio: number
+          total_returns: number
+          user_id: string | null
+          volatility: number
+        }
+        Insert: {
+          analysis_date?: string
+          benchmark_comparison: number
+          created_at?: string | null
+          id?: string
+          peer_percentile: number
+          portfolio_value: number
+          return_percentage: number
+          risk_score: number
+          sharpe_ratio: number
+          total_returns: number
+          user_id?: string | null
+          volatility: number
+        }
+        Update: {
+          analysis_date?: string
+          benchmark_comparison?: number
+          created_at?: string | null
+          id?: string
+          peer_percentile?: number
+          portfolio_value?: number
+          return_percentage?: number
+          risk_score?: number
+          sharpe_ratio?: number
+          total_returns?: number
+          user_id?: string | null
+          volatility?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_analytics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           agent_id: string | null
@@ -448,6 +607,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_portfolio_analytics: {
+        Args: { target_user_id: string }
+        Returns: undefined
+      }
+      generate_ai_insights: {
+        Args: { target_user_id: string }
+        Returns: undefined
+      }
       generate_referral_code: {
         Args: Record<PropertyKey, never>
         Returns: string
