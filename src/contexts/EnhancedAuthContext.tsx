@@ -16,6 +16,7 @@ interface User {
   licenseNumber?: string;
   isOnboardingComplete?: boolean;
   kycStatus?: 'pending' | 'processing' | 'verified' | 'failed';
+  riskProfile?: 'Conservative' | 'Moderate' | 'Aggressive';
   whitelabelConfig?: {
     domain: string;
     companyName: string;

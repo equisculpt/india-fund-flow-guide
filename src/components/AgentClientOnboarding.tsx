@@ -16,7 +16,8 @@ import {
   Clock,
   Copy,
   Send,
-  ClipboardList
+  ClipboardList,
+  AlertTriangle
 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useToast } from "@/hooks/use-toast";
@@ -42,11 +43,11 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
   const [isVerifying, setIsVerifying] = useState(false);
   const [kycStatus, setKycStatus] = useState<"pending" | "processing" | "verified" | "failed">("pending");
   const [riskProfile, setRiskProfile] = useState<RiskProfile | null>(null);
-  const [autoKycEnabled, setAutoKycEnabled] = useState(true); // Enable automatic KYC
+  const [autoKycEnabled, setAutoKycEnabled] = useState(false); // Disabled by default for production
   const { toast } = useToast();
   const { completeOnboarding } = useEnhancedAuth();
 
-  // Form states - pre-populate if social login user
+  // Form states - pre-populate if social login user but allow editing
   const [clientData, setClientData] = useState({
     fullName: socialLoginUser?.name || "",
     email: socialLoginUser?.email || "",
@@ -117,25 +118,25 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
   const handleKYCSubmit = async () => {
     setKycStatus("processing");
     
-    // Simulate KYC processing with automatic verification
-    const kycDelay = autoKycEnabled ? 2000 : 5000; // Faster if auto-KYC enabled
+    // Simulate KYC processing
+    const kycDelay = autoKycEnabled ? 2000 : 5000;
     
     setTimeout(() => {
       if (autoKycEnabled) {
-        // Automatic KYC verification
+        // Automatic KYC verification (DEMO ONLY)
         setKycStatus("verified");
         setStep(4);
         toast({
-          title: "KYC Auto-Verified",
-          description: "Your KYC has been automatically verified using our AI system!",
+          title: "KYC Demo-Verified",
+          description: "This is a demo verification. Real KYC requires actual document verification.",
         });
       } else {
-        // Manual verification (still instant for demo)
+        // Manual verification simulation
         setKycStatus("verified");
         setStep(4);
         toast({
-          title: "KYC Verified",
-          description: "Your KYC has been verified successfully",
+          title: "KYC Submitted",
+          description: "Your documents have been submitted for manual verification.",
         });
       }
     }, kycDelay);
@@ -188,8 +189,8 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
   const renderKYCStatus = () => {
     const statusConfig = {
       pending: { color: "bg-gray-100 text-gray-800", icon: Clock, text: "Pending" },
-      processing: { color: "bg-blue-100 text-blue-800", icon: Clock, text: autoKycEnabled ? "Auto-Verifying..." : "Processing" },
-      verified: { color: "bg-green-100 text-green-800", icon: CheckCircle, text: autoKycEnabled ? "Auto-Verified" : "Verified" },
+      processing: { color: "bg-blue-100 text-blue-800", icon: Clock, text: autoKycEnabled ? "Demo Processing..." : "Processing" },
+      verified: { color: "bg-green-100 text-green-800", icon: CheckCircle, text: autoKycEnabled ? "Demo Verified" : "Verified" },
       failed: { color: "bg-red-100 text-red-800", icon: Shield, text: "Failed" }
     };
 
@@ -212,22 +213,31 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
         </h1>
         <p className="text-gray-600">
           {socialLoginUser 
-            ? "Complete your onboarding with instant KYC verification and risk profiling"
-            : "Quick and secure client onboarding with instant KYC verification and risk profiling"
+            ? "Complete your onboarding with proper KYC verification and risk profiling"
+            : "Secure client onboarding with regulatory compliant KYC verification"
           }
         </p>
         
-        {autoKycEnabled && (
-          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <span className="text-sm text-green-800 font-medium">Automatic KYC Verification Enabled</span>
+        {/* KYC Information Panel */}
+        <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-amber-800 mb-2">KYC Verification Process</h3>
+              <div className="text-sm text-amber-700 space-y-1">
+                <p><strong>Current Status:</strong> Demo Mode - For production, integrate with:</p>
+                <ul className="list-disc list-inside ml-4 space-y-1">
+                  <li>Aadhaar verification APIs (UIDAI)</li>
+                  <li>PAN verification services</li>
+                  <li>Bank account verification</li>
+                  <li>Document upload and OCR systems</li>
+                  <li>Video KYC compliance</li>
+                </ul>
+                <p className="mt-2"><strong>Note:</strong> This demo uses simulated verification for testing purposes only.</p>
+              </div>
             </div>
-            <p className="text-xs text-green-700 mt-1">
-              Your documents will be verified instantly using our AI-powered KYC system
-            </p>
           </div>
-        )}
+        </div>
       </div>
 
       {isAgent && (
@@ -328,7 +338,6 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
                     value={clientData.fullName}
                     onChange={(e) => setClientData({...clientData, fullName: e.target.value})}
                     placeholder="Enter your full name"
-                    disabled={!!socialLoginUser?.name}
                   />
                 </div>
                 <div>
@@ -339,7 +348,6 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
                     value={clientData.email}
                     onChange={(e) => setClientData({...clientData, email: e.target.value})}
                     placeholder="Enter your email"
-                    disabled={!!socialLoginUser?.email}
                   />
                 </div>
                 <div>
