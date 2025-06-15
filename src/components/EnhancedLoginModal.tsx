@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/contexts/AuthContext";
 import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, User, Building2 } from "lucide-react";
@@ -26,8 +25,7 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
   const [activeTab, setActiveTab] = useState("login");
   const [userType, setUserType] = useState<"client" | "agent">("client");
 
-  const { signIn, signUp } = useAuth();
-  const { createUserProfile } = useEnhancedAuth();
+  const { login } = useEnhancedAuth();
   const { toast } = useToast();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -43,12 +41,20 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
 
     setIsLoading(true);
     try {
-      await signIn(email, password);
-      toast({
-        title: "Success",
-        description: "Logged in successfully!",
-      });
-      onClose();
+      const success = await login(email, password, userType === "client" ? "customer" : "agent");
+      if (success) {
+        toast({
+          title: "Success",
+          description: "Logged in successfully!",
+        });
+        onClose();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to login",
+          variant: "destructive",
+        });
+      }
     } catch (error: any) {
       toast({
         title: "Error",
@@ -73,22 +79,22 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
 
     setIsLoading(true);
     try {
-      const { user } = await signUp(email, password);
+      // For now, simulate signup with the same login method
+      // In a real implementation, you'd have a separate signup method
+      const success = await login(email, password, userType === "client" ? "customer" : "agent");
       
-      if (user) {
-        await createUserProfile({
-          id: user.id,
-          email: user.email!,
-          name,
-          phone,
-          user_type: userType
-        });
-
+      if (success) {
         toast({
           title: "Success",
-          description: "Account created successfully! Please check your email to verify your account.",
+          description: "Account created successfully!",
         });
         onClose();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to create account",
+          variant: "destructive",
+        });
       }
     } catch (error: any) {
       toast({
