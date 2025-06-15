@@ -62,9 +62,9 @@ const CommissionManagementTab = () => {
         agent_name: commission.agent?.full_name || 'Unknown Agent',
         agent_phone: commission.agent?.phone,
         fund_name: commission.fund?.scheme_name || 'Unknown Fund',
-        // Use new commission structure data
-        commission_tier: commission.commission_tier || 'STANDARD',
-        actual_commission_rate: commission.actual_commission_rate || commission.agent_share_percentage || 80.00,
+        // Use fallback values for new commission structure fields until migration is run
+        commission_tier: (commission as any).commission_tier || 'STANDARD',
+        actual_commission_rate: (commission as any).actual_commission_rate || commission.agent_share_percentage || 80.00,
       })) || [];
 
       setCommissions(formattedCommissions);
@@ -226,6 +226,36 @@ const CommissionManagementTab = () => {
       </CardContent>
     </Card>
   );
+
+  async function updateCommissionStatus(commissionId: string, status: 'paid' | 'cancelled') {
+    try {
+      const updateData: any = { status };
+      if (status === 'paid') {
+        updateData.payment_date = new Date().toISOString().split('T')[0];
+      }
+
+      const { error } = await supabase
+        .from('commissions')
+        .update(updateData)
+        .eq('id', commissionId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Commission marked as ${status}`,
+      });
+
+      fetchCommissions();
+    } catch (error) {
+      console.error('Error updating commission status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update commission status",
+        variant: "destructive",
+      });
+    }
+  }
 };
 
 export default CommissionManagementTab;
