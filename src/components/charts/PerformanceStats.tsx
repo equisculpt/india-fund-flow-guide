@@ -18,6 +18,7 @@ interface PerformanceStatsProps {
   period: string;
   primaryFundNav: number;
   getDaysForPeriod: (period: string) => number;
+  irr: number;
 }
 
 const PerformanceStats = ({ 
@@ -25,7 +26,8 @@ const PerformanceStats = ({
   sipAmount, 
   period, 
   primaryFundNav,
-  getDaysForPeriod 
+  getDaysForPeriod,
+  irr 
 }: PerformanceStatsProps) => {
   const calculatePerformance = (data: ChartDataPoint[]) => {
     if (data.length < 2) return { return: 0, volatility: 0, sipReturn: 0, totalInvested: 0, sipValue: 0 };
@@ -56,7 +58,7 @@ const PerformanceStats = ({
   const performance = calculatePerformance(chartData);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
       <div className="text-center p-3 bg-blue-50 rounded-lg">
         <div className="text-sm text-muted-foreground">Current NAV</div>
         <div className="text-xl font-bold text-blue-600">₹{primaryFundNav.toFixed(4)}</div>
@@ -76,6 +78,12 @@ const PerformanceStats = ({
       <div className="text-center p-3 bg-orange-50 rounded-lg">
         <div className="text-sm text-muted-foreground">SIP Value</div>
         <div className="text-xl font-bold text-orange-600">₹{performance.sipValue?.toLocaleString() || '0'}</div>
+      </div>
+      <div className="text-center p-3 bg-indigo-50 rounded-lg">
+        <div className="text-sm text-muted-foreground">IRR</div>
+        <div className={`text-xl font-bold ${irr >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {irr.toFixed(2)}%
+        </div>
       </div>
     </div>
   );

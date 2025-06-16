@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calculator, TrendingUp, BarChart3 } from 'lucide-react';
+import { Calculator } from 'lucide-react';
 
 interface ChartControlsProps {
   period: '1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y';
@@ -17,8 +17,6 @@ interface ChartControlsProps {
 const ChartControls = ({
   period,
   setPeriod,
-  showSIPChart,
-  setShowSIPChart,
   sipAmount,
   setSipAmount
 }: ChartControlsProps) => {
@@ -40,25 +38,6 @@ const ChartControls = ({
       </div>
       
       <div className="flex gap-2">
-        <Button
-          variant={showSIPChart ? "default" : "outline"}
-          size="sm"
-          onClick={() => setShowSIPChart(!showSIPChart)}
-          className="flex items-center gap-2"
-        >
-          {showSIPChart ? (
-            <>
-              <TrendingUp className="h-4 w-4" />
-              % Returns
-            </>
-          ) : (
-            <>
-              <Calculator className="h-4 w-4" />
-              SIP Portfolio
-            </>
-          )}
-        </Button>
-        
         <Select value={period} onValueChange={(value: any) => setPeriod(value)}>
           <SelectTrigger className="w-20">
             <SelectValue />

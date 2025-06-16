@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -121,7 +120,21 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
     return { return: returnPct, volatility, sipReturn, totalInvested, sipValue: lastPoint.fundSIPValue };
   };
 
+  const calculateIRR = (data: ChartDataPoint[]) => {
+    if (data.length < 2) return 0;
+    
+    // Simple IRR approximation using compound annual growth rate (CAGR)
+    const lastPoint = data[data.length - 1];
+    const firstPoint = data[0];
+    const years = ChartDataService.getDaysForPeriod(period) / 365;
+    
+    if (firstPoint.fundSIPValue === 0 || years === 0) return 0;
+    
+    return (Math.pow(lastPoint.fundSIPValue / firstPoint.fundSIPValue, 1 / years) - 1) * 100;
+  };
+
   const performance = calculatePerformance(chartData);
+  const irr = calculateIRR(chartData);
 
   if (loading) {
     return (
@@ -161,6 +174,9 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
                   {performance.return >= 0 ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
                   {performance.return.toFixed(2)}% ({period})
                 </Badge>
+                <Badge variant="outline">
+                  IRR: {irr.toFixed(2)}%
+                </Badge>
               </div>
             </div>
             
@@ -183,20 +199,24 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
             primaryFundCategory={primaryFund.category}
           />
 
-          <div className="mt-4">
-            {showSIPChart ? (
-              <SIPPortfolioChart
-                chartData={chartData}
-                fundComparisons={fundComparisons}
-                sipAmount={sipAmount}
-              />
-            ) : (
+          {/* Both Charts Side by Side */}
+          <div className="grid md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Percentage Returns</h3>
               <PerformanceChart
                 chartData={chartData}
                 fundComparisons={fundComparisons}
                 showSIPChart={false}
               />
-            )}
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-2">SIP Portfolio Value</h3>
+              <SIPPortfolioChart
+                chartData={chartData}
+                fundComparisons={fundComparisons}
+                sipAmount={sipAmount}
+              />
+            </div>
           </div>
 
           <div className="mt-4">
@@ -206,6 +226,7 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
               period={period}
               primaryFundNav={primaryFund.nav}
               getDaysForPeriod={ChartDataService.getDaysForPeriod}
+              irr={irr}
             />
           </div>
         </CardContent>
