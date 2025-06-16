@@ -64,11 +64,7 @@ export class FirecrawlService {
       const crawlResponse = await this.firecrawlApp.crawlUrl(searchUrl, {
         limit: 5,
         scrapeOptions: {
-          formats: ['markdown', 'html'],
-          extractorOptions: {
-            mode: 'llm-extraction',
-            extractionPrompt: 'Extract mutual fund portfolio data including fund name, NAV, holdings, sector allocation, AUM, and performance metrics. Focus on portfolio holdings with stock names, percentages, and values.'
-          }
+          formats: ['markdown', 'html']
         }
       }) as CrawlResponse;
 
