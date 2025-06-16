@@ -108,6 +108,32 @@ Deno.serve(async (req) => {
           const latestNav = parseFloat(navData.data[0].nav);
           const navDate = navData.data[0].date;
 
+          // Store NAV in nav_update_history
+          try {
+            await supabase.rpc('execute_sql', {
+              sql: `
+                INSERT INTO nav_update_history (scheme_code, nav_date, nav_value, update_source)
+                VALUES ($1, $2, $3, $4)
+                ON CONFLICT (scheme_code, nav_date) 
+                DO UPDATE SET nav_value = EXCLUDED.nav_value
+              `,
+              params: [scheme.schemeCode.toString(), navDate, latestNav, 'api_auto']
+            });
+
+            // Also update extended_nav_history for consistency
+            await supabase.rpc('execute_sql', {
+              sql: `
+                INSERT INTO extended_nav_history (scheme_code, nav_date, nav_value)
+                VALUES ($1, $2, $3)
+                ON CONFLICT (scheme_code, nav_date) 
+                DO UPDATE SET nav_value = EXCLUDED.nav_value
+              `,
+              params: [scheme.schemeCode.toString(), navDate, latestNav]
+            });
+          } catch (dbError) {
+            console.error(`Error storing NAV for scheme ${scheme.schemeCode}:`, dbError);
+          }
+
           // For daily updates, we only need basic NAV info and simple metrics
           const analysis = calculateSimpleMetrics(scheme, latestNav);
 
