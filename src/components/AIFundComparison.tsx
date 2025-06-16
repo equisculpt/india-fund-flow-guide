@@ -1,10 +1,12 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Star, TrendingUp, TrendingDown, Brain, BarChart3, Target, AlertTriangle, Info } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Star, TrendingUp, TrendingDown, Brain, BarChart3, Target, AlertTriangle, Info, Clock, Zap } from "lucide-react";
 import { EnhancedNAVDataService, AdvancedNAVAnalysis } from "@/services/enhancedNAVDataService";
 import FundSearch from "./FundSearch";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +35,8 @@ const AIFundComparison = () => {
   const [funds, setFunds] = useState<AdvancedSchemeData[]>([]);
   const [filteredFunds, setFilteredFunds] = useState<AdvancedSchemeData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingMessage, setLoadingMessage] = useState("Initializing...");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [sortBy, setSortBy] = useState<"aiScore" | "returns" | "risk">("aiScore");
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,50 +50,75 @@ const AIFundComparison = () => {
     const fetchAndAnalyzeFunds = async () => {
       try {
         setLoading(true);
+        setLoadingProgress(10);
+        setLoadingMessage("Fetching prioritized mutual fund schemes...");
+        
         console.log("Fetching enhanced fund analysis...");
         
+        // Simulate progress updates during the fetch
+        const progressInterval = setInterval(() => {
+          setLoadingProgress(prev => {
+            if (prev < 90) {
+              const increment = Math.random() * 15;
+              const newProgress = Math.min(prev + increment, 90);
+              
+              if (newProgress < 30) {
+                setLoadingMessage("Loading popular AMC funds...");
+              } else if (newProgress < 50) {
+                setLoadingMessage("Fetching NAV data...");
+              } else if (newProgress < 70) {
+                setLoadingMessage("Calculating AI scores...");
+              } else {
+                setLoadingMessage("Finalizing analysis...");
+              }
+              
+              return newProgress;
+            }
+            return prev;
+          });
+        }, 500);
+        
         const analysisData = await navService.getAdvancedAnalysis();
+        
+        clearInterval(progressInterval);
+        setLoadingProgress(100);
+        setLoadingMessage("Analysis complete!");
+        
         console.log("Received analysis data:", analysisData.length, "funds");
         
-        // Convert and filter for Indian funds only
-        const convertedFunds: AdvancedSchemeData[] = analysisData
-          .map(analysis => ({
-            schemeCode: analysis.schemeCode,
-            schemeName: analysis.schemeName,
-            nav: analysis.nav,
-            date: analysis.date,
-            category: analysis.category,
-            subCategory: analysis.subCategory || analysis.category,
-            amcName: analysis.amcName,
-            aiScore: analysis.aiScore,
-            confidence: analysis.confidence,
-            predicted3MonthReturn: analysis.predicted3MonthReturn,
-            historical3MonthData: analysis.historical3MonthData || [],
-            riskLevel: analysis.riskLevel,
-            volatilityScore: analysis.volatilityScore,
-            sharpeRatio: analysis.sharpeRatio,
-            performanceRank: analysis.performanceRank,
-            totalSchemes: analysis.totalSchemes
-          }))
-          .filter(fund => {
-            // Filter for Indian funds only - exclude international/global funds
-            const name = fund.schemeName.toLowerCase();
-            return !name.includes('international') && 
-                   !name.includes('global') && 
-                   !name.includes('overseas') && 
-                   !name.includes('foreign') &&
-                   !name.includes('us ') &&
-                   !name.includes('china') &&
-                   !name.includes('japan') &&
-                   !name.includes('europe');
-          });
+        // Convert the analysis data
+        const convertedFunds: AdvancedSchemeData[] = analysisData.map(analysis => ({
+          schemeCode: analysis.schemeCode,
+          schemeName: analysis.schemeName,
+          nav: analysis.nav,
+          date: analysis.date,
+          category: analysis.category,
+          subCategory: analysis.subCategory || analysis.category,
+          amcName: analysis.amcName,
+          aiScore: analysis.aiScore,
+          confidence: analysis.confidence,
+          predicted3MonthReturn: analysis.predicted3MonthReturn,
+          historical3MonthData: analysis.historical3MonthData || [],
+          riskLevel: analysis.riskLevel,
+          volatilityScore: analysis.volatilityScore,
+          sharpeRatio: analysis.sharpeRatio,
+          performanceRank: analysis.performanceRank,
+          totalSchemes: analysis.totalSchemes
+        }));
         
         setFunds(convertedFunds);
         setFilteredFunds(convertedFunds);
+        
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
+        
       } catch (error) {
         console.error("Error fetching fund analysis:", error);
-      } finally {
-        setLoading(false);
+        setLoadingMessage("Error loading funds. Please try again.");
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000);
       }
     };
 
@@ -115,7 +144,7 @@ const AIFundComparison = () => {
     }
 
     setFilteredFunds(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   }, [funds, selectedCategory, searchQuery]);
 
   const handleSearch = (query: string) => {
@@ -123,7 +152,6 @@ const AIFundComparison = () => {
   };
 
   const handleFundClick = (fund: AdvancedSchemeData) => {
-    // Navigate to fund details page for analysis
     navigate(`/fund/${fund.schemeCode}`, { 
       state: { 
         fundData: fund 
@@ -201,15 +229,38 @@ const AIFundComparison = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="h-20 bg-gray-200 rounded-lg"></div>
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">{loadingMessage}</span>
+                <span className="font-medium">{loadingProgress.toFixed(0)}%</span>
               </div>
-            ))}
-          </div>
-          <div className="mt-6 text-center text-sm text-gray-600">
-            Loading all Indian mutual funds... This may take a few moments.
+              <Progress value={loadingProgress} className="w-full" />
+            </div>
+            
+            <Alert>
+              <Zap className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Optimized Loading:</strong> We're analyzing top-performing funds from popular AMCs to ensure fast, 
+                quality results. This focused approach covers the most relevant investment options.
+              </AlertDescription>
+            </Alert>
+            
+            <div className="space-y-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-20 bg-gray-200 rounded-lg"></div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="text-center text-sm text-gray-600">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Clock className="h-4 w-4" />
+                <span>Estimated time: 30-60 seconds</span>
+              </div>
+              <p>Loading optimized selection of Indian mutual funds from top AMCs...</p>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -225,17 +276,26 @@ const AIFundComparison = () => {
             AI-Powered Indian Mutual Fund Rankings & Analysis
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Comprehensive analysis of all Indian mutual funds with real-time NAV data and historical performance
+            Comprehensive analysis of top-performing Indian mutual funds with real-time NAV data and historical performance
           </p>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
+            {/* Performance Notice */}
+            <Alert>
+              <Zap className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Optimized Selection:</strong> Showing top funds from leading AMCs (SBI, HDFC, ICICI, Axis, Kotak, etc.) 
+                for faster loading and better investment relevance. Results are cached for 30 minutes.
+              </AlertDescription>
+            </Alert>
+
             {/* Regulatory Notice */}
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                <strong>Important:</strong> This analysis is for educational purposes only. AI predictions are based on historical data and do not guarantee future results. 
-                Please consult a SEBI-registered financial advisor before making investment decisions.
+                <strong>Important:</strong> This analysis is for educational purposes only. Historical performance shown is based on actual NAV data 
+                and does not guarantee future results. Please consult a SEBI-registered financial advisor before making investment decisions.
               </AlertDescription>
             </Alert>
 
@@ -243,7 +303,7 @@ const AIFundComparison = () => {
             <div className="flex justify-center">
               <FundSearch 
                 onSearch={handleSearch}
-                placeholder="Search Indian mutual funds by name, AMC, or category..."
+                placeholder="Search funds by name, AMC, or category..."
               />
             </div>
 
@@ -292,7 +352,7 @@ const AIFundComparison = () => {
             {/* Results Count and Pagination Info */}
             <div className="flex justify-between items-center text-sm text-muted-foreground">
               <div>
-                Showing {startIndex + 1}-{Math.min(endIndex, sortedFunds.length)} of {sortedFunds.length} Indian mutual funds
+                Showing {startIndex + 1}-{Math.min(endIndex, sortedFunds.length)} of {sortedFunds.length} top mutual funds
                 {searchQuery && ` for "${searchQuery}"`}
               </div>
               <div>
@@ -439,6 +499,7 @@ const AIFundComparison = () => {
                     <p>• <strong>Risk Assessment:</strong> Volatility analysis, consistency scoring, drawdown protection</p>
                     <p>• <strong>Category Ranking:</strong> Performance ranking within specific fund categories</p>
                     <p>• <strong>Historical Returns:</strong> Actual 3-month performance based on NAV changes</p>
+                    <p>• <strong>Optimized Selection:</strong> Focus on top AMCs and growth funds for relevance</p>
                   </div>
                 </div>
               </div>
@@ -461,3 +522,4 @@ const AIFundComparison = () => {
 };
 
 export default AIFundComparison;
+

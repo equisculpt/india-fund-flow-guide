@@ -1,4 +1,5 @@
 
+
 interface MarketData {
   symbol: string;
   price: number;
@@ -38,10 +39,26 @@ export class EnhancedNAVDataService {
   
   // Cache for performance
   private static benchmarkCache = new Map();
-  private static cacheExpiry = 5 * 60 * 1000; // 5 minutes
+  private static schemeCache = new Map();
+  private static cacheExpiry = 30 * 60 * 1000; // 30 minutes
+  private static lastCacheTime = 0;
+
+  // Limit the number of schemes to process for better performance
+  private static readonly MAX_SCHEMES_TO_PROCESS = 500;
+  private static readonly POPULAR_AMCS = [
+    'SBI', 'HDFC', 'ICICI', 'Axis', 'Kotak', 'Aditya', 'UTI', 
+    'Nippon', 'Franklin', 'DSP', 'Mirae', 'Invesco'
+  ];
 
   // Enhanced method to get individual scheme NAV data using latest endpoint
   private static async getSchemeNAVData(schemeCode: string): Promise<any> {
+    const cacheKey = `nav_${schemeCode}`;
+    const cached = this.schemeCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheExpiry) {
+      return cached.data;
+    }
+
     try {
       console.log(`Fetching NAV for scheme ${schemeCode}...`);
       const response = await fetch(`${this.AMFI_API_BASE}/mf/${schemeCode}/latest`);
@@ -55,10 +72,18 @@ export class EnhancedNAVDataService {
         const historyData = await historyResponse.json();
         if (historyData && historyData.data && historyData.data.length > 0) {
           const latestRecord = historyData.data[0];
-          return {
+          const result = {
             nav: parseFloat(latestRecord.nav),
             date: latestRecord.date
           };
+          
+          // Cache the result
+          this.schemeCache.set(cacheKey, {
+            data: result,
+            timestamp: Date.now()
+          });
+          
+          return result;
         }
         return null;
       }
@@ -68,10 +93,18 @@ export class EnhancedNAVDataService {
       
       if (data && data.data && data.data.length > 0) {
         const latestRecord = data.data[0];
-        return {
+        const result = {
           nav: parseFloat(latestRecord.nav),
           date: latestRecord.date
         };
+        
+        // Cache the result
+        this.schemeCache.set(cacheKey, {
+          data: result,
+          timestamp: Date.now()
+        });
+        
+        return result;
       }
       return null;
     } catch (error) {
@@ -82,6 +115,13 @@ export class EnhancedNAVDataService {
 
   // Get historical data for 3 months
   private static async getHistoricalNAVData(schemeCode: string): Promise<Array<{date: string, nav: number}>> {
+    const cacheKey = `hist_${schemeCode}`;
+    const cached = this.schemeCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheExpiry) {
+      return cached.data;
+    }
+
     try {
       const response = await fetch(`${this.AMFI_API_BASE}/mf/${schemeCode}`);
       if (!response.ok) return [];
@@ -89,10 +129,18 @@ export class EnhancedNAVDataService {
       const data = await response.json();
       if (data && data.data && data.data.length > 0) {
         // Get last 3 months of data (approximately 90 entries)
-        return data.data.slice(0, 90).map((record: any) => ({
+        const result = data.data.slice(0, 90).map((record: any) => ({
           date: record.date,
           nav: parseFloat(record.nav)
         }));
+        
+        // Cache the result
+        this.schemeCache.set(cacheKey, {
+          data: result,
+          timestamp: Date.now()
+        });
+        
+        return result;
       }
       return [];
     } catch (error) {
@@ -101,39 +149,81 @@ export class EnhancedNAVDataService {
     }
   }
 
-  // Add the missing getAdvancedAnalysis method
+  // Optimized method to filter and prioritize schemes
+  private static prioritizeSchemes(schemes: any[]): any[] {
+    // Filter for Indian funds and popular AMCs
+    const indianSchemes = schemes.filter((scheme: any) => {
+      const name = scheme.schemeName.toLowerCase();
+      return !name.includes('international') && 
+             !name.includes('global') && 
+             !name.includes('overseas') && 
+             !name.includes('foreign') &&
+             !name.includes('us ') &&
+             !name.includes('china') &&
+             !name.includes('japan') &&
+             !name.includes('europe') &&
+             !name.includes('usd') &&
+             !name.includes('world');
+    });
+
+    // Prioritize popular AMCs and growth funds
+    const prioritizedSchemes = indianSchemes.sort((a: any, b: any) => {
+      const aName = a.schemeName;
+      const bName = b.schemeName;
+      
+      // Check if scheme is from popular AMC
+      const aPopular = this.POPULAR_AMCS.some(amc => aName.startsWith(amc));
+      const bPopular = this.POPULAR_AMCS.some(amc => bName.startsWith(amc));
+      
+      if (aPopular && !bPopular) return -1;
+      if (!aPopular && bPopular) return 1;
+      
+      // Prefer growth funds
+      const aGrowth = aName.toLowerCase().includes('growth');
+      const bGrowth = bName.toLowerCase().includes('growth');
+      
+      if (aGrowth && !bGrowth) return -1;
+      if (!aGrowth && bGrowth) return 1;
+      
+      return 0;
+    });
+
+    // Return limited number of schemes for better performance
+    return prioritizedSchemes.slice(0, this.MAX_SCHEMES_TO_PROCESS);
+  }
+
+  // Add the missing getAdvancedAnalysis method with performance optimizations
   async getAdvancedAnalysis(): Promise<AdvancedNAVAnalysis[]> {
     try {
       console.log("Fetching schemes for advanced analysis...");
       
+      // Check cache first
+      const cacheKey = 'advanced_analysis';
+      const now = Date.now();
+      
+      if (this.lastCacheTime && (now - this.lastCacheTime) < EnhancedNAVDataService.cacheExpiry) {
+        const cached = EnhancedNAVDataService.schemeCache.get(cacheKey);
+        if (cached) {
+          console.log("Returning cached analysis data");
+          return cached;
+        }
+      }
+      
       // Fetch all schemes first
       const response = await fetch(`${EnhancedNAVDataService.AMFI_API_BASE}/mf`);
-      const schemes = await response.json();
+      const allSchemes = await response.json();
       
-      console.log(`Fetched ${schemes.length} total schemes`);
+      console.log(`Fetched ${allSchemes.length} total schemes`);
       
-      // Filter for Indian funds only (remove international funds)
-      const indianSchemes = schemes.filter((scheme: any) => {
-        const name = scheme.schemeName.toLowerCase();
-        return !name.includes('international') && 
-               !name.includes('global') && 
-               !name.includes('overseas') && 
-               !name.includes('foreign') &&
-               !name.includes('us ') &&
-               !name.includes('china') &&
-               !name.includes('japan') &&
-               !name.includes('europe') &&
-               !name.includes('usd') &&
-               !name.includes('world');
-      });
+      // Prioritize and limit schemes for better performance
+      const prioritizedSchemes = EnhancedNAVDataService.prioritizeSchemes(allSchemes);
+      console.log(`Processing ${prioritizedSchemes.length} prioritized schemes...`);
 
-      console.log(`Processing ${indianSchemes.length} Indian mutual fund schemes...`);
-
-      // Process schemes in batches to avoid overwhelming the API
-      const batchSize = 50;
+      // Process schemes in smaller batches to avoid overwhelming the API
+      const batchSize = 25; // Reduced batch size
       const batches = [];
-      for (let i = 0; i < indianSchemes.length; i += batchSize) {
-        batches.push(indianSchemes.slice(i, i + batchSize));
+      for (let i = 0; i < prioritizedSchemes.length; i += batchSize) {
+        batches.push(prioritizedSchemes.slice(i, i + batchSize));
       }
 
       const allAnalysisData: AdvancedNAVAnalysis[] = [];
@@ -144,22 +234,22 @@ export class EnhancedNAVDataService {
 
         const batchPromises = batch.map(async (scheme: any, index: number) => {
           // Add delay to prevent rate limiting
-          await new Promise(resolve => setTimeout(resolve, index * 100));
+          await new Promise(resolve => setTimeout(resolve, index * 50)); // Reduced delay
           
           let navData = await EnhancedNAVDataService.getSchemeNAVData(scheme.schemeCode);
           
           if (!navData || !navData.nav || isNaN(navData.nav)) {
-            return null; // Skip invalid schemes instead of using mock data
+            return null; // Skip invalid schemes
           }
 
-          // Get historical data for 3 months
+          // Get historical data for 3 months (only for valid schemes)
           const historicalData = await EnhancedNAVDataService.getHistoricalNAVData(scheme.schemeCode);
 
           const analysis = EnhancedNAVDataService.calculateAdvancedMetrics({
             ...scheme,
             nav: navData.nav,
             date: navData.date
-          }, batch); // Use batch for category ranking
+          }, batch);
           
           return {
             schemeCode: scheme.schemeCode.toString(),
@@ -185,9 +275,9 @@ export class EnhancedNAVDataService {
         const validBatchResults = batchResults.filter(result => result !== null) as AdvancedNAVAnalysis[];
         allAnalysisData.push(...validBatchResults);
 
-        // Add delay between batches
+        // Add shorter delay between batches
         if (batchIndex < batches.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Reduced delay
         }
       }
       
@@ -196,8 +286,12 @@ export class EnhancedNAVDataService {
         .filter(fund => fund.nav > 0 && !isNaN(fund.nav))
         .sort((a, b) => b.aiScore - a.aiScore);
 
-      // Update rankings within categories - Fix the method call here
+      // Update rankings within categories
       EnhancedNAVDataService.updateCategoryRankings(validFunds);
+      
+      // Cache the results
+      EnhancedNAVDataService.schemeCache.set(cacheKey, validFunds);
+      EnhancedNAVDataService.lastCacheTime = now;
       
       console.log(`Returning ${validFunds.length} valid funds with NAV data`);
       return validFunds;
@@ -613,3 +707,4 @@ export class EnhancedNAVDataService {
     return Math.max(50, Math.min(95, confidence));
   }
 }
+
