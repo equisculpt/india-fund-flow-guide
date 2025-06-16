@@ -16,19 +16,34 @@ export interface ParsedPortfolioData {
   aum?: number;
 }
 
+interface AMCPortfolioFile {
+  id: string;
+  amc_name: string;
+  portfolio_date: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  file_data: string;
+  upload_status: string;
+  error_message?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export class AMCPortfolioParser {
   
   // Get uploaded files for processing
-  static async getUploadedFiles(status = 'uploaded') {
+  static async getUploadedFiles(status = 'uploaded'): Promise<AMCPortfolioFile[]> {
     try {
+      // Use a direct query since the table isn't in types yet
       const { data, error } = await supabase
-        .from('amc_portfolio_files')
+        .from('amc_portfolio_files' as any)
         .select('*')
         .eq('upload_status', status)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data || [];
     } catch (error) {
       console.error('Error fetching uploaded files:', error);
       throw error;
@@ -39,7 +54,7 @@ export class AMCPortfolioParser {
   static async parsePortfolioFile(fileId: string): Promise<ParsedPortfolioData[]> {
     try {
       const { data: file, error } = await supabase
-        .from('amc_portfolio_files')
+        .from('amc_portfolio_files' as any)
         .select('*')
         .eq('id', fileId)
         .single();
@@ -66,7 +81,7 @@ export class AMCPortfolioParser {
   }
 
   // HDFC specific parsing logic
-  private static async parseHDFCFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseHDFCFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Parsing HDFC format for file:', file.file_name);
     
     // Mock implementation - in production, use a proper Excel parser
@@ -96,7 +111,7 @@ export class AMCPortfolioParser {
   }
 
   // SBI specific parsing logic
-  private static async parseSBIFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseSBIFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Parsing SBI format for file:', file.file_name);
     
     return [{
@@ -125,7 +140,7 @@ export class AMCPortfolioParser {
   }
 
   // ICICI specific parsing logic
-  private static async parseICICIFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseICICIFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Parsing ICICI format for file:', file.file_name);
     
     return [{
@@ -154,7 +169,7 @@ export class AMCPortfolioParser {
   }
 
   // Axis specific parsing logic
-  private static async parseAxisFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseAxisFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Parsing Axis format for file:', file.file_name);
     
     return [{
@@ -190,7 +205,7 @@ export class AMCPortfolioParser {
   }
 
   // Generic parser for unknown formats
-  private static async parseGenericFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseGenericFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Using generic parser for file:', file.file_name);
     
     return [{
@@ -249,7 +264,7 @@ export class AMCPortfolioParser {
 
           // Update file status
           await supabase
-            .from('amc_portfolio_files')
+            .from('amc_portfolio_files' as any)
             .update({ upload_status: 'processed' })
             .eq('id', file.id);
 
@@ -260,7 +275,7 @@ export class AMCPortfolioParser {
           
           // Update file status to error
           await supabase
-            .from('amc_portfolio_files')
+            .from('amc_portfolio_files' as any)
             .update({ 
               upload_status: 'error',
               error_message: error instanceof Error ? error.message : 'Processing failed'

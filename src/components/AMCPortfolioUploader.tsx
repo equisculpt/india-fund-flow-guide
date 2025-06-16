@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Upload, FileSpreadsheet, FileText, Trash2, Eye } from 'lucide-react';
+import { Upload, FileSpreadsheet, FileText, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface UploadedFile {
@@ -117,20 +117,28 @@ export const AMCPortfolioUploader = () => {
             fileReader.readAsDataURL(file.file);
           });
 
-          // Store file metadata and content in database
-          const { error } = await supabase
-            .from('amc_portfolio_files')
-            .insert({
-              amc_name: file.amc_name,
-              portfolio_date: file.portfolio_date,
-              file_name: file.file.name,
-              file_type: file.file_type,
-              file_size: file.file.size,
-              file_data: fileData,
-              upload_status: 'uploaded'
-            });
+          // Store file metadata and content in database using raw SQL
+          const { error } = await supabase.rpc('execute_sql', {
+            sql: `
+              INSERT INTO amc_portfolio_files (
+                amc_name, portfolio_date, file_name, file_type, file_size, file_data, upload_status
+              ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+            `,
+            params: [
+              file.amc_name,
+              file.portfolio_date,
+              file.file.name,
+              file.file_type,
+              file.file.size,
+              fileData,
+              'uploaded'
+            ]
+          });
 
-          if (error) throw error;
+          if (error) {
+            console.error('Database error:', error);
+            throw new Error('Failed to save file to database');
+          }
 
           // Update status to success
           setUploadedFiles(prev => prev.map(f => 
