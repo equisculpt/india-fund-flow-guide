@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -338,7 +339,7 @@ const AIFundComparison = () => {
               <Zap className="h-4 w-4" />
               <AlertDescription>
                 <strong>Optimized Performance:</strong> Data is pre-analyzed daily covering all Indian mutual funds 
-                from leading AMCs. Analysis includes real NAV data, historical performance, and AI scoring.
+                from leading AMCs. Analysis includes real NAV data, historical performance, and trend scoring.
               </AlertDescription>
             </Alert>
 
@@ -563,7 +564,7 @@ const AIFundComparison = () => {
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
                 <strong>Disclaimer:</strong> Mutual fund investments are subject to market risks. Past performance is not indicative of future results. 
-                This AI analysis is for educational purposes and should not be considered as investment advice. Please read scheme documents carefully 
+                This trend analysis is for educational purposes and should not be considered as investment advice. Please read scheme documents carefully 
                 and consult with a SEBI-registered financial advisor before investing.
               </AlertDescription>
             </Alert>
