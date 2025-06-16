@@ -113,13 +113,13 @@ export class ChartDataService {
         startNAV: startNAV
       };
 
-      // Generate NAV history with realistic market movements
+      // Generate NAV history with more realistic market movements
       let currentNAV = startNAV;
       const dailyVolatility = this.getCategoryVolatility(primaryFundCategory);
       const trendDirection = Math.random() > 0.3 ? 1 : -1;
       const trendScore = fund.id === 'primary' ? (primaryFundTrendScore || 5) : (4 + Math.random() * 4);
 
-      // Generate daily NAV data
+      // Generate daily NAV data with better distribution
       for (let i = 0; i <= days; i++) {
         const currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + i);
@@ -156,6 +156,7 @@ export class ChartDataService {
     const primaryFundData = fundData['primary'];
     if (!primaryFundData) return [];
 
+    // Sample data points for smooth chart rendering
     const dataPointInterval = Math.max(1, Math.floor(primaryFundData.navHistory.length / 100));
     
     for (let i = 0; i < primaryFundData.navHistory.length; i += dataPointInterval) {

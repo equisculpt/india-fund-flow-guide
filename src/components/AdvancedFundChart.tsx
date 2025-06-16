@@ -2,12 +2,18 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star, TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
 import { EnhancedNAVDataService } from '@/services/enhancedNAVDataService';
 import ChartControls from './charts/ChartControls';
 import FundComparisonManager from './charts/FundComparisonManager';
 import PerformanceChart from './charts/PerformanceChart';
+import SIPPortfolioChart from './charts/SIPPortfolioChart';
 import PerformanceStats from './charts/PerformanceStats';
+import FundManagerDetails from './charts/FundManagerDetails';
+import PortfolioHoldings from './charts/PortfolioHoldings';
+import AIFundRanking from './charts/AIFundRanking';
+import MarketTimingAdvice from './charts/MarketTimingAdvice';
 import { ChartDataService } from './charts/ChartDataService';
 
 interface ChartDataPoint {
@@ -133,67 +139,104 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
   }
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-blue-600" />
-              Advanced Fund Performance Analysis
-            </CardTitle>
-            <div className="flex items-center gap-4 mt-2">
-              {primaryFund.trendScore && (
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{primaryFund.trendScore}/10</span>
-                  <span className="text-sm text-muted-foreground">Trend Score</span>
-                </div>
-              )}
-              <Badge variant={performance.return >= 0 ? "default" : "destructive"}>
-                {performance.return >= 0 ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
-                {performance.return.toFixed(2)}% ({period})
-              </Badge>
+    <div className="space-y-6">
+      {/* Header Card */}
+      <Card className={className}>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-blue-600" />
+                Advanced Fund Performance Analysis
+              </CardTitle>
+              <div className="flex items-center gap-4 mt-2">
+                {primaryFund.trendScore && (
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="font-semibold">{primaryFund.trendScore}/10</span>
+                    <span className="text-sm text-muted-foreground">Trend Score</span>
+                  </div>
+                )}
+                <Badge variant={performance.return >= 0 ? "default" : "destructive"}>
+                  {performance.return >= 0 ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
+                  {performance.return.toFixed(2)}% ({period})
+                </Badge>
+              </div>
             </div>
+            
+            <ChartControls
+              period={period}
+              setPeriod={setPeriod}
+              showSIPChart={showSIPChart}
+              setShowSIPChart={setShowSIPChart}
+              sipAmount={sipAmount}
+              setSipAmount={setSipAmount}
+            />
           </div>
-          
-          <ChartControls
-            period={period}
-            setPeriod={setPeriod}
-            showSIPChart={showSIPChart}
-            setShowSIPChart={setShowSIPChart}
-            sipAmount={sipAmount}
-            setSipAmount={setSipAmount}
-          />
-        </div>
-      </CardHeader>
-      
-      <CardContent>
-        <FundComparisonManager
-          fundComparisons={fundComparisons}
-          setFundComparisons={setFundComparisons}
-          availableFunds={availableFunds}
-          primaryFundCategory={primaryFund.category}
-        />
-
-        <div className="mt-4">
-          <PerformanceChart
-            chartData={chartData}
+        </CardHeader>
+        
+        <CardContent>
+          <FundComparisonManager
             fundComparisons={fundComparisons}
-            showSIPChart={showSIPChart}
+            setFundComparisons={setFundComparisons}
+            availableFunds={availableFunds}
+            primaryFundCategory={primaryFund.category}
           />
-        </div>
 
-        <div className="mt-4">
-          <PerformanceStats
-            chartData={chartData}
-            sipAmount={sipAmount}
-            period={period}
-            primaryFundNav={primaryFund.nav}
-            getDaysForPeriod={ChartDataService.getDaysForPeriod}
-          />
-        </div>
-      </CardContent>
-    </Card>
+          <div className="mt-4">
+            {showSIPChart ? (
+              <SIPPortfolioChart
+                chartData={chartData}
+                fundComparisons={fundComparisons}
+                sipAmount={sipAmount}
+              />
+            ) : (
+              <PerformanceChart
+                chartData={chartData}
+                fundComparisons={fundComparisons}
+                showSIPChart={false}
+              />
+            )}
+          </div>
+
+          <div className="mt-4">
+            <PerformanceStats
+              chartData={chartData}
+              sipAmount={sipAmount}
+              period={period}
+              primaryFundNav={primaryFund.nav}
+              getDaysForPeriod={ChartDataService.getDaysForPeriod}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Comprehensive Analysis Tabs */}
+      <Tabs defaultValue="manager" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="manager">Fund Manager</TabsTrigger>
+          <TabsTrigger value="holdings">Portfolio</TabsTrigger>
+          <TabsTrigger value="ranking">AI Ranking</TabsTrigger>
+          <TabsTrigger value="timing">Market Timing</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="manager">
+          <FundManagerDetails fundData={primaryFund} />
+        </TabsContent>
+
+        <TabsContent value="holdings">
+          <PortfolioHoldings fundData={primaryFund} />
+        </TabsContent>
+
+        <TabsContent value="ranking">
+          <AIFundRanking fundData={primaryFund} />
+        </TabsContent>
+
+        <TabsContent value="timing">
+          <MarketTimingAdvice fundData={primaryFund} />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
