@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, TrendingUp, TrendingDown, AlertTriangle, Info, BarChart3 } from "lucide-react";
 import { EnhancedNAVDataService, AdvancedNAVAnalysis } from "@/services/enhancedNAVDataService";
 import AdvancedFundChart from "@/components/AdvancedFundChart";
+import { GrowwFundScraper } from "@/components/GrowwFundScraper";
 
 const FundDetailsPage = () => {
   const { fundId } = useParams();
@@ -152,9 +153,10 @@ const FundDetailsPage = () => {
 
         {/* Analysis Tabs */}
         <Tabs defaultValue="historical" className="space-y-6 mt-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="historical">Historical Analysis</TabsTrigger>
             <TabsTrigger value="analysis">Detailed Analysis</TabsTrigger>
+            <TabsTrigger value="groww-scraper">Groww Scraper</TabsTrigger>
             <TabsTrigger value="disclaimer">Important Info</TabsTrigger>
           </TabsList>
 
@@ -308,6 +310,17 @@ const FundDetailsPage = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="groww-scraper">
+            <Card>
+              <CardHeader>
+                <CardTitle>Scrape Fund Data from Groww</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <GrowwFundScraper />
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="disclaimer">
