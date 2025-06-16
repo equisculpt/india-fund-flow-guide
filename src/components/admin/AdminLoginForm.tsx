@@ -24,8 +24,9 @@ const AdminLoginForm = () => {
       if (result.success) {
         toast({
           title: "Success",
-          description: "Logged in successfully!",
+          description: "Logged in successfully! Redirecting to admin panel...",
         });
+        // The useAdminAuth hook will handle the state change and re-render
       } else {
         toast({
           title: "Error",
@@ -34,9 +35,10 @@ const AdminLoginForm = () => {
         });
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "Error",
-        description: "Login failed",
+        description: "Login failed. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -66,6 +68,7 @@ const AdminLoginForm = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             
@@ -78,6 +81,7 @@ const AdminLoginForm = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             

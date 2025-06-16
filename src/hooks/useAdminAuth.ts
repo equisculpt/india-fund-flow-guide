@@ -25,6 +25,8 @@ export const useAdminAuth = () => {
         return;
       }
 
+      console.log('Checking admin session with token:', sessionToken);
+
       const { data, error } = await supabase.rpc('execute_sql' as any, {
         sql: `
           SELECT au.id, au.email, au.full_name, au.is_active
@@ -35,10 +37,14 @@ export const useAdminAuth = () => {
         params: [sessionToken]
       });
 
+      console.log('Admin session check result:', { data, error });
+
       if (error || !data || data.length === 0) {
+        console.log('No valid admin session found, clearing token');
         localStorage.removeItem('admin_session_token');
         setAdminUser(null);
       } else {
+        console.log('Valid admin session found:', data[0]);
         setAdminUser(data[0]);
       }
     } catch (error) {
@@ -52,23 +58,38 @@ export const useAdminAuth = () => {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('Attempting admin login for:', email);
+      
       // Simple password check for demo (in production, use proper hashing)
       if (email === 'admin@sipbrewery.com' && password === 'admin123') {
         const sessionToken = Math.random().toString(36) + Date.now().toString(36);
         const expiresAt = new Date();
         expiresAt.setHours(expiresAt.getHours() + 24); // 24 hour session
 
+        console.log('Creating admin session with token:', sessionToken);
+
         // Create session
-        await supabase.rpc('execute_sql' as any, {
+        const { data, error } = await supabase.rpc('execute_sql' as any, {
           sql: `
             INSERT INTO admin_sessions (admin_user_id, session_token, expires_at)
             SELECT id, $1, $2 FROM admin_users WHERE email = $3
+            RETURNING admin_user_id
           `,
           params: [sessionToken, expiresAt.toISOString(), email]
         });
 
+        console.log('Session creation result:', { data, error });
+
+        if (error) {
+          console.error('Failed to create admin session:', error);
+          return { success: false, error: 'Failed to create session' };
+        }
+
         localStorage.setItem('admin_session_token', sessionToken);
+        
+        // Immediately check session to update state
         await checkAdminSession();
+        
         return { success: true };
       } else {
         return { success: false, error: 'Invalid credentials' };
