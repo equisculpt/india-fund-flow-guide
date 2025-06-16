@@ -52,7 +52,7 @@ export class EnhancedNAVDataService {
       
       // Convert to AdvancedNAVAnalysis format
       const analysisData: AdvancedNAVAnalysis[] = sampleSchemes.map((scheme: any) => {
-        const analysis = this.calculateAdvancedMetrics(scheme, sampleSchemes);
+        const analysis = EnhancedNAVDataService.calculateAdvancedMetrics(scheme, sampleSchemes);
         
         return {
           schemeCode: scheme.schemeCode,
@@ -243,8 +243,19 @@ export class EnhancedNAVDataService {
       return {
         schemeCode: scheme.schemeCode,
         schemeName: scheme.schemeName,
-        currentNAV: scheme.nav,
-        ...analysis
+        nav: parseFloat(scheme.nav),
+        date: scheme.date,
+        category: scheme.category || 'Large Cap',
+        subCategory: scheme.subCategory || 'Large Cap',
+        amcName: scheme.amcName || 'Unknown',
+        aiScore: analysis.aiScore,
+        confidence: analysis.confidenceLevel / 100,
+        predicted3MonthReturn: analysis.predictedReturn3Month,
+        riskLevel: analysis.riskScore > 7 ? 'HIGH' : analysis.riskScore > 4 ? 'MEDIUM' : 'LOW',
+        volatilityScore: analysis.volatilityScore,
+        sharpeRatio: analysis.valuationScore,
+        performanceRank: analysis.sectorRanking,
+        totalSchemes: schemes.length
       };
     }).sort((a, b) => b.aiScore - a.aiScore);
   }

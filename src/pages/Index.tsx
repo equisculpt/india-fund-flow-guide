@@ -1,3 +1,4 @@
+
 import HeroSection from "@/components/HeroSection";
 import PortfolioDashboard from "@/components/PortfolioDashboard";
 import InvestmentCalculator from "@/components/InvestmentCalculator";
@@ -9,7 +10,7 @@ import TrademarkNotice from "@/components/TrademarkNotice";
 import ComplianceFooter from "@/components/ComplianceFooter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
-import { ReviewModal } from "@/components/ReviewModal";
+import ReviewModal from "@/components/ReviewModal";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, Calculator, Target, Sparkles, Users, Bot } from "lucide-react";
@@ -36,6 +37,11 @@ const Index = () => {
   const handleReviewSubmitted = () => {
     localStorage.setItem('lastReviewPrompt', Date.now().toString());
     setShowReviewModal(false);
+  };
+
+  const handleRiskProfileComplete = (riskProfile: any) => {
+    console.log('Risk profile completed:', riskProfile);
+    // Handle risk profile completion logic here
   };
 
   return (
@@ -97,7 +103,7 @@ const Index = () => {
             </TabsContent>
             
             <TabsContent value="risk" className="space-y-6">
-              <RiskProfiling />
+              <RiskProfiling onComplete={handleRiskProfileComplete} />
             </TabsContent>
             
             <TabsContent value="ai-funds" className="space-y-6">
@@ -124,7 +130,7 @@ const Index = () => {
           </section>
           
           <section id="risk-profile">
-            <RiskProfiling />
+            <RiskProfiling onComplete={handleRiskProfileComplete} />
           </section>
         </div>
       )}
@@ -133,9 +139,8 @@ const Index = () => {
       <ComplianceFooter />
       
       <ReviewModal 
-        isOpen={showReviewModal}
-        onClose={() => setShowReviewModal(false)}
-        onReviewSubmitted={handleReviewSubmitted}
+        open={showReviewModal}
+        onOpenChange={setShowReviewModal}
       />
     </div>
   );
