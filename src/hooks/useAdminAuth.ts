@@ -21,6 +21,7 @@ export const useAdminAuth = () => {
     try {
       const sessionToken = localStorage.getItem('admin_session_token');
       if (!sessionToken) {
+        console.log('No admin session token found');
         setLoading(false);
         return;
       }
@@ -62,6 +63,17 @@ export const useAdminAuth = () => {
       
       // Simple password check for demo (in production, use proper hashing)
       if (email === 'admin@sipbrewery.com' && password === 'admin123') {
+        // First, check if admin user exists
+        const { data: adminCheck, error: adminError } = await supabase.rpc('execute_sql' as any, {
+          sql: 'SELECT id FROM admin_users WHERE email = $1',
+          params: [email]
+        });
+
+        if (adminError || !adminCheck || adminCheck.length === 0) {
+          console.error('Admin user not found:', adminError);
+          return { success: false, error: 'Admin user not found in database' };
+        }
+
         const sessionToken = Math.random().toString(36) + Date.now().toString(36);
         const expiresAt = new Date();
         expiresAt.setHours(expiresAt.getHours() + 24); // 24 hour session
