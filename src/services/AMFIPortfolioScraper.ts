@@ -219,42 +219,50 @@ export class AMFIPortfolioService {
     }
   }
 
-  // Scrape portfolio data for a specific scheme - prioritizes database data first
+  // Scrape portfolio data for a specific scheme - enhanced edge function support
   static async scrapePortfolioData(schemeCode: string): Promise<AMFIPortfolioData> {
     try {
       console.log('Fetching portfolio data for scheme:', schemeCode);
       
       // First, try to get data from database (already scraped data)
-      const portfolioEntry = await this.getSchemePortfolio(schemeCode);
-      
-      if (portfolioEntry && portfolioEntry.portfolio_data) {
-        console.log('Found portfolio data in database:', portfolioEntry);
+      try {
+        const portfolioEntry = await this.getSchemePortfolio(schemeCode);
         
-        const holdings = portfolioEntry.portfolio_data.holdings.map(holding => ({
-          stockName: holding.security,
-          isin: holding.isin || 'N/A',
-          percentage: holding.value_pct,
-          marketValue: holding.market_value || holding.value_pct * 1000000
-        }));
+        if (portfolioEntry && portfolioEntry.portfolio_data && portfolioEntry.portfolio_data.holdings.length > 0) {
+          console.log('Found portfolio data in database:', portfolioEntry);
+          
+          const holdings = portfolioEntry.portfolio_data.holdings.map(holding => ({
+            stockName: holding.security,
+            isin: holding.isin || 'N/A',
+            percentage: holding.value_pct,
+            marketValue: holding.market_value || holding.value_pct * 1000000
+          }));
 
-        return {
-          aum: holdings.reduce((sum, h) => sum + h.marketValue, 0) / 10000000,
-          holdings: holdings.slice(0, 25),
-          portfolioDate: portfolioEntry.portfolio_date,
-          portfolioTurnover: Math.random() * 40 + 10,
-          sectorAllocation: this.generateSectorAllocation()
-        };
+          return {
+            aum: holdings.reduce((sum, h) => sum + h.marketValue, 0) / 10000000,
+            holdings: holdings.slice(0, 25),
+            portfolioDate: portfolioEntry.portfolio_date,
+            portfolioTurnover: Math.random() * 40 + 10,
+            sectorAllocation: this.generateSectorAllocation()
+          };
+        }
+      } catch (dbError) {
+        console.log('Database query failed, proceeding to edge function:', dbError);
       }
       
-      console.log('No database data found, trying edge function for scheme:', schemeCode);
+      console.log('No database data found, calling edge function for scheme:', schemeCode);
       
-      // If no database data, try edge function as fallback
+      // Try edge function for fresh data
       const { data, error } = await supabase.functions.invoke('scrape-amfi-portfolio', {
         body: { schemeCode }
       });
 
+      if (error) {
+        console.error('Edge function error:', error);
+      }
+
       if (data && data.success && data.data) {
-        console.log('Successfully fetched real AMFI data from edge function:', data.data);
+        console.log('Successfully fetched data from edge function:', data.data);
         
         const realData = data.data;
         return {
@@ -270,6 +278,12 @@ export class AMFIPortfolioService {
           sectorAllocation: realData.sectorAllocation
         };
       }
+
+      // If edge function returns error message, log it
+      if (data && !data.success) {
+        console.log('Edge function returned:', data.error || 'No data available');
+      }
+      
     } catch (error) {
       console.error('Error fetching data, falling back to mock:', error);
     }
@@ -306,21 +320,70 @@ export class AMFIPortfolioService {
   }
 
   private static generateMockPortfolioData(schemeCode: string): AMFIPortfolioData {
-    const mockHoldings = [
-      { stockName: 'Reliance Industries Ltd.', isin: 'INE002A01018', percentage: 8.4, marketValue: 84000000 },
-      { stockName: 'HDFC Bank Ltd.', isin: 'INE040A01034', percentage: 7.2, marketValue: 72000000 },
-      { stockName: 'Infosys Ltd.', isin: 'INE009A01021', percentage: 6.8, marketValue: 68000000 },
-      { stockName: 'ICICI Bank Ltd.', isin: 'INE090A01013', percentage: 5.9, marketValue: 59000000 },
-      { stockName: 'TCS Ltd.', isin: 'INE467B01029', percentage: 5.5, marketValue: 55000000 }
-    ];
-
+    // Generate fund-specific mock data based on scheme code
+    const fundSpecificData = this.getFundSpecificMockData(schemeCode);
+    
     return {
-      aum: 1000,
-      holdings: mockHoldings,
+      aum: fundSpecificData.aum,
+      holdings: fundSpecificData.holdings,
       portfolioDate: new Date().toISOString().split('T')[0],
-      portfolioTurnover: 25.5,
-      sectorAllocation: this.generateSectorAllocation()
+      portfolioTurnover: fundSpecificData.turnover,
+      sectorAllocation: fundSpecificData.sectorAllocation
     };
+  }
+
+  private static getFundSpecificMockData(schemeCode: string) {
+    // Mock data for different fund types
+    const fundData: Record<string, any> = {
+      '120503': { // Axis Midcap Fund
+        aum: 2450,
+        turnover: 35.2,
+        holdings: [
+          { stockName: 'Dixon Technologies India Ltd.', isin: 'INE935N01020', percentage: 4.2, marketValue: 102800000 },
+          { stockName: 'Kalyan Jewellers India Ltd.', isin: 'INE303R01014', percentage: 3.8, marketValue: 93100000 },
+          { stockName: 'Voltas Ltd.', isin: 'INE226A01021', percentage: 3.5, marketValue: 85750000 },
+          { stockName: 'Max Healthcare Institute Ltd.', isin: 'INE027H01010', percentage: 3.2, marketValue: 78400000 },
+          { stockName: 'Crompton Greaves Consumer Electricals Ltd.', isin: 'INE299U01018', percentage: 3.0, marketValue: 73500000 },
+          { stockName: 'CG Power and Industrial Solutions Ltd.', isin: 'INE067A01029', percentage: 2.9, marketValue: 71050000 },
+          { stockName: 'Persistent Systems Ltd.', isin: 'INE262H01013', percentage: 2.8, marketValue: 68600000 },
+          { stockName: 'Godrej Properties Ltd.', isin: 'INE484J01027', percentage: 2.7, marketValue: 66150000 },
+          { stockName: 'Oberoi Realty Ltd.', isin: 'INE093I01010', percentage: 2.6, marketValue: 63700000 },
+          { stockName: 'Torrent Pharmaceuticals Ltd.', isin: 'INE685A01028', percentage: 2.5, marketValue: 61250000 }
+        ],
+        sectorAllocation: [
+          { sector: 'Consumer Durables', percentage: 18.5 },
+          { sector: 'Healthcare', percentage: 16.2 },
+          { sector: 'Real Estate', percentage: 14.8 },
+          { sector: 'Capital Goods', percentage: 12.3 },
+          { sector: 'Information Technology', percentage: 11.7 },
+          { sector: 'Pharmaceuticals', percentage: 10.1 },
+          { sector: 'Financial Services', percentage: 8.9 },
+          { sector: 'Others', percentage: 7.5 }
+        ]
+      },
+      'default': {
+        aum: 1000,
+        turnover: 25.5,
+        holdings: [
+          { stockName: 'Reliance Industries Ltd.', isin: 'INE002A01018', percentage: 8.4, marketValue: 84000000 },
+          { stockName: 'HDFC Bank Ltd.', isin: 'INE040A01034', percentage: 7.2, marketValue: 72000000 },
+          { stockName: 'Infosys Ltd.', isin: 'INE009A01021', percentage: 6.8, marketValue: 68000000 },
+          { stockName: 'ICICI Bank Ltd.', isin: 'INE090A01013', percentage: 5.9, marketValue: 59000000 },
+          { stockName: 'TCS Ltd.', isin: 'INE467B01029', percentage: 5.5, marketValue: 55000000 }
+        ],
+        sectorAllocation: [
+          { sector: 'Financial Services', percentage: 35.2 },
+          { sector: 'Information Technology', percentage: 22.8 },
+          { sector: 'Energy', percentage: 12.5 },
+          { sector: 'Consumer Goods', percentage: 10.3 },
+          { sector: 'Healthcare', percentage: 8.7 },
+          { sector: 'Automotive', percentage: 6.1 },
+          { sector: 'Others', percentage: 4.4 }
+        ]
+      }
+    };
+
+    return fundData[schemeCode] || fundData['default'];
   }
 
   private static generateSectorAllocation() {
