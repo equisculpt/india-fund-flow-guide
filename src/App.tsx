@@ -21,6 +21,7 @@ import ReferralPage from "@/pages/ReferralPage";
 import AIPortfolioDashboard from "@/pages/AIPortfolioDashboard";
 import WhatsAppBotPage from "@/pages/WhatsAppBotPage";
 import FundDetailsPage from "@/pages/FundDetailsPage";
+import PublicFundsPage from "@/pages/PublicFundsPage";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
                 <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
                 <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                 <Route path="/fund/:fundId" element={<FundDetailsPage />} />
+                <Route path="/public-funds" element={<PublicFundsPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>

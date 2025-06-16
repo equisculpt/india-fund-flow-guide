@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { User, Users } from "lucide-react";
 import BreweryLogo from "./BreweryLogo";
-import { useAuth } from "@/contexts/AuthContext";
 import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -25,8 +24,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
-  const { loginWithGoogle, loginWithFacebook } = useEnhancedAuth();
+  const { login, loginWithGoogle, loginWithFacebook } = useEnhancedAuth();
   const { toast } = useToast();
 
   const resetForm = () => {
@@ -73,7 +71,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     try {
       if (isLoginMode) {
         // Login logic
-        const success = await login(email, password, loginType);
+        const success = await login(email, password, loginType === "customer" ? "customer" : "agent");
         if (success) {
           toast({
             title: "Login Successful",
@@ -115,7 +113,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         });
         
         // Auto-login after successful signup
-        const success = await login(email, password, loginType);
+        const success = await login(email, password, loginType === "customer" ? "customer" : "agent");
         if (success) {
           onClose();
           resetForm();
