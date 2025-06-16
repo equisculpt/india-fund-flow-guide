@@ -309,6 +309,38 @@ export type Database = {
         }
         Relationships: []
       }
+      mutual_fund_nav_history: {
+        Row: {
+          created_at: string
+          fund_id: string | null
+          id: string
+          nav_date: string
+          nav_value: number
+        }
+        Insert: {
+          created_at?: string
+          fund_id?: string | null
+          id?: string
+          nav_date: string
+          nav_value: number
+        }
+        Update: {
+          created_at?: string
+          fund_id?: string | null
+          id?: string
+          nav_date?: string
+          nav_value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mutual_fund_nav_history_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "mutual_funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mutual_funds: {
         Row: {
           amc_name: string
@@ -602,14 +634,75 @@ export type Database = {
           },
         ]
       }
+      sip_transactions: {
+        Row: {
+          created_at: string
+          fund_id: string | null
+          id: string
+          nav_on_date: number
+          sip_amount: number
+          transaction_date: string
+          units_allocated: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          fund_id?: string | null
+          id?: string
+          nav_on_date: number
+          sip_amount: number
+          transaction_date: string
+          units_allocated: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          fund_id?: string | null
+          id?: string
+          nav_on_date?: number
+          sip_amount?: number
+          transaction_date?: string
+          units_allocated?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sip_transactions_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "mutual_funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      calculate_fund_irr: {
+        Args: { p_fund_id: string; p_start_date: string; p_end_date: string }
+        Returns: number
+      }
       calculate_portfolio_analytics: {
         Args: { target_user_id: string }
         Returns: undefined
+      }
+      calculate_sip_returns: {
+        Args: {
+          p_user_id: string
+          p_fund_id: string
+          p_start_date: string
+          p_end_date: string
+        }
+        Returns: {
+          total_invested: number
+          total_units: number
+          current_value: number
+          absolute_returns: number
+          percentage_returns: number
+          xirr: number
+        }[]
       }
       generate_ai_insights: {
         Args: { target_user_id: string }

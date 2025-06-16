@@ -1,99 +1,121 @@
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { TrendingUp, Star } from "lucide-react";
+import { TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface FundCardProps {
-  name: string;
-  category: string;
-  returns1y: number;
-  returns3y: number;
-  returns5y: number;
-  minSip: number;
-  rating: number;
-  nav: number;
-  riskLevel: "Low" | "Moderate" | "High";
+  fund: {
+    id: string;
+    scheme_name: string;
+    amc_name: string;
+    category: string;
+    nav: number;
+    returns_1y: number;
+    returns_3y: number;
+    risk_level: string;
+    min_sip_amount: number;
+  };
 }
 
-const FundCard = ({ 
-  name, 
-  category, 
-  returns1y, 
-  returns3y, 
-  returns5y, 
-  minSip, 
-  rating, 
-  nav, 
-  riskLevel 
-}: FundCardProps) => {
+const FundCard = ({ fund }: FundCardProps) => {
+  const navigate = useNavigate();
+  
   const getRiskColor = (risk: string) => {
-    switch (risk) {
-      case "Low": return "text-green-600 bg-green-100";
-      case "Moderate": return "text-yellow-600 bg-yellow-100";
-      case "High": return "text-red-600 bg-red-100";
-      default: return "text-gray-600 bg-gray-100";
+    switch (risk?.toLowerCase()) {
+      case 'low':
+        return 'bg-green-100 text-green-800';
+      case 'moderate':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'high':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
+  const handleViewDetails = () => {
+    navigate(`/fund/${fund.id}`);
+  };
+
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-blue-500">
-      <CardContent className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h3 className="font-semibold text-lg text-gray-900 mb-1">{name}</h3>
-            <p className="text-sm text-gray-600">{category}</p>
+    <Card className="hover:shadow-lg transition-shadow duration-300">
+      <CardHeader className="pb-4">
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <CardTitle className="text-lg font-semibold line-clamp-2 mb-1">
+              {fund.scheme_name}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">{fund.amc_name}</p>
           </div>
-          <div className="flex items-center space-x-1">
-            {[...Array(5)].map((_, i) => (
-              <Star 
-                key={i} 
-                className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
-              />
-            ))}
+          <Badge variant="secondary" className="ml-2">
+            {fund.category}
+          </Badge>
+        </div>
+      </CardHeader>
+      
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground">Current NAV</p>
+            <p className="text-xl font-bold">₹{fund.nav?.toFixed(2) || 'N/A'}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">Min SIP</p>
+            <p className="text-lg font-semibold">₹{fund.min_sip_amount}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <div className="text-center">
-            <div className="text-xs text-gray-500 mb-1">1Y Returns</div>
-            <div className="font-semibold text-green-600 flex items-center justify-center">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              {returns1y}%
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center">
+              {fund.returns_1y >= 0 ? (
+                <TrendingUp className="h-4 w-4 text-green-600" />
+              ) : (
+                <TrendingDown className="h-4 w-4 text-red-600" />
+              )}
+              <span className="text-sm text-muted-foreground ml-1">1Y</span>
             </div>
+            <span className={`font-semibold ${fund.returns_1y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {fund.returns_1y >= 0 ? '+' : ''}{fund.returns_1y?.toFixed(1) || 'N/A'}%
+            </span>
           </div>
-          <div className="text-center">
-            <div className="text-xs text-gray-500 mb-1">3Y Returns</div>
-            <div className="font-semibold text-green-600">{returns3y}%</div>
-          </div>
-          <div className="text-center">
-            <div className="text-xs text-gray-500 mb-1">5Y Returns</div>
-            <div className="font-semibold text-green-600">{returns5y}%</div>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center mb-4 text-sm">
-          <div>
-            <span className="text-gray-500">NAV: </span>
-            <span className="font-medium">₹{nav}</span>
-          </div>
-          <div>
-            <span className="text-gray-500">Min SIP: </span>
-            <span className="font-medium">₹{minSip}</span>
+          
+          <div className="flex items-center gap-2">
+            <div className="flex items-center">
+              {fund.returns_3y >= 0 ? (
+                <TrendingUp className="h-4 w-4 text-green-600" />
+              ) : (
+                <TrendingDown className="h-4 w-4 text-red-600" />
+              )}
+              <span className="text-sm text-muted-foreground ml-1">3Y</span>
+            </div>
+            <span className={`font-semibold ${fund.returns_3y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {fund.returns_3y >= 0 ? '+' : ''}{fund.returns_3y?.toFixed(1) || 'N/A'}%
+            </span>
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(riskLevel)}`}>
-            {riskLevel} Risk
-          </span>
-          <div className="space-x-2">
-            <Button variant="outline" size="sm">
-              View Details
-            </Button>
-            <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-              Start SIP
-            </Button>
-          </div>
+        <div className="flex items-center justify-between">
+          <Badge className={getRiskColor(fund.risk_level)}>
+            {fund.risk_level || 'Unknown'} Risk
+          </Badge>
+        </div>
+
+        <div className="flex gap-2 pt-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex-1"
+            onClick={handleViewDetails}
+          >
+            <BarChart3 className="h-4 w-4 mr-2" />
+            View Analytics
+          </Button>
+          <Button size="sm" className="flex-1">
+            Invest Now
+          </Button>
         </div>
       </CardContent>
     </Card>

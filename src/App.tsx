@@ -1,92 +1,62 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
 import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
-import { BrandingProvider } from "@/contexts/BrandingContext";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import AgentDashboard from "./components/AgentDashboard";
-import ReferralPage from "./pages/ReferralPage";
-import ComprehensiveDashboard from "./pages/ComprehensiveDashboard";
-import OnboardingPage from "./pages/OnboardingPage";
-import WhatsAppBotPage from "./pages/WhatsAppBotPage";
-import ContactPage from "./pages/ContactPage";
-import AboutPage from "./pages/AboutPage";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
-import TermsOfServicePage from "./pages/TermsOfServicePage";
-import AgentHomePage from "./pages/AgentHomePage";
-import AIPortfolioDashboard from "./pages/AIPortfolioDashboard";
 import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
-import AdminPage from "./pages/AdminPage";
+import { BrandingProvider } from "@/contexts/BrandingContext";
+import Header from "@/components/Header";
+import Index from "@/pages/Index";
+import AboutPage from "@/pages/AboutPage";
+import ContactPage from "@/pages/ContactPage";
+import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
+import TermsOfServicePage from "@/pages/TermsOfServicePage";
+import OnboardingPage from "@/pages/OnboardingPage";
+import ComprehensiveDashboard from "@/pages/ComprehensiveDashboard";
+import AgentHomePage from "@/pages/AgentHomePage";
+import AdminPage from "@/pages/AdminPage";
+import NotFound from "@/pages/NotFound";
+import ReferralPage from "@/pages/ReferralPage";
+import AIPortfolioDashboard from "@/pages/AIPortfolioDashboard";
+import WhatsAppBotPage from "@/pages/WhatsAppBotPage";
+import FundDetailsPage from "@/pages/FundDetailsPage";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrandingProvider>
-      <AuthProvider>
-        <EnhancedAuthProvider>
-          <SupabaseAuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
+      <EnhancedAuthProvider>
+        <SupabaseAuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <div className="min-h-screen bg-background font-sans antialiased">
+                <Header />
                 <Routes>
                   <Route path="/" element={<Index />} />
-                  <Route path="/contact" element={<ContactPage />} />
                   <Route path="/about" element={<AboutPage />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                  <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-                  <Route path="/agent-home" element={<AgentHomePage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                  <Route path="/terms" element={<TermsOfServicePage />} />
+                  <Route path="/onboard" element={<OnboardingPage />} />
+                  <Route path="/dashboard" element={<ComprehensiveDashboard />} />
+                  <Route path="/agent" element={<AgentHomePage />} />
                   <Route path="/admin" element={<AdminPage />} />
-                  <Route 
-                    path="/dashboard" 
-                    element={
-                      <ProtectedRoute>
-                        <ComprehensiveDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/ai-portfolio" 
-                    element={
-                      <ProtectedRoute>
-                        <AIPortfolioDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/agent-dashboard" 
-                    element={
-                      <ProtectedRoute requiredUserType="agent">
-                        <AgentDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/referrals" 
-                    element={
-                      <ProtectedRoute>
-                        <ReferralPage />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/onboard" 
-                    element={<OnboardingPage />}
-                  />
+                  <Route path="/referral" element={<ReferralPage />} />
+                  <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
                   <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
+                  <Route path="/fund/:fundId" element={<FundDetailsPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </BrowserRouter>
-            </TooltipProvider>
-          </SupabaseAuthProvider>
-        </EnhancedAuthProvider>
-      </AuthProvider>
+              </div>
+            </BrowserRouter>
+          </TooltipProvider>
+        </SupabaseAuthProvider>
+      </EnhancedAuthProvider>
     </BrandingProvider>
   </QueryClientProvider>
 );
