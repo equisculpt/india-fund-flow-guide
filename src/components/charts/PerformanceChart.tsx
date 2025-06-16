@@ -61,21 +61,32 @@ const PerformanceChart = ({ chartData, fundComparisons, showSIPChart }: Performa
     );
   };
 
+  const formatYAxisValue = (value: number) => {
+    if (showSIPChart) {
+      if (value >= 10000000) return `₹${(value / 10000000).toFixed(1)}Cr`;
+      if (value >= 100000) return `₹${(value / 100000).toFixed(1)}L`;
+      return `₹${(value / 1000).toFixed(0)}K`;
+    }
+    return `${value.toFixed(1)}%`;
+  };
+
   return (
     <div className="h-80 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
+        <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis 
             dataKey="date" 
             tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            tick={{ fontSize: 12 }}
+            axisLine={{ stroke: '#e0e0e0' }}
+            tickLine={{ stroke: '#e0e0e0' }}
           />
           <YAxis 
-            tickFormatter={(value) => 
-              showSIPChart 
-                ? `₹${(value / 100000).toFixed(1)}L`
-                : `${value.toFixed(1)}%`
-            }
+            tickFormatter={formatYAxisValue}
+            tick={{ fontSize: 12 }}
+            axisLine={{ stroke: '#e0e0e0' }}
+            tickLine={{ stroke: '#e0e0e0' }}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
@@ -87,7 +98,8 @@ const PerformanceChart = ({ chartData, fundComparisons, showSIPChart }: Performa
             stroke="#3B82F6"
             strokeWidth={3}
             dot={false}
-            name={fundComparisons[0]?.name || "Primary Fund"}
+            name={fundComparisons[0]?.name.substring(0, 25) + '...' || "Primary Fund"}
+            connectNulls={true}
           />
           
           {/* Comparison Lines */}
@@ -106,7 +118,8 @@ const PerformanceChart = ({ chartData, fundComparisons, showSIPChart }: Performa
                 stroke={fund.color}
                 strokeWidth={2}
                 dot={false}
-                name={fund.name.substring(0, 30) + '...'}
+                name={fund.name.substring(0, 25) + '...'}
+                connectNulls={true}
               />
             );
           })}
