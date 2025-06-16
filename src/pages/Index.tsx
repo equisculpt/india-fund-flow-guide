@@ -143,6 +143,7 @@ const Index = () => {
       <ReviewModal 
         open={showReviewModal}
         onOpenChange={setShowReviewModal}
+        onReviewSubmitted={handleReviewSubmitted}
       />
     </div>
   );

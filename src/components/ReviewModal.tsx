@@ -1,110 +1,74 @@
 
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Star } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
-import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { Star } from "lucide-react";
 
 interface ReviewModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onReviewSubmitted?: () => void;
 }
 
-const ReviewModal = ({ open, onOpenChange }: ReviewModalProps) => {
+const ReviewModal = ({ open, onOpenChange, onReviewSubmitted }: ReviewModalProps) => {
   const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useSupabaseAuthContext();
+  const [review, setReview] = useState("");
 
-  const handleSubmit = async () => {
-    if (!user || rating === 0 || !reviewText.trim()) {
-      toast.error('Please provide a rating and review');
-      return;
+  const handleSubmit = () => {
+    console.log('Review submitted:', { rating, review });
+    if (onReviewSubmitted) {
+      onReviewSubmitted();
     }
-
-    setIsSubmitting(true);
-    try {
-      const { error } = await supabase
-        .from('investor_reviews')
-        .insert({
-          user_id: user.id,
-          rating,
-          review_text: reviewText.trim(),
-        });
-
-      if (error) throw error;
-
-      toast.success('Thank you for your review!');
-      onOpenChange(false);
-      setRating(0);
-      setReviewText('');
-    } catch (error) {
-      console.error('Error submitting review:', error);
-      toast.error('Failed to submit review. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    onOpenChange(false);
+    setRating(0);
+    setReview("");
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Share Your Investment Experience</DialogTitle>
+          <DialogTitle>Rate Your Experience</DialogTitle>
         </DialogHeader>
-        
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div>
-            <p className="text-sm text-gray-600 mb-3">How would you rate your experience with SIP Brewery?</p>
-            <div className="flex gap-2">
+            <Label>Rating</Label>
+            <div className="flex gap-1 mt-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
                   onClick={() => setRating(star)}
-                  className="transition-colors"
+                  className="p-1"
                 >
                   <Star
-                    className={`h-8 w-8 ${
-                      star <= rating
-                        ? 'text-yellow-400 fill-yellow-400'
-                        : 'text-gray-300'
+                    className={`h-6 w-6 ${
+                      star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
                     }`}
                   />
                 </button>
               ))}
             </div>
           </div>
-
+          
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">
-              Tell us about your experience
-            </label>
+            <Label htmlFor="review">Your Review</Label>
             <Textarea
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              placeholder="Share your investment journey, returns, or what you like about our platform..."
-              rows={4}
-              className="w-full"
+              id="review"
+              placeholder="Tell us about your experience..."
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              className="mt-2"
             />
           </div>
-
-          <div className="flex gap-3">
-            <Button
-              onClick={handleSubmit}
-              disabled={rating === 0 || !reviewText.trim() || isSubmitting}
-              className="flex-1"
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Review'}
+          
+          <div className="flex gap-2 justify-end">
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
+              Skip
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="flex-1"
-            >
-              Maybe Later
+            <Button onClick={handleSubmit} disabled={rating === 0}>
+              Submit Review
             </Button>
           </div>
         </div>
