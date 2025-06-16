@@ -1,3 +1,4 @@
+
 interface MarketData {
   symbol: string;
   price: number;
@@ -65,7 +66,7 @@ export class EnhancedNAVDataService {
           aiScore: analysis.aiScore,
           confidence: analysis.confidenceLevel / 100,
           predicted3MonthReturn: analysis.predictedReturn3Month,
-          riskLevel: analysis.riskScore > 7 ? 'HIGH' : analysis.riskScore > 4 ? 'MEDIUM' : 'LOW',
+          riskLevel: analysis.riskScore > 7 ? 'HIGH' as const : analysis.riskScore > 4 ? 'MEDIUM' as const : 'LOW' as const,
           volatilityScore: analysis.volatilityScore,
           sharpeRatio: analysis.valuationScore,
           performanceRank: analysis.sectorRanking,
@@ -251,7 +252,7 @@ export class EnhancedNAVDataService {
         aiScore: analysis.aiScore,
         confidence: analysis.confidenceLevel / 100,
         predicted3MonthReturn: analysis.predictedReturn3Month,
-        riskLevel: analysis.riskScore > 7 ? 'HIGH' : analysis.riskScore > 4 ? 'MEDIUM' : 'LOW',
+        riskLevel: analysis.riskScore > 7 ? 'HIGH' as const : analysis.riskScore > 4 ? 'MEDIUM' as const : 'LOW' as const,
         volatilityScore: analysis.volatilityScore,
         sharpeRatio: analysis.valuationScore,
         performanceRank: analysis.sectorRanking,
