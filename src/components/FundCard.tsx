@@ -36,15 +36,26 @@ const FundCard = ({ fund }: FundCardProps) => {
   };
 
   const handleViewDetails = () => {
-    navigate(`/fund/${fund.id}`);
+    navigate(`/fund/${fund.id}`, {
+      state: {
+        fundData: fund
+      }
+    });
+  };
+
+  const handleCardClick = () => {
+    handleViewDetails();
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-300">
+    <Card 
+      className="hover:shadow-lg transition-shadow duration-300 cursor-pointer hover:bg-gray-50"
+      onClick={handleCardClick}
+    >
       <CardHeader className="pb-4">
         <div className="flex justify-between items-start">
           <div className="flex-1">
-            <CardTitle className="text-lg font-semibold line-clamp-2 mb-1">
+            <CardTitle className="text-lg font-semibold line-clamp-2 mb-1 hover:text-blue-600 transition-colors">
               {fund.scheme_name}
             </CardTitle>
             <p className="text-sm text-muted-foreground">{fund.amc_name}</p>
@@ -101,6 +112,10 @@ const FundCard = ({ fund }: FundCardProps) => {
           <Badge className={getRiskColor(fund.risk_level)}>
             {fund.risk_level || 'Unknown'} Risk
           </Badge>
+          <div className="flex items-center gap-1 text-sm text-blue-600 font-medium">
+            <BarChart3 className="h-4 w-4" />
+            Click to analyze
+          </div>
         </div>
 
         <div className="flex gap-2 pt-2">
@@ -108,12 +123,23 @@ const FundCard = ({ fund }: FundCardProps) => {
             variant="outline" 
             size="sm" 
             className="flex-1"
-            onClick={handleViewDetails}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleViewDetails();
+            }}
           >
             <BarChart3 className="h-4 w-4 mr-2" />
             View Analytics
           </Button>
-          <Button size="sm" className="flex-1">
+          <Button 
+            size="sm" 
+            className="flex-1"
+            onClick={(e) => {
+              e.stopPropagation();
+              // Handle invest action
+              console.log('Invest clicked for fund:', fund.id);
+            }}
+          >
             Invest Now
           </Button>
         </div>
