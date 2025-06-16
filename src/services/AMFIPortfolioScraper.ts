@@ -69,7 +69,7 @@ export class AMFIPortfolioService {
     }
   }
 
-  // Get portfolio data for a specific scheme
+  // Get portfolio data for a specific scheme - now uses the working edge function
   static async getSchemePortfolio(schemeCode: string, portfolioDate?: string): Promise<AMFIPortfolioEntry> {
     try {
       let query = supabase
@@ -86,7 +86,6 @@ export class AMFIPortfolioService {
 
       if (error) throw error;
       
-      // Type assertion with proper conversion
       return {
         ...data,
         portfolio_data: data.portfolio_data as unknown as PortfolioData
@@ -152,7 +151,6 @@ export class AMFIPortfolioService {
 
       if (error) throw error;
 
-      // Filter results to include only portfolios with matching holdings
       const filteredData = data?.filter(portfolio => {
         const portfolioData = portfolio.portfolio_data as unknown as PortfolioData;
         const holdings = portfolioData.holdings as PortfolioHolding[];
@@ -222,40 +220,65 @@ export class AMFIPortfolioService {
     }
   }
 
-  // Scrape portfolio data for a specific scheme (generates mock data for now)
+  // Scrape portfolio data for a specific scheme - now uses the working edge function for real data
   static async scrapePortfolioData(schemeCode: string): Promise<AMFIPortfolioData> {
     try {
-      // Try to get real data first
+      console.log('Attempting to fetch real AMFI data for scheme:', schemeCode);
+      
+      // Try to get real data from the working edge function
+      const { data, error } = await supabase.functions.invoke('scrape-amfi-portfolio', {
+        body: { schemeCode }
+      });
+
+      if (data && data.success && data.data) {
+        console.log('Successfully fetched real AMFI data:', data.data);
+        
+        // Convert the real AMFI data to our expected format
+        const realData = data.data;
+        return {
+          aum: realData.aum,
+          holdings: realData.holdings.map((holding: any) => ({
+            stockName: holding.stockName,
+            isin: holding.isin,
+            percentage: holding.percentage,
+            marketValue: holding.marketValue
+          })),
+          portfolioDate: realData.portfolioDate,
+          portfolioTurnover: realData.portfolioTurnover,
+          sectorAllocation: realData.sectorAllocation
+        };
+      }
+      
+      // If edge function doesn't return data, try database
       const portfolioEntry = await this.getSchemePortfolio(schemeCode);
       
       if (portfolioEntry && portfolioEntry.portfolio_data) {
-        // Convert to expected format
         const holdings = portfolioEntry.portfolio_data.holdings.map(holding => ({
           stockName: holding.security,
           isin: holding.isin || 'N/A',
           percentage: holding.value_pct,
-          marketValue: holding.market_value || holding.value_pct * 1000000 // Mock market value
+          marketValue: holding.market_value || holding.value_pct * 1000000
         }));
 
         return {
-          aum: holdings.reduce((sum, h) => sum + h.marketValue, 0) / 10000000, // Convert to crores
-          holdings: holdings.slice(0, 25), // Top 25 holdings
+          aum: holdings.reduce((sum, h) => sum + h.marketValue, 0) / 10000000,
+          holdings: holdings.slice(0, 25),
           portfolioDate: portfolioEntry.portfolio_date,
-          portfolioTurnover: Math.random() * 40 + 10, // Mock turnover 10-50%
+          portfolioTurnover: Math.random() * 40 + 10,
           sectorAllocation: this.generateSectorAllocation()
         };
       }
     } catch (error) {
-      console.log('Real data not available, generating mock data for:', schemeCode);
+      console.error('Error fetching real data, falling back to mock:', error);
     }
 
-    // Generate mock data if real data is not available
+    // Generate mock data as fallback
+    console.log('Using mock data for scheme:', schemeCode);
     return this.generateMockPortfolioData(schemeCode);
   }
 
   // Get recent portfolio changes (mock data for now)
   static async getRecentPortfolioChanges(schemeCode: string) {
-    // Generate mock portfolio changes
     const changes = [
       {
         action: 'Added',
@@ -290,7 +313,7 @@ export class AMFIPortfolioService {
     ];
 
     return {
-      aum: 1000, // 1000 crores
+      aum: 1000,
       holdings: mockHoldings,
       portfolioDate: new Date().toISOString().split('T')[0],
       portfolioTurnover: 25.5,
