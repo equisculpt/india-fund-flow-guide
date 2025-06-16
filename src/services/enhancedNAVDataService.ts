@@ -1,3 +1,4 @@
+
 interface MarketData {
   symbol: string;
   price: number;
@@ -195,8 +196,8 @@ export class EnhancedNAVDataService {
         .filter(fund => fund.nav > 0 && !isNaN(fund.nav))
         .sort((a, b) => b.aiScore - a.aiScore);
 
-      // Update rankings within categories
-      this.updateCategoryRankings(validFunds);
+      // Update rankings within categories - Fix the method call here
+      EnhancedNAVDataService.updateCategoryRankings(validFunds);
       
       console.log(`Returning ${validFunds.length} valid funds with NAV data`);
       return validFunds;
