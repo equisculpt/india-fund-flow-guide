@@ -17,59 +17,49 @@ Deno.serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log('Setting up portfolio scraping cron jobs...');
+    console.log('Setting up monthly portfolio scraping cron job...');
 
-    // Schedule daily portfolio scraping at 2:00 AM IST (20:30 UTC)
-    const portfolioCronSql = `
+    // Schedule monthly portfolio scraping on the 1st of every month at 2:00 AM IST (20:30 UTC)
+    const monthlyPortfolioCronSql = `
       SELECT cron.schedule(
-        'daily-portfolio-scraping',
-        '30 20 * * *', -- 20:30 UTC = 02:00 IST
+        'monthly-portfolio-scraping',
+        '30 20 1 * *', -- 20:30 UTC on 1st of every month = 02:00 IST
         $$
         SELECT
           net.http_post(
-              url:='https://pvtrwvvcgkppjlbyvflv.supabase.co/functions/v1/daily-portfolio-scraper',
+              url:='https://pvtrwvvcgkppjlbyvflv.supabase.co/functions/v1/monthly-portfolio-scraper',
               headers:='{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseServiceKey}"}'::jsonb,
-              body:='{"scheduled": true, "time": "daily_2am_ist"}'::jsonb
+              body:='{"scheduled": true, "time": "monthly_2am_ist"}'::jsonb
           ) as request_id;
         $$
       );
     `;
 
     const { data: cronData, error: cronError } = await supabase.rpc('execute_sql', {
-      query: portfolioCronSql
+      query: monthlyPortfolioCronSql
     });
 
     if (cronError) {
-      console.error('Error scheduling portfolio cron job:', cronError);
+      console.error('Error scheduling monthly portfolio cron job:', cronError);
       throw cronError;
     }
 
-    console.log('Portfolio cron job scheduled successfully:', cronData);
+    console.log('Monthly portfolio cron job scheduled successfully:', cronData);
 
-    // Also set up a weekly deep scraping job for Sundays at 1:00 AM IST
-    const weeklyCronSql = `
-      SELECT cron.schedule(
-        'weekly-deep-portfolio-scraping',
-        '30 19 * * 0', -- 19:30 UTC on Sundays = 01:00 IST on Mondays
-        $$
-        SELECT
-          net.http_post(
-              url:='https://pvtrwvvcgkppjlbyvflv.supabase.co/functions/v1/daily-portfolio-scraper',
-              headers:='{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseServiceKey}"}'::jsonb,
-              body:='{"scheduled": true, "time": "weekly_deep_scrape", "forceRefresh": true}'::jsonb
-          ) as request_id;
-        $$
-      );
+    // Remove any existing daily portfolio scraping jobs
+    const removeOldCronSql = `
+      SELECT cron.unschedule('daily-portfolio-scraping');
+      SELECT cron.unschedule('weekly-deep-portfolio-scraping');
     `;
 
-    const { data: weeklyCronData, error: weeklyCronError } = await supabase.rpc('execute_sql', {
-      query: weeklyCronSql
+    const { data: removeData, error: removeError } = await supabase.rpc('execute_sql', {
+      query: removeOldCronSql
     });
 
-    if (weeklyCronError) {
-      console.log('Weekly cron job warning (may already exist):', weeklyCronError);
+    if (!removeError) {
+      console.log('Removed old daily/weekly cron jobs:', removeData);
     } else {
-      console.log('Weekly deep scraping job scheduled:', weeklyCronData);
+      console.log('No old cron jobs to remove or error removing them:', removeError);
     }
 
     // List current portfolio-related cron jobs
@@ -84,10 +74,9 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Portfolio scraping cron jobs set up successfully',
+        message: 'Monthly portfolio scraping cron job set up successfully',
         scheduled_jobs: {
-          daily: 'daily-portfolio-scraping at 02:00 IST',
-          weekly: 'weekly-deep-portfolio-scraping at 01:00 IST on Sundays'
+          monthly: 'monthly-portfolio-scraping on 1st of every month at 02:00 IST'
         },
         cronJobs: cronJobs || []
       }),
@@ -100,11 +89,11 @@ Deno.serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error setting up portfolio cron jobs:', error);
+    console.error('Error setting up monthly portfolio cron job:', error);
     return new Response(
       JSON.stringify({ 
         error: error.message,
-        details: 'Failed to set up portfolio scraping cron jobs'
+        details: 'Failed to set up monthly portfolio scraping cron job'
       }),
       { 
         status: 500, 
