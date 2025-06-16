@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, TrendingUp, TrendingDown, AlertTriangle, Info, BarChart3 } from "lucide-react";
 import { EnhancedNAVDataService, AdvancedNAVAnalysis } from "@/services/enhancedNAVDataService";
-import EnhancedFundChart from "@/components/EnhancedFundChart";
+import AdvancedFundChart from "@/components/AdvancedFundChart";
 
 const FundDetailsPage = () => {
   const { fundId } = useParams();
@@ -139,21 +139,24 @@ const FundDetailsPage = () => {
           </div>
         </div>
 
+        {/* Advanced Fund Chart - This is where the comprehensive analysis will show */}
+        <AdvancedFundChart 
+          primaryFund={{
+            schemeCode: fundData.schemeCode,
+            schemeName: fundData.schemeName,
+            category: fundData.category,
+            nav: fundData.nav,
+            trendScore: fundData.trendScore
+          }}
+        />
+
         {/* Analysis Tabs */}
-        <Tabs defaultValue="performance" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="performance">Enhanced Charts</TabsTrigger>
+        <Tabs defaultValue="historical" className="space-y-6 mt-6">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="historical">Historical Analysis</TabsTrigger>
             <TabsTrigger value="analysis">Detailed Analysis</TabsTrigger>
             <TabsTrigger value="disclaimer">Important Info</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="performance">
-            <EnhancedFundChart 
-              initialFundCode={fundData.schemeCode}
-              initialFundName={fundData.schemeName}
-            />
-          </TabsContent>
 
           <TabsContent value="historical">
             <Card>
