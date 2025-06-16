@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export interface PortfolioHolding {
@@ -220,39 +219,17 @@ export class AMFIPortfolioService {
     }
   }
 
-  // Scrape portfolio data for a specific scheme - now uses the working edge function for real data
+  // Scrape portfolio data for a specific scheme - prioritizes database data first
   static async scrapePortfolioData(schemeCode: string): Promise<AMFIPortfolioData> {
     try {
-      console.log('Attempting to fetch real AMFI data for scheme:', schemeCode);
+      console.log('Fetching portfolio data for scheme:', schemeCode);
       
-      // Try to get real data from the working edge function
-      const { data, error } = await supabase.functions.invoke('scrape-amfi-portfolio', {
-        body: { schemeCode }
-      });
-
-      if (data && data.success && data.data) {
-        console.log('Successfully fetched real AMFI data:', data.data);
-        
-        // Convert the real AMFI data to our expected format
-        const realData = data.data;
-        return {
-          aum: realData.aum,
-          holdings: realData.holdings.map((holding: any) => ({
-            stockName: holding.stockName,
-            isin: holding.isin,
-            percentage: holding.percentage,
-            marketValue: holding.marketValue
-          })),
-          portfolioDate: realData.portfolioDate,
-          portfolioTurnover: realData.portfolioTurnover,
-          sectorAllocation: realData.sectorAllocation
-        };
-      }
-      
-      // If edge function doesn't return data, try database
+      // First, try to get data from database (already scraped data)
       const portfolioEntry = await this.getSchemePortfolio(schemeCode);
       
       if (portfolioEntry && portfolioEntry.portfolio_data) {
+        console.log('Found portfolio data in database:', portfolioEntry);
+        
         const holdings = portfolioEntry.portfolio_data.holdings.map(holding => ({
           stockName: holding.security,
           isin: holding.isin || 'N/A',
@@ -268,11 +245,36 @@ export class AMFIPortfolioService {
           sectorAllocation: this.generateSectorAllocation()
         };
       }
+      
+      console.log('No database data found, trying edge function for scheme:', schemeCode);
+      
+      // If no database data, try edge function as fallback
+      const { data, error } = await supabase.functions.invoke('scrape-amfi-portfolio', {
+        body: { schemeCode }
+      });
+
+      if (data && data.success && data.data) {
+        console.log('Successfully fetched real AMFI data from edge function:', data.data);
+        
+        const realData = data.data;
+        return {
+          aum: realData.aum,
+          holdings: realData.holdings.map((holding: any) => ({
+            stockName: holding.stockName,
+            isin: holding.isin,
+            percentage: holding.percentage,
+            marketValue: holding.marketValue
+          })),
+          portfolioDate: realData.portfolioDate,
+          portfolioTurnover: realData.portfolioTurnover,
+          sectorAllocation: realData.sectorAllocation
+        };
+      }
     } catch (error) {
-      console.error('Error fetching real data, falling back to mock:', error);
+      console.error('Error fetching data, falling back to mock:', error);
     }
 
-    // Generate mock data as fallback
+    // Generate mock data as final fallback
     console.log('Using mock data for scheme:', schemeCode);
     return this.generateMockPortfolioData(schemeCode);
   }
