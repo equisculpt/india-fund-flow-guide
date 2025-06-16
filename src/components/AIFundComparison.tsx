@@ -19,9 +19,9 @@ interface AdvancedSchemeData {
   category: string;
   subCategory: string;
   amcName: string;
-  aiScore: number;
+  trendScore: number; // Updated from aiScore
   confidence: number;
-  predicted3MonthReturn: number;
+  historical3MonthAverage: number; // Updated from predicted3MonthReturn
   historical3MonthData: Array<{date: string, nav: number}>;
   riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
   volatilityScore: number;
@@ -38,7 +38,7 @@ const AIFundComparison = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingMessage, setLoadingMessage] = useState("Loading pre-analyzed fund data...");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
-  const [sortBy, setSortBy] = useState<"aiScore" | "returns" | "risk">("aiScore");
+  const [sortBy, setSortBy] = useState<"trendScore" | "returns" | "risk">("trendScore"); // Updated from aiScore
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [fundsPerPage] = useState(50); // Increased since we're loading from DB
@@ -83,9 +83,9 @@ const AIFundComparison = () => {
           category: analysis.category,
           subCategory: analysis.subCategory || analysis.category,
           amcName: analysis.amcName,
-          aiScore: analysis.aiScore,
+          trendScore: analysis.trendScore, // Updated from aiScore
           confidence: analysis.confidence,
-          predicted3MonthReturn: analysis.predicted3MonthReturn,
+          historical3MonthAverage: analysis.historical3MonthAverage, // Updated from predicted3MonthReturn
           historical3MonthData: analysis.historical3MonthData || [],
           riskLevel: analysis.riskLevel,
           volatilityScore: analysis.volatilityScore,
@@ -132,9 +132,9 @@ const AIFundComparison = () => {
           category: analysis.category,
           subCategory: analysis.subCategory || analysis.category,
           amcName: analysis.amcName,
-          aiScore: analysis.aiScore,
+          trendScore: analysis.trendScore, // Updated from aiScore
           confidence: analysis.confidence,
-          predicted3MonthReturn: analysis.predicted3MonthReturn,
+          historical3MonthAverage: analysis.historical3MonthAverage, // Updated from predicted3MonthReturn
           historical3MonthData: analysis.historical3MonthData || [],
           riskLevel: analysis.riskLevel,
           volatilityScore: analysis.volatilityScore,
@@ -193,14 +193,14 @@ const AIFundComparison = () => {
 
   const sortedFunds = [...filteredFunds].sort((a, b) => {
     switch (sortBy) {
-      case "aiScore":
-        return b.aiScore - a.aiScore;
+      case "trendScore": // Updated from aiScore
+        return b.trendScore - a.trendScore;
       case "returns":
-        return b.predicted3MonthReturn - a.predicted3MonthReturn;
+        return b.historical3MonthAverage - a.historical3MonthAverage; // Updated from predicted3MonthReturn
       case "risk":
         return a.volatilityScore - b.volatilityScore;
       default:
-        return b.aiScore - a.aiScore;
+        return b.trendScore - a.trendScore; // Updated from aiScore
     }
   });
 
@@ -373,13 +373,13 @@ const AIFundComparison = () => {
             {/* Sort Buttons */}
             <div className="flex gap-4 mb-6">
               <Button
-                variant={sortBy === "aiScore" ? "default" : "outline"}
+                variant={sortBy === "trendScore" ? "default" : "outline"} // Updated from aiScore
                 size="sm"
-                onClick={() => setSortBy("aiScore")}
+                onClick={() => setSortBy("trendScore")} // Updated from aiScore
                 className="flex items-center gap-2"
               >
                 <Star className="h-4 w-4" />
-                AI Score
+                Trend Score
               </Button>
               <Button
                 variant={sortBy === "returns" ? "default" : "outline"}
@@ -441,8 +441,8 @@ const AIFundComparison = () => {
 
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">AI Score:</span>
-                          {getStarRating(fund.aiScore)}
+                          <span className="text-sm font-medium">Trend Score:</span>
+                          {getStarRating(fund.trendScore)} {/* Updated from aiScore */}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           Confidence: {(fund.confidence * 100).toFixed(0)}%
