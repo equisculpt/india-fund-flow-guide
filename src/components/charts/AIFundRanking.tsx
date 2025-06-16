@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Brain, Star, TrendingUp, Shield, Target, Zap, RefreshCw } from 'lucide-react';
-import { AMFIPortfolioScraper } from '@/services/AMFIPortfolioScraper';
+import { AMFIPortfolioService } from '@/services/AMFIPortfolioScraper';
 
 interface AIFundRankingProps {
   fundData: any;
@@ -21,7 +21,7 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
   const loadPortfolioData = async () => {
     setLoading(true);
     try {
-      const data = await AMFIPortfolioScraper.scrapePortfolioData(fundData.schemeCode);
+      const data = await AMFIPortfolioService.scrapePortfolioData(fundData.schemeCode);
       setPortfolioData(data);
     } catch (error) {
       console.error('Error loading portfolio data for AI analysis:', error);

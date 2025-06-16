@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TrendingUp, TrendingDown, Building, Briefcase, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { AMFIPortfolioScraper, AMFIPortfolioData } from '@/services/AMFIPortfolioScraper';
+import { AMFIPortfolioService, AMFIPortfolioData } from '@/services/AMFIPortfolioScraper';
 
 interface PortfolioHoldingsProps {
   fundData: any;
@@ -26,8 +25,8 @@ const PortfolioHoldings = ({ fundData }: PortfolioHoldingsProps) => {
     try {
       console.log('Loading portfolio data for scheme:', fundData.schemeCode);
       
-      const data = await AMFIPortfolioScraper.scrapePortfolioData(fundData.schemeCode);
-      const changes = await AMFIPortfolioScraper.getRecentPortfolioChanges(fundData.schemeCode);
+      const data = await AMFIPortfolioService.scrapePortfolioData(fundData.schemeCode);
+      const changes = await AMFIPortfolioService.getRecentPortfolioChanges(fundData.schemeCode);
       
       setPortfolioData(data);
       setRecentChanges(changes);
