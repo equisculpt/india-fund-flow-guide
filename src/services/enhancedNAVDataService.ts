@@ -1,4 +1,3 @@
-
 interface MarketData {
   symbol: string;
   price: number;
@@ -12,20 +11,22 @@ interface BenchmarkIndex extends MarketData {
   sector?: string;
 }
 
-interface AdvancedNAVAnalysis {
+export interface AdvancedNAVAnalysis {
   schemeCode: string;
   schemeName: string;
-  currentNAV: number;
+  nav: number;
+  date: string;
+  category: string;
+  subCategory: string;
+  amcName: string;
   aiScore: number;
-  predictedReturn3Month: number;
-  riskScore: number;
+  confidence: number;
+  predicted3MonthReturn: number;
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
   volatilityScore: number;
-  consistencyScore: number;
-  momentumScore: number;
-  valuationScore: number;
-  benchmarkComparison: number;
-  sectorRanking: number;
-  confidenceLevel: number;
+  sharpeRatio: number;
+  performanceRank: number;
+  totalSchemes: number;
 }
 
 export class EnhancedNAVDataService {
@@ -36,6 +37,65 @@ export class EnhancedNAVDataService {
   // Cache for performance
   private static benchmarkCache = new Map();
   private static cacheExpiry = 5 * 60 * 1000; // 5 minutes
+
+  // Add the missing getAdvancedAnalysis method
+  async getAdvancedAnalysis(): Promise<AdvancedNAVAnalysis[]> {
+    try {
+      console.log("Fetching schemes for advanced analysis...");
+      
+      // Fetch all schemes first
+      const response = await fetch(`${EnhancedNAVDataService.AMFI_API_BASE}/mf`);
+      const schemes = await response.json();
+      
+      // Take a sample of schemes for analysis (limiting to 50 for performance)
+      const sampleSchemes = schemes.slice(0, 50);
+      
+      // Convert to AdvancedNAVAnalysis format
+      const analysisData: AdvancedNAVAnalysis[] = sampleSchemes.map((scheme: any) => {
+        const analysis = this.calculateAdvancedMetrics(scheme, sampleSchemes);
+        
+        return {
+          schemeCode: scheme.schemeCode,
+          schemeName: scheme.schemeName,
+          nav: parseFloat(scheme.nav),
+          date: scheme.date,
+          category: this.categorizeScheme(scheme.schemeName),
+          subCategory: this.categorizeScheme(scheme.schemeName),
+          amcName: this.extractAMCName(scheme.schemeName),
+          aiScore: analysis.aiScore,
+          confidence: analysis.confidenceLevel / 100,
+          predicted3MonthReturn: analysis.predictedReturn3Month,
+          riskLevel: analysis.riskScore > 7 ? 'HIGH' : analysis.riskScore > 4 ? 'MEDIUM' : 'LOW',
+          volatilityScore: analysis.volatilityScore,
+          sharpeRatio: analysis.valuationScore,
+          performanceRank: analysis.sectorRanking,
+          totalSchemes: sampleSchemes.length
+        };
+      });
+      
+      // Sort by AI score
+      return analysisData.sort((a, b) => b.aiScore - a.aiScore);
+    } catch (error) {
+      console.error("Error in getAdvancedAnalysis:", error);
+      return [];
+    }
+  }
+
+  private categorizeScheme(schemeName: string): string {
+    const name = schemeName.toLowerCase();
+    if (name.includes('large cap') || name.includes('bluechip')) return 'Large Cap';
+    if (name.includes('mid cap') || name.includes('midcap')) return 'Mid Cap';
+    if (name.includes('small cap') || name.includes('smallcap')) return 'Small Cap';
+    if (name.includes('elss') || name.includes('tax')) return 'ELSS';
+    if (name.includes('hybrid') || name.includes('balanced')) return 'Hybrid';
+    if (name.includes('debt') || name.includes('bond')) return 'Debt';
+    return 'Large Cap'; // Default
+  }
+
+  private extractAMCName(schemeName: string): string {
+    const name = schemeName.split(' ')[0];
+    return name || 'Unknown';
+  }
 
   // Fetch real-time benchmark data from NSE/BSE
   static async getRealBenchmarkData(): Promise<BenchmarkIndex[]> {

@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 interface ProtectedRouteProps {
@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, requiredUserType }: ProtectedRouteProps) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user } = useEnhancedAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 

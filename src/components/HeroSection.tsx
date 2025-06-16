@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Shield, Award, Sparkles, ArrowRight, Play, X, DollarSign, Users, Target } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 import { useNavigate } from "react-router-dom";
 import { useInvestorStats } from "@/hooks/useInvestorData";
 import DemoSlideshow from "./DemoSlideshow";
@@ -9,7 +9,7 @@ import DemoSlideshow from "./DemoSlideshow";
 const HeroSection = () => {
   const [showDemo, setShowDemo] = useState(false);
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useEnhancedAuth();
   const navigate = useNavigate();
   const { data: investorStats } = useInvestorStats();
 
