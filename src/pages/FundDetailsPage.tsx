@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +12,7 @@ import AdvancedFundChart from "@/components/AdvancedFundChart";
 const FundDetailsPage = () => {
   const { fundId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [fundData, setFundData] = useState<AdvancedNAVAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -69,7 +69,7 @@ const FundDetailsPage = () => {
           <AlertTriangle className="h-12 w-12 text-yellow-600 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Fund Not Found</h2>
           <p className="text-gray-600 mb-4">The requested mutual fund could not be found.</p>
-          <Button onClick={() => window.history.back()}>Go Back</Button>
+          <Button onClick={() => navigate('/')}>Go Back to Funds</Button>
         </div>
       </div>
     );
@@ -82,7 +82,7 @@ const FundDetailsPage = () => {
         <div className="mb-6">
           <Button 
             variant="ghost" 
-            onClick={() => window.history.back()}
+            onClick={() => navigate('/')}
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
