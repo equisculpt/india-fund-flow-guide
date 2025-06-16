@@ -25,19 +25,19 @@ export interface AMFIPortfolioData {
 }
 
 export class AMFIPortfolioScraper {
-  private static SUPABASE_FUNCTION_URL = 'https://pvtrwvvcgkppjlbyvflv.supabase.co/functions/v1/scrape-amfi-portfolio';
+  private static ADVANCED_SCRAPER_URL = 'https://pvtrwvvcgkppjlbyvflv.supabase.co/functions/v1/scrape-amfi-portfolio-advanced';
   
-  static async scrapePortfolioData(schemeCode: string): Promise<AMFIPortfolioData | null> {
+  static async scrapePortfolioData(schemeCode: string, forceRefresh: boolean = false): Promise<AMFIPortfolioData | null> {
     try {
-      console.log(`Attempting to scrape real portfolio data for scheme: ${schemeCode}`);
+      console.log(`Fetching portfolio data for scheme: ${schemeCode} (forceRefresh: ${forceRefresh})`);
       
-      const response = await fetch(this.SUPABASE_FUNCTION_URL, {
+      const response = await fetch(this.ADVANCED_SCRAPER_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2dHJ3dnZjZ2twcGpsYnl2Zmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MDE0NTYsImV4cCI6MjA2NTQ3NzQ1Nn0.PW1tXy6_aKnbBj5vXEvtYYoClLJClLYbuVJiw9paEco`
         },
-        body: JSON.stringify({ schemeCode })
+        body: JSON.stringify({ schemeCode, forceRefresh })
       });
 
       if (!response.ok) {
@@ -47,7 +47,7 @@ export class AMFIPortfolioScraper {
       const result = await response.json();
       
       if (result.success) {
-        console.log('Successfully scraped real portfolio data:', result.data);
+        console.log('Successfully fetched portfolio data:', result.cached ? 'from cache' : 'fresh data');
         
         // Enhance the data with calculated fields for compatibility
         const enhancedData = {
@@ -61,13 +61,13 @@ export class AMFIPortfolioScraper {
         
         return enhancedData;
       } else {
-        console.warn('Failed to scrape real portfolio data:', result.error);
+        console.warn('Failed to fetch portfolio data:', result.error);
         console.log('Falling back to mock data for development');
         return this.getMockPortfolioData(schemeCode);
       }
       
     } catch (error) {
-      console.error('Error scraping AMFI portfolio data:', error);
+      console.error('Error fetching portfolio data:', error);
       console.log('Falling back to mock data for development');
       return this.getMockPortfolioData(schemeCode);
     }
@@ -236,5 +236,10 @@ export class AMFIPortfolioScraper {
         { action: 'Exited' as const, stockName: 'Yes Bank', percentageChange: '-2.1%', date: '5 Dec 2024' }
       ];
     }
+  }
+
+  // Utility method to trigger manual refresh of portfolio data
+  static async refreshPortfolioData(schemeCode: string): Promise<AMFIPortfolioData | null> {
+    return this.scrapePortfolioData(schemeCode, true);
   }
 }
