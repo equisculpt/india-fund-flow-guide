@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
-import { Star, TrendingUp, TrendingDown, Brain, BarChart3, Target, AlertTriangle, Info, Clock, Zap } from "lucide-react";
+import { Star, TrendingUp, TrendingDown, Brain, BarChart3, Target, AlertTriangle, Info, Clock, Zap, RefreshCw } from "lucide-react";
 import { EnhancedNAVDataService, AdvancedNAVAnalysis } from "@/services/enhancedNAVDataService";
 import FundSearch from "./FundSearch";
 import { useNavigate } from "react-router-dom";
@@ -35,56 +34,45 @@ const AIFundComparison = () => {
   const [funds, setFunds] = useState<AdvancedSchemeData[]>([]);
   const [filteredFunds, setFilteredFunds] = useState<AdvancedSchemeData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loadingMessage, setLoadingMessage] = useState("Initializing...");
+  const [loadingMessage, setLoadingMessage] = useState("Loading pre-analyzed fund data...");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [sortBy, setSortBy] = useState<"aiScore" | "returns" | "risk">("aiScore");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [fundsPerPage] = useState(25);
+  const [fundsPerPage] = useState(50); // Increased since we're loading from DB
+  const [lastUpdated, setLastUpdated] = useState<string>("");
   
   const navigate = useNavigate();
   const navService = new EnhancedNAVDataService();
 
   useEffect(() => {
-    const fetchAndAnalyzeFunds = async () => {
+    const fetchPreAnalyzedFunds = async () => {
       try {
         setLoading(true);
         setLoadingProgress(10);
-        setLoadingMessage("Fetching prioritized mutual fund schemes...");
+        setLoadingMessage("Loading pre-analyzed mutual fund data...");
         
-        console.log("Fetching enhanced fund analysis...");
+        console.log("Fetching pre-analyzed fund data...");
         
-        // Simulate progress updates during the fetch
+        // Simulate quick progress since data is pre-analyzed
         const progressInterval = setInterval(() => {
           setLoadingProgress(prev => {
             if (prev < 90) {
-              const increment = Math.random() * 15;
-              const newProgress = Math.min(prev + increment, 90);
-              
-              if (newProgress < 30) {
-                setLoadingMessage("Loading popular AMC funds...");
-              } else if (newProgress < 50) {
-                setLoadingMessage("Fetching NAV data...");
-              } else if (newProgress < 70) {
-                setLoadingMessage("Calculating AI scores...");
-              } else {
-                setLoadingMessage("Finalizing analysis...");
-              }
-              
-              return newProgress;
+              return Math.min(prev + 20, 90);
             }
             return prev;
           });
-        }, 500);
+        }, 200);
         
         const analysisData = await navService.getAdvancedAnalysis();
         
         clearInterval(progressInterval);
         setLoadingProgress(100);
-        setLoadingMessage("Analysis complete!");
+        setLoadingMessage("Data loaded successfully!");
         
-        console.log("Received analysis data:", analysisData.length, "funds");
+        console.log("Received pre-analyzed data:", analysisData.length, "funds");
         
         // Convert the analysis data
         const convertedFunds: AdvancedSchemeData[] = analysisData.map(analysis => ({
@@ -108,22 +96,64 @@ const AIFundComparison = () => {
         
         setFunds(convertedFunds);
         setFilteredFunds(convertedFunds);
+        setLastUpdated(convertedFunds[0]?.date || new Date().toISOString().split('T')[0]);
         
         setTimeout(() => {
           setLoading(false);
         }, 500);
         
       } catch (error) {
-        console.error("Error fetching fund analysis:", error);
-        setLoadingMessage("Error loading funds. Please try again.");
+        console.error("Error fetching pre-analyzed fund data:", error);
+        setLoadingMessage("Error loading fund data. Please try refreshing.");
         setTimeout(() => {
           setLoading(false);
         }, 2000);
       }
     };
 
-    fetchAndAnalyzeFunds();
+    fetchPreAnalyzedFunds();
   }, []);
+
+  const handleRefreshData = async () => {
+    try {
+      setRefreshing(true);
+      console.log("Triggering manual data refresh...");
+      
+      await navService.triggerDailyAnalysis();
+      
+      // Wait a bit then reload data
+      setTimeout(async () => {
+        const analysisData = await navService.getAdvancedAnalysis();
+        const convertedFunds: AdvancedSchemeData[] = analysisData.map(analysis => ({
+          schemeCode: analysis.schemeCode,
+          schemeName: analysis.schemeName,
+          nav: analysis.nav,
+          date: analysis.date,
+          category: analysis.category,
+          subCategory: analysis.subCategory || analysis.category,
+          amcName: analysis.amcName,
+          aiScore: analysis.aiScore,
+          confidence: analysis.confidence,
+          predicted3MonthReturn: analysis.predicted3MonthReturn,
+          historical3MonthData: analysis.historical3MonthData || [],
+          riskLevel: analysis.riskLevel,
+          volatilityScore: analysis.volatilityScore,
+          sharpeRatio: analysis.sharpeRatio,
+          performanceRank: analysis.performanceRank,
+          totalSchemes: analysis.totalSchemes
+        }));
+        
+        setFunds(convertedFunds);
+        setFilteredFunds(convertedFunds);
+        setLastUpdated(convertedFunds[0]?.date || new Date().toISOString().split('T')[0]);
+        setRefreshing(false);
+      }, 5000);
+      
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+      setRefreshing(false);
+    }
+  };
 
   // Filter funds based on search query and category
   useEffect(() => {
@@ -225,7 +255,7 @@ const AIFundComparison = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5 animate-pulse text-purple-600" />
-            AI Fund Analysis Loading...
+            Loading Pre-Analyzed Fund Data...
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -241,13 +271,13 @@ const AIFundComparison = () => {
             <Alert>
               <Zap className="h-4 w-4" />
               <AlertDescription>
-                <strong>Optimized Loading:</strong> We're analyzing top-performing funds from popular AMCs to ensure fast, 
-                quality results. This focused approach covers the most relevant investment options.
+                <strong>Fast Loading:</strong> Fund data is pre-analyzed daily at midnight IST (after NAV updates at 11 PM). 
+                This ensures quick access to comprehensive mutual fund analysis without live API delays.
               </AlertDescription>
             </Alert>
             
             <div className="space-y-4">
-              {[...Array(6)].map((_, i) => (
+              {[...Array(3)].map((_, i) => (
                 <div key={i} className="animate-pulse">
                   <div className="h-20 bg-gray-200 rounded-lg"></div>
                 </div>
@@ -257,9 +287,8 @@ const AIFundComparison = () => {
             <div className="text-center text-sm text-gray-600">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Clock className="h-4 w-4" />
-                <span>Estimated time: 30-60 seconds</span>
+                <span>Loading pre-analyzed data - Much faster than live analysis!</span>
               </div>
-              <p>Loading optimized selection of Indian mutual funds from top AMCs...</p>
             </div>
           </div>
         </CardContent>
@@ -271,22 +300,45 @@ const AIFundComparison = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-purple-600" />
-            AI-Powered Indian Mutual Fund Rankings & Analysis
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Comprehensive analysis of top-performing Indian mutual funds with real-time NAV data and historical performance
-          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="h-5 w-5 text-purple-600" />
+                AI-Powered Indian Mutual Fund Rankings & Analysis
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Comprehensive analysis of Indian mutual funds with daily updates at midnight IST
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefreshData}
+              disabled={refreshing}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+              {refreshing ? 'Refreshing...' : 'Refresh Data'}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
+            {/* Data Freshness Notice */}
+            <Alert>
+              <Clock className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Data Freshness:</strong> Last updated on {lastUpdated}. Fund analysis runs daily at midnight IST 
+                after NAV updates (11 PM IST). Showing {funds.length} analyzed Indian mutual funds.
+              </AlertDescription>
+            </Alert>
+
             {/* Performance Notice */}
             <Alert>
               <Zap className="h-4 w-4" />
               <AlertDescription>
-                <strong>Optimized Selection:</strong> Showing top funds from leading AMCs (SBI, HDFC, ICICI, Axis, Kotak, etc.) 
-                for faster loading and better investment relevance. Results are cached for 30 minutes.
+                <strong>Optimized Performance:</strong> Data is pre-analyzed daily covering all Indian mutual funds 
+                from leading AMCs. Analysis includes real NAV data, historical performance, and AI scoring.
               </AlertDescription>
             </Alert>
 
@@ -492,14 +544,15 @@ const AIFundComparison = () => {
               <div className="flex items-start gap-3">
                 <Brain className="h-5 w-5 text-purple-600 mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-purple-900 mb-2">AI Analysis Methodology</h4>
+                  <h4 className="font-semibold text-purple-900 mb-2">Daily AI Analysis Methodology</h4>
                   <div className="text-sm text-purple-800 space-y-1">
-                    <p>• <strong>Real-time Data:</strong> Current NAV and historical performance from AMFI</p>
+                    <p>• <strong>Daily Processing:</strong> All fund data analyzed daily at midnight IST after NAV updates</p>
+                    <p>• <strong>Real-time Data:</strong> Current NAV and historical performance from AMFI API</p>
                     <p>• <strong>Multi-factor Analysis:</strong> Technical indicators, fundamental metrics, category comparison</p>
-                    <p>• <strong>Risk Assessment:</strong> Volatility analysis, consistency scoring, drawdown protection</p>
+                    <p>• <strong>Risk Assessment:</strong> Volatility analysis, consistency scoring, performance tracking</p>
                     <p>• <strong>Category Ranking:</strong> Performance ranking within specific fund categories</p>
                     <p>• <strong>Historical Returns:</strong> Actual 3-month performance based on NAV changes</p>
-                    <p>• <strong>Optimized Selection:</strong> Focus on top AMCs and growth funds for relevance</p>
+                    <p>• <strong>Comprehensive Coverage:</strong> All Indian mutual funds from major AMCs</p>
                   </div>
                 </div>
               </div>
@@ -522,4 +575,3 @@ const AIFundComparison = () => {
 };
 
 export default AIFundComparison;
-
