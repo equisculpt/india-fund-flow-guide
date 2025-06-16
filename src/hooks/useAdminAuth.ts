@@ -28,25 +28,32 @@ export const useAdminAuth = () => {
 
       console.log('Checking admin session with token:', sessionToken);
 
-      const { data, error } = await supabase.rpc('execute_sql' as any, {
-        sql: `
-          SELECT au.id, au.email, au.full_name, au.is_active
-          FROM admin_users au
-          JOIN admin_sessions ads ON au.id = ads.admin_user_id
-          WHERE ads.session_token = $1 AND ads.expires_at > NOW()
-        `,
-        params: [sessionToken]
-      });
+      // Check if session exists and is valid
+      const { data: sessionData, error: sessionError } = await supabase
+        .from('admin_sessions')
+        .select(`
+          admin_user_id,
+          expires_at,
+          admin_users!admin_sessions_admin_user_id_fkey (
+            id,
+            email,
+            full_name,
+            is_active
+          )
+        `)
+        .eq('session_token', sessionToken)
+        .gt('expires_at', new Date().toISOString())
+        .single();
 
-      console.log('Admin session check result:', { data, error });
+      console.log('Admin session check result:', { sessionData, sessionError });
 
-      if (error || !data || data.length === 0) {
+      if (sessionError || !sessionData) {
         console.log('No valid admin session found, clearing token');
         localStorage.removeItem('admin_session_token');
         setAdminUser(null);
       } else {
-        console.log('Valid admin session found:', data[0]);
-        setAdminUser(data[0]);
+        console.log('Valid admin session found:', sessionData);
+        setAdminUser(sessionData.admin_users as AdminUser);
       }
     } catch (error) {
       console.error('Error checking admin session:', error);
@@ -63,15 +70,17 @@ export const useAdminAuth = () => {
       
       // Simple password check for demo (in production, use proper hashing)
       if (email === 'admin@sipbrewery.com' && password === 'admin123') {
-        // First, check if admin user exists
-        const { data: adminCheck, error: adminError } = await supabase.rpc('execute_sql' as any, {
-          sql: 'SELECT id FROM admin_users WHERE email = $1',
-          params: [email]
-        });
+        // Check if admin user exists
+        const { data: adminUser, error: adminError } = await supabase
+          .from('admin_users')
+          .select('id, email, full_name, is_active')
+          .eq('email', email)
+          .eq('is_active', true)
+          .single();
 
-        if (adminError || !adminCheck || adminCheck.length === 0) {
+        if (adminError || !adminUser) {
           console.error('Admin user not found:', adminError);
-          return { success: false, error: 'Admin user not found in database' };
+          return { success: false, error: 'Admin user not found or inactive' };
         }
 
         const sessionToken = Math.random().toString(36) + Date.now().toString(36);
@@ -81,26 +90,27 @@ export const useAdminAuth = () => {
         console.log('Creating admin session with token:', sessionToken);
 
         // Create session
-        const { data, error } = await supabase.rpc('execute_sql' as any, {
-          sql: `
-            INSERT INTO admin_sessions (admin_user_id, session_token, expires_at)
-            SELECT id, $1, $2 FROM admin_users WHERE email = $3
-            RETURNING admin_user_id
-          `,
-          params: [sessionToken, expiresAt.toISOString(), email]
-        });
+        const { data: sessionData, error: sessionError } = await supabase
+          .from('admin_sessions')
+          .insert({
+            admin_user_id: adminUser.id,
+            session_token: sessionToken,
+            expires_at: expiresAt.toISOString()
+          })
+          .select()
+          .single();
 
-        console.log('Session creation result:', { data, error });
+        console.log('Session creation result:', { sessionData, sessionError });
 
-        if (error) {
-          console.error('Failed to create admin session:', error);
+        if (sessionError) {
+          console.error('Failed to create admin session:', sessionError);
           return { success: false, error: 'Failed to create session' };
         }
 
         localStorage.setItem('admin_session_token', sessionToken);
         
-        // Immediately check session to update state
-        await checkAdminSession();
+        // Immediately update state
+        setAdminUser(adminUser);
         
         return { success: true };
       } else {
@@ -116,10 +126,10 @@ export const useAdminAuth = () => {
     try {
       const sessionToken = localStorage.getItem('admin_session_token');
       if (sessionToken) {
-        await supabase.rpc('execute_sql' as any, {
-          sql: 'DELETE FROM admin_sessions WHERE session_token = $1',
-          params: [sessionToken]
-        });
+        await supabase
+          .from('admin_sessions')
+          .delete()
+          .eq('session_token', sessionToken);
       }
       localStorage.removeItem('admin_session_token');
       setAdminUser(null);

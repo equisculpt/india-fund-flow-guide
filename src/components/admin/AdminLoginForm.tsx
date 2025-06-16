@@ -10,7 +10,7 @@ import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 const AdminLoginForm = () => {
   const [email, setEmail] = useState('admin@sipbrewery.com');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('admin123');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAdminAuth();
