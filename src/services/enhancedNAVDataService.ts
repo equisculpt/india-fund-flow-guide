@@ -38,14 +38,33 @@ export class EnhancedNAVDataService {
   private static benchmarkCache = new Map();
   private static cacheExpiry = 5 * 60 * 1000; // 5 minutes
 
-  // Enhanced method to get individual scheme NAV data
+  // Enhanced method to get individual scheme NAV data using latest endpoint
   private static async getSchemeNAVData(schemeCode: string): Promise<any> {
     try {
-      const response = await fetch(`${this.AMFI_API_BASE}/mf/${schemeCode}`);
+      console.log(`Fetching NAV for scheme ${schemeCode}...`);
+      const response = await fetch(`${this.AMFI_API_BASE}/mf/${schemeCode}/latest`);
+      
+      if (!response.ok) {
+        console.warn(`Failed to fetch latest NAV for scheme ${schemeCode}, trying fallback...`);
+        // Fallback to historical data and get the latest
+        const historyResponse = await fetch(`${this.AMFI_API_BASE}/mf/${schemeCode}`);
+        if (!historyResponse.ok) throw new Error('Both endpoints failed');
+        
+        const historyData = await historyResponse.json();
+        if (historyData && historyData.data && historyData.data.length > 0) {
+          const latestRecord = historyData.data[0];
+          return {
+            nav: parseFloat(latestRecord.nav),
+            date: latestRecord.date
+          };
+        }
+        return null;
+      }
+      
       const data = await response.json();
+      console.log(`NAV data for ${schemeCode}:`, data);
       
       if (data && data.data && data.data.length > 0) {
-        // Get the latest NAV record
         const latestRecord = data.data[0];
         return {
           nav: parseFloat(latestRecord.nav),
@@ -67,6 +86,8 @@ export class EnhancedNAVDataService {
       // Fetch all schemes first
       const response = await fetch(`${EnhancedNAVDataService.AMFI_API_BASE}/mf`);
       const schemes = await response.json();
+      
+      console.log(`Fetched ${schemes.length} total schemes`);
       
       // Filter for Indian funds and take a sample (limiting to 30 for better performance)
       const indianSchemes = schemes
@@ -90,16 +111,17 @@ export class EnhancedNAVDataService {
       // Fetch NAV data for each scheme with rate limiting
       const analysisPromises = indianSchemes.map(async (scheme: any, index: number) => {
         // Add delay to prevent rate limiting
-        await new Promise(resolve => setTimeout(resolve, index * 100));
+        await new Promise(resolve => setTimeout(resolve, index * 200));
         
-        const navData = await EnhancedNAVDataService.getSchemeNAVData(scheme.schemeCode);
+        let navData = await EnhancedNAVDataService.getSchemeNAVData(scheme.schemeCode);
         
-        if (!navData || !navData.nav) {
+        if (!navData || !navData.nav || isNaN(navData.nav)) {
           // Generate mock NAV if real data is unavailable
           navData = {
             nav: 50 + Math.random() * 500,
             date: new Date().toISOString().split('T')[0]
           };
+          console.log(`Using mock NAV for ${scheme.schemeName}: ${navData.nav}`);
         }
 
         const analysis = EnhancedNAVDataService.calculateAdvancedMetrics({
@@ -131,9 +153,12 @@ export class EnhancedNAVDataService {
       const analysisData = await Promise.all(analysisPromises);
       
       // Sort by AI score and filter out any invalid entries
-      return analysisData
+      const validFunds = analysisData
         .filter(fund => fund.nav > 0 && !isNaN(fund.nav))
         .sort((a, b) => b.aiScore - a.aiScore);
+      
+      console.log(`Returning ${validFunds.length} valid funds with NAV data`);
+      return validFunds;
     } catch (error) {
       console.error("Error in getAdvancedAnalysis:", error);
       return this.getFallbackData();
