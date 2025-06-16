@@ -32,6 +32,7 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
   const [lumpsumReturns, setLumpsumReturns] = useState<Record<string, { absoluteReturn: number; irrReturn: number } | null>>({});
   const [loading, setLoading] = useState(false);
   const [showSIPData, setShowSIPData] = useState(false);
+  const [showPercentage, setShowPercentage] = useState(false);
   const [availableFunds, setAvailableFunds] = useState<any[]>([]);
 
   const navService = new EnhancedNAVDataService();
@@ -47,7 +48,7 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
   const loadAvailableFunds = async () => {
     try {
       const funds = await navService.getAdvancedAnalysis();
-      setAvailableFunds(funds.slice(0, 50)); // Limit to top 50 funds for performance
+      setAvailableFunds(funds.slice(0, 50));
     } catch (error) {
       console.error('Error loading available funds:', error);
     }
@@ -58,26 +59,21 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
     
     setLoading(true);
     try {
-      // Load NAV history for all funds
       const allNavData: Record<string, ExtendedNAVHistory[]> = {};
       const allSipReturns: Record<string, SIPCalculationResult | null> = {};
       const allLumpsumReturns: Record<string, { absoluteReturn: number; irrReturn: number } | null> = {};
 
       for (const fund of comparisonFunds) {
-        // Get NAV history
         const navHistory = await navService.getExtendedNAVHistory(fund.code, period);
         allNavData[fund.code] = navHistory;
 
-        // Get SIP returns
         const sipReturn = await navService.calculateSIPReturns(fund.code, period, 10000);
         allSipReturns[fund.code] = sipReturn;
 
-        // Get lumpsum returns
         const lumpsumReturn = await navService.calculateLumpsumReturns(fund.code, period);
         allLumpsumReturns[fund.code] = lumpsumReturn;
       }
 
-      // Merge data for chart
       const mergedData = mergeChartData(allNavData);
       setChartData(mergedData);
       setSipReturns(allSipReturns);
@@ -93,12 +89,20 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
   const mergeChartData = (allNavData: Record<string, ExtendedNAVHistory[]>) => {
     const allDates = new Set<string>();
     
-    // Collect all unique dates
     Object.values(allNavData).forEach(navHistory => {
       navHistory.forEach(item => allDates.add(item.nav_date));
     });
 
     const sortedDates = Array.from(allDates).sort();
+    
+    // Calculate percentage changes
+    const fundStartValues: Record<string, number> = {};
+    comparisonFunds.forEach(fund => {
+      const navData = allNavData[fund.code] || [];
+      if (navData.length > 0) {
+        fundStartValues[fund.code] = Number(navData[navData.length - 1].nav_value);
+      }
+    });
     
     return sortedDates.map(date => {
       const dataPoint: any = {
@@ -110,7 +114,15 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
         const navData = allNavData[fund.code] || [];
         const navItem = navData.find(item => item.nav_date === date);
         if (navItem) {
-          dataPoint[fund.code] = Number(navItem.nav_value);
+          const navValue = Number(navItem.nav_value);
+          dataPoint[fund.code] = navValue;
+          
+          // Calculate percentage change from start
+          const startValue = fundStartValues[fund.code];
+          if (startValue) {
+            const percentChange = ((navValue - startValue) / startValue) * 100;
+            dataPoint[`${fund.code}_percent`] = Number(percentChange.toFixed(2));
+          }
         }
       });
 
@@ -119,7 +131,7 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
   };
 
   const addFundForComparison = (fundCode: string, fundName: string) => {
-    if (comparisonFunds.length >= 6) return; // Limit to 6 funds
+    if (comparisonFunds.length >= 6) return;
     
     const newFund: ComparisonFund = {
       code: fundCode,
@@ -131,11 +143,37 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
   };
 
   const removeFund = (fundCode: string) => {
-    if (comparisonFunds.length <= 1) return; // Keep at least one fund
+    if (comparisonFunds.length <= 1) return;
     setComparisonFunds(comparisonFunds.filter(fund => fund.code !== fundCode));
   };
 
-  const formatTooltipValue = (value: number) => `₹${value.toFixed(4)}`;
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload?.length) return null;
+
+    const data = payload[0]?.payload;
+    if (!data) return null;
+
+    return (
+      <div className="bg-white p-3 border rounded-lg shadow-lg">
+        <p className="font-medium mb-2">{format(new Date(data.fullDate), 'PPP')}</p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex items-center gap-2 text-sm">
+            <div 
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span>{entry.name}:</span>
+            <span className="font-medium">
+              {showPercentage 
+                ? `${entry.value >= 0 ? '+' : ''}${entry.value.toFixed(2)}%`
+                : `₹${entry.value.toFixed(4)}`
+              }
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -145,6 +183,13 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
           <CardTitle className="flex items-center justify-between">
             <span>Enhanced Fund Performance Chart</span>
             <div className="flex gap-2">
+              <Button
+                variant={showPercentage ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowPercentage(!showPercentage)}
+              >
+                {showPercentage ? 'Show Value' : 'Show %'}
+              </Button>
               <Button
                 variant={showSIPData ? "default" : "outline"}
                 size="sm"
@@ -247,25 +292,19 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
                   />
                   <YAxis 
                     tick={{ fontSize: 12 }}
-                    tickFormatter={(value) => `₹${value.toFixed(0)}`}
+                    tickFormatter={(value) => showPercentage ? `${value.toFixed(1)}%` : `₹${value.toFixed(0)}`}
                   />
-                  <Tooltip 
-                    formatter={formatTooltipValue}
-                    labelFormatter={(label, payload) => {
-                      const dataPoint = payload?.[0]?.payload;
-                      return dataPoint ? format(new Date(dataPoint.fullDate), 'PPP') : label;
-                    }}
-                  />
+                  <Tooltip content={<CustomTooltip />} />
                   <Legend />
                   {comparisonFunds.map((fund) => (
                     <Line
                       key={fund.code}
                       type="monotone"
-                      dataKey={fund.code}
+                      dataKey={showPercentage ? `${fund.code}_percent` : fund.code}
                       stroke={fund.color}
                       strokeWidth={2}
                       name={fund.name.substring(0, 30) + '...'}
-                      dot={{ fill: fund.color, strokeWidth: 2, r: 3 }}
+                      dot={false}
                     />
                   ))}
                 </LineChart>
@@ -314,7 +353,7 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
                         </div>
                       </div>
                     ) : (
-                      <div className="text-sm text-gray-500">Data not available</div>
+                      <div className="text-sm text-gray-500">Historical data available tomorrow</div>
                     )}
                   </div>
                 );
@@ -369,7 +408,7 @@ const EnhancedFundChart = ({ initialFundCode, initialFundName }: EnhancedFundCha
                           </div>
                         </div>
                       ) : (
-                        <div className="text-sm text-gray-500">Data not available</div>
+                        <div className="text-sm text-gray-500">Historical data available tomorrow</div>
                       )}
                     </div>
                   );

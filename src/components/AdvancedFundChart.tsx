@@ -12,9 +12,13 @@ import { EnhancedNAVDataService } from '@/services/enhancedNAVDataService';
 interface ChartDataPoint {
   date: string;
   fundNAV: number;
+  fundNAVPercent: number;
   benchmark?: number;
+  benchmarkPercent?: number;
   comparison1?: number;
+  comparison1Percent?: number;
   comparison2?: number;
+  comparison2Percent?: number;
   formattedDate: string;
 }
 
@@ -31,7 +35,7 @@ interface AdvancedFundChartProps {
     schemeName: string;
     category: string;
     nav: number;
-    aiScore?: number;
+    trendScore?: number;
   };
   className?: string;
 }
@@ -42,6 +46,7 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
   const [loading, setLoading] = useState(true);
   const [benchmarkData, setBenchmarkData] = useState<any[]>([]);
   const [selectedBenchmark, setSelectedBenchmark] = useState<string>('');
+  const [showPercentage, setShowPercentage] = useState(false);
   const [fundComparisons, setFundComparisons] = useState<FundComparison[]>([
     { id: 'benchmark', name: 'Benchmark Index', color: '#10B981', enabled: true },
     { id: 'comparison1', name: 'Top Performer', color: '#F59E0B', enabled: false },
@@ -84,9 +89,13 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
       startDate.setDate(startDate.getDate() - days);
 
       // Generate realistic NAV progression
-      let currentNAV = primaryFund.nav * (0.85 + Math.random() * 0.15); // Start 15% lower on average
+      let currentNAV = primaryFund.nav * (0.85 + Math.random() * 0.15);
+      let benchmarkStart = getCategoryBenchmarkStart(primaryFund.category);
+      let comparison1Start = currentNAV * (0.95 + Math.random() * 0.1);
+      let comparison2Start = currentNAV * (0.98 + Math.random() * 0.04);
+      
       const dailyVolatility = getCategoryVolatility(primaryFund.category);
-      const trendDirection = Math.random() > 0.3 ? 1 : -1; // 70% chance of upward trend
+      const trendDirection = Math.random() > 0.3 ? 1 : -1;
       
       for (let i = 0; i <= days; i += Math.max(1, Math.floor(days / 50))) {
         const currentDate = new Date(startDate);
@@ -94,18 +103,31 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
         
         // Simulate realistic NAV movement
         const randomChange = (Math.random() - 0.5) * dailyVolatility;
-        const trendChange = trendDirection * 0.001 * (primaryFund.aiScore || 5);
+        const trendChange = trendDirection * 0.001 * (primaryFund.trendScore || 5);
         currentNAV *= (1 + randomChange + trendChange);
         
-        // Generate benchmark data (simulated)
+        // Generate benchmark and comparison data
         const benchmarkValue = generateBenchmarkValue(currentDate, primaryFund.category);
+        const comparison1Value = comparison1Start * (currentNAV / (primaryFund.nav * 0.9));
+        const comparison2Value = comparison2Start * (currentNAV / (primaryFund.nav * 0.99));
+        
+        // Calculate percentage changes from start
+        const startNAV = data.length === 0 ? currentNAV : data[0].fundNAV;
+        const fundNAVPercent = ((currentNAV - startNAV) / startNAV) * 100;
+        const benchmarkPercent = ((benchmarkValue - benchmarkStart) / benchmarkStart) * 100;
+        const comparison1Percent = ((comparison1Value - comparison1Start) / comparison1Start) * 100;
+        const comparison2Percent = ((comparison2Value - comparison2Start) / comparison2Start) * 100;
         
         data.push({
           date: currentDate.toISOString().split('T')[0],
           fundNAV: Number(currentNAV.toFixed(4)),
+          fundNAVPercent: Number(fundNAVPercent.toFixed(2)),
           benchmark: benchmarkValue,
-          comparison1: currentNAV * (0.95 + Math.random() * 0.1), // Top performer simulation
-          comparison2: currentNAV * (0.98 + Math.random() * 0.04), // Category average simulation
+          benchmarkPercent: Number(benchmarkPercent.toFixed(2)),
+          comparison1: comparison1Value,
+          comparison1Percent: Number(comparison1Percent.toFixed(2)),
+          comparison2: comparison2Value,
+          comparison2Percent: Number(comparison2Percent.toFixed(2)),
           formattedDate: currentDate.toLocaleDateString()
         });
       }
@@ -113,6 +135,8 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
       // Ensure the last point matches current NAV
       if (data.length > 0) {
         data[data.length - 1].fundNAV = primaryFund.nav;
+        const startNAV = data[0].fundNAV;
+        data[data.length - 1].fundNAVPercent = ((primaryFund.nav - startNAV) / startNAV) * 100;
       }
 
       setChartData(data);
@@ -146,15 +170,16 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
     return volatilityMap[category] || 0.010;
   };
 
+  const getCategoryBenchmarkStart = (category: string): number => {
+    return category.includes('Large') ? 24800 : 
+           category.includes('Mid') ? 58500 : 
+           category.includes('Small') ? 17200 : 25000;
+  };
+
   const generateBenchmarkValue = (date: Date, category: string): number => {
-    // Simulate benchmark index value
-    const baseValue = category.includes('Large') ? 24800 : 
-                     category.includes('Mid') ? 58500 : 
-                     category.includes('Small') ? 17200 : 25000;
-    
+    const baseValue = getCategoryBenchmarkStart(category);
     const daysSinceEpoch = Math.floor(date.getTime() / (1000 * 60 * 60 * 24));
     const variation = Math.sin(daysSinceEpoch / 30) * 0.05 + Math.random() * 0.02 - 0.01;
-    
     return baseValue * (1 + variation);
   };
 
@@ -188,6 +213,38 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
 
   const performance = calculatePerformance(chartData);
 
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload?.length) return null;
+
+    const data = payload[0]?.payload;
+    if (!data) return null;
+
+    return (
+      <div className="bg-white p-3 border rounded-lg shadow-lg">
+        <p className="font-medium mb-2">{new Date(data.date).toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        })}</p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex items-center gap-2 text-sm">
+            <div 
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span>{entry.name}:</span>
+            <span className="font-medium">
+              {showPercentage 
+                ? `${entry.value >= 0 ? '+' : ''}${entry.value.toFixed(2)}%`
+                : `₹${entry.value.toFixed(4)}`
+              }
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <Card className={className}>
@@ -213,11 +270,11 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
               {primaryFund.schemeName}
             </CardTitle>
             <div className="flex items-center gap-4 mt-2">
-              {primaryFund.aiScore && (
+              {primaryFund.trendScore && (
                 <div className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{primaryFund.aiScore}/10</span>
-                  <span className="text-sm text-muted-foreground">AI Score</span>
+                  <span className="font-semibold">{primaryFund.trendScore}/10</span>
+                  <span className="text-sm text-muted-foreground">Trend Score</span>
                 </div>
               )}
               <Badge variant={performance.return >= 0 ? "default" : "destructive"}>
@@ -228,6 +285,13 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
           </div>
           
           <div className="flex gap-2">
+            <Button
+              variant={showPercentage ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowPercentage(!showPercentage)}
+            >
+              {showPercentage ? "Show Value" : "Show %"}
+            </Button>
             <Select value={period} onValueChange={(value: any) => setPeriod(value)}>
               <SelectTrigger className="w-20">
                 <SelectValue />
@@ -266,21 +330,6 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
               </div>
             ))}
           </div>
-          
-          {benchmarkData.length > 0 && (
-            <Select value={selectedBenchmark} onValueChange={setSelectedBenchmark}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Select benchmark" />
-              </SelectTrigger>
-              <SelectContent>
-                {benchmarkData.map(benchmark => (
-                  <SelectItem key={benchmark.symbol} value={benchmark.symbol}>
-                    {benchmark.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
         </div>
 
         {/* Advanced Chart */}
@@ -294,27 +343,18 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
               />
               <YAxis 
                 domain={['dataMin - 1', 'dataMax + 1']}
-                tickFormatter={(value) => `₹${value.toFixed(0)}`}
+                tickFormatter={(value) => showPercentage ? `${value.toFixed(1)}%` : `₹${value.toFixed(0)}`}
               />
-              <Tooltip 
-                labelFormatter={(label) => new Date(label).toLocaleDateString()}
-                formatter={(value: number, name: string) => [
-                  `₹${value.toFixed(4)}`,
-                  name === 'fundNAV' ? primaryFund.schemeName :
-                  name === 'benchmark' ? 'Benchmark' :
-                  name === 'comparison1' ? 'Top Performer' :
-                  name === 'comparison2' ? 'Category Average' : name
-                ]}
-              />
+              <Tooltip content={<CustomTooltip />} />
               <Legend />
               
               {/* Primary Fund Line */}
               <Line
                 type="monotone"
-                dataKey="fundNAV"
+                dataKey={showPercentage ? "fundNAVPercent" : "fundNAV"}
                 stroke="#3B82F6"
                 strokeWidth={3}
-                dot={{ fill: '#3B82F6', strokeWidth: 2, r: 2 }}
+                dot={false}
                 name={primaryFund.schemeName}
               />
               
@@ -322,7 +362,7 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
               {fundComparisons.find(c => c.id === 'benchmark')?.enabled && (
                 <Line
                   type="monotone"
-                  dataKey="benchmark"
+                  dataKey={showPercentage ? "benchmarkPercent" : "benchmark"}
                   stroke="#10B981"
                   strokeWidth={2}
                   strokeDasharray="5 5"
@@ -335,7 +375,7 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
               {fundComparisons.find(c => c.id === 'comparison1')?.enabled && (
                 <Line
                   type="monotone"
-                  dataKey="comparison1"
+                  dataKey={showPercentage ? "comparison1Percent" : "comparison1"}
                   stroke="#F59E0B"
                   strokeWidth={2}
                   dot={false}
@@ -346,7 +386,7 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
               {fundComparisons.find(c => c.id === 'comparison2')?.enabled && (
                 <Line
                   type="monotone"
-                  dataKey="comparison2"
+                  dataKey={showPercentage ? "comparison2Percent" : "comparison2"}
                   stroke="#8B5CF6"
                   strokeWidth={2}
                   dot={false}
