@@ -164,6 +164,99 @@ export type Database = {
           },
         ]
       }
+      daily_fund_analysis: {
+        Row: {
+          ai_score: number
+          amc_name: string
+          analysis_date: string
+          category: string
+          confidence: number
+          created_at: string
+          historical_3month_data: Json | null
+          id: string
+          nav: number
+          nav_date: string
+          performance_rank: number
+          predicted_3month_return: number
+          risk_level: string
+          scheme_code: string
+          scheme_name: string
+          sharpe_ratio: number
+          sub_category: string | null
+          total_schemes_in_category: number
+          updated_at: string
+          volatility_score: number
+        }
+        Insert: {
+          ai_score: number
+          amc_name: string
+          analysis_date?: string
+          category: string
+          confidence: number
+          created_at?: string
+          historical_3month_data?: Json | null
+          id?: string
+          nav: number
+          nav_date: string
+          performance_rank: number
+          predicted_3month_return: number
+          risk_level: string
+          scheme_code: string
+          scheme_name: string
+          sharpe_ratio: number
+          sub_category?: string | null
+          total_schemes_in_category: number
+          updated_at?: string
+          volatility_score: number
+        }
+        Update: {
+          ai_score?: number
+          amc_name?: string
+          analysis_date?: string
+          category?: string
+          confidence?: number
+          created_at?: string
+          historical_3month_data?: Json | null
+          id?: string
+          nav?: number
+          nav_date?: string
+          performance_rank?: number
+          predicted_3month_return?: number
+          risk_level?: string
+          scheme_code?: string
+          scheme_name?: string
+          sharpe_ratio?: number
+          sub_category?: string | null
+          total_schemes_in_category?: number
+          updated_at?: string
+          volatility_score?: number
+        }
+        Relationships: []
+      }
+      extended_nav_history: {
+        Row: {
+          created_at: string
+          id: string
+          nav_date: string
+          nav_value: number
+          scheme_code: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nav_date: string
+          nav_value: number
+          scheme_code: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nav_date?: string
+          nav_value?: number
+          scheme_code?: string
+        }
+        Relationships: []
+      }
       investments: {
         Row: {
           agent_id: string | null
@@ -684,9 +777,27 @@ export type Database = {
         Args: { p_fund_id: string; p_start_date: string; p_end_date: string }
         Returns: number
       }
+      calculate_irr_for_period: {
+        Args: { start_nav: number; end_nav: number; days_period: number }
+        Returns: number
+      }
       calculate_portfolio_analytics: {
         Args: { target_user_id: string }
         Returns: undefined
+      }
+      calculate_sip_irr: {
+        Args: {
+          scheme_code_param: string
+          start_date_param: string
+          end_date_param: string
+          monthly_sip_amount?: number
+        }
+        Returns: {
+          total_invested: number
+          final_value: number
+          absolute_return: number
+          irr_percentage: number
+        }[]
       }
       calculate_sip_returns: {
         Args: {

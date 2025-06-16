@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,15 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { ArrowLeft, TrendingUp, TrendingDown, AlertTriangle, Info, Zap } from "lucide-react";
 import { EnhancedNAVDataService, AdvancedNAVAnalysis } from "@/services/enhancedNAVDataService";
+import EnhancedFundChart from "@/components/EnhancedFundChart";
 
 const FundDetailsPage = () => {
   const { fundId } = useParams();
   const location = useLocation();
   const [fundData, setFundData] = useState<AdvancedNAVAnalysis | null>(null);
-  const [historicalData, setHistoricalData] = useState<Array<{date: string, nav: number}>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,26 +22,7 @@ const FundDetailsPage = () => {
         
         // Check if fund data was passed via navigation state
         if (location.state?.fundData) {
-          const fund = location.state.fundData;
-          setFundData(fund);
-          
-          // If historical data is available, use it
-          if (fund.historical3MonthData && fund.historical3MonthData.length > 0) {
-            setHistoricalData(fund.historical3MonthData);
-          } else {
-            // Fetch historical data separately
-            const response = await fetch(`https://api.mfapi.in/mf/${fundId}`);
-            if (response.ok) {
-              const data = await response.json();
-              if (data.data && data.data.length > 0) {
-                const last3Months = data.data.slice(0, 90).map((record: any) => ({
-                  date: record.date,
-                  nav: parseFloat(record.nav)
-                }));
-                setHistoricalData(last3Months);
-              }
-            }
-          }
+          setFundData(location.state.fundData);
         } else if (fundId) {
           // Fetch fund data if not available in state
           const navService = new EnhancedNAVDataService();
@@ -52,7 +31,6 @@ const FundDetailsPage = () => {
           
           if (fund) {
             setFundData(fund);
-            setHistoricalData(fund.historical3MonthData || []);
           }
         }
       } catch (error) {
@@ -64,25 +42,6 @@ const FundDetailsPage = () => {
 
     loadFundData();
   }, [fundId, location.state]);
-
-  const chartData = historicalData.slice().reverse().map((item, index) => ({
-    ...item,
-    index,
-    formattedDate: new Date(item.date).toLocaleDateString('en-IN', { 
-      day: '2-digit', 
-      month: 'short' 
-    })
-  }));
-
-  const calculateReturn = (startNav: number, endNav: number) => {
-    return ((endNav - startNav) / startNav) * 100;
-  };
-
-  const getReturnColor = (returnValue: number) => {
-    if (returnValue > 5) return '#10B981'; // Green
-    if (returnValue > 0) return '#F59E0B'; // Yellow
-    return '#EF4444'; // Red
-  };
 
   const getPredictionColor = (prediction: number) => {
     if (prediction > 10) return '#10B981'; // Strong positive - Green
@@ -182,90 +141,17 @@ const FundDetailsPage = () => {
         {/* Analysis Tabs */}
         <Tabs defaultValue="performance" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="performance">Performance Chart</TabsTrigger>
+            <TabsTrigger value="performance">Enhanced Charts</TabsTrigger>
             <TabsTrigger value="prediction">AI Prediction</TabsTrigger>
             <TabsTrigger value="analysis">Detailed Analysis</TabsTrigger>
             <TabsTrigger value="disclaimer">Important Info</TabsTrigger>
           </TabsList>
 
           <TabsContent value="performance">
-            <Card>
-              <CardHeader>
-                <CardTitle>3-Month Historical Performance</CardTitle>
-                <p className="text-sm text-gray-600">
-                  NAV movement over the last 3 months (90 trading days)
-                </p>
-              </CardHeader>
-              <CardContent>
-                {chartData.length > 0 ? (
-                  <div className="h-96">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis 
-                          dataKey="formattedDate" 
-                          tick={{ fontSize: 12 }}
-                          interval="preserveStartEnd"
-                        />
-                        <YAxis 
-                          domain={['dataMin - 1', 'dataMax + 1']}
-                          tick={{ fontSize: 12 }}
-                          tickFormatter={(value) => `₹${value.toFixed(2)}`}
-                        />
-                        <Tooltip 
-                          formatter={(value: number) => [`₹${value.toFixed(4)}`, 'NAV']}
-                          labelFormatter={(label, payload) => {
-                            const dataPoint = payload?.[0]?.payload;
-                            return dataPoint ? new Date(dataPoint.date).toLocaleDateString('en-IN', { 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
-                            }) : label;
-                          }}
-                        />
-                        <Line 
-                          type="monotone" 
-                          dataKey="nav" 
-                          stroke="#3B82F6" 
-                          strokeWidth={2}
-                          dot={{ fill: '#3B82F6', strokeWidth: 2, r: 3 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <div className="h-96 flex items-center justify-center">
-                    <p className="text-gray-500">Historical data not available</p>
-                  </div>
-                )}
-                
-                {chartData.length > 1 && (
-                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold mb-2">3-Month Performance Summary</h4>
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-600">Starting NAV:</span>
-                        <div className="font-semibold">₹{chartData[0]?.nav.toFixed(4)}</div>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Current NAV:</span>
-                        <div className="font-semibold">₹{chartData[chartData.length - 1]?.nav.toFixed(4)}</div>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Total Return:</span>
-                        <div className={`font-semibold ${
-                          calculateReturn(chartData[0]?.nav, chartData[chartData.length - 1]?.nav) >= 0 
-                            ? 'text-green-600' 
-                            : 'text-red-600'
-                        }`}>
-                          {calculateReturn(chartData[0]?.nav, chartData[chartData.length - 1]?.nav).toFixed(2)}%
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <EnhancedFundChart 
+              initialFundCode={fundData.schemeCode}
+              initialFundName={fundData.schemeName}
+            />
           </TabsContent>
 
           <TabsContent value="prediction">
@@ -273,7 +159,7 @@ const FundDetailsPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Zap className="h-5 w-5 text-purple-600" />
-                  AI-Based Future Prediction
+                  AI-Based 3-Month Future Prediction
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -326,10 +212,9 @@ const FundDetailsPage = () => {
                   <Alert>
                     <AlertTriangle className="h-4 w-4" />
                     <AlertDescription>
-                      <strong>Regulatory Disclaimer:</strong> This AI prediction is purely based on historical performance analysis and mathematical models. 
-                      Past performance does not guarantee future results. Market conditions, economic factors, and fund management decisions can significantly 
-                      impact actual returns. This analysis should not be considered as investment advice. Please consult with a qualified financial advisor 
-                      before making investment decisions.
+                      <strong>Important:</strong> This is a 3-month prediction only. AI predictions are based on historical data and 
+                      mathematical models. Past performance does not guarantee future results. Market conditions can significantly 
+                      impact actual returns. This analysis should not be considered as investment advice.
                     </AlertDescription>
                   </Alert>
                 </div>

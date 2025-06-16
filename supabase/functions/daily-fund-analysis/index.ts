@@ -88,8 +88,9 @@ Deno.serve(async (req) => {
     console.log(`Processing ${prioritizedSchemes.length} Indian schemes...`);
 
     // Process schemes in batches
-    const batchSize = 50;
+    const batchSize = 20; // Reduced batch size for more stability
     const analysisResults: AdvancedNAVAnalysis[] = [];
+    let totalProcessed = 0;
 
     for (let i = 0; i < prioritizedSchemes.length; i += batchSize) {
       const batch = prioritizedSchemes.slice(i, i + batchSize);
@@ -107,13 +108,38 @@ Deno.serve(async (req) => {
           const latestNav = parseFloat(navData.data[0].nav);
           const navDate = navData.data[0].date;
 
-          // Get historical data
+          // Get historical data (up to 10 years for extended charts)
           const histResponse = await fetch(`https://api.mfapi.in/mf/${scheme.schemeCode}`);
           const histData = histResponse.ok ? await histResponse.json() : null;
-          const historical3MonthData = histData?.data?.slice(0, 90).map((record: any) => ({
+          const fullHistoricalData = histData?.data || [];
+          
+          // Store extended NAV history for charts
+          if (fullHistoricalData.length > 0) {
+            const extendedNavData = fullHistoricalData.slice(0, 3650).map((record: any) => ({
+              scheme_code: scheme.schemeCode.toString(),
+              nav_date: record.date,
+              nav_value: parseFloat(record.nav)
+            }));
+
+            // Insert extended NAV history in smaller batches
+            const navBatchSize = 100;
+            for (let j = 0; j < extendedNavData.length; j += navBatchSize) {
+              const navBatch = extendedNavData.slice(j, j + navBatchSize);
+              try {
+                await supabase.from('extended_nav_history').upsert(navBatch, {
+                  onConflict: 'scheme_code,nav_date',
+                  ignoreDuplicates: true
+                });
+              } catch (navError) {
+                console.log(`Warning: Could not insert NAV history batch for ${scheme.schemeCode}:`, navError);
+              }
+            }
+          }
+
+          const historical3MonthData = fullHistoricalData.slice(0, 90).map((record: any) => ({
             date: record.date,
             nav: parseFloat(record.nav)
-          })) || [];
+          }));
 
           // Calculate analysis metrics
           const analysis = calculateAdvancedMetrics(scheme, batch, latestNav, historical3MonthData);
@@ -145,24 +171,36 @@ Deno.serve(async (req) => {
       const batchResults = await Promise.all(batchPromises);
       const validResults = batchResults.filter(result => result !== null) as AdvancedNAVAnalysis[];
       analysisResults.push(...validResults);
+      totalProcessed += validResults.length;
+
+      console.log(`Batch completed. Total processed so far: ${totalProcessed}`);
 
       // Add delay between batches to avoid rate limiting
       if (i + batchSize < prioritizedSchemes.length) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Increased delay
       }
     }
 
     // Update category rankings
     updateCategoryRankings(analysisResults);
 
-    // Store results in database
+    // Store results in database - Clear old data first, then insert new
     console.log(`Storing ${analysisResults.length} analyzed funds in database...`);
     
-    // Clear old data first
-    await supabase.from('daily_fund_analysis').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    // Clear old data
+    const { error: deleteError } = await supabase
+      .from('daily_fund_analysis')
+      .delete()
+      .neq('id', '00000000-0000-0000-0000-000000000000');
+    
+    if (deleteError) {
+      console.error('Warning: Could not clear old data:', deleteError);
+    }
 
     // Insert new data in batches
-    const dbBatchSize = 100;
+    const dbBatchSize = 50; // Smaller batch size for reliability
+    let insertedCount = 0;
+    
     for (let i = 0; i < analysisResults.length; i += dbBatchSize) {
       const dbBatch = analysisResults.slice(i, i + dbBatchSize).map(fund => ({
         scheme_code: fund.schemeCode,
@@ -186,6 +224,9 @@ Deno.serve(async (req) => {
       const { error } = await supabase.from('daily_fund_analysis').insert(dbBatch);
       if (error) {
         console.error('Error inserting batch:', error);
+      } else {
+        insertedCount += dbBatch.length;
+        console.log(`Inserted batch ${Math.floor(i/dbBatchSize) + 1}. Total inserted: ${insertedCount}`);
       }
     }
 
@@ -195,6 +236,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         totalAnalyzed: analysisResults.length,
+        totalInserted: insertedCount,
         message: 'Daily fund analysis completed successfully'
       }),
       { 
@@ -206,7 +248,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('Error in daily fund analysis:', error);
     return new Response(
-      JSON.stringify({ error: 'Failed to complete daily analysis' }),
+      JSON.stringify({ error: 'Failed to complete daily analysis', details: error.message }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500 
