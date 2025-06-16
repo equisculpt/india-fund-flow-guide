@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -123,14 +124,22 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
   const calculateIRR = (data: ChartDataPoint[]) => {
     if (data.length < 2) return 0;
     
-    // Simple IRR approximation using compound annual growth rate (CAGR)
+    // Calculate realistic IRR based on the period and actual returns
     const lastPoint = data[data.length - 1];
-    const firstPoint = data[0];
+    const totalReturn = lastPoint.fundPercentage;
     const years = ChartDataService.getDaysForPeriod(period) / 365;
     
-    if (firstPoint.fundSIPValue === 0 || years === 0) return 0;
+    // Convert total return to annualized return (IRR approximation)
+    if (years <= 0 || totalReturn <= -100) return 0;
     
-    return (Math.pow(lastPoint.fundSIPValue / firstPoint.fundSIPValue, 1 / years) - 1) * 100;
+    // For periods less than 1 year, annualize the return
+    if (years < 1) {
+      return (totalReturn / years);
+    }
+    
+    // For periods of 1 year or more, use CAGR formula
+    const annualizedReturn = Math.pow(1 + (totalReturn / 100), 1 / years) - 1;
+    return annualizedReturn * 100;
   };
 
   const performance = calculatePerformance(chartData);

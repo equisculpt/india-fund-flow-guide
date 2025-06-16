@@ -80,7 +80,7 @@ const PerformanceStats = ({
         <div className="text-xl font-bold text-orange-600">₹{performance.sipValue?.toLocaleString() || '0'}</div>
       </div>
       <div className="text-center p-3 bg-indigo-50 rounded-lg">
-        <div className="text-sm text-muted-foreground">IRR</div>
+        <div className="text-sm text-muted-foreground">IRR (Annualized)</div>
         <div className={`text-xl font-bold ${irr >= 0 ? 'text-green-600' : 'text-red-600'}`}>
           {irr.toFixed(2)}%
         </div>
