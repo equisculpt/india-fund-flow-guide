@@ -1,5 +1,5 @@
+
 import { useState } from "react";
-import Header from "@/components/Header";
 import PortfolioDashboard from "@/components/PortfolioDashboard";
 import GoalBasedInvesting from "@/components/GoalBasedInvesting";
 import AIInvestmentChat from "@/components/AIInvestmentChat";
@@ -7,6 +7,7 @@ import AIPortfolioOptimizer from "@/components/AIPortfolioOptimizer";
 import AdvancedFundFilters from "@/components/AdvancedFundFilters";
 import FundCard from "@/components/FundCard";
 import ReferralSystem from "@/components/ReferralSystem";
+import AIFundComparison from "@/components/AIFundComparison";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -86,16 +87,18 @@ const ComprehensiveDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      
       <div className="container mx-auto px-4 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Investment Dashboard</h1>
           <p className="text-gray-600">Manage your investments, track performance, and discover new opportunities</p>
         </div>
 
-        <Tabs defaultValue="portfolio" className="space-y-6">
+        <Tabs defaultValue="ai-analysis" className="space-y-6">
           <TabsList className="grid w-full grid-cols-7">
+            <TabsTrigger value="ai-analysis" className="flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              AI Analysis
+            </TabsTrigger>
             <TabsTrigger value="portfolio" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               Portfolio
@@ -120,11 +123,11 @@ const ComprehensiveDashboard = () => {
               <Users className="h-4 w-4" />
               Referrals
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Analytics
-            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="ai-analysis">
+            <AIFundComparison />
+          </TabsContent>
 
           <TabsContent value="portfolio">
             <PortfolioDashboard />
@@ -211,58 +214,6 @@ const ComprehensiveDashboard = () => {
 
           <TabsContent value="referrals">
             <ReferralSystem />
-          </TabsContent>
-
-          <TabsContent value="analytics">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Investment Analytics</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span>Average Monthly Investment</span>
-                      <span className="font-semibold">₹12,500</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Portfolio Diversity Score</span>
-                      <span className="font-semibold text-green-600">8.5/10</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Risk-Adjusted Returns</span>
-                      <span className="font-semibold">12.3%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Investment Consistency</span>
-                      <span className="font-semibold text-blue-600">94%</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Performance Metrics</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span>Best Performing Fund</span>
-                      <span className="font-semibold">Mirae Asset Large Cap</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Worst Performing Fund</span>
-                      <span className="font-semibold">ICICI Prudential Bluechip</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Average Fund Rating</span>
-                      <span className="font-semibold">4.2/5</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Portfolio Beta</span>
-                      <span className="font-semibold">1.15</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </TabsContent>
         </Tabs>
       </div>

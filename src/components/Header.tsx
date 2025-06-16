@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button";
 import BreweryLogo from "./BreweryLogo";
 import { useState } from "react";
 import LoginModal from "./LoginModal";
-import { useAuth } from "@/contexts/AuthContext";
+import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 import { LogOut, User, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated } = useEnhancedAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
