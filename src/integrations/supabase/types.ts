@@ -97,6 +97,111 @@ export type Database = {
           },
         ]
       }
+      amfi_portfolio_data: {
+        Row: {
+          amc_name: string
+          created_at: string | null
+          id: string
+          portfolio_data: Json
+          portfolio_date: string
+          scheme_code: string
+          scheme_name: string
+          scrape_source: string | null
+          scrape_status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amc_name: string
+          created_at?: string | null
+          id?: string
+          portfolio_data: Json
+          portfolio_date: string
+          scheme_code: string
+          scheme_name: string
+          scrape_source?: string | null
+          scrape_status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amc_name?: string
+          created_at?: string | null
+          id?: string
+          portfolio_data?: Json
+          portfolio_date?: string
+          scheme_code?: string
+          scheme_name?: string
+          scrape_source?: string | null
+          scrape_status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      amfi_portfolio_links: {
+        Row: {
+          amc_name: string
+          created_at: string | null
+          file_type: string
+          id: string
+          portfolio_date: string
+          portfolio_url: string
+          scrape_status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amc_name: string
+          created_at?: string | null
+          file_type: string
+          id?: string
+          portfolio_date: string
+          portfolio_url: string
+          scrape_status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amc_name?: string
+          created_at?: string | null
+          file_type?: string
+          id?: string
+          portfolio_date?: string
+          portfolio_url?: string
+          scrape_status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      amfi_scrape_logs: {
+        Row: {
+          additional_data: Json | null
+          amc_name: string | null
+          attempt_time: string | null
+          error_message: string | null
+          file_url: string | null
+          id: string
+          scheme_code: string | null
+          status: string
+        }
+        Insert: {
+          additional_data?: Json | null
+          amc_name?: string | null
+          attempt_time?: string | null
+          error_message?: string | null
+          file_url?: string | null
+          id?: string
+          scheme_code?: string | null
+          status: string
+        }
+        Update: {
+          additional_data?: Json | null
+          amc_name?: string | null
+          attempt_time?: string | null
+          error_message?: string | null
+          file_url?: string | null
+          id?: string
+          scheme_code?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       commissions: {
         Row: {
           agent_id: string | null

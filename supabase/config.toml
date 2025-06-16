@@ -52,3 +52,9 @@ verify_jwt = false
 
 [functions.setup-cron-job]
 verify_jwt = false
+
+[functions.scrape-amfi-portfolio-advanced]
+verify_jwt = false
+
+[functions.monthly-portfolio-scraper]
+verify_jwt = false
