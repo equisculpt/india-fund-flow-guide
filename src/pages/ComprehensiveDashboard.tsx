@@ -18,70 +18,70 @@ const ComprehensiveDashboard = () => {
 
   const allFunds = [
     {
-      name: "HDFC Top 100 Fund",
+      id: "fund-1",
+      scheme_name: "HDFC Top 100 Fund",
+      amc_name: "HDFC Mutual Fund",
       category: "Large Cap",
-      returns1y: 15.2,
-      returns3y: 12.8,
-      returns5y: 14.1,
-      minSip: 500,
-      rating: 4,
       nav: 856.32,
-      riskLevel: "Moderate" as const
+      returns_1y: 15.2,
+      returns_3y: 12.8,
+      risk_level: "Moderate",
+      min_sip_amount: 500
     },
     {
-      name: "SBI Small Cap Fund",
+      id: "fund-2",
+      scheme_name: "SBI Small Cap Fund",
+      amc_name: "SBI Mutual Fund",
       category: "Small Cap",
-      returns1y: 22.5,
-      returns3y: 18.9,
-      returns5y: 16.7,
-      minSip: 1000,
-      rating: 5,
       nav: 234.67,
-      riskLevel: "High" as const
+      returns_1y: 22.5,
+      returns_3y: 18.9,
+      risk_level: "High",
+      min_sip_amount: 1000
     },
     {
-      name: "ICICI Prudential Bluechip",
+      id: "fund-3",
+      scheme_name: "ICICI Prudential Bluechip",
+      amc_name: "ICICI Prudential Mutual Fund",
       category: "Large Cap",
-      returns1y: 13.8,
-      returns3y: 11.2,
-      returns5y: 12.9,
-      minSip: 500,
-      rating: 4,
       nav: 678.91,
-      riskLevel: "Moderate" as const
+      returns_1y: 13.8,
+      returns_3y: 11.2,
+      risk_level: "Moderate",
+      min_sip_amount: 500
     },
     {
-      name: "Axis Long Term Equity",
+      id: "fund-4",
+      scheme_name: "Axis Long Term Equity",
+      amc_name: "Axis Mutual Fund",
       category: "ELSS",
-      returns1y: 16.9,
-      returns3y: 14.5,
-      returns5y: 15.3,
-      minSip: 500,
-      rating: 5,
       nav: 445.78,
-      riskLevel: "Moderate" as const
+      returns_1y: 16.9,
+      returns_3y: 14.5,
+      risk_level: "Moderate",
+      min_sip_amount: 500
     },
     {
-      name: "Kotak Emerging Equity",
+      id: "fund-5",
+      scheme_name: "Kotak Emerging Equity",
+      amc_name: "Kotak Mutual Fund",
       category: "Mid Cap",
-      returns1y: 19.3,
-      returns3y: 16.1,
-      returns5y: 17.2,
-      minSip: 1000,
-      rating: 4,
       nav: 567.23,
-      riskLevel: "High" as const
+      returns_1y: 19.3,
+      returns_3y: 16.1,
+      risk_level: "High",
+      min_sip_amount: 1000
     },
     {
-      name: "Mirae Asset Large Cap",
+      id: "fund-6",
+      scheme_name: "Mirae Asset Large Cap",
+      amc_name: "Mirae Asset Mutual Fund",
       category: "Large Cap",
-      returns1y: 14.6,
-      returns3y: 12.3,
-      returns5y: 13.8,
-      minSip: 500,
-      rating: 4,
       nav: 789.45,
-      riskLevel: "Low" as const
+      returns_1y: 14.6,
+      returns_3y: 12.3,
+      risk_level: "Low",
+      min_sip_amount: 500
     }
   ];
 
@@ -151,8 +151,8 @@ const ComprehensiveDashboard = () => {
                       </div>
                     </div>
                     <div className="grid md:grid-cols-2 gap-4">
-                      {allFunds.map((fund, index) => (
-                        <FundCard key={index} {...fund} />
+                      {allFunds.map((fund) => (
+                        <FundCard key={fund.id} fund={fund} />
                       ))}
                     </div>
                   </CardContent>
