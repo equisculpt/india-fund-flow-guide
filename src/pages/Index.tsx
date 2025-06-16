@@ -44,6 +44,8 @@ const Index = () => {
     // Handle risk profile completion logic here
   };
 
+  console.log('Index page rendering, isAuthenticated:', isAuthenticated, 'user:', user);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <HeroSection />
@@ -52,7 +54,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Welcome back, {user?.name}! 👋
+              Welcome back, {user?.name || 'Investor'}! 👋
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Continue your investment journey with our AI-powered tools and personalized recommendations.
