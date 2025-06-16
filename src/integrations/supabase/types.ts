@@ -9,6 +9,38 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_sessions: {
+        Row: {
+          admin_user_id: string | null
+          created_at: string | null
+          expires_at: string
+          id: string
+          session_token: string
+        }
+        Insert: {
+          admin_user_id?: string | null
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          session_token: string
+        }
+        Update: {
+          admin_user_id?: string | null
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          session_token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_sessions_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_settings: {
         Row: {
           description: string | null
@@ -43,6 +75,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      admin_users: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          is_active: boolean | null
+          password_hash: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name: string
+          id?: string
+          is_active?: boolean | null
+          password_hash: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          is_active?: boolean | null
+          password_hash?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       ai_portfolio_insights: {
         Row: {
@@ -96,6 +158,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      amc_list: {
+        Row: {
+          amc_code: string | null
+          amc_name: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          amc_code?: string | null
+          amc_name: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          amc_code?: string | null
+          amc_name?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       amfi_portfolio_data: {
         Row: {
@@ -599,6 +688,36 @@ export type Database = {
         }
         Relationships: []
       }
+      nav_update_history: {
+        Row: {
+          created_at: string | null
+          id: string
+          nav_date: string
+          nav_value: number
+          scheme_code: string
+          update_source: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nav_date: string
+          nav_value: number
+          scheme_code: string
+          update_source?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nav_date?: string
+          nav_value?: number
+          scheme_code?: string
+          update_source?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       peer_comparisons: {
         Row: {
           analysis_date: string
@@ -889,6 +1008,10 @@ export type Database = {
       calculate_portfolio_analytics: {
         Args: { target_user_id: string }
         Returns: undefined
+      }
+      calculate_proper_irr: {
+        Args: { start_nav: number; end_nav: number; days_period: number }
+        Returns: number
       }
       calculate_sip_irr: {
         Args: {

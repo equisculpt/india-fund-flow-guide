@@ -1,5 +1,4 @@
-
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +8,12 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileSpreadsheet, FileText, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+
+interface AMC {
+  id: string;
+  amc_name: string;
+  amc_code: string;
+}
 
 interface UploadedFile {
   id: string;
@@ -22,32 +27,28 @@ interface UploadedFile {
 
 export const AMCPortfolioUploader = () => {
   const { toast } = useToast();
+  const [amcList, setAmcList] = useState<AMC[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const amcNames = [
-    'HDFC Mutual Fund',
-    'SBI Mutual Fund',
-    'ICICI Prudential Mutual Fund',
-    'Axis Mutual Fund',
-    'Nippon India Mutual Fund',
-    'Aditya Birla Sun Life Mutual Fund',
-    'Kotak Mutual Fund',
-    'UTI Mutual Fund',
-    'DSP Mutual Fund',
-    'Franklin Templeton Mutual Fund',
-    'Invesco Mutual Fund',
-    'L&T Mutual Fund',
-    'Mirae Asset Mutual Fund',
-    'Motilal Oswal Mutual Fund',
-    'PGIM India Mutual Fund',
-    'Quantum Mutual Fund',
-    'Tata Mutual Fund',
-    'Sundaram Mutual Fund',
-    'WhiteOak Capital Mutual Fund',
-    'Edelweiss Mutual Fund'
-  ];
+  useEffect(() => {
+    fetchAMCList();
+  }, []);
+
+  const fetchAMCList = async () => {
+    try {
+      const { data, error } = await supabase.rpc('execute_sql' as any, {
+        sql: 'SELECT * FROM amc_list WHERE is_active = true ORDER BY amc_name',
+        params: []
+      });
+
+      if (error) throw error;
+      setAmcList(data || []);
+    } catch (error) {
+      console.error('Error fetching AMC list:', error);
+    }
+  };
 
   const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -67,7 +68,6 @@ export const AMCPortfolioUploader = () => {
       setUploadedFiles(prev => [...prev, newFile]);
     });
 
-    // Reset input
     event.target.value = '';
   }, []);
 
@@ -103,13 +103,11 @@ export const AMCPortfolioUploader = () => {
       for (let i = 0; i < validFiles.length; i++) {
         const file = validFiles[i];
         
-        // Update status to uploading
         setUploadedFiles(prev => prev.map(f => 
           f.id === file.id ? { ...f, upload_status: 'uploading' } : f
         ));
 
         try {
-          // Convert file to base64 for storage
           const fileReader = new FileReader();
           const fileData = await new Promise<string>((resolve, reject) => {
             fileReader.onload = () => resolve(fileReader.result as string);
@@ -117,31 +115,28 @@ export const AMCPortfolioUploader = () => {
             fileReader.readAsDataURL(file.file);
           });
 
-          // Use raw SQL to insert into amc_portfolio_files table
-          const { error } = await supabase
-            .rpc('execute_sql' as any, {
-              sql: `
-                INSERT INTO amc_portfolio_files (
-                  amc_name, portfolio_date, file_name, file_type, file_size, file_data, upload_status
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-              `,
-              params: [
-                file.amc_name,
-                file.portfolio_date,
-                file.file.name,
-                file.file_type,
-                file.file.size,
-                fileData,
-                'uploaded'
-              ]
-            });
+          const { error } = await supabase.rpc('execute_sql' as any, {
+            sql: `
+              INSERT INTO amc_portfolio_files (
+                amc_name, portfolio_date, file_name, file_type, file_size, file_data, upload_status
+              ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+            `,
+            params: [
+              file.amc_name,
+              file.portfolio_date,
+              file.file.name,
+              file.file_type,
+              file.file.size,
+              fileData,
+              'uploaded'
+            ]
+          });
 
           if (error) {
             console.error('Database error:', error);
             throw new Error('Failed to save file to database');
           }
 
-          // Update status to success
           setUploadedFiles(prev => prev.map(f => 
             f.id === file.id ? { ...f, upload_status: 'success' } : f
           ));
@@ -155,7 +150,6 @@ export const AMCPortfolioUploader = () => {
         } catch (error) {
           console.error('Error uploading file:', error);
           
-          // Update status to error
           setUploadedFiles(prev => prev.map(f => 
             f.id === file.id ? { 
               ...f, 
@@ -165,7 +159,6 @@ export const AMCPortfolioUploader = () => {
           ));
         }
 
-        // Update progress
         setProgress(((i + 1) / validFiles.length) * 100);
       }
 
@@ -262,9 +255,9 @@ export const AMCPortfolioUploader = () => {
                             <SelectValue placeholder="Select AMC" />
                           </SelectTrigger>
                           <SelectContent>
-                            {amcNames.map((amc) => (
-                              <SelectItem key={amc} value={amc}>
-                                {amc}
+                            {amcList.map((amc) => (
+                              <SelectItem key={amc.id} value={amc.amc_name}>
+                                {amc.amc_name}
                               </SelectItem>
                             ))}
                           </SelectContent>
