@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Star, TrendingUp, TrendingDown, Brain, BarChart3, Target, Zap, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Star, TrendingUp, TrendingDown, Brain, BarChart3, Target, AlertTriangle, Info } from "lucide-react";
 import { EnhancedNAVDataService, AdvancedNAVAnalysis } from "@/services/enhancedNAVDataService";
 import FundSearch from "./FundSearch";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ interface AdvancedSchemeData {
   aiScore: number;
   confidence: number;
   predicted3MonthReturn: number;
+  historical3MonthData: Array<{date: string, nav: number}>;
   riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
   volatilityScore: number;
   sharpeRatio: number;
@@ -34,6 +36,8 @@ const AIFundComparison = () => {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [sortBy, setSortBy] = useState<"aiScore" | "returns" | "risk">("aiScore");
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [fundsPerPage] = useState(25);
   
   const navigate = useNavigate();
   const navService = new EnhancedNAVDataService();
@@ -60,6 +64,7 @@ const AIFundComparison = () => {
             aiScore: analysis.aiScore,
             confidence: analysis.confidence,
             predicted3MonthReturn: analysis.predicted3MonthReturn,
+            historical3MonthData: analysis.historical3MonthData || [],
             riskLevel: analysis.riskLevel,
             volatilityScore: analysis.volatilityScore,
             sharpeRatio: analysis.sharpeRatio,
@@ -110,6 +115,7 @@ const AIFundComparison = () => {
     }
 
     setFilteredFunds(filtered);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [funds, selectedCategory, searchQuery]);
 
   const handleSearch = (query: string) => {
@@ -139,6 +145,19 @@ const AIFundComparison = () => {
         return b.aiScore - a.aiScore;
     }
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(sortedFunds.length / fundsPerPage);
+  const startIndex = (currentPage - 1) * fundsPerPage;
+  const endIndex = startIndex + fundsPerPage;
+  const currentFunds = sortedFunds.slice(startIndex, endIndex);
+
+  const calculateHistoricalReturn = (historicalData: Array<{date: string, nav: number}>) => {
+    if (historicalData.length < 2) return 0;
+    const oldestNav = historicalData[historicalData.length - 1].nav;
+    const latestNav = historicalData[0].nav;
+    return ((latestNav - oldestNav) / oldestNav) * 100;
+  };
 
   const getStarRating = (score: number) => {
     const stars = Math.floor(score);
@@ -189,6 +208,9 @@ const AIFundComparison = () => {
               </div>
             ))}
           </div>
+          <div className="mt-6 text-center text-sm text-gray-600">
+            Loading all Indian mutual funds... This may take a few moments.
+          </div>
         </CardContent>
       </Card>
     );
@@ -200,14 +222,23 @@ const AIFundComparison = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-purple-600" />
-            AI-Powered Indian Mutual Fund Rankings & Predictions
+            AI-Powered Indian Mutual Fund Rankings & Analysis
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Real-time AI analysis of Indian mutual funds with 3-month return predictions - Updated every 15 minutes
+            Comprehensive analysis of all Indian mutual funds with real-time NAV data and historical performance
           </p>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
+            {/* Regulatory Notice */}
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Important:</strong> This analysis is for educational purposes only. AI predictions are based on historical data and do not guarantee future results. 
+                Please consult a SEBI-registered financial advisor before making investment decisions.
+              </AlertDescription>
+            </Alert>
+
             {/* Search Bar */}
             <div className="flex justify-center">
               <FundSearch 
@@ -245,7 +276,7 @@ const AIFundComparison = () => {
                 className="flex items-center gap-2"
               >
                 <TrendingUp className="h-4 w-4" />
-                Returns
+                3M Historical
               </Button>
               <Button
                 variant={sortBy === "risk" ? "default" : "outline"}
@@ -258,82 +289,135 @@ const AIFundComparison = () => {
               </Button>
             </div>
 
-            {/* Results Count */}
-            <div className="text-sm text-muted-foreground">
-              Showing {sortedFunds.length} Indian mutual funds
-              {searchQuery && ` for "${searchQuery}"`}
+            {/* Results Count and Pagination Info */}
+            <div className="flex justify-between items-center text-sm text-muted-foreground">
+              <div>
+                Showing {startIndex + 1}-{Math.min(endIndex, sortedFunds.length)} of {sortedFunds.length} Indian mutual funds
+                {searchQuery && ` for "${searchQuery}"`}
+              </div>
+              <div>
+                Page {currentPage} of {totalPages}
+              </div>
             </div>
 
             {/* Fund List */}
             <div className="grid gap-4">
-              {sortedFunds.slice(0, 20).map((fund, index) => (
-                <Card 
-                  key={fund.schemeCode} 
-                  className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-blue-500 cursor-pointer hover:bg-gray-50"
-                  onClick={() => handleFundClick(fund)}
-                >
-                  <div className="grid md:grid-cols-4 gap-4 items-center">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          #{index + 1}
-                        </Badge>
-                        <Badge className={getRiskColor(fund.riskLevel)}>
-                          {fund.riskLevel}
-                        </Badge>
-                      </div>
-                      <h3 className="font-semibold text-sm leading-tight hover:text-blue-600 transition-colors">
-                        {fund.schemeName}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">{fund.category} • {fund.amcName}</p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">AI Score:</span>
-                        {getStarRating(fund.aiScore)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Confidence: {(fund.confidence * 100).toFixed(0)}%
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-green-600" />
-                        <span className="text-sm font-semibold text-green-600">
-                          +{fund.predicted3MonthReturn.toFixed(2)}%
-                        </span>
-                      </div>
-                      <div className="text-xs text-muted-foreground">3-month prediction</div>
-                      <div className="text-xs">
-                        Current NAV: ₹{fund.nav}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div>
-                          <span className="text-muted-foreground">Volatility:</span>
-                          <div className="font-medium">{fund.volatilityScore.toFixed(1)}</div>
+              {currentFunds.map((fund, index) => {
+                const historicalReturn = calculateHistoricalReturn(fund.historical3MonthData);
+                
+                return (
+                  <Card 
+                    key={fund.schemeCode} 
+                    className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-blue-500 cursor-pointer hover:bg-gray-50"
+                    onClick={() => handleFundClick(fund)}
+                  >
+                    <div className="grid md:grid-cols-4 gap-4 items-center">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="text-xs">
+                            #{startIndex + index + 1}
+                          </Badge>
+                          <Badge className={getRiskColor(fund.riskLevel)}>
+                            {fund.riskLevel}
+                          </Badge>
                         </div>
-                        <div>
-                          <span className="text-muted-foreground">Sharpe:</span>
-                          <div className="font-medium">{fund.sharpeRatio.toFixed(2)}</div>
+                        <h3 className="font-semibold text-sm leading-tight hover:text-blue-600 transition-colors">
+                          {fund.schemeName}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">{fund.category} • {fund.amcName}</p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">AI Score:</span>
+                          {getStarRating(fund.aiScore)}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Confidence: {(fund.confidence * 100).toFixed(0)}%
                         </div>
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        Rank: {fund.performanceRank}/{fund.totalSchemes} in category
+
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          {historicalReturn >= 0 ? (
+                            <TrendingUp className="h-4 w-4 text-green-600" />
+                          ) : (
+                            <TrendingDown className="h-4 w-4 text-red-600" />
+                          )}
+                          <span className={`text-sm font-semibold ${
+                            historicalReturn >= 0 ? 'text-green-600' : 'text-red-600'
+                          }`}>
+                            {historicalReturn >= 0 ? '+' : ''}{historicalReturn.toFixed(2)}%
+                          </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">3-month actual return</div>
+                        <div className="text-xs">
+                          Current NAV: ₹{fund.nav.toFixed(4)}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-blue-600 font-medium">
-                        <BarChart3 className="h-3 w-3" />
-                        Click to analyze
+
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <span className="text-muted-foreground">Volatility:</span>
+                            <div className="font-medium">{fund.volatilityScore.toFixed(1)}</div>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Sharpe:</span>
+                            <div className="font-medium">{fund.sharpeRatio.toFixed(2)}</div>
+                          </div>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Rank: {fund.performanceRank}/{fund.totalSchemes} in {fund.category}
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-blue-600 font-medium">
+                          <BarChart3 className="h-3 w-3" />
+                          Click to analyze
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-6">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                
+                {/* Page numbers */}
+                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                  const pageNum = Math.max(1, Math.min(totalPages - 4, currentPage - 2)) + i;
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={currentPage === pageNum ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(pageNum)}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                })}
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
 
             {sortedFunds.length === 0 && !loading && (
               <div className="text-center py-8">
@@ -350,14 +434,25 @@ const AIFundComparison = () => {
                 <div>
                   <h4 className="font-semibold text-purple-900 mb-2">AI Analysis Methodology</h4>
                   <div className="text-sm text-purple-800 space-y-1">
-                    <p>• <strong>Multi-factor Analysis:</strong> Technical indicators, fundamental metrics, market sentiment</p>
-                    <p>• <strong>Risk Assessment:</strong> Volatility analysis, beta calculation, downside protection</p>
-                    <p>• <strong>Peer Comparison:</strong> Performance ranking within category and sector analysis</p>
-                    <p>• <strong>Predictive Modeling:</strong> 3-month return forecasting with confidence intervals</p>
+                    <p>• <strong>Real-time Data:</strong> Current NAV and historical performance from AMFI</p>
+                    <p>• <strong>Multi-factor Analysis:</strong> Technical indicators, fundamental metrics, category comparison</p>
+                    <p>• <strong>Risk Assessment:</strong> Volatility analysis, consistency scoring, drawdown protection</p>
+                    <p>• <strong>Category Ranking:</strong> Performance ranking within specific fund categories</p>
+                    <p>• <strong>Historical Returns:</strong> Actual 3-month performance based on NAV changes</p>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Disclaimer */}
+            <Alert>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Disclaimer:</strong> Mutual fund investments are subject to market risks. Past performance is not indicative of future results. 
+                This AI analysis is for educational purposes and should not be considered as investment advice. Please read scheme documents carefully 
+                and consult with a SEBI-registered financial advisor before investing.
+              </AlertDescription>
+            </Alert>
           </div>
         </CardContent>
       </Card>

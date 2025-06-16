@@ -22,6 +22,7 @@ export interface AdvancedNAVAnalysis {
   aiScore: number;
   confidence: number;
   predicted3MonthReturn: number;
+  historical3MonthData: Array<{date: string, nav: number}>;
   riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
   volatilityScore: number;
   sharpeRatio: number;
@@ -78,6 +79,27 @@ export class EnhancedNAVDataService {
     }
   }
 
+  // Get historical data for 3 months
+  private static async getHistoricalNAVData(schemeCode: string): Promise<Array<{date: string, nav: number}>> {
+    try {
+      const response = await fetch(`${this.AMFI_API_BASE}/mf/${schemeCode}`);
+      if (!response.ok) return [];
+      
+      const data = await response.json();
+      if (data && data.data && data.data.length > 0) {
+        // Get last 3 months of data (approximately 90 entries)
+        return data.data.slice(0, 90).map((record: any) => ({
+          date: record.date,
+          nav: parseFloat(record.nav)
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.error(`Error fetching historical data for ${schemeCode}:`, error);
+      return [];
+    }
+  }
+
   // Add the missing getAdvancedAnalysis method
   async getAdvancedAnalysis(): Promise<AdvancedNAVAnalysis[]> {
     try {
@@ -89,73 +111,92 @@ export class EnhancedNAVDataService {
       
       console.log(`Fetched ${schemes.length} total schemes`);
       
-      // Filter for Indian funds and take a sample (limiting to 30 for better performance)
-      const indianSchemes = schemes
-        .filter((scheme: any) => {
-          const name = scheme.schemeName.toLowerCase();
-          return !name.includes('international') && 
-                 !name.includes('global') && 
-                 !name.includes('overseas') && 
-                 !name.includes('foreign') &&
-                 !name.includes('us ') &&
-                 !name.includes('china') &&
-                 !name.includes('japan') &&
-                 !name.includes('europe') &&
-                 !name.includes('usd') &&
-                 !name.includes('world');
-        })
-        .slice(0, 30);
+      // Filter for Indian funds only (remove international funds)
+      const indianSchemes = schemes.filter((scheme: any) => {
+        const name = scheme.schemeName.toLowerCase();
+        return !name.includes('international') && 
+               !name.includes('global') && 
+               !name.includes('overseas') && 
+               !name.includes('foreign') &&
+               !name.includes('us ') &&
+               !name.includes('china') &&
+               !name.includes('japan') &&
+               !name.includes('europe') &&
+               !name.includes('usd') &&
+               !name.includes('world');
+      });
 
       console.log(`Processing ${indianSchemes.length} Indian mutual fund schemes...`);
 
-      // Fetch NAV data for each scheme with rate limiting
-      const analysisPromises = indianSchemes.map(async (scheme: any, index: number) => {
-        // Add delay to prevent rate limiting
-        await new Promise(resolve => setTimeout(resolve, index * 200));
-        
-        let navData = await EnhancedNAVDataService.getSchemeNAVData(scheme.schemeCode);
-        
-        if (!navData || !navData.nav || isNaN(navData.nav)) {
-          // Generate mock NAV if real data is unavailable
-          navData = {
-            nav: 50 + Math.random() * 500,
-            date: new Date().toISOString().split('T')[0]
-          };
-          console.log(`Using mock NAV for ${scheme.schemeName}: ${navData.nav}`);
-        }
+      // Process schemes in batches to avoid overwhelming the API
+      const batchSize = 50;
+      const batches = [];
+      for (let i = 0; i < indianSchemes.length; i += batchSize) {
+        batches.push(indianSchemes.slice(i, i + batchSize));
+      }
 
-        const analysis = EnhancedNAVDataService.calculateAdvancedMetrics({
-          ...scheme,
-          nav: navData.nav,
-          date: navData.date
-        }, indianSchemes);
+      const allAnalysisData: AdvancedNAVAnalysis[] = [];
+
+      for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+        const batch = batches[batchIndex];
+        console.log(`Processing batch ${batchIndex + 1} of ${batches.length} (${batch.length} schemes)`);
+
+        const batchPromises = batch.map(async (scheme: any, index: number) => {
+          // Add delay to prevent rate limiting
+          await new Promise(resolve => setTimeout(resolve, index * 100));
+          
+          let navData = await EnhancedNAVDataService.getSchemeNAVData(scheme.schemeCode);
+          
+          if (!navData || !navData.nav || isNaN(navData.nav)) {
+            return null; // Skip invalid schemes instead of using mock data
+          }
+
+          // Get historical data for 3 months
+          const historicalData = await EnhancedNAVDataService.getHistoricalNAVData(scheme.schemeCode);
+
+          const analysis = EnhancedNAVDataService.calculateAdvancedMetrics({
+            ...scheme,
+            nav: navData.nav,
+            date: navData.date
+          }, batch); // Use batch for category ranking
+          
+          return {
+            schemeCode: scheme.schemeCode.toString(),
+            schemeName: scheme.schemeName,
+            nav: navData.nav,
+            date: navData.date,
+            category: this.categorizeScheme(scheme.schemeName),
+            subCategory: this.categorizeScheme(scheme.schemeName),
+            amcName: this.extractAMCName(scheme.schemeName),
+            aiScore: analysis.aiScore,
+            confidence: analysis.confidenceLevel / 100,
+            predicted3MonthReturn: analysis.predictedReturn3Month,
+            historical3MonthData: historicalData,
+            riskLevel: analysis.riskScore > 7 ? 'HIGH' as const : analysis.riskScore > 4 ? 'MEDIUM' as const : 'LOW' as const,
+            volatilityScore: analysis.volatilityScore,
+            sharpeRatio: analysis.valuationScore,
+            performanceRank: analysis.sectorRanking,
+            totalSchemes: batch.length
+          };
+        });
         
-        return {
-          schemeCode: scheme.schemeCode.toString(),
-          schemeName: scheme.schemeName,
-          nav: navData.nav,
-          date: navData.date,
-          category: this.categorizeScheme(scheme.schemeName),
-          subCategory: this.categorizeScheme(scheme.schemeName),
-          amcName: this.extractAMCName(scheme.schemeName),
-          aiScore: analysis.aiScore,
-          confidence: analysis.confidenceLevel / 100,
-          predicted3MonthReturn: analysis.predictedReturn3Month,
-          riskLevel: analysis.riskScore > 7 ? 'HIGH' as const : analysis.riskScore > 4 ? 'MEDIUM' as const : 'LOW' as const,
-          volatilityScore: analysis.volatilityScore,
-          sharpeRatio: analysis.valuationScore,
-          performanceRank: analysis.sectorRanking,
-          totalSchemes: indianSchemes.length
-        };
-      });
-      
-      // Wait for all schemes to be processed
-      const analysisData = await Promise.all(analysisPromises);
+        const batchResults = await Promise.all(batchPromises);
+        const validBatchResults = batchResults.filter(result => result !== null) as AdvancedNAVAnalysis[];
+        allAnalysisData.push(...validBatchResults);
+
+        // Add delay between batches
+        if (batchIndex < batches.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      }
       
       // Sort by AI score and filter out any invalid entries
-      const validFunds = analysisData
+      const validFunds = allAnalysisData
         .filter(fund => fund.nav > 0 && !isNaN(fund.nav))
         .sort((a, b) => b.aiScore - a.aiScore);
+
+      // Update rankings within categories
+      this.updateCategoryRankings(validFunds);
       
       console.log(`Returning ${validFunds.length} valid funds with NAV data`);
       return validFunds;
@@ -163,6 +204,25 @@ export class EnhancedNAVDataService {
       console.error("Error in getAdvancedAnalysis:", error);
       return this.getFallbackData();
     }
+  }
+
+  // Update category rankings
+  private static updateCategoryRankings(funds: AdvancedNAVAnalysis[]): void {
+    const categoryGroups = funds.reduce((groups, fund) => {
+      if (!groups[fund.category]) {
+        groups[fund.category] = [];
+      }
+      groups[fund.category].push(fund);
+      return groups;
+    }, {} as Record<string, AdvancedNAVAnalysis[]>);
+
+    Object.values(categoryGroups).forEach(categoryFunds => {
+      categoryFunds.sort((a, b) => b.aiScore - a.aiScore);
+      categoryFunds.forEach((fund, index) => {
+        fund.performanceRank = index + 1;
+        fund.totalSchemes = categoryFunds.length;
+      });
+    });
   }
 
   // Fallback data for when API fails
@@ -179,27 +239,11 @@ export class EnhancedNAVDataService {
         aiScore: 8.5,
         confidence: 0.85,
         predicted3MonthReturn: 12.5,
+        historical3MonthData: [],
         riskLevel: 'MEDIUM' as const,
         volatilityScore: 6.2,
         sharpeRatio: 1.8,
         performanceRank: 1,
-        totalSchemes: 10
-      },
-      {
-        schemeCode: "119551",
-        schemeName: "HDFC Top 100 Fund - Direct Plan - Growth",
-        nav: 1245.67,
-        date: new Date().toISOString().split('T')[0],
-        category: "Large Cap",
-        subCategory: "Large Cap",
-        amcName: "HDFC",
-        aiScore: 9.2,
-        confidence: 0.92,
-        predicted3MonthReturn: 15.2,
-        riskLevel: 'MEDIUM' as const,
-        volatilityScore: 5.8,
-        sharpeRatio: 2.1,
-        performanceRank: 2,
         totalSchemes: 10
       }
     ];
@@ -391,6 +435,7 @@ export class EnhancedNAVDataService {
         aiScore: analysis.aiScore,
         confidence: analysis.confidenceLevel / 100,
         predicted3MonthReturn: analysis.predictedReturn3Month,
+        historical3MonthData: scheme.historical3MonthData || [],
         riskLevel: analysis.riskScore > 7 ? 'HIGH' as const : analysis.riskScore > 4 ? 'MEDIUM' as const : 'LOW' as const,
         volatilityScore: analysis.volatilityScore,
         sharpeRatio: analysis.valuationScore,
