@@ -5,26 +5,29 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Star, TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
+import { Star, TrendingUp, TrendingDown, BarChart3, Calculator, Search, Plus, X } from 'lucide-react';
 import { EnhancedNAVDataService } from '@/services/enhancedNAVDataService';
 
 interface ChartDataPoint {
   date: string;
-  fundNAV: number;
-  fundNAVPercent: number;
-  benchmark?: number;
-  benchmarkPercent?: number;
-  comparison1?: number;
-  comparison1Percent?: number;
-  comparison2?: number;
-  comparison2Percent?: number;
+  fundPercentage: number;
+  fundSIPValue: number;
+  benchmarkPercentage?: number;
+  benchmarkSIPValue?: number;
+  comparison1Percentage?: number;
+  comparison1SIPValue?: number;
+  comparison2Percentage?: number;
+  comparison2SIPValue?: number;
   formattedDate: string;
 }
 
 interface FundComparison {
   id: string;
   name: string;
+  schemeCode: string;
   color: string;
   enabled: boolean;
 }
@@ -42,101 +45,149 @@ interface AdvancedFundChartProps {
 
 const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartProps) => {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
-  const [period, setPeriod] = useState<'1M' | '3M' | '6M' | '1Y' | '3Y'>('6M');
+  const [period, setPeriod] = useState<'1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y'>('1Y');
   const [loading, setLoading] = useState(true);
-  const [benchmarkData, setBenchmarkData] = useState<any[]>([]);
-  const [selectedBenchmark, setSelectedBenchmark] = useState<string>('');
-  const [showPercentage, setShowPercentage] = useState(false);
+  const [sipAmount, setSipAmount] = useState<number>(100000);
+  const [showSIPChart, setShowSIPChart] = useState(false);
   const [fundComparisons, setFundComparisons] = useState<FundComparison[]>([
-    { id: 'benchmark', name: 'Benchmark Index', color: '#10B981', enabled: true },
-    { id: 'comparison1', name: 'Top Performer', color: '#F59E0B', enabled: false },
-    { id: 'comparison2', name: 'Category Average', color: '#8B5CF6', enabled: false }
+    { 
+      id: 'primary', 
+      name: primaryFund.schemeName, 
+      schemeCode: primaryFund.schemeCode,
+      color: '#3B82F6', 
+      enabled: true 
+    }
   ]);
+  const [availableFunds, setAvailableFunds] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showFundSearch, setShowFundSearch] = useState(false);
+
+  const navService = new EnhancedNAVDataService();
+
+  useEffect(() => {
+    loadAvailableFunds();
+  }, []);
 
   useEffect(() => {
     loadChartData();
-    loadBenchmarkData();
-  }, [primaryFund, period]);
+  }, [primaryFund, period, sipAmount, fundComparisons]);
 
-  const loadBenchmarkData = async () => {
+  const loadAvailableFunds = async () => {
     try {
-      const data = await EnhancedNAVDataService.getRealBenchmarkData();
-      setBenchmarkData(data);
-      
-      // Auto-select appropriate benchmark based on fund category
-      const appropriateBenchmark = data.find(b => 
-        b.sector === primaryFund.category || 
-        (primaryFund.category.includes('Large') && b.name.includes('NIFTY 50')) ||
-        (primaryFund.category.includes('Mid') && b.name.includes('MIDCAP')) ||
-        (primaryFund.category.includes('Small') && b.name.includes('SMALLCAP'))
+      const funds = await navService.getAdvancedAnalysis();
+      // Filter to show only funds from the same category for better comparison
+      const categoryFunds = funds.filter(fund => 
+        fund.category === primaryFund.category && 
+        fund.schemeCode !== primaryFund.schemeCode
       );
-      
-      if (appropriateBenchmark) {
-        setSelectedBenchmark(appropriateBenchmark.symbol);
-      }
+      setAvailableFunds(categoryFunds);
     } catch (error) {
-      console.error('Error loading benchmark data:', error);
+      console.error('Error loading available funds:', error);
     }
   };
 
   const loadChartData = async () => {
     setLoading(true);
     try {
-      // Generate historical data points based on period
       const days = getDaysForPeriod(period);
       const data: ChartDataPoint[] = [];
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - days);
 
-      // Generate realistic NAV progression
-      let currentNAV = primaryFund.nav * (0.85 + Math.random() * 0.15);
-      let benchmarkStart = getCategoryBenchmarkStart(primaryFund.category);
-      let comparison1Start = currentNAV * (0.95 + Math.random() * 0.1);
-      let comparison2Start = currentNAV * (0.98 + Math.random() * 0.04);
-      
-      const dailyVolatility = getCategoryVolatility(primaryFund.category);
-      const trendDirection = Math.random() > 0.3 ? 1 : -1;
-      
-      for (let i = 0; i <= days; i += Math.max(1, Math.floor(days / 50))) {
-        const currentDate = new Date(startDate);
-        currentDate.setDate(startDate.getDate() + i);
-        
-        // Simulate realistic NAV movement
-        const randomChange = (Math.random() - 0.5) * dailyVolatility;
-        const trendChange = trendDirection * 0.001 * (primaryFund.trendScore || 5);
-        currentNAV *= (1 + randomChange + trendChange);
-        
-        // Generate benchmark and comparison data
-        const benchmarkValue = generateBenchmarkValue(currentDate, primaryFund.category);
-        const comparison1Value = comparison1Start * (currentNAV / (primaryFund.nav * 0.9));
-        const comparison2Value = comparison2Start * (currentNAV / (primaryFund.nav * 0.99));
-        
-        // Calculate percentage changes from start
-        const startNAV = data.length === 0 ? currentNAV : data[0].fundNAV;
-        const fundNAVPercent = ((currentNAV - startNAV) / startNAV) * 100;
-        const benchmarkPercent = ((benchmarkValue - benchmarkStart) / benchmarkStart) * 100;
-        const comparison1Percent = ((comparison1Value - comparison1Start) / comparison1Start) * 100;
-        const comparison2Percent = ((comparison2Value - comparison2Start) / comparison2Start) * 100;
-        
-        data.push({
-          date: currentDate.toISOString().split('T')[0],
-          fundNAV: Number(currentNAV.toFixed(4)),
-          fundNAVPercent: Number(fundNAVPercent.toFixed(2)),
-          benchmark: benchmarkValue,
-          benchmarkPercent: Number(benchmarkPercent.toFixed(2)),
-          comparison1: comparison1Value,
-          comparison1Percent: Number(comparison1Percent.toFixed(2)),
-          comparison2: comparison2Value,
-          comparison2Percent: Number(comparison2Percent.toFixed(2)),
-          formattedDate: currentDate.toLocaleDateString()
-        });
+      // Generate monthly SIP dates
+      const sipDates: Date[] = [];
+      let currentSipDate = new Date(startDate);
+      while (currentSipDate <= new Date()) {
+        sipDates.push(new Date(currentSipDate));
+        currentSipDate.setMonth(currentSipDate.getMonth() + 1);
       }
 
-      // Ensure the last point matches current NAV
-      if (data.length > 0) {
-        data[data.length - 1].fundNAV = primaryFund.nav;
-        const startNAV = data[0].fundNAV;
-        data[data.length - 1].fundNAVPercent = ((primaryFund.nav - startNAV) / startNAV) * 100;
+      // Initialize fund data for all comparison funds
+      const fundData: Record<string, {
+        navHistory: Array<{date: Date, nav: number}>;
+        sipInvestments: Array<{date: Date, amount: number, nav: number, units: number}>;
+        startNAV: number;
+      }> = {};
+
+      // Generate data for each fund
+      for (const fund of fundComparisons.filter(f => f.enabled)) {
+        const startNAV = await generateStartNAV(fund.schemeCode, fund.name);
+        fundData[fund.id] = {
+          navHistory: [],
+          sipInvestments: [],
+          startNAV: startNAV
+        };
+
+        // Generate NAV history
+        let currentNAV = startNAV;
+        const dailyVolatility = getCategoryVolatility(primaryFund.category);
+        const trendDirection = Math.random() > 0.3 ? 1 : -1;
+
+        for (let i = 0; i <= days; i += Math.max(1, Math.floor(days / 100))) {
+          const currentDate = new Date(startDate);
+          currentDate.setDate(startDate.getDate() + i);
+          
+          const randomChange = (Math.random() - 0.5) * dailyVolatility;
+          const trendChange = trendDirection * 0.001 * (fund.id === 'primary' ? (primaryFund.trendScore || 5) : 6);
+          currentNAV *= (1 + randomChange + trendChange);
+          
+          fundData[fund.id].navHistory.push({
+            date: new Date(currentDate),
+            nav: currentNAV
+          });
+        }
+
+        // Calculate SIP investments
+        let totalUnits = 0;
+        for (const sipDate of sipDates) {
+          const navOnDate = findNAVOnDate(fundData[fund.id].navHistory, sipDate);
+          if (navOnDate > 0) {
+            const units = sipAmount / navOnDate;
+            totalUnits += units;
+            fundData[fund.id].sipInvestments.push({
+              date: sipDate,
+              amount: sipAmount,
+              nav: navOnDate,
+              units: units
+            });
+          }
+        }
+      }
+
+      // Generate chart data points
+      const primaryFundData = fundData['primary'];
+      if (!primaryFundData) return;
+
+      for (let i = 0; i < primaryFundData.navHistory.length; i += Math.max(1, Math.floor(primaryFundData.navHistory.length / 50))) {
+        const navPoint = primaryFundData.navHistory[i];
+        
+        const dataPoint: ChartDataPoint = {
+          date: navPoint.date.toISOString().split('T')[0],
+          fundPercentage: ((navPoint.nav - primaryFundData.startNAV) / primaryFundData.startNAV) * 100,
+          fundSIPValue: calculateSIPValueAtDate(primaryFundData.sipInvestments, navPoint.date, navPoint.nav),
+          formattedDate: navPoint.date.toLocaleDateString()
+        };
+
+        // Add comparison fund data
+        fundComparisons.forEach((fund, index) => {
+          if (fund.enabled && fund.id !== 'primary' && fundData[fund.id]) {
+            const compFundData = fundData[fund.id];
+            const compNavPoint = findNAVOnDate(compFundData.navHistory, navPoint.date);
+            
+            if (index === 1) {
+              dataPoint.benchmarkPercentage = ((compNavPoint - compFundData.startNAV) / compFundData.startNAV) * 100;
+              dataPoint.benchmarkSIPValue = calculateSIPValueAtDate(compFundData.sipInvestments, navPoint.date, compNavPoint);
+            } else if (index === 2) {
+              dataPoint.comparison1Percentage = ((compNavPoint - compFundData.startNAV) / compFundData.startNAV) * 100;
+              dataPoint.comparison1SIPValue = calculateSIPValueAtDate(compFundData.sipInvestments, navPoint.date, compNavPoint);
+            } else if (index === 3) {
+              dataPoint.comparison2Percentage = ((compNavPoint - compFundData.startNAV) / compFundData.startNAV) * 100;
+              dataPoint.comparison2SIPValue = calculateSIPValueAtDate(compFundData.sipInvestments, navPoint.date, compNavPoint);
+            }
+          }
+        });
+
+        data.push(dataPoint);
       }
 
       setChartData(data);
@@ -147,6 +198,27 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
     }
   };
 
+  const generateStartNAV = async (schemeCode: string, schemeName: string): Promise<number> => {
+    // Generate realistic starting NAV based on fund type and name
+    if (schemeName.toLowerCase().includes('large')) return 50 + Math.random() * 100;
+    if (schemeName.toLowerCase().includes('mid')) return 30 + Math.random() * 80;
+    if (schemeName.toLowerCase().includes('small')) return 20 + Math.random() * 60;
+    return 40 + Math.random() * 90;
+  };
+
+  const findNAVOnDate = (navHistory: Array<{date: Date, nav: number}>, targetDate: Date): number => {
+    const closestNav = navHistory.reduce((prev, curr) => {
+      return Math.abs(curr.date.getTime() - targetDate.getTime()) < Math.abs(prev.date.getTime() - targetDate.getTime()) ? curr : prev;
+    });
+    return closestNav?.nav || 0;
+  };
+
+  const calculateSIPValueAtDate = (sipInvestments: Array<{date: Date, amount: number, nav: number, units: number}>, targetDate: Date, currentNAV: number): number => {
+    const investmentsTillDate = sipInvestments.filter(inv => inv.date <= targetDate);
+    const totalUnits = investmentsTillDate.reduce((sum, inv) => sum + inv.units, 0);
+    return totalUnits * currentNAV;
+  };
+
   const getDaysForPeriod = (period: string): number => {
     switch (period) {
       case '1M': return 30;
@@ -154,7 +226,8 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
       case '6M': return 180;
       case '1Y': return 365;
       case '3Y': return 1095;
-      default: return 180;
+      case '5Y': return 1825;
+      default: return 365;
     }
   };
 
@@ -170,48 +243,31 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
     return volatilityMap[category] || 0.010;
   };
 
-  const getCategoryBenchmarkStart = (category: string): number => {
-    return category.includes('Large') ? 24800 : 
-           category.includes('Mid') ? 58500 : 
-           category.includes('Small') ? 17200 : 25000;
-  };
-
-  const generateBenchmarkValue = (date: Date, category: string): number => {
-    const baseValue = getCategoryBenchmarkStart(category);
-    const daysSinceEpoch = Math.floor(date.getTime() / (1000 * 60 * 60 * 24));
-    const variation = Math.sin(daysSinceEpoch / 30) * 0.05 + Math.random() * 0.02 - 0.01;
-    return baseValue * (1 + variation);
-  };
-
-  const toggleComparison = (comparisonId: string) => {
-    setFundComparisons(prev =>
-      prev.map(comp =>
-        comp.id === comparisonId
-          ? { ...comp, enabled: !comp.enabled }
-          : comp
-      )
-    );
-  };
-
-  const calculatePerformance = (data: ChartDataPoint[]) => {
-    if (data.length < 2) return { return: 0, volatility: 0 };
+  const addFundForComparison = (fund: any) => {
+    if (fundComparisons.length >= 4) return; // Limit to 4 funds
     
-    const firstValue = data[0].fundNAV;
-    const lastValue = data[data.length - 1].fundNAV;
-    const returnPct = ((lastValue - firstValue) / firstValue) * 100;
+    const newComparison: FundComparison = {
+      id: `comparison_${fundComparisons.length}`,
+      name: fund.schemeName,
+      schemeCode: fund.schemeCode,
+      color: ['#10B981', '#F59E0B', '#8B5CF6'][fundComparisons.length - 1],
+      enabled: true
+    };
     
-    // Calculate simple volatility
-    const returns = data.slice(1).map((point, i) =>
-      ((point.fundNAV - data[i].fundNAV) / data[i].fundNAV) * 100
-    );
-    const avgReturn = returns.reduce((sum, r) => sum + r, 0) / returns.length;
-    const variance = returns.reduce((sum, r) => sum + Math.pow(r - avgReturn, 2), 0) / returns.length;
-    const volatility = Math.sqrt(variance);
-    
-    return { return: returnPct, volatility };
+    setFundComparisons([...fundComparisons, newComparison]);
+    setShowFundSearch(false);
+    setSearchQuery('');
   };
 
-  const performance = calculatePerformance(chartData);
+  const removeFund = (fundId: string) => {
+    if (fundId === 'primary' || fundComparisons.length <= 1) return;
+    setFundComparisons(fundComparisons.filter(fund => fund.id !== fundId));
+  };
+
+  const filteredFunds = availableFunds.filter(fund =>
+    fund.schemeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    fund.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload?.length) return null;
@@ -234,9 +290,9 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
             />
             <span>{entry.name}:</span>
             <span className="font-medium">
-              {showPercentage 
-                ? `${entry.value >= 0 ? '+' : ''}${entry.value.toFixed(2)}%`
-                : `₹${entry.value.toFixed(4)}`
+              {showSIPChart 
+                ? `₹${entry.value.toLocaleString()}`
+                : `${entry.value >= 0 ? '+' : ''}${entry.value.toFixed(2)}%`
               }
             </span>
           </div>
@@ -244,6 +300,28 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
       </div>
     );
   };
+
+  const calculatePerformance = (data: ChartDataPoint[]) => {
+    if (data.length < 2) return { return: 0, volatility: 0, sipReturn: 0 };
+    
+    const lastPoint = data[data.length - 1];
+    const returnPct = lastPoint.fundPercentage;
+    
+    const returns = data.slice(1).map((point, i) =>
+      point.fundPercentage - data[i].fundPercentage
+    );
+    const avgReturn = returns.reduce((sum, r) => sum + r, 0) / returns.length;
+    const variance = returns.reduce((sum, r) => sum + Math.pow(r - avgReturn, 2), 0) / returns.length;
+    const volatility = Math.sqrt(variance);
+    
+    // Calculate SIP returns
+    const totalInvested = sipAmount * Math.floor(getDaysForPeriod(period) / 30);
+    const sipReturn = totalInvested > 0 ? ((lastPoint.fundSIPValue - totalInvested) / totalInvested) * 100 : 0;
+    
+    return { return: returnPct, volatility, sipReturn, totalInvested, sipValue: lastPoint.fundSIPValue };
+  };
+
+  const performance = calculatePerformance(chartData);
 
   if (loading) {
     return (
@@ -267,7 +345,7 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
           <div>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="h-5 w-5 text-blue-600" />
-              {primaryFund.schemeName}
+              Advanced Fund Performance Analysis
             </CardTitle>
             <div className="flex items-center gap-4 mt-2">
               {primaryFund.trendScore && (
@@ -286,11 +364,12 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
           
           <div className="flex gap-2">
             <Button
-              variant={showPercentage ? "default" : "outline"}
+              variant={showSIPChart ? "default" : "outline"}
               size="sm"
-              onClick={() => setShowPercentage(!showPercentage)}
+              onClick={() => setShowSIPChart(!showSIPChart)}
             >
-              {showPercentage ? "Show Value" : "Show %"}
+              <Calculator className="h-4 w-4 mr-2" />
+              {showSIPChart ? "% Returns" : "SIP Value"}
             </Button>
             <Select value={period} onValueChange={(value: any) => setPeriod(value)}>
               <SelectTrigger className="w-20">
@@ -302,6 +381,7 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
                 <SelectItem value="6M">6M</SelectItem>
                 <SelectItem value="1Y">1Y</SelectItem>
                 <SelectItem value="3Y">3Y</SelectItem>
+                <SelectItem value="5Y">5Y</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -309,30 +389,88 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
       </CardHeader>
       
       <CardContent>
-        {/* Chart Controls */}
+        {/* SIP Configuration */}
         <div className="mb-4 space-y-3">
-          <div className="flex items-center gap-4 flex-wrap">
-            <span className="text-sm font-medium">Compare with:</span>
-            {fundComparisons.map(comp => (
-              <div key={comp.id} className="flex items-center space-x-2">
-                <Checkbox
-                  id={comp.id}
-                  checked={comp.enabled}
-                  onCheckedChange={() => toggleComparison(comp.id)}
-                />
-                <label htmlFor={comp.id} className="text-sm cursor-pointer">
-                  {comp.name}
-                </label>
-                <div 
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: comp.color }}
-                />
-              </div>
-            ))}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="sipAmount">Monthly SIP Amount:</Label>
+              <Input
+                id="sipAmount"
+                type="number"
+                value={sipAmount}
+                onChange={(e) => setSipAmount(Number(e.target.value))}
+                className="w-32"
+                min="1000"
+                step="1000"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Advanced Chart */}
+        {/* Fund Comparison Management */}
+        <div className="mb-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">Comparing Funds:</span>
+            {fundComparisons.length < 4 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowFundSearch(!showFundSearch)}
+                className="flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add Fund
+              </Button>
+            )}
+          </div>
+          
+          <div className="flex gap-2 flex-wrap">
+            {fundComparisons.map((fund) => (
+              <Badge key={fund.id} variant="secondary" className="flex items-center gap-2">
+                <div 
+                  className="w-3 h-3 rounded-full" 
+                  style={{ backgroundColor: fund.color }}
+                />
+                <span className="max-w-32 truncate">{fund.name}</span>
+                {fund.id !== 'primary' && (
+                  <X 
+                    className="h-3 w-3 cursor-pointer hover:text-red-500" 
+                    onClick={() => removeFund(fund.id)}
+                  />
+                )}
+              </Badge>
+            ))}
+          </div>
+
+          {/* Fund Search */}
+          {showFundSearch && (
+            <div className="border rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Search className="h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search funds by name or type first few letters..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1"
+                />
+              </div>
+              <div className="max-h-40 overflow-y-auto space-y-1">
+                {filteredFunds.slice(0, 10).map((fund) => (
+                  <div
+                    key={fund.schemeCode}
+                    className="p-2 hover:bg-gray-50 cursor-pointer rounded text-sm"
+                    onClick={() => addFundForComparison(fund)}
+                  >
+                    <div className="font-medium">{fund.schemeName.substring(0, 60)}...</div>
+                    <div className="text-gray-500 text-xs">{fund.category} • {fund.amcName}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Chart */}
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
@@ -342,8 +480,11 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
                 tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               />
               <YAxis 
-                domain={['dataMin - 1', 'dataMax + 1']}
-                tickFormatter={(value) => showPercentage ? `${value.toFixed(1)}%` : `₹${value.toFixed(0)}`}
+                tickFormatter={(value) => 
+                  showSIPChart 
+                    ? `₹${(value / 100000).toFixed(1)}L`
+                    : `${value.toFixed(1)}%`
+                }
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -351,67 +492,58 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
               {/* Primary Fund Line */}
               <Line
                 type="monotone"
-                dataKey={showPercentage ? "fundNAVPercent" : "fundNAV"}
+                dataKey={showSIPChart ? "fundSIPValue" : "fundPercentage"}
                 stroke="#3B82F6"
                 strokeWidth={3}
                 dot={false}
-                name={primaryFund.schemeName}
+                name={fundComparisons[0]?.name || "Primary Fund"}
               />
               
-              {/* Benchmark Line */}
-              {fundComparisons.find(c => c.id === 'benchmark')?.enabled && (
-                <Line
-                  type="monotone"
-                  dataKey={showPercentage ? "benchmarkPercent" : "benchmark"}
-                  stroke="#10B981"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={false}
-                  name="Benchmark"
-                />
-              )}
-              
               {/* Comparison Lines */}
-              {fundComparisons.find(c => c.id === 'comparison1')?.enabled && (
-                <Line
-                  type="monotone"
-                  dataKey={showPercentage ? "comparison1Percent" : "comparison1"}
-                  stroke="#F59E0B"
-                  strokeWidth={2}
-                  dot={false}
-                  name="Top Performer"
-                />
-              )}
-              
-              {fundComparisons.find(c => c.id === 'comparison2')?.enabled && (
-                <Line
-                  type="monotone"
-                  dataKey={showPercentage ? "comparison2Percent" : "comparison2"}
-                  stroke="#8B5CF6"
-                  strokeWidth={2}
-                  dot={false}
-                  name="Category Average"
-                />
-              )}
+              {fundComparisons.slice(1).map((fund, index) => {
+                if (!fund.enabled) return null;
+                
+                const dataKey = showSIPChart 
+                  ? index === 0 ? "benchmarkSIPValue" : index === 1 ? "comparison1SIPValue" : "comparison2SIPValue"
+                  : index === 0 ? "benchmarkPercentage" : index === 1 ? "comparison1Percentage" : "comparison2Percentage";
+                
+                return (
+                  <Line
+                    key={fund.id}
+                    type="monotone"
+                    dataKey={dataKey}
+                    stroke={fund.color}
+                    strokeWidth={2}
+                    dot={false}
+                    name={fund.name.substring(0, 30) + '...'}
+                  />
+                );
+              })}
             </LineChart>
           </ResponsiveContainer>
         </div>
 
         {/* Performance Stats */}
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="text-center p-3 bg-blue-50 rounded-lg">
             <div className="text-sm text-muted-foreground">Current NAV</div>
             <div className="text-xl font-bold text-blue-600">₹{primaryFund.nav.toFixed(4)}</div>
           </div>
           <div className="text-center p-3 bg-green-50 rounded-lg">
-            <div className="text-sm text-muted-foreground">Return ({period})</div>
+            <div className="text-sm text-muted-foreground">Performance ({period})</div>
             <div className={`text-xl font-bold ${performance.return >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               {performance.return.toFixed(2)}%
             </div>
           </div>
           <div className="text-center p-3 bg-purple-50 rounded-lg">
-            <div className="text-sm text-muted-foreground">Volatility</div>
-            <div className="text-xl font-bold text-purple-600">{performance.volatility.toFixed(2)}%</div>
+            <div className="text-sm text-muted-foreground">SIP Returns</div>
+            <div className={`text-xl font-bold ${performance.sipReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {performance.sipReturn.toFixed(2)}%
+            </div>
+          </div>
+          <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-sm text-muted-foreground">SIP Value</div>
+            <div className="text-xl font-bold text-orange-600">₹{performance.sipValue?.toLocaleString() || '0'}</div>
           </div>
         </div>
       </CardContent>
