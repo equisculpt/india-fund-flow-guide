@@ -144,7 +144,8 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           ...prev,
           nav: navData.nav,
           navDate: navData.date,
-          actualSchemeName: navData.actualSchemeName,
+          // Only update scheme name if it's significantly different and not just a variation
+          actualSchemeName: prev.schemeName, // Keep our correct mapping
           actualFundHouse: navData.fundHouse
         }));
       } else {
@@ -172,9 +173,16 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         fundsSection.scrollIntoView({ behavior: 'smooth' });
       } else {
         // If funds section doesn't exist, try scrolling to ai-funds tab
-        const fundsTab = document.querySelector('[value="ai-funds"]');
+        const fundsTab = document.querySelector('[data-state="active"][value="ai-funds"]') || 
+                         document.querySelector('[value="ai-funds"]');
         if (fundsTab) {
           (fundsTab as HTMLElement).click();
+          setTimeout(() => {
+            const fundsSection = document.getElementById('funds');
+            if (fundsSection) {
+              fundsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 100);
         }
       }
     }, 100);
@@ -223,14 +231,14 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-3xl font-bold">
-                {fundData.actualSchemeName || fundData.schemeName}
+                {fundData.schemeName}
               </h2>
               <p className="text-gray-600">
                 {fundData.actualFundHouse || fundData.amc} • {fundData.category}
               </p>
-              {fundData.actualSchemeName && fundData.actualSchemeName !== fundData.schemeName && (
+              {latestNAV && latestNAV.actualSchemeName !== fundData.schemeName && (
                 <p className="text-sm text-blue-600 mt-1">
-                  Real scheme: {fundData.actualSchemeName}
+                  API scheme: {latestNAV.actualSchemeName}
                 </p>
               )}
               
@@ -326,7 +334,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           <TabsContent value="performance">
             <NAVHistoryChart 
               fundId={fundData.schemeCode} 
-              fundName={fundData.actualSchemeName || fundData.schemeName}
+              fundName={fundData.schemeName}
             />
           </TabsContent>
 
@@ -334,7 +342,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             <AdvancedFundChart 
               primaryFund={{
                 schemeCode: fundData.schemeCode,
-                schemeName: fundData.actualSchemeName || fundData.schemeName,
+                schemeName: fundData.schemeName,
                 category: fundData.category,
                 nav: fundData.nav,
                 trendScore: aiAnalysis.trendScore
