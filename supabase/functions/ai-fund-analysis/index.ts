@@ -19,6 +19,10 @@ serve(async (req) => {
     
     console.log('AI Fund Analysis: Processing fund with Gemini:', fundData.schemeCode, fundData.schemeName);
 
+    if (!geminiApiKey) {
+      throw new Error('GEMINI_API_KEY not configured');
+    }
+
     const prompt = `Analyze this mutual fund and provide a comprehensive investment analysis:
 
 Fund Details:
@@ -77,18 +81,22 @@ Please provide your analysis in the following JSON format only (no additional te
     });
 
     if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Gemini API error response:', errorText);
+      throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
     
+    console.log('AI Fund Analysis: Raw Gemini response:', JSON.stringify(data, null, 2));
+
     if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
       throw new Error('Invalid response from Gemini API');
     }
 
     const aiResponse = data.candidates[0].content.parts[0].text;
 
-    console.log('AI Fund Analysis: Raw Gemini response:', aiResponse);
+    console.log('AI Fund Analysis: AI response text:', aiResponse);
 
     // Parse the JSON response from AI
     let analysisResult;
@@ -102,15 +110,16 @@ Please provide your analysis in the following JSON format only (no additional te
       }
     } catch (parseError) {
       console.error('AI Fund Analysis: JSON parse error:', parseError);
+      console.error('AI Fund Analysis: Raw response that failed to parse:', aiResponse);
       // Fallback to a structured response if parsing fails
       analysisResult = {
         aiScore: 7.0,
         recommendation: 'HOLD',
         confidence: 75,
-        reasoning: 'Gemini AI analysis temporarily unavailable. Please try again.',
+        reasoning: 'Gemini AI analysis completed but response format was unexpected. Please try again.',
         riskLevel: 'Moderate',
         strengths: ['Established fund house', 'Regular dividend track record'],
-        concerns: ['Market volatility', 'Economic uncertainty'],
+        concerns: ['Response parsing issue', 'Economic uncertainty'],
         performanceRank: 50,
         analysis: {
           performanceScore: 7.0,
@@ -122,7 +131,7 @@ Please provide your analysis in the following JSON format only (no additional te
       };
     }
 
-    console.log('AI Fund Analysis: Parsed result:', analysisResult);
+    console.log('AI Fund Analysis: Final parsed result:', analysisResult);
 
     return new Response(JSON.stringify({ 
       success: true, 
