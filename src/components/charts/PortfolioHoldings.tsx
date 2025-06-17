@@ -1,17 +1,18 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TrendingUp, TrendingDown, Building, Briefcase, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { AMFIPortfolioService, AMFIPortfolioData } from '@/services/AMFIPortfolioScraper';
+import { AMFIPortfolioService, PortfolioData } from '@/services/AMFIPortfolioScraper';
 
 interface PortfolioHoldingsProps {
   fundData: any;
 }
 
 const PortfolioHoldings = ({ fundData }: PortfolioHoldingsProps) => {
-  const [portfolioData, setPortfolioData] = useState<AMFIPortfolioData | null>(null);
+  const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
   const [recentChanges, setRecentChanges] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
