@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, TrendingUp, Star, Building } from "lucide-react";
+import { Search, TrendingUp, Star, Building, Loader2 } from "lucide-react";
 import { MutualFundSearchService } from "@/services/mutualFundSearchService";
 import { useNavigate } from "react-router-dom";
 
@@ -54,8 +54,8 @@ const EnhancedFundSearch = ({
         return;
       }
 
-      // Get detailed information for top 10 results
-      const topResults = results.slice(0, 10);
+      // Get detailed information for top 8 results
+      const topResults = results.slice(0, 8);
       const schemeCodes = topResults.map(fund => fund.schemeCode.toString());
       const detailedResults = await MutualFundSearchService.getMultipleFundDetails(schemeCodes);
 
@@ -115,16 +115,61 @@ const EnhancedFundSearch = ({
     }
   };
 
+  const handleInputFocus = () => {
+    if (searchQuery.length >= 2 && searchResults.length > 0) {
+      setShowResults(true);
+    }
+  };
+
+  const formatNavDate = (dateString?: string) => {
+    if (!dateString) return 'N/A';
+    
+    try {
+      // Handle DD-MM-YYYY format from API
+      const parts = dateString.split('-');
+      if (parts.length === 3) {
+        const [day, month, year] = parts;
+        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        return date.toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+      }
+      
+      // Fallback for other formats
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return dateString; // Return original if can't parse
+      }
+      
+      return date.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString;
+    }
+  };
+
   const getCategoryColor = (category?: string) => {
-    switch (category) {
-      case 'Large Cap': return 'bg-blue-100 text-blue-800';
-      case 'Mid Cap': return 'bg-green-100 text-green-800';
-      case 'Small Cap': return 'bg-red-100 text-red-800';
-      case 'ELSS': return 'bg-purple-100 text-purple-800';
-      case 'Debt': return 'bg-gray-100 text-gray-800';
-      case 'Hybrid': return 'bg-orange-100 text-orange-800';
-      case 'Index': return 'bg-indigo-100 text-indigo-800';
-      default: return 'bg-gray-100 text-gray-600';
+    switch (category?.toLowerCase()) {
+      case 'large cap': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'mid cap': return 'bg-green-100 text-green-800 border-green-200';
+      case 'small cap': return 'bg-red-100 text-red-800 border-red-200';
+      case 'elss': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'debt': 
+      case 'debt - overnight':
+      case 'debt scheme - dynamic bond':
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'hybrid':
+      case 'hybrid - conservative':
+      case 'hybrid - aggressive':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'index': return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+      default: return 'bg-slate-100 text-slate-600 border-slate-200';
     }
   };
 
@@ -137,49 +182,54 @@ const EnhancedFundSearch = ({
           placeholder={placeholder}
           value={searchQuery}
           onChange={handleInputChange}
-          className="pl-10 pr-4"
-          onFocus={() => searchQuery.length >= 2 && setShowResults(true)}
+          onFocus={handleInputFocus}
+          className="pl-10 pr-4 h-12 text-base border-2 border-gray-200 focus:border-blue-500 transition-colors"
         />
+        {loading && (
+          <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 h-4 w-4 animate-spin" />
+        )}
       </div>
 
       {showResults && (
-        <Card className="absolute top-full left-0 right-0 z-50 mt-1 max-h-96 overflow-y-auto shadow-lg">
+        <Card className="absolute top-full left-0 right-0 z-50 mt-2 max-h-96 overflow-y-auto shadow-xl border-2 border-gray-200">
           <CardContent className="p-0">
-            {loading ? (
+            {loading && searchResults.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                Searching funds...
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Searching funds...</span>
+                </div>
               </div>
             ) : searchResults.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
-                {searchQuery.length >= 2 ? 'No funds found' : 'Type to search funds...'}
+                {searchQuery.length >= 2 ? 'No funds found matching your search' : 'Type at least 2 characters to search...'}
               </div>
             ) : (
-              <div className="divide-y">
+              <div className="divide-y divide-gray-100">
                 {searchResults.map((fund, index) => (
                   <div
                     key={`${fund.schemeCode}-${index}`}
-                    className="p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                    className="p-4 hover:bg-blue-50 cursor-pointer transition-all duration-200 hover:shadow-sm"
                     onClick={() => handleFundSelect(fund)}
                   >
-                    <div className="flex justify-between items-start">
+                    <div className="flex justify-between items-start gap-3">
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-gray-900 truncate">
+                        <h4 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-tight">
                           {fund.schemeName}
                         </h4>
                         
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-2 mt-2 flex-wrap">
                           {fund.fundHouse && (
                             <div className="flex items-center gap-1 text-xs text-gray-600">
                               <Building className="h-3 w-3" />
-                              <span>{fund.fundHouse}</span>
+                              <span className="truncate max-w-32">{fund.fundHouse}</span>
                             </div>
                           )}
                           
                           {fund.category && (
                             <Badge 
                               variant="outline" 
-                              className={`text-xs ${getCategoryColor(fund.category)}`}
+                              className={`text-xs px-2 py-1 ${getCategoryColor(fund.category)}`}
                             >
                               {fund.category}
                             </Badge>
@@ -187,18 +237,21 @@ const EnhancedFundSearch = ({
                         </div>
                       </div>
                       
-                      <div className="text-right ml-2">
+                      <div className="text-right ml-2 flex-shrink-0">
                         {fund.nav ? (
-                          <div>
-                            <div className="text-sm font-bold">₹{fund.nav.toFixed(4)}</div>
-                            {fund.navDate && (
-                              <div className="text-xs text-gray-500">
-                                {new Date(fund.navDate).toLocaleDateString('en-IN')}
-                              </div>
-                            )}
+                          <div className="space-y-1">
+                            <div className="text-sm font-bold text-gray-900">
+                              ₹{fund.nav.toFixed(4)}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {formatNavDate(fund.navDate)}
+                            </div>
                           </div>
                         ) : (
-                          <div className="text-xs text-gray-500">Loading NAV...</div>
+                          <div className="text-xs text-gray-400 flex items-center gap-1">
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                            Loading...
+                          </div>
                         )}
                       </div>
                     </div>
