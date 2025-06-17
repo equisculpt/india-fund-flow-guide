@@ -43,6 +43,17 @@ interface AdvancedFundChartProps {
     category: string;
     nav: number;
     trendScore?: number;
+    // AI analysis fields that might be included
+    aiScore?: number;
+    recommendation?: string;
+    confidence?: number;
+    reasoning?: string;
+    riskLevel?: string;
+    strengths?: string[];
+    concerns?: string[];
+    performanceRank?: number;
+    analysis?: any;
+    [key: string]: any; // Allow any additional properties
   };
   className?: string;
 }
