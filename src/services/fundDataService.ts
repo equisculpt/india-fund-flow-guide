@@ -1,3 +1,4 @@
+
 interface FundData {
   schemeCode: string;
   schemeName: string;
@@ -49,20 +50,24 @@ export class FundDataService {
       const data = await response.json();
       console.log('FundDataService: Raw API response for', schemeCode, ':', data);
       
-      // Correct parsing: nav/date are in data[0], scheme info is in meta
-      if (data?.data?.[0]?.nav && parseFloat(data.data[0].nav) > 0) {
-        const navValue = parseFloat(data.data[0].nav);
-        const result = {
-          nav: navValue,
-          date: data.data[0].date,
-          actualSchemeName: data.meta?.scheme_name || 'Unknown',
-          fundHouse: data.meta?.fund_house || 'Unknown'
-        };
-        console.log('FundDataService: Returning valid NAV data:', result);
-        return result;
+      // Check if we have valid data array with nav and date
+      if (data?.data && Array.isArray(data.data) && data.data.length > 0) {
+        const navData = data.data[0];
+        if (navData.nav && navData.date && parseFloat(navData.nav) > 0) {
+          const navValue = parseFloat(navData.nav);
+          const result = {
+            nav: navValue,
+            date: navData.date,
+            actualSchemeName: data.meta?.scheme_name || 'Unknown',
+            fundHouse: data.meta?.fund_house || 'Unknown'
+          };
+          console.log('FundDataService: Returning valid NAV data:', result);
+          return result;
+        }
       }
       
-      console.log('FundDataService: No valid NAV data found in response for', schemeCode);
+      // If data array is empty or invalid, log and return null
+      console.log('FundDataService: No valid NAV data found - data array is empty or invalid for', schemeCode);
       return null;
     } catch (error) {
       console.error('FundDataService: Error fetching latest NAV for', schemeCode, ':', error);
