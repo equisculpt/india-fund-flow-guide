@@ -7,9 +7,13 @@ import MarketTimingAdvice from './MarketTimingAdvice';
 
 interface AnalysisTabsProps {
   fundData: any;
+  combinedFundData?: any; // Add this to receive the complete fund data with AI analysis
 }
 
-const AnalysisTabs = ({ fundData }: AnalysisTabsProps) => {
+const AnalysisTabs = ({ fundData, combinedFundData }: AnalysisTabsProps) => {
+  // Use combinedFundData if available (which includes AI analysis), otherwise fallback to fundData
+  const dataForComponents = combinedFundData || fundData;
+
   return (
     <Tabs defaultValue="manager" className="space-y-4">
       <TabsList className="grid w-full grid-cols-4">
@@ -20,19 +24,19 @@ const AnalysisTabs = ({ fundData }: AnalysisTabsProps) => {
       </TabsList>
 
       <TabsContent value="manager">
-        <FundManagerDetails fundData={fundData} />
+        <FundManagerDetails fundData={dataForComponents} />
       </TabsContent>
 
       <TabsContent value="holdings">
-        <PortfolioHoldings fundData={fundData} />
+        <PortfolioHoldings fundData={dataForComponents} />
       </TabsContent>
 
       <TabsContent value="ranking">
-        <AIFundRanking fundData={fundData} />
+        <AIFundRanking fundData={dataForComponents} />
       </TabsContent>
 
       <TabsContent value="timing">
-        <MarketTimingAdvice fundData={fundData} />
+        <MarketTimingAdvice fundData={dataForComponents} />
       </TabsContent>
     </Tabs>
   );

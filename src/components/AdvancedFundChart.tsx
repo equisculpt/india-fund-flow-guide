@@ -132,8 +132,8 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
         </CardContent>
       </Card>
 
-      {/* Comprehensive Analysis Tabs */}
-      <AnalysisTabs fundData={primaryFund} />
+      {/* Comprehensive Analysis Tabs - Pass the complete primaryFund data */}
+      <AnalysisTabs fundData={primaryFund} combinedFundData={primaryFund} />
     </div>
   );
 };
