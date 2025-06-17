@@ -37,8 +37,9 @@ const PerformanceStats = ({
     const firstPoint = data[0];
     const returnPct = lastPoint.fundPercentage;
     
-    // Calculate realistic SIP returns
-    const monthsInPeriod = Math.floor(getDaysForPeriod(period) / 30);
+    // Calculate MONTHLY SIP returns for all periods
+    const totalDays = getDaysForPeriod(period);
+    const monthsInPeriod = Math.floor(totalDays / 30); // Always calculate monthly
     const totalInvested = lastPoint.totalInvested || (sipAmount * monthsInPeriod);
     const sipValue = lastPoint.fundSIPValue || 0;
     
@@ -91,13 +92,13 @@ const PerformanceStats = ({
         </div>
       </div>
       <div className="text-center p-3 bg-purple-50 rounded-lg">
-        <div className="text-sm text-muted-foreground">SIP Returns</div>
+        <div className="text-sm text-muted-foreground">Monthly SIP Returns</div>
         <div className={`text-xl font-bold ${performance.sipReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
           {performance.sipReturn.toFixed(2)}%
         </div>
       </div>
       <div className="text-center p-3 bg-orange-50 rounded-lg">
-        <div className="text-sm text-muted-foreground">SIP Value</div>
+        <div className="text-sm text-muted-foreground">SIP Portfolio Value</div>
         <div className="text-xl font-bold text-orange-600">₹{performance.sipValue?.toLocaleString() || '0'}</div>
       </div>
       <div className="text-center p-3 bg-indigo-50 rounded-lg">

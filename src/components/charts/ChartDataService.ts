@@ -46,6 +46,9 @@ export class ChartDataService {
     let totalSIPInvestment = 0;
     let totalUnits = 0;
     
+    // Calculate total months and ensure monthly SIP for all periods
+    const totalMonths = Math.floor(days / 30);
+    
     for (let i = 0; i <= days; i += Math.ceil(days / 200)) { // Generate more data points for accuracy
       const currentDate = new Date(startDate);
       currentDate.setDate(startDate.getDate() + i);
@@ -60,9 +63,11 @@ export class ChartDataService {
       
       const fundPercentage = ((currentNAV - baseNAV) / baseNAV) * 100;
       
-      // Calculate SIP investment - monthly SIPs
+      // Calculate SIP investment - ALWAYS monthly, regardless of period
       const monthsElapsed = Math.floor(i / 30);
-      if (i % 30 === 0 && i > 0) { // Monthly SIP
+      const isMonthlyInvestmentDate = i % 30 === 0 && i > 0 && monthsElapsed <= totalMonths;
+      
+      if (isMonthlyInvestmentDate) {
         totalSIPInvestment += sipAmount;
         totalUnits += sipAmount / currentNAV;
       }
