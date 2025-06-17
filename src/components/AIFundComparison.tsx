@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -183,9 +182,31 @@ const AIFundComparison = () => {
   };
 
   const handleFundClick = (fund: AdvancedSchemeData) => {
+    // Debug logging to track navigation
+    console.log('AIFundComparison: Fund clicked:', fund.schemeName, 'SchemeCode:', fund.schemeCode);
+    
+    // Check for SBI Small Cap Fund specifically
+    if (fund.schemeName?.includes('SBI Small Cap')) {
+      console.log('🔍 AI FUND COMPARISON - SBI Small Cap clicked with scheme code:', fund.schemeCode);
+      if (fund.schemeCode !== '125497') {
+        console.error('🚨 AI FUND COMPARISON - WRONG SCHEME CODE for SBI Small Cap! Using:', fund.schemeCode, 'should be 125497');
+      }
+    }
+    
     navigate(`/fund/${fund.schemeCode}`, { 
       state: { 
-        fundData: fund 
+        fundData: {
+          id: fund.schemeCode,
+          scheme_name: fund.schemeName,
+          amc_name: fund.amcName,
+          category: fund.category,
+          nav: fund.nav,
+          returns_1y: fund.historical3MonthAverage * 4, // Approximate annualized return
+          returns_3y: fund.historical3MonthAverage * 4 * 0.8, // Conservative estimate
+          risk_level: fund.riskLevel,
+          min_sip_amount: 500,
+          schemeCode: fund.schemeCode
+        }
       } 
     });
   };
@@ -438,6 +459,14 @@ const AIFundComparison = () => {
                           {fund.schemeName}
                         </h3>
                         <p className="text-xs text-muted-foreground">{fund.category} • {fund.amcName}</p>
+                        {/* Debug info for scheme codes */}
+                        <div className="text-xs">
+                          <div className="text-blue-600">Scheme Code: {fund.schemeCode}</div>
+                          {/* Warning for SBI Small Cap Fund with wrong code */}
+                          {fund.schemeName?.includes('SBI Small Cap') && fund.schemeCode !== '125497' && (
+                            <div className="text-red-600 font-bold">⚠️ WRONG SCHEME CODE! Should be 125497</div>
+                          )}
+                        </div>
                       </div>
 
                       <div className="space-y-2">
