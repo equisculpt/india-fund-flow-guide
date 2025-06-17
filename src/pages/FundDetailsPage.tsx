@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -124,39 +123,52 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   const [fundData, setFundData] = useState<any>(null);
   const [latestNAV, setLatestNAV] = useState<any>(null);
   const [historicalData, setHistoricalData] = useState<any[]>([]);
+  const [navError, setNavError] = useState<string>('');
 
   useEffect(() => {
     if (!fundId) return;
 
+    console.log('FundDetailsPage: Starting data fetch for fundId:', fundId);
+    
     // Get base fund data from service
     const baseFundData = FundDataService.getMockFundData(fundId);
+    console.log('FundDetailsPage: Base fund data loaded:', baseFundData);
     setFundData(baseFundData);
 
     // Fetch latest NAV from API
-    console.log('Starting NAV fetch for fundId:', fundId);
+    console.log('FundDetailsPage: Starting NAV fetch for fundId:', fundId);
     FundDataService.fetchLatestNAV(fundId).then(navData => {
-      if (navData) {
-        console.log('Successfully fetched NAV data:', navData);
+      if (navData && navData.nav > 0) {
+        console.log('FundDetailsPage: Successfully fetched NAV data:', navData);
         setLatestNAV(navData);
+        setNavError('');
         
-        // Update fund data with real NAV and actual scheme name
+        // Update fund data with real NAV but keep our scheme name mapping
         setFundData(prev => ({
           ...prev,
           nav: navData.nav,
           navDate: navData.date,
-          // Only update scheme name if it's significantly different and not just a variation
-          actualSchemeName: prev.schemeName, // Keep our correct mapping
-          actualFundHouse: navData.fundHouse
+          // Keep our corrected scheme name mapping
+          actualFundHouse: navData.fundHouse,
+          // Store API scheme name for comparison
+          apiSchemeName: navData.actualSchemeName
         }));
       } else {
-        console.log('No NAV data received, keeping mock data');
+        console.log('FundDetailsPage: No valid NAV data received for', fundId, ', keeping mock data');
+        setNavError('NAV data not available from API');
+        // Keep mock NAV data when API fails
       }
+    }).catch(error => {
+      console.error('FundDetailsPage: NAV fetch error:', error);
+      setNavError('Failed to fetch NAV data');
     });
 
     // Fetch historical data for charts
     FundDataService.fetchHistoricalNAV(fundId, 365).then(historical => {
       setHistoricalData(historical);
-      console.log('Historical data loaded:', historical.length, 'records');
+      console.log('FundDetailsPage: Historical data loaded:', historical.length, 'records');
+    }).catch(error => {
+      console.error('FundDetailsPage: Historical data error:', error);
     });
   }, [fundId]);
 
@@ -236,9 +248,18 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
               <p className="text-gray-600">
                 {fundData.actualFundHouse || fundData.amc} • {fundData.category}
               </p>
-              {latestNAV && latestNAV.actualSchemeName !== fundData.schemeName && (
+              
+              {/* Show API scheme name for debugging/verification */}
+              {latestNAV && fundData.apiSchemeName && fundData.apiSchemeName !== fundData.schemeName && (
                 <p className="text-sm text-blue-600 mt-1">
-                  API scheme: {latestNAV.actualSchemeName}
+                  API scheme: {fundData.apiSchemeName}
+                </p>
+              )}
+              
+              {/* Show NAV error if any */}
+              {navError && (
+                <p className="text-sm text-orange-600 mt-1">
+                  ⚠️ {navError} - Using mock data
                 </p>
               )}
               
@@ -259,7 +280,9 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             
             <div className="text-right">
               <div className="text-3xl font-bold">₹{fundData.nav.toFixed(4)}</div>
-              <div className="text-sm text-gray-600">Current NAV</div>
+              <div className="text-sm text-gray-600">
+                Current NAV {latestNAV ? '(Live)' : '(Mock)'}
+              </div>
               {latestNAV && (
                 <div className="text-xs text-green-600 mt-1">
                   Updated: {latestNAV.date}

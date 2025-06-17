@@ -39,30 +39,34 @@ export class FundDataService {
 
   static async fetchLatestNAV(schemeCode: string): Promise<NAVResponse | null> {
     try {
-      console.log(`Fetching NAV for scheme: ${schemeCode}`);
+      console.log(`FundDataService: Fetching NAV for scheme: ${schemeCode}`);
       const response = await fetch(`https://api.mfapi.in/mf/${schemeCode}/latest`);
       
       if (!response.ok) {
-        console.error(`NAV API responded with status: ${response.status}`);
+        console.error(`FundDataService: NAV API responded with status: ${response.status}`);
         throw new Error('Failed to fetch NAV');
       }
       
       const data = await response.json();
-      console.log('NAV API response for', schemeCode, ':', data);
+      console.log('FundDataService: NAV API response for', schemeCode, ':', data);
       
-      if (data?.data?.[0]?.nav) {
-        return {
-          nav: parseFloat(data.data[0].nav),
+      // Check if we have valid data
+      if (data?.data?.[0]?.nav && parseFloat(data.data[0].nav) > 0) {
+        const navValue = parseFloat(data.data[0].nav);
+        const result = {
+          nav: navValue,
           date: data.data[0].date,
           actualSchemeName: data.meta?.scheme_name || 'Unknown',
           fundHouse: data.meta?.fund_house || 'Unknown'
         };
+        console.log('FundDataService: Returning valid NAV data:', result);
+        return result;
       }
       
-      console.log('No NAV data found in response for', schemeCode);
+      console.log('FundDataService: No valid NAV data found in response for', schemeCode);
       return null;
     } catch (error) {
-      console.error('Error fetching latest NAV for', schemeCode, ':', error);
+      console.error('FundDataService: Error fetching latest NAV for', schemeCode, ':', error);
       return null;
     }
   }
@@ -105,7 +109,7 @@ export class FundDataService {
   }
 
   static getMockFundData(schemeCode: string): FundData {
-    // EXPANDED mock data with more fund mappings
+    // VERIFIED mock data with correct scheme code mappings
     const fundDataMap: Record<string, FundData> = {
       '125497': { // SBI Small Cap Fund - Direct Growth - VERIFIED
         schemeCode: '125497',
@@ -177,7 +181,7 @@ export class FundDataService {
         volatility: 6.5,
         minSipAmount: 500
       },
-      '119078': { // HDFC Regular Savings Fund - VERIFIED
+      '119078': { // HDFC Regular Savings Fund - VERIFIED (but API returns old dividend data)
         schemeCode: '119078',
         schemeName: 'HDFC Regular Savings Fund - Direct Plan',
         amc: 'HDFC Mutual Fund',
@@ -196,7 +200,7 @@ export class FundDataService {
         schemeName: 'UTI Nifty 50 Index Fund - Direct Growth',
         amc: 'UTI Mutual Fund',
         category: 'Index',
-        nav: 198.45,
+        nav: 173.26,
         returns1Y: 16.8,
         returns3Y: 14.2,
         returns5Y: 13.1,
@@ -205,12 +209,12 @@ export class FundDataService {
         volatility: 4.8,
         minSipAmount: 500
       },
-      '145553': { // UTI Fixed Term Income Fund - VERIFIED
+      '145553': { // UTI Fixed Term Income Fund - VERIFIED (but closed fund)
         schemeCode: '145553',
         schemeName: 'UTI Fixed Term Income Fund - Direct Growth',
         amc: 'UTI Mutual Fund',
         category: 'Debt - Fixed Term',
-        nav: 25.67,
+        nav: 13.16,
         returns1Y: 7.2,
         returns3Y: 6.8,
         returns5Y: 6.5,
@@ -238,7 +242,7 @@ export class FundDataService {
         schemeName: 'SBI Equity Hybrid Fund - Regular Growth',
         amc: 'SBI Mutual Fund',
         category: 'Hybrid - Aggressive',
-        nav: 178.92,
+        nav: 299.86,
         returns1Y: 19.5,
         returns3Y: 16.2,
         returns5Y: 14.8,
@@ -247,7 +251,7 @@ export class FundDataService {
         volatility: 5.5,
         minSipAmount: 500
       },
-      // Additional common fund mappings to handle API scheme codes
+      // Additional funds that appear in API
       '100076': { // Aditya Birla Sun Life Equity Advantage Fund
         schemeCode: '100076',
         schemeName: 'Aditya Birla Sun Life Equity Advantage Fund - Regular Growth',
@@ -262,7 +266,7 @@ export class FundDataService {
         volatility: 6.2,
         minSipAmount: 500
       },
-      '119551': { // Common scheme code that might appear
+      '119551': { // HDFC Equity Fund
         schemeCode: '119551',
         schemeName: 'HDFC Equity Fund - Direct Growth',
         amc: 'HDFC Mutual Fund',
@@ -278,12 +282,13 @@ export class FundDataService {
       }
     };
 
-    // If scheme code not found, create a dynamic entry with basic info
+    // Return mapped data or create placeholder for unknown schemes
     if (!fundDataMap[schemeCode]) {
+      console.log('FundDataService: No mapping found for scheme code:', schemeCode, ', creating placeholder');
       return {
         schemeCode,
-        schemeName: `Fund - ${schemeCode}`, // Placeholder until real data loads
-        amc: 'Unknown AMC',
+        schemeName: `Fund ${schemeCode}`, // Temporary name until API loads
+        amc: 'Loading...',
         category: 'Unknown',
         nav: 0,
         returns1Y: 0,
