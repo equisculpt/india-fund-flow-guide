@@ -353,13 +353,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
 
           <TabsContent value="analytics">
             <AdvancedFundChart 
-              primaryFund={{
-                schemeCode: fundData.schemeCode,
-                schemeName: fundData.schemeName,
-                category: fundData.category,
-                nav: fundData.nav,
-                trendScore: aiAnalysis?.analysis?.performanceScore || 7
-              }}
+              primaryFund={combinedFundDataForComponents}
             />
           </TabsContent>
         </Tabs>

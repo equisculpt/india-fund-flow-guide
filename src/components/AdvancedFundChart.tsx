@@ -64,6 +64,9 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
   const performance = calculatePerformance(chartData);
   const irr = calculateIRR(chartData);
 
+  console.log('AdvancedFundChart: primaryFund data received:', primaryFund);
+  console.log('AdvancedFundChart: AI analysis present?', !!primaryFund.aiScore);
+
   if (loading) {
     return (
       <Card className={className}>
@@ -132,7 +135,7 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
         </CardContent>
       </Card>
 
-      {/* Comprehensive Analysis Tabs - Pass the complete primaryFund data */}
+      {/* Comprehensive Analysis Tabs - Pass the complete primaryFund data with AI analysis */}
       <AnalysisTabs fundData={primaryFund} combinedFundData={primaryFund} />
     </div>
   );
