@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import PortfolioDashboard from "@/components/PortfolioDashboard";
@@ -15,10 +14,14 @@ import ReviewModal from "@/components/ReviewModal";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, Calculator, Target, Sparkles, Users, Bot } from "lucide-react";
+import { useTopFundsNAV } from "@/hooks/useTopFundsNAV";
 
 const Index = () => {
   const { isAuthenticated, user } = useEnhancedAuth();
   const [showReviewModal, setShowReviewModal] = useState(false);
+  
+  // Initialize top funds NAV fetching
+  const { navData, loading: navLoading, error: navError } = useTopFundsNAV();
 
   // Check for review prompt after investment activities
   useEffect(() => {
@@ -46,11 +49,29 @@ const Index = () => {
   };
 
   console.log('Index page rendering, isAuthenticated:', isAuthenticated, 'user:', user);
+  console.log('Top funds NAV loading:', navLoading, 'error:', navError, 'data size:', navData.size);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header />
       <HeroSection />
+      
+      {/* NAV Loading Status */}
+      {navLoading && (
+        <div className="container mx-auto px-4 py-2">
+          <div className="text-center text-sm text-blue-600">
+            Loading latest NAV data for top funds...
+          </div>
+        </div>
+      )}
+      
+      {navError && (
+        <div className="container mx-auto px-4 py-2">
+          <div className="text-center text-sm text-red-600">
+            Error loading NAV data: {navError}
+          </div>
+        </div>
+      )}
       
       {isAuthenticated ? (
         <div className="container mx-auto px-4 py-8">
@@ -130,7 +151,7 @@ const Index = () => {
           </section>
           
           <section id="funds">
-            <AIFundComparison />
+            <AIFundComparison navData={navData} />
           </section>
           
           <section id="risk-profile">

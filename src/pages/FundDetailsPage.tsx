@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -17,6 +16,7 @@ import AIFundRanking from '@/components/charts/AIFundRanking';
 import PortfolioHoldings from '@/components/charts/PortfolioHoldings';
 import FundAnalyticsChart from '@/components/FundAnalyticsChart';
 import AdvancedFundChart from '@/components/AdvancedFundChart';
+import { FundDataService } from '@/services/fundDataService';
 
 interface FundDetailsPageProps {
   // Add any props you need here
@@ -110,158 +110,53 @@ const getAIAnalysis = (fundData: any) => {
   };
 };
 
-// Function to fetch latest NAV from API
-const fetchLatestNAV = async (schemeCode: string) => {
-  try {
-    console.log(`Fetching NAV for scheme: ${schemeCode}`);
-    const response = await fetch(`https://api.mfapi.in/mf/${schemeCode}/latest`);
-    if (!response.ok) {
-      console.error(`NAV API responded with status: ${response.status}`);
-      throw new Error('Failed to fetch NAV');
-    }
-    
-    const data = await response.json();
-    console.log('NAV API response:', data);
-    
-    if (data?.data?.[0]?.nav) {
-      const navInfo = {
-        nav: parseFloat(data.data[0].nav),
-        date: data.data[0].date
-      };
-      console.log('Parsed NAV info:', navInfo);
-      return navInfo;
-    }
-    console.log('No NAV data found in response');
-    return null;
-  } catch (error) {
-    console.error('Error fetching latest NAV:', error);
-    return null;
-  }
-};
-
 const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   const navigate = useNavigate();
   const { fundId } = useParams();
   const [fundData, setFundData] = useState<any>(null);
   const [latestNAV, setLatestNAV] = useState<any>(null);
+  const [historicalData, setHistoricalData] = useState<any[]>([]);
 
   useEffect(() => {
-    // Generate comprehensive fund data based on fundId
-    let mockData = {
-      schemeCode: fundId,
-      schemeName: '',
-      amc: '',
-      category: '',
-      nav: 0,
-      returns1Y: 0,
-      returns3Y: 0,
-      returns5Y: 0,
-      aum: 0,
-      expenseRatio: 0,
-      volatility: 0,
-      minSipAmount: 500
-    };
+    if (!fundId) return;
 
-    if (fundId === '120503') {
-      mockData = {
-        ...mockData,
-        schemeName: 'Axis Midcap Fund - Direct Growth',
-        amc: 'Axis Mutual Fund',
-        category: 'Mid Cap',
-        nav: 89.45,
-        returns1Y: 24.5,
-        returns3Y: 18.2,
-        returns5Y: 16.8,
-        aum: 15420,
-        expenseRatio: 0.68,
-        volatility: 6.5,
-        minSipAmount: 500
-      };
-    } else if (fundId === '100016') {
-      mockData = {
-        ...mockData,
-        schemeName: 'SBI Bluechip Fund - Direct Growth',
-        amc: 'SBI Mutual Fund',
-        category: 'Large Cap',
-        nav: 76.32,
-        returns1Y: 18.7,
-        returns3Y: 15.4,
-        returns5Y: 14.2,
-        aum: 28650,
-        expenseRatio: 0.52,
-        volatility: 4.2,
-        minSipAmount: 500
-      };
-    } else if (fundId === '101206') {
-      mockData = {
-        ...mockData,
-        schemeName: 'HDFC Top 100 Fund - Direct Growth',
-        amc: 'HDFC Mutual Fund',
-        category: 'Large Cap',
-        nav: 832.15,
-        returns1Y: 20.3,
-        returns3Y: 16.1,
-        returns5Y: 15.7,
-        aum: 22340,
-        expenseRatio: 0.58,
-        volatility: 4.8,
-        minSipAmount: 500
-      };
-    } else if (fundId === '120601') {
-      mockData = {
-        ...mockData,
-        schemeName: 'SBI Small Cap Fund - Regular Plan - Growth',
-        amc: 'SBI Mutual Fund',
-        category: 'Small Cap',
-        nav: 125.67,
-        returns1Y: 28.9,
-        returns3Y: 22.1,
-        returns5Y: 19.4,
-        aum: 3402,
-        expenseRatio: 1.85,
-        volatility: 8.2,
-        minSipAmount: 500
-      };
-    }
-
-    setFundData(mockData);
+    // Get base fund data from service
+    const baseFundData = FundDataService.getMockFundData(fundId);
+    setFundData(baseFundData);
 
     // Fetch latest NAV from API
-    if (fundId) {
-      console.log('Starting NAV fetch for fundId:', fundId);
-      fetchLatestNAV(fundId).then(navData => {
-        if (navData) {
-          console.log('Successfully fetched NAV data:', navData);
-          setLatestNAV(navData);
-          // Update the mock data with latest NAV
-          setFundData(prev => ({
-            ...prev,
-            nav: navData.nav,
-            navDate: navData.date
-          }));
-        } else {
-          console.log('No NAV data received, keeping mock data');
-        }
-      });
-    }
+    console.log('Starting NAV fetch for fundId:', fundId);
+    FundDataService.fetchLatestNAV(fundId).then(navData => {
+      if (navData) {
+        console.log('Successfully fetched NAV data:', navData);
+        setLatestNAV(navData);
+        
+        // Update fund data with real NAV and actual scheme name
+        setFundData(prev => ({
+          ...prev,
+          nav: navData.nav,
+          navDate: navData.date,
+          actualSchemeName: navData.actualSchemeName,
+          actualFundHouse: navData.fundHouse
+        }));
+      } else {
+        console.log('No NAV data received, keeping mock data');
+      }
+    });
+
+    // Fetch historical data for charts
+    FundDataService.fetchHistoricalNAV(fundId, 365).then(historical => {
+      setHistoricalData(historical);
+      console.log('Historical data loaded:', historical.length, 'records');
+    });
   }, [fundId]);
 
   const handleBackClick = () => {
     console.log('Back button clicked');
-    console.log('Current location:', window.location.pathname);
-    console.log('History length:', window.history.length);
     
     try {
-      // First try to go back in history
-      window.history.back();
-      
-      // If that doesn't work after a short delay, navigate to home
-      setTimeout(() => {
-        if (window.location.pathname === `/fund/${fundId}`) {
-          console.log('Still on same page, navigating to home');
-          navigate('/');
-        }
-      }, 100);
+      // Use React Router navigate with -1 to go back
+      navigate(-1);
     } catch (error) {
       console.error('Error with back navigation:', error);
       navigate('/');
@@ -310,8 +205,18 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         <div className="mt-4 mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-3xl font-bold">{fundData.schemeName}</h2>
-              <p className="text-gray-600">{fundData.amc} • {fundData.category}</p>
+              <h2 className="text-3xl font-bold">
+                {fundData.actualSchemeName || fundData.schemeName}
+              </h2>
+              <p className="text-gray-600">
+                {fundData.actualFundHouse || fundData.amc} • {fundData.category}
+              </p>
+              {fundData.actualSchemeName && fundData.actualSchemeName !== fundData.schemeName && (
+                <p className="text-sm text-blue-600 mt-1">
+                  Real scheme: {fundData.actualSchemeName}
+                </p>
+              )}
+              
               <div className="flex items-center gap-4 mt-2">
                 <div className="flex items-center gap-1">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
@@ -404,7 +309,8 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           <TabsContent value="performance">
             <FundAnalyticsChart 
               fundId={fundData.schemeCode} 
-              fundName={fundData.schemeName} 
+              fundName={fundData.actualSchemeName || fundData.schemeName}
+              historicalData={historicalData}
             />
           </TabsContent>
 
@@ -412,11 +318,12 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             <AdvancedFundChart 
               primaryFund={{
                 schemeCode: fundData.schemeCode,
-                schemeName: fundData.schemeName,
+                schemeName: fundData.actualSchemeName || fundData.schemeName,
                 category: fundData.category,
                 nav: fundData.nav,
                 trendScore: aiAnalysis.trendScore
               }}
+              historicalData={historicalData}
             />
           </TabsContent>
         </Tabs>
