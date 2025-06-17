@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -14,6 +13,7 @@ import InvestmentOverviewTab from './admin/InvestmentOverviewTab';
 import AgentManagementTab from './admin/AgentManagementTab';
 import CommissionManagementTab from './admin/CommissionManagementTab';
 import MutualFundManagementTab from './admin/MutualFundManagementTab';
+import FundAnalysisTab from './admin/FundAnalysisTab';
 
 interface DashboardStats {
   totalUsers: number;
@@ -148,12 +148,13 @@ const AdminDashboard = () => {
 
       {/* Main Tabs */}
       <Tabs defaultValue="users" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="agents">Agents</TabsTrigger>
           <TabsTrigger value="investments">Investments</TabsTrigger>
           <TabsTrigger value="commissions">Commissions</TabsTrigger>
           <TabsTrigger value="funds">Mutual Funds</TabsTrigger>
+          <TabsTrigger value="analysis">Analysis</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users">
@@ -174,6 +175,10 @@ const AdminDashboard = () => {
 
         <TabsContent value="funds">
           <MutualFundManagementTab />
+        </TabsContent>
+
+        <TabsContent value="analysis">
+          <FundAnalysisTab />
         </TabsContent>
       </Tabs>
     </div>

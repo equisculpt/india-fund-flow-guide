@@ -1,4 +1,3 @@
-
 interface FundData {
   schemeCode: string;
   schemeName: string;
@@ -21,6 +20,8 @@ interface NAVResponse {
   actualSchemeName: string;
   fundHouse: string;
 }
+
+import { FundAnalysisService } from './fundAnalysisService';
 
 export class FundDataService {
   // CORRECTED Top 10 popular funds with VERIFIED scheme codes and matching names
@@ -99,7 +100,10 @@ export class FundDataService {
     console.log('Fetching NAV for top 10 funds...');
     const navMap = new Map<string, NAVResponse>();
     
-    const promises = this.TOP_FUNDS.map(async (fund) => {
+    // Get dynamic top funds or fallback to static
+    const topFunds = this.getDynamicTopFunds();
+    
+    const promises = topFunds.map(async (fund) => {
       const navData = await this.fetchLatestNAV(fund.schemeCode);
       if (navData) {
         navMap.set(fund.schemeCode, navData);
@@ -112,9 +116,66 @@ export class FundDataService {
     return navMap;
   }
 
+  static getDynamicTopFunds(): Array<{ schemeCode: string; name: string }> {
+    const analysisResults = FundAnalysisService.loadAnalysisResults();
+    
+    if (!analysisResults || analysisResults.length === 0) {
+      console.log('FundDataService: No analysis results found, using static top funds');
+      return this.TOP_FUNDS;
+    }
+
+    // Get top 2 funds from each category to create a diverse top 10 list
+    const dynamicTopFunds: Array<{ schemeCode: string; name: string }> = [];
+    
+    for (const category of analysisResults) {
+      const topFundsFromCategory = category.funds.slice(0, 2); // Take top 2 from each category
+      
+      for (const fund of topFundsFromCategory) {
+        dynamicTopFunds.push({
+          schemeCode: fund.schemeCode,
+          name: fund.schemeName
+        });
+        
+        // Limit to 10 total funds
+        if (dynamicTopFunds.length >= 10) break;
+      }
+      
+      if (dynamicTopFunds.length >= 10) break;
+    }
+
+    console.log('FundDataService: Using dynamic top funds from analysis results:', dynamicTopFunds.length);
+    return dynamicTopFunds.length > 0 ? dynamicTopFunds : this.TOP_FUNDS;
+  }
+
   static getMockFundData(schemeCode: string): FundData {
     console.log('FundDataService: Getting mock fund data for scheme code:', schemeCode);
     
+    // First check if we have analysis results with this scheme code
+    const analysisResults = FundAnalysisService.loadAnalysisResults();
+    if (analysisResults) {
+      for (const category of analysisResults) {
+        const fund = category.funds.find(f => f.schemeCode === schemeCode);
+        if (fund) {
+          console.log('FundDataService: Found fund in analysis results:', fund.schemeName);
+          return {
+            schemeCode: fund.schemeCode,
+            schemeName: fund.schemeName,
+            amc: fund.fundHouse,
+            category: fund.category,
+            nav: fund.nav,
+            returns1Y: 15 + Math.random() * 10, // Mock returns
+            returns3Y: 12 + Math.random() * 8,
+            returns5Y: 10 + Math.random() * 6,
+            aum: Math.floor(Math.random() * 20000) + 5000,
+            expenseRatio: 0.5 + Math.random() * 1.5,
+            volatility: fund.volatilityScore || 5 + Math.random() * 5,
+            minSipAmount: 500,
+            navDate: fund.navDate
+          };
+        }
+      }
+    }
+
     // VERIFIED mock data with correct scheme code mappings
     const fundDataMap: Record<string, FundData> = {
       '125497': { // SBI Small Cap Fund - Direct Growth - VERIFIED
