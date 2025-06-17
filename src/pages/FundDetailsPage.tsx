@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -14,8 +15,8 @@ import {
 import Header from '@/components/Header';
 import AIFundRanking from '@/components/charts/AIFundRanking';
 import PortfolioHoldings from '@/components/charts/PortfolioHoldings';
-import FundAnalyticsChart from '@/components/FundAnalyticsChart';
 import AdvancedFundChart from '@/components/AdvancedFundChart';
+import NAVHistoryChart from '@/components/NAVHistoryChart';
 import { FundDataService } from '@/services/fundDataService';
 
 interface FundDetailsPageProps {
@@ -152,19 +153,13 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   }, [fundId]);
 
   const handleBackClick = () => {
-    console.log('Back button clicked, attempting navigation...');
+    console.log('Back button clicked, navigating to funds page');
     
     try {
-      // Try using browser's back history first
-      if (window.history.length > 1) {
-        console.log('Using window.history.back()');
-        window.history.back();
-      } else {
-        console.log('No history available, navigating to home');
-        navigate('/');
-      }
+      // Navigate to the funds section of the home page
+      navigate('/#funds');
     } catch (error) {
-      console.error('Error with back navigation:', error);
+      console.error('Error with navigation:', error);
       navigate('/');
     }
   };
@@ -204,7 +199,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           className="mb-4"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
+          Back to Funds
         </Button>
         
         {/* Fund Header */}
@@ -239,7 +234,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             </div>
             
             <div className="text-right">
-              <div className="text-3xl font-bold">₹{fundData.nav.toFixed(2)}</div>
+              <div className="text-3xl font-bold">₹{fundData.nav.toFixed(4)}</div>
               <div className="text-sm text-gray-600">Current NAV</div>
               {latestNAV && (
                 <div className="text-xs text-green-600 mt-1">
@@ -313,7 +308,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           </TabsContent>
 
           <TabsContent value="performance">
-            <FundAnalyticsChart 
+            <NAVHistoryChart 
               fundId={fundData.schemeCode} 
               fundName={fundData.actualSchemeName || fundData.schemeName}
             />
