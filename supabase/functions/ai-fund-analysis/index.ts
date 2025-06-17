@@ -2,7 +2,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -17,7 +17,7 @@ serve(async (req) => {
   try {
     const { fundData } = await req.json();
     
-    console.log('AI Fund Analysis: Processing fund:', fundData.schemeCode, fundData.schemeName);
+    console.log('AI Fund Analysis: Processing fund with Gemini:', fundData.schemeCode, fundData.schemeName);
 
     const prompt = `Analyze this mutual fund and provide a comprehensive investment analysis:
 
@@ -33,66 +33,62 @@ Fund Details:
 - AUM: ₹${fundData.aum || 'N/A'} Cr
 - Min SIP: ₹${fundData.minSipAmount || 'N/A'}
 
-Please provide:
-1. AI Score (1-10 scale)
-2. Investment Recommendation (STRONG BUY/BUY/HOLD/SELL/STRONG SELL)
-3. Confidence Level (percentage)
-4. Detailed reasoning for the recommendation
-5. Risk assessment
-6. Key strengths (3-4 points)
-7. Areas of concern (2-3 points)
-8. Performance rank estimate (1-100)
+You are an expert mutual fund analyst with 20+ years of experience in Indian markets. Analyze funds based on performance, risk, expense ratios, fund house reputation, and market conditions. Be objective and provide actionable insights. Consider the fund category's typical characteristics when scoring.
 
-Format your response as valid JSON with the following structure:
+Please provide your analysis in the following JSON format only (no additional text):
 {
-  "aiScore": number,
-  "recommendation": "string",
-  "confidence": number,
-  "reasoning": "string",
-  "riskLevel": "Low/Moderate/High",
+  "aiScore": number (1-10 scale),
+  "recommendation": "STRONG BUY" | "BUY" | "HOLD" | "SELL" | "STRONG SELL",
+  "confidence": number (percentage),
+  "reasoning": "string (detailed reasoning for the recommendation)",
+  "riskLevel": "Low" | "Moderate" | "High",
   "strengths": ["strength1", "strength2", "strength3"],
   "concerns": ["concern1", "concern2"],
-  "performanceRank": number,
+  "performanceRank": number (1-100),
   "analysis": {
-    "performanceScore": number,
-    "volatilityScore": number,
-    "expenseScore": number,
-    "fundManagerScore": number,
-    "portfolioQualityScore": number
+    "performanceScore": number (1-10),
+    "volatilityScore": number (1-10),
+    "expenseScore": number (1-10),
+    "fundManagerScore": number (1-10),
+    "portfolioQualityScore": number (1-10)
   }
 }`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
+        contents: [
           {
-            role: 'system',
-            content: `You are an expert mutual fund analyst with 20+ years of experience in Indian markets. Analyze funds based on performance, risk, expense ratios, fund house reputation, and market conditions. Be objective and provide actionable insights. Consider the fund category's typical characteristics when scoring.`
-          },
-          {
-            role: 'user',
-            content: prompt
+            parts: [
+              {
+                text: prompt
+              }
+            ]
           }
         ],
-        temperature: 0.3,
-        max_tokens: 1500,
+        generationConfig: {
+          temperature: 0.3,
+          maxOutputTokens: 1500,
+        }
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      throw new Error(`Gemini API error: ${response.status}`);
     }
 
     const data = await response.json();
-    const aiResponse = data.choices[0].message.content;
+    
+    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+      throw new Error('Invalid response from Gemini API');
+    }
 
-    console.log('AI Fund Analysis: Raw AI response:', aiResponse);
+    const aiResponse = data.candidates[0].content.parts[0].text;
+
+    console.log('AI Fund Analysis: Raw Gemini response:', aiResponse);
 
     // Parse the JSON response from AI
     let analysisResult;
@@ -102,7 +98,7 @@ Format your response as valid JSON with the following structure:
       if (jsonMatch) {
         analysisResult = JSON.parse(jsonMatch[0]);
       } else {
-        throw new Error('No valid JSON found in AI response');
+        throw new Error('No valid JSON found in Gemini response');
       }
     } catch (parseError) {
       console.error('AI Fund Analysis: JSON parse error:', parseError);
@@ -111,7 +107,7 @@ Format your response as valid JSON with the following structure:
         aiScore: 7.0,
         recommendation: 'HOLD',
         confidence: 75,
-        reasoning: 'AI analysis temporarily unavailable. Please try again.',
+        reasoning: 'Gemini AI analysis temporarily unavailable. Please try again.',
         riskLevel: 'Moderate',
         strengths: ['Established fund house', 'Regular dividend track record'],
         concerns: ['Market volatility', 'Economic uncertainty'],
@@ -144,7 +140,7 @@ Format your response as valid JSON with the following structure:
         aiScore: 6.5,
         recommendation: 'HOLD',
         confidence: 60,
-        reasoning: 'Unable to complete AI analysis. This is a fallback assessment.',
+        reasoning: 'Unable to complete Gemini AI analysis. This is a fallback assessment.',
         riskLevel: 'Moderate',
         strengths: ['Fund available for analysis'],
         concerns: ['Analysis service temporarily unavailable'],
