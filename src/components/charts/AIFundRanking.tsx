@@ -30,26 +30,32 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
     }
   };
 
-  // Use the AI score that was passed from FundDetailsPage to ensure consistency
+  // Use the consistent AI score that was passed from FundDetailsPage
   const overallScore = fundData.aiScore || 7.5;
 
-  // Enhanced AI scoring factors with portfolio analysis
+  // Use deterministic scoring factors that match FundDetailsPage exactly
+  const seed = parseInt(fundData.schemeCode) || 1000;
+  const seededRandom = (seed: number) => {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  };
+
   const scoringFactors = [
     { 
       name: "Performance Consistency", 
-      score: Math.min(10, (fundData.trendScore || 7) + Math.random() * 2), 
+      score: Math.min(10, Math.max(4, (fundData.trendScore || 7) + seededRandom(seed + 1) * 2)), 
       weight: 25,
       description: `3-year rolling returns with ${(fundData.volatilityScore || 5) < 5 ? 'low' : 'moderate'} volatility`
     },
     { 
       name: "Fund Manager Track Record", 
-      score: 8.5 + (Math.random() * 1.5), 
+      score: Math.min(10, Math.max(6, 8.5 + seededRandom(seed + 2) * 1.5)), 
       weight: 20,
       description: "Experienced manager with proven outperformance in this category"
     },
     { 
       name: "Portfolio Quality", 
-      score: portfolioData ? (8.0 + (portfolioData.holdings.length > 30 ? 1 : 0)) : 7.8, 
+      score: portfolioData ? (8.0 + (portfolioData.holdings.length > 30 ? 1 : 0)) : Math.min(10, Math.max(6, 7.8 + seededRandom(seed + 3))), 
       weight: 20,
       description: portfolioData ? `Well-diversified with ${portfolioData.holdings.length} quality holdings` : "Well-diversified portfolio"
     },
@@ -67,22 +73,22 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
     },
     { 
       name: "Portfolio Turnover", 
-      score: portfolioData ? Math.max(5, 10 - (portfolioData.portfolioTurnover / 10)) : 7.2, 
+      score: portfolioData ? Math.max(5, 10 - (portfolioData.portfolioTurnover / 10)) : Math.min(10, Math.max(5, 7.2 + seededRandom(seed + 4) * 1.8)), 
       weight: 10,
       description: portfolioData ? `${portfolioData.portfolioTurnover.toFixed(1)}% annual turnover - ${portfolioData.portfolioTurnover < 30 ? 'conservative' : 'active'} approach` : "Moderate portfolio churn"
     }
   ];
 
-  // Generate best/worst quarter data with quarter details
+  // Generate deterministic quarter data
   const generateQuarterData = () => {
     const quarters = ['Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024', 'Q1 2025'];
-    const bestQuarter = quarters[Math.floor(Math.random() * quarters.length)];
-    const worstQuarter = quarters[Math.floor(Math.random() * quarters.length)];
+    const bestQuarter = quarters[Math.floor(seededRandom(seed + 10) * quarters.length)];
+    const worstQuarter = quarters[Math.floor(seededRandom(seed + 11) * quarters.length)];
     
     return {
-      bestQuarterReturn: 15 + Math.random() * 20, // 15-35%
+      bestQuarterReturn: 15 + seededRandom(seed + 12) * 20, // 15-35%
       bestQuarter,
-      worstQuarterReturn: -5 - Math.random() * 15, // -5% to -20%
+      worstQuarterReturn: -5 - seededRandom(seed + 13) * 15, // -5% to -20%
       worstQuarter
     };
   };

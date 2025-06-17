@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -23,28 +22,36 @@ interface FundDetailsPageProps {
   // Add any props you need here
 }
 
-// Unified AI scoring that matches AIFundRanking component
+// Deterministic AI scoring that doesn't change on refresh
 const getAIAnalysis = (fundData: any) => {
-  const { category, returns1Y, returns3Y, returns5Y, volatility, expenseRatio, aum } = fundData;
+  const { category, returns1Y, returns3Y, returns5Y, volatility, expenseRatio, aum, schemeCode } = fundData;
   
-  // Calculate trend score based on performance
-  const trendScore = Math.min(10, (returns1Y * 0.2 + returns3Y * 0.3 + returns5Y * 0.5) / 10 * 8 + Math.random() * 2);
+  // Use scheme code as seed for consistent "randomness"
+  const seed = parseInt(schemeCode) || 1000;
+  const seededRandom = (seed: number) => {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  };
   
-  // Enhanced AI scoring factors matching AIFundRanking exactly
+  // Calculate trend score based on performance - deterministic
+  const performanceScore = (returns1Y * 0.2 + returns3Y * 0.3 + returns5Y * 0.5) / 10;
+  const trendScore = Math.min(10, Math.max(3, performanceScore * 8 + seededRandom(seed) * 2));
+  
+  // Deterministic AI scoring factors
   const scoringFactors = [
     { 
       name: "Performance Consistency", 
-      score: Math.min(10, trendScore + Math.random() * 2), 
+      score: Math.min(10, Math.max(4, trendScore + seededRandom(seed + 1) * 2)), 
       weight: 25
     },
     { 
       name: "Fund Manager Track Record", 
-      score: 8.5 + (Math.random() * 1.5), 
+      score: Math.min(10, Math.max(6, 8.5 + seededRandom(seed + 2) * 1.5)), 
       weight: 20
     },
     { 
       name: "Portfolio Quality", 
-      score: 8.0 + Math.random() * 1.5, 
+      score: Math.min(10, Math.max(6, 8.0 + seededRandom(seed + 3) * 1.5)), 
       weight: 20
     },
     { 
@@ -59,52 +66,51 @@ const getAIAnalysis = (fundData: any) => {
     },
     { 
       name: "Portfolio Turnover", 
-      score: 7.2 + Math.random() * 1.8, 
+      score: Math.min(10, Math.max(5, 7.2 + seededRandom(seed + 4) * 1.8)), 
       weight: 10
     }
   ];
 
-  // Calculate overall score using weighted average - SAME LOGIC AS AIFundRanking
+  // Calculate overall score using weighted average - deterministic
   const aiScore = scoringFactors.reduce((acc, factor) => 
     acc + (factor.score * factor.weight / 100), 0
   );
 
-  // Round to one decimal place - SAME AS AIFundRanking
+  // Round to one decimal place
   const finalScore = Math.round(aiScore * 10) / 10;
   
   let recommendation = 'HOLD';
   let confidence = 0;
   let reasoning = '';
   
-  // Generate recommendation based on AI score - SAME LOGIC AS AIFundRanking
+  // Generate recommendation based on AI score - deterministic
   if (finalScore >= 8.5) {
     recommendation = 'STRONG BUY';
-    confidence = 85 + Math.random() * 10;
+    confidence = Math.round(85 + seededRandom(seed + 5) * 10);
     reasoning = 'Exceptional performance with strong fundamentals and low risk profile';
   } else if (finalScore >= 7.0) {
     recommendation = 'BUY';
-    confidence = 70 + Math.random() * 15;
+    confidence = Math.round(70 + seededRandom(seed + 6) * 15);
     reasoning = 'Good performance with solid track record and reasonable risk';
   } else if (finalScore >= 5.5) {
     recommendation = 'HOLD';
-    confidence = 55 + Math.random() * 20;
+    confidence = Math.round(55 + seededRandom(seed + 7) * 20);
     reasoning = 'Average performance, suitable for existing investors';
   } else if (finalScore >= 4.0) {
     recommendation = 'SELL';
-    confidence = 45 + Math.random() * 25;
+    confidence = Math.round(45 + seededRandom(seed + 8) * 25);
     reasoning = 'Below average performance, consider alternatives';
   } else {
     recommendation = 'STRONG SELL';
-    confidence = 65 + Math.random() * 20;
+    confidence = Math.round(65 + seededRandom(seed + 9) * 20);
     reasoning = 'Poor performance with high risk, immediate action recommended';
   }
   
   return { 
     aiScore: finalScore, 
     recommendation, 
-    confidence: Math.round(confidence), 
+    confidence, 
     reasoning,
-    // Additional analysis metrics
     performanceRank: Math.max(1, Math.round((10 - finalScore) * 2)),
     trendScore,
     volatilityScore: volatility
@@ -153,11 +159,12 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   }, [fundId]);
 
   const handleBackClick = () => {
-    console.log('Back button clicked, navigating to funds page');
+    console.log('Back button clicked, navigating to funds section');
     
     try {
       // Navigate to the funds section of the home page
-      navigate('/#funds');
+      window.location.hash = '#funds';
+      window.location.reload(); // Force reload to ensure we're on the right section
     } catch (error) {
       console.error('Error with navigation:', error);
       navigate('/');
