@@ -172,9 +172,9 @@ export class EnhancedNAVDataService {
           startDate.setFullYear(endDate.getFullYear() - 1);
       }
 
-      // Try to fetch from database first
+      // Try to fetch from database first - using the correct table name
       const { data, error } = await this.supabase
-        .from('nav_history')
+        .from('extended_nav_history')
         .select('nav_date, nav_value, scheme_code')
         .eq('scheme_code', schemeCode)
         .gte('nav_date', startDate.toISOString().split('T')[0])
