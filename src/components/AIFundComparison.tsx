@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,7 @@ const AIFundComparison = () => {
         setLoadingProgress(10);
         setLoadingMessage("Loading pre-analyzed mutual fund data...");
         
-        console.log("Fetching pre-analyzed fund data...");
+        console.log("🔄 AI FUND COMPARISON - Fetching pre-analyzed fund data...");
         
         // Simulate quick progress since data is pre-analyzed
         const progressInterval = setInterval(() => {
@@ -72,10 +73,22 @@ const AIFundComparison = () => {
         setLoadingProgress(100);
         setLoadingMessage("Data loaded successfully!");
         
-        console.log("Received pre-analyzed data:", analysisData.length, "funds");
+        console.log("🔄 AI FUND COMPARISON - Received pre-analyzed data:", analysisData.length, "funds");
+        
+        // Log raw analysis data for SBI Small Cap specifically
+        analysisData.forEach((analysis, index) => {
+          if (analysis.schemeName?.includes('SBI Small Cap')) {
+            console.log(`🔍 RAW ANALYSIS DATA [${index}] - SBI Small Cap:`, {
+              schemeCode: analysis.schemeCode,
+              schemeName: analysis.schemeName,
+              amcName: analysis.amcName,
+              fullAnalysis: analysis
+            });
+          }
+        });
         
         // Convert the analysis data
-        const convertedFunds: AdvancedSchemeData[] = analysisData.map(analysis => {
+        const convertedFunds: AdvancedSchemeData[] = analysisData.map((analysis, index) => {
           const convertedFund = {
             schemeCode: analysis.schemeCode,
             schemeName: analysis.schemeName,
@@ -97,15 +110,40 @@ const AIFundComparison = () => {
           
           // Debug logging for SBI Small Cap Fund specifically
           if (analysis.schemeName?.includes('SBI Small Cap')) {
-            console.log('🔍 AI FUND COMPARISON - Found SBI Small Cap in data:', {
+            console.log(`🔍 CONVERSION [${index}] - SBI Small Cap Fund conversion:`, {
+              originalSchemeCode: analysis.schemeCode,
+              convertedSchemeCode: convertedFund.schemeCode,
+              schemeName: analysis.schemeName,
+              convertedSchemeName: convertedFund.schemeName,
+              amcName: analysis.amcName,
+              convertedAmcName: convertedFund.amcName,
               originalAnalysis: analysis,
-              convertedFund: convertedFund,
-              schemeCodeFromAnalysis: analysis.schemeCode,
-              schemeNameFromAnalysis: analysis.schemeName
+              convertedFund: convertedFund
             });
+            
+            // Check if the scheme code is wrong right after conversion
+            if (convertedFund.schemeCode !== '125497') {
+              console.error(`🚨 CONVERSION ERROR [${index}] - SBI Small Cap has wrong scheme code after conversion:`, {
+                wrongCode: convertedFund.schemeCode,
+                shouldBe: '125497',
+                dataSource: 'analysis.schemeCode',
+                originalValue: analysis.schemeCode
+              });
+            }
           }
           
           return convertedFund;
+        });
+        
+        console.log("🔄 AI FUND COMPARISON - Conversion complete. Final fund list:");
+        convertedFunds.forEach((fund, index) => {
+          if (fund.schemeName?.includes('SBI Small Cap')) {
+            console.log(`🔍 FINAL FUND [${index}] - SBI Small Cap in converted list:`, {
+              schemeCode: fund.schemeCode,
+              schemeName: fund.schemeName,
+              amcName: fund.amcName
+            });
+          }
         });
         
         setFunds(convertedFunds);
@@ -197,14 +235,20 @@ const AIFundComparison = () => {
 
   const handleFundClick = (fund: AdvancedSchemeData) => {
     // Debug logging to track navigation
-    console.log('AIFundComparison: Fund clicked:', fund.schemeName, 'SchemeCode:', fund.schemeCode);
+    console.log('🔄 AI FUND COMPARISON - Fund clicked:', fund.schemeName, 'SchemeCode:', fund.schemeCode);
     
     // Check for SBI Small Cap Fund specifically
     if (fund.schemeName?.includes('SBI Small Cap')) {
-      console.log('🔍 AI FUND COMPARISON - SBI Small Cap clicked with scheme code:', fund.schemeCode);
+      console.log('🔍 SBI SMALL CAP CLICK - Clicked with scheme code:', fund.schemeCode);
+      console.log('🔍 SBI SMALL CAP CLICK - Full fund object:', fund);
       if (fund.schemeCode !== '125497') {
-        console.error('🚨 AI FUND COMPARISON - WRONG SCHEME CODE for SBI Small Cap! Using:', fund.schemeCode, 'should be 125497');
-        console.error('🚨 FULL FUND OBJECT:', fund);
+        console.error('🚨 NAVIGATION ERROR - SBI Small Cap Fund has wrong scheme code for navigation!', {
+          currentCode: fund.schemeCode,
+          shouldBe: '125497',
+          fundName: fund.schemeName,
+          amcName: fund.amcName,
+          fullFund: fund
+        });
       }
     }
     
@@ -474,12 +518,23 @@ const AIFundComparison = () => {
                           {fund.schemeName}
                         </h3>
                         <p className="text-xs text-muted-foreground">{fund.category} • {fund.amcName}</p>
-                        {/* Debug info for scheme codes */}
+                        {/* Enhanced debug info with detailed scheme code tracking */}
                         <div className="text-xs">
                           <div className="text-blue-600">Scheme Code: {fund.schemeCode}</div>
-                          {/* Warning for SBI Small Cap Fund with wrong code */}
+                          {/* Enhanced warning for SBI Small Cap Fund with detailed info */}
                           {fund.schemeName?.includes('SBI Small Cap') && fund.schemeCode !== '125497' && (
-                            <div className="text-red-600 font-bold">⚠️ WRONG SCHEME CODE! Should be 125497</div>
+                            <div className="text-red-600 font-bold bg-red-50 p-1 rounded">
+                              ⚠️ WRONG SCHEME CODE!<br/>
+                              Current: {fund.schemeCode}<br/>
+                              Should be: 125497<br/>
+                              Source: AI Analysis Data
+                            </div>
+                          )}
+                          {/* Success indicator for correct scheme code */}
+                          {fund.schemeName?.includes('SBI Small Cap') && fund.schemeCode === '125497' && (
+                            <div className="text-green-600 font-bold bg-green-50 p-1 rounded">
+                              ✅ CORRECT SCHEME CODE: 125497
+                            </div>
                           )}
                         </div>
                       </div>
