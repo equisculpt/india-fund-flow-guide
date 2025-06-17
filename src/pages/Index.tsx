@@ -9,17 +9,19 @@ import ReferralSystem from "@/components/ReferralSystem";
 import WhatsAppIntegration from "@/components/WhatsAppIntegration";
 import TrademarkNotice from "@/components/TrademarkNotice";
 import ComplianceFooter from "@/components/ComplianceFooter";
+import EnhancedFundSearch from "@/components/EnhancedFundSearch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 import ReviewModal from "@/components/ReviewModal";
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, Calculator, Target, Sparkles, Users, Bot } from "lucide-react";
+import { TrendingUp, Calculator, Target, Sparkles, Users, Bot, Search } from "lucide-react";
 import { useTopFundsNAV } from "@/hooks/useTopFundsNAV";
 
 const Index = () => {
   const { isAuthenticated, user } = useEnhancedAuth();
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedSearchFund, setSelectedSearchFund] = useState<any>(null);
   
   // Initialize top funds NAV fetching
   const { navData, loading: navLoading, error: navError } = useTopFundsNAV();
@@ -47,6 +49,12 @@ const Index = () => {
   const handleRiskProfileComplete = (riskProfile: any) => {
     console.log('Risk profile completed:', riskProfile);
     // Handle risk profile completion logic here
+  };
+
+  const handleFundSearchSelect = (fund: any) => {
+    console.log('Fund selected from search:', fund);
+    setSelectedSearchFund(fund);
+    // You could also navigate to fund details page here if needed
   };
 
   console.log('Index page rendering, isAuthenticated:', isAuthenticated, 'user:', user);
@@ -133,6 +141,49 @@ const Index = () => {
             </TabsContent>
             
             <TabsContent value="ai-funds" className="space-y-6">
+              {/* Enhanced Fund Search Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Search className="h-5 w-5 text-blue-600" />
+                    Search Any Mutual Fund
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Search for any mutual fund in the market to view detailed analysis, NAV, and performance data
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <EnhancedFundSearch 
+                    onFundSelect={handleFundSearchSelect}
+                    placeholder="Type any mutual fund name (e.g., HDFC Top 100, SBI Small Cap, ICICI Prudential...)"
+                    className="w-full"
+                  />
+                  
+                  {selectedSearchFund && (
+                    <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-blue-900">{selectedSearchFund.schemeName}</h3>
+                          <p className="text-sm text-blue-700">
+                            {selectedSearchFund.category} • NAV: ₹{selectedSearchFund.nav?.toFixed(4) || 'Loading...'}
+                          </p>
+                          {selectedSearchFund.fundHouse && (
+                            <p className="text-xs text-blue-600">Fund House: {selectedSearchFund.fundHouse}</p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          {selectedSearchFund.navDate && (
+                            <p className="text-xs text-blue-600">
+                              Updated: {new Date(selectedSearchFund.navDate).toLocaleDateString('en-IN')}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
               <AIFundComparison />
             </TabsContent>
             
@@ -152,6 +203,49 @@ const Index = () => {
           </section>
           
           <section id="funds">
+            {/* Enhanced Fund Search Section for Non-authenticated Users */}
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="h-5 w-5 text-blue-600" />
+                  Search Any Mutual Fund
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Search for any mutual fund in the market to view detailed analysis, NAV, and performance data
+                </p>
+              </CardHeader>
+              <CardContent>
+                <EnhancedFundSearch 
+                  onFundSelect={handleFundSearchSelect}
+                  placeholder="Type any mutual fund name (e.g., HDFC Top 100, SBI Small Cap, ICICI Prudential...)"
+                  className="w-full"
+                />
+                
+                {selectedSearchFund && (
+                  <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-blue-900">{selectedSearchFund.schemeName}</h3>
+                        <p className="text-sm text-blue-700">
+                          {selectedSearchFund.category} • NAV: ₹{selectedSearchFund.nav?.toFixed(4) || 'Loading...'}
+                        </p>
+                        {selectedSearchFund.fundHouse && (
+                          <p className="text-xs text-blue-600">Fund House: {selectedSearchFund.fundHouse}</p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        {selectedSearchFund.navDate && (
+                          <p className="text-xs text-blue-600">
+                            Updated: {new Date(selectedSearchFund.navDate).toLocaleDateString('en-IN')}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             <AIFundComparison />
           </section>
           
