@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import PortfolioDashboard from "@/components/PortfolioDashboard";
@@ -20,8 +21,6 @@ import { useTopFundsNAV } from "@/hooks/useTopFundsNAV";
 const Index = () => {
   const { isAuthenticated, user } = useEnhancedAuth();
   const [showReviewModal, setShowReviewModal] = useState(false);
-  const [selectedSearchFund, setSelectedSearchFund] = useState<any>(null);
-  const [loadingSelectedFund, setLoadingSelectedFund] = useState(false);
   
   // Initialize top funds NAV fetching
   const { navData, loading: navLoading, error: navError } = useTopFundsNAV();
@@ -48,45 +47,11 @@ const Index = () => {
 
   const handleRiskProfileComplete = (riskProfile: any) => {
     console.log('Risk profile completed:', riskProfile);
-    // Handle risk profile completion logic here
   };
 
-  const handleFundSearchSelect = async (fund: any) => {
-    console.log('Fund selected from search:', fund);
-    setLoadingSelectedFund(true);
-    
-    try {
-      // If we don't have NAV data, fetch it
-      if (!fund.nav && fund.schemeCode) {
-        console.log('Fetching latest NAV for selected fund:', fund.schemeCode);
-        // You could fetch fresh NAV data here if needed
-      }
-      
-      // Create a properly formatted fund object for display
-      const enhancedFund = {
-        ...fund,
-        // Ensure we have all required fields
-        id: fund.schemeCode,
-        scheme_name: fund.schemeName,
-        amc_name: fund.fundHouse || 'Unknown AMC',
-        category: fund.category || 'Unknown',
-        nav: fund.nav || 0,
-        navDate: fund.navDate,
-        // Add some mock analysis data (in real app, this would come from your analysis service)
-        returns_1y: 15 + Math.random() * 10,
-        returns_3y: 12 + Math.random() * 8,
-        risk_level: fund.category?.includes('Small') ? 'High' : 
-                   fund.category?.includes('Large') ? 'Low' : 'Moderate',
-        min_sip_amount: 500
-      };
-      
-      setSelectedSearchFund(enhancedFund);
-      console.log('Enhanced selected fund data:', enhancedFund);
-    } catch (error) {
-      console.error('Error processing selected fund:', error);
-    } finally {
-      setLoadingSelectedFund(false);
-    }
+  const handleFundSearchSelect = (fund: any) => {
+    console.log('Fund selected from search - navigating to fund details:', fund);
+    // Navigation is handled in EnhancedFundSearch component
   };
 
   console.log('Index page rendering, isAuthenticated:', isAuthenticated, 'user:', user);
@@ -142,43 +107,6 @@ const Index = () => {
                 placeholder="Type any mutual fund name (e.g., HDFC Top 100, SBI Small Cap, ICICI Prudential...)"
                 className="w-full"
               />
-              
-              {loadingSelectedFund && (
-                <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                    <span className="text-blue-700">Loading fund analysis...</span>
-                  </div>
-                </div>
-              )}
-              
-              {selectedSearchFund && !loadingSelectedFund && (
-                <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-blue-900">{selectedSearchFund.schemeName || selectedSearchFund.scheme_name}</h3>
-                      <p className="text-sm text-blue-700">
-                        {selectedSearchFund.category} • NAV: ₹{selectedSearchFund.nav?.toFixed(4) || 'Loading...'}
-                      </p>
-                      {selectedSearchFund.fundHouse && (
-                        <p className="text-xs text-blue-600">Fund House: {selectedSearchFund.amc_name || selectedSearchFund.fundHouse}</p>
-                      )}
-                      <div className="flex gap-4 mt-2 text-xs">
-                        <span className="text-green-600">1Y: {selectedSearchFund.returns_1y?.toFixed(1)}%</span>
-                        <span className="text-green-600">3Y: {selectedSearchFund.returns_3y?.toFixed(1)}%</span>
-                        <span className="text-purple-600">Risk: {selectedSearchFund.risk_level}</span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      {selectedSearchFund.navDate && (
-                        <p className="text-xs text-blue-600">
-                          Updated: {new Date(selectedSearchFund.navDate.split('-').reverse().join('-')).toLocaleDateString('en-IN')}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
             </CardContent>
           </Card>
 
@@ -262,43 +190,6 @@ const Index = () => {
                   placeholder="Type any mutual fund name (e.g., HDFC Top 100, SBI Small Cap, ICICI Prudential...)"
                   className="w-full"
                 />
-                
-                {loadingSelectedFund && (
-                  <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                      <span className="text-blue-700">Loading fund analysis...</span>
-                    </div>
-                  </div>
-                )}
-                
-                {selectedSearchFund && !loadingSelectedFund && (
-                  <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold text-blue-900">{selectedSearchFund.schemeName || selectedSearchFund.scheme_name}</h3>
-                        <p className="text-sm text-blue-700">
-                          {selectedSearchFund.category} • NAV: ₹{selectedSearchFund.nav?.toFixed(4) || 'Loading...'}
-                        </p>
-                        {selectedSearchFund.fundHouse && (
-                          <p className="text-xs text-blue-600">Fund House: {selectedSearchFund.amc_name || selectedSearchFund.fundHouse}</p>
-                        )}
-                        <div className="flex gap-4 mt-2 text-xs">
-                          <span className="text-green-600">1Y: {selectedSearchFund.returns_1y?.toFixed(1)}%</span>
-                          <span className="text-green-600">3Y: {selectedSearchFund.returns_3y?.toFixed(1)}%</span>
-                          <span className="text-purple-600">Risk: {selectedSearchFund.risk_level}</span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        {selectedSearchFund.navDate && (
-                          <p className="text-xs text-blue-600">
-                            Updated: {new Date(selectedSearchFund.navDate.split('-').reverse().join('-')).toLocaleDateString('en-IN')}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
               </CardContent>
             </Card>
 

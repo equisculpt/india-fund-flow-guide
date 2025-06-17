@@ -44,7 +44,6 @@ const EnhancedFundSearch = ({
     console.log('EnhancedFundSearch: Starting search for:', query);
 
     try {
-      // First get the search results
       const results = await MutualFundSearchService.searchFunds(query);
       
       if (results.length === 0) {
@@ -54,12 +53,10 @@ const EnhancedFundSearch = ({
         return;
       }
 
-      // Get detailed information for top 8 results
       const topResults = results.slice(0, 8);
       const schemeCodes = topResults.map(fund => fund.schemeCode.toString());
       const detailedResults = await MutualFundSearchService.getMultipleFundDetails(schemeCodes);
 
-      // Combine search results with detailed NAV data
       const enhancedResults: FundSearchResult[] = topResults.map(fund => {
         const details = detailedResults.get(fund.schemeCode.toString());
         return {
@@ -84,7 +81,6 @@ const EnhancedFundSearch = ({
     }
   }, []);
 
-  // Debounced search
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       searchFunds(searchQuery);
@@ -98,11 +94,12 @@ const EnhancedFundSearch = ({
     setShowResults(false);
     setSearchQuery(fund.schemeName);
     
+    // Always navigate to fund details page for proper analytics
+    navigate(`/fund/${fund.schemeCode}`);
+    
+    // Also call the callback if provided
     if (onFundSelect) {
       onFundSelect(fund);
-    } else {
-      // Navigate to fund details page
-      navigate(`/fund/${fund.schemeCode}`);
     }
   };
 
@@ -130,6 +127,11 @@ const EnhancedFundSearch = ({
       if (parts.length === 3) {
         const [day, month, year] = parts;
         const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        
+        if (isNaN(date.getTime())) {
+          return dateString;
+        }
+        
         return date.toLocaleDateString('en-IN', {
           day: '2-digit',
           month: 'short',
@@ -137,10 +139,9 @@ const EnhancedFundSearch = ({
         });
       }
       
-      // Fallback for other formats
       const date = new Date(dateString);
       if (isNaN(date.getTime())) {
-        return dateString; // Return original if can't parse
+        return dateString;
       }
       
       return date.toLocaleDateString('en-IN', {
@@ -150,7 +151,7 @@ const EnhancedFundSearch = ({
       });
     } catch (error) {
       console.error('Error formatting date:', error);
-      return dateString;
+      return dateString || 'Invalid Date';
     }
   };
 
@@ -209,12 +210,12 @@ const EnhancedFundSearch = ({
                 {searchResults.map((fund, index) => (
                   <div
                     key={`${fund.schemeCode}-${index}`}
-                    className="p-4 hover:bg-blue-50 cursor-pointer transition-all duration-200 hover:shadow-sm"
+                    className="p-4 hover:bg-blue-50 cursor-pointer transition-all duration-200 hover:shadow-sm border-l-4 border-transparent hover:border-blue-500"
                     onClick={() => handleFundSelect(fund)}
                   >
                     <div className="flex justify-between items-start gap-3">
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-tight">
+                        <h4 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-tight mb-2">
                           {fund.schemeName}
                         </h4>
                         
@@ -254,6 +255,11 @@ const EnhancedFundSearch = ({
                           </div>
                         )}
                       </div>
+                    </div>
+                    
+                    <div className="mt-2 text-xs text-blue-600 flex items-center gap-1">
+                      <TrendingUp className="h-3 w-3" />
+                      Click to view detailed analysis
                     </div>
                   </div>
                 ))}
