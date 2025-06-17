@@ -28,6 +28,17 @@ export interface PortfolioData {
   totalCashPercentage: number;
 }
 
+// Interface for the JSON structure in the database
+interface PortfolioDataJson {
+  aum?: number;
+  holdings?: PortfolioHolding[];
+  sectorAllocation?: SectorAllocation[];
+  portfolioTurnover?: number;
+  totalEquityPercentage?: number;
+  totalDebtPercentage?: number;
+  totalCashPercentage?: number;
+}
+
 export class AMFIPortfolioService {
   static async getSchemePortfolio(schemeCode: string): Promise<PortfolioData | null> {
     try {
@@ -45,17 +56,20 @@ export class AMFIPortfolioService {
       }
 
       if (data && data.portfolio_data) {
+        // Type cast the JSON data to our expected structure
+        const portfolioJson = data.portfolio_data as PortfolioDataJson;
+        
         return {
           schemeCode: data.scheme_code,
           schemeName: data.scheme_name,
-          aum: data.portfolio_data.aum || 0,
+          aum: portfolioJson.aum || 0,
           portfolioDate: data.portfolio_date,
-          holdings: data.portfolio_data.holdings || [],
-          sectorAllocation: data.portfolio_data.sectorAllocation || [],
-          portfolioTurnover: data.portfolio_data.portfolioTurnover || 0,
-          totalEquityPercentage: data.portfolio_data.totalEquityPercentage || 0,
-          totalDebtPercentage: data.portfolio_data.totalDebtPercentage || 0,
-          totalCashPercentage: data.portfolio_data.totalCashPercentage || 0
+          holdings: portfolioJson.holdings || [],
+          sectorAllocation: portfolioJson.sectorAllocation || [],
+          portfolioTurnover: portfolioJson.portfolioTurnover || 0,
+          totalEquityPercentage: portfolioJson.totalEquityPercentage || 0,
+          totalDebtPercentage: portfolioJson.totalDebtPercentage || 0,
+          totalCashPercentage: portfolioJson.totalCashPercentage || 0
         };
       }
 
