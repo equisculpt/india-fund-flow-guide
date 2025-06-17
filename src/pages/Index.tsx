@@ -151,7 +151,7 @@ const Index = () => {
           </section>
           
           <section id="funds">
-            <AIFundComparison navData={navData} />
+            <AIFundComparison />
           </section>
           
           <section id="risk-profile">

@@ -152,11 +152,17 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   }, [fundId]);
 
   const handleBackClick = () => {
-    console.log('Back button clicked');
+    console.log('Back button clicked, attempting navigation...');
     
     try {
-      // Use React Router navigate with -1 to go back
-      navigate(-1);
+      // Try using browser's back history first
+      if (window.history.length > 1) {
+        console.log('Using window.history.back()');
+        window.history.back();
+      } else {
+        console.log('No history available, navigating to home');
+        navigate('/');
+      }
     } catch (error) {
       console.error('Error with back navigation:', error);
       navigate('/');
@@ -310,7 +316,6 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             <FundAnalyticsChart 
               fundId={fundData.schemeCode} 
               fundName={fundData.actualSchemeName || fundData.schemeName}
-              historicalData={historicalData}
             />
           </TabsContent>
 
@@ -323,7 +328,6 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
                 nav: fundData.nav,
                 trendScore: aiAnalysis.trendScore
               }}
-              historicalData={historicalData}
             />
           </TabsContent>
         </Tabs>
