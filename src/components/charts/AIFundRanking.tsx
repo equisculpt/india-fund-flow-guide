@@ -30,6 +30,9 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
     }
   };
 
+  // Use the AI score that was passed from FundDetailsPage to ensure consistency
+  const overallScore = fundData.aiScore || 7.5;
+
   // Enhanced AI scoring factors with portfolio analysis
   const scoringFactors = [
     { 
@@ -52,7 +55,7 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
     },
     { 
       name: "Expense Ratio", 
-      score: 8.2 + Math.random() * 1.3, 
+      score: Math.max(6, 10 - (fundData.expenseRatio * 4)), 
       weight: 15,
       description: "Competitive expense ratio compared to category average"
     },
@@ -69,10 +72,6 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
       description: portfolioData ? `${portfolioData.portfolioTurnover.toFixed(1)}% annual turnover - ${portfolioData.portfolioTurnover < 30 ? 'conservative' : 'active'} approach` : "Moderate portfolio churn"
     }
   ];
-
-  const overallScore = scoringFactors.reduce((acc, factor) => 
-    acc + (factor.score * factor.weight / 100), 0
-  );
 
   // Generate best/worst quarter data with quarter details
   const generateQuarterData = () => {
@@ -147,14 +146,14 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          {/* Overall AI Score */}
+          {/* Overall AI Score - Now using consistent score */}
           <div className="text-center p-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
               <span className="text-2xl font-bold">AI Score</span>
             </div>
             <div className="text-5xl font-bold text-purple-600 mb-2">
-              {overallScore.toFixed(1)}/10
+              {overallScore}/10
             </div>
             <Badge className={`${getRankingColor(overallScore)} border-0 px-4 py-1`}>
               {getRankingLabel(overallScore)}
@@ -240,7 +239,7 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
                   <li key={index}>• {strength}</li>
                 ))}
                 <li>• Category rank: {fundData.performanceRank || 'Top tier'}</li>
-                <li>• {((fundData.confidence || 0.8) * 100).toFixed(0)}% data confidence</li>
+                <li>• {((fundData.confidence || 0.8) / 100 * 100).toFixed(0)}% data confidence</li>
               </ul>
             </div>
             
@@ -268,7 +267,7 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
               AI Investment Recommendation
             </h4>
             <p className="text-sm text-gray-700">
-              With an AI score of <strong>{overallScore.toFixed(1)}/10</strong>, this fund is rated as 
+              With an AI score of <strong>{overallScore}/10</strong>, this fund is rated as 
               <strong> {getRankingLabel(overallScore).toLowerCase()}</strong> for the {fundData.category} category. 
               {overallScore >= 8 ? ' Suitable for core portfolio allocation.' :
                overallScore >= 7 ? ' Consider for diversified portfolio.' :

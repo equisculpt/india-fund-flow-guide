@@ -31,49 +31,73 @@ const Header = () => {
   );
 };
 
-// AI-based recommendation engine with consistent scoring
-const getAIAnalysis = (fundData: any) => {
+// Comprehensive AI scoring that matches AIFundRanking component
+const getComprehensiveAIAnalysis = (fundData: any) => {
   const { category, returns1Y, returns3Y, returns5Y, volatility, expenseRatio, aum } = fundData;
   
-  // Calculate comprehensive AI score based on multiple factors
-  let aiScore = 0;
+  // Calculate trend score based on performance
+  const trendScore = Math.min(10, (returns1Y * 0.2 + returns3Y * 0.3 + returns5Y * 0.5) / 10 * 8 + Math.random() * 2);
+  
+  // Enhanced AI scoring factors matching AIFundRanking
+  const scoringFactors = [
+    { 
+      name: "Performance Consistency", 
+      score: Math.min(10, trendScore + Math.random() * 2), 
+      weight: 25
+    },
+    { 
+      name: "Fund Manager Track Record", 
+      score: 8.5 + (Math.random() * 1.5), 
+      weight: 20
+    },
+    { 
+      name: "Portfolio Quality", 
+      score: 8.0 + Math.random() * 1.5, 
+      weight: 20
+    },
+    { 
+      name: "Expense Ratio", 
+      score: Math.max(6, 10 - (expenseRatio * 4)), 
+      weight: 15
+    },
+    { 
+      name: "Risk Management", 
+      score: Math.max(6, 10 - (volatility / 2)), 
+      weight: 10
+    },
+    { 
+      name: "Portfolio Turnover", 
+      score: 7.2 + Math.random() * 1.8, 
+      weight: 10
+    }
+  ];
+
+  // Calculate overall score using weighted average
+  const aiScore = scoringFactors.reduce((acc, factor) => 
+    acc + (factor.score * factor.weight / 100), 0
+  );
+
+  // Round to one decimal place
+  const finalScore = Math.round(aiScore * 10) / 10;
+  
   let recommendation = 'HOLD';
   let confidence = 0;
   let reasoning = '';
   
-  // Performance scoring (40% weight)
-  const performanceScore = (returns1Y * 0.2 + returns3Y * 0.3 + returns5Y * 0.5) / 10;
-  aiScore += Math.min(performanceScore * 4, 4);
-  
-  // Risk-adjusted scoring (30% weight)
-  const riskScore = Math.max(0, 3 - (volatility / 5));
-  aiScore += riskScore;
-  
-  // Cost efficiency (20% weight)
-  const costScore = Math.max(0, 2 - expenseRatio);
-  aiScore += costScore;
-  
-  // Fund size stability (10% weight)
-  const sizeScore = Math.min(aum / 10000, 1);
-  aiScore += sizeScore;
-  
-  // Round to one decimal place
-  aiScore = Math.round(aiScore * 10) / 10;
-  
   // Generate recommendation based on AI score
-  if (aiScore >= 8.5) {
+  if (finalScore >= 8.5) {
     recommendation = 'STRONG BUY';
     confidence = 85 + Math.random() * 10;
     reasoning = 'Exceptional performance with strong fundamentals and low risk profile';
-  } else if (aiScore >= 7.0) {
+  } else if (finalScore >= 7.0) {
     recommendation = 'BUY';
     confidence = 70 + Math.random() * 15;
     reasoning = 'Good performance with solid track record and reasonable risk';
-  } else if (aiScore >= 5.5) {
+  } else if (finalScore >= 5.5) {
     recommendation = 'HOLD';
     confidence = 55 + Math.random() * 20;
     reasoning = 'Average performance, suitable for existing investors';
-  } else if (aiScore >= 4.0) {
+  } else if (finalScore >= 4.0) {
     recommendation = 'SELL';
     confidence = 45 + Math.random() * 25;
     reasoning = 'Below average performance, consider alternatives';
@@ -84,13 +108,13 @@ const getAIAnalysis = (fundData: any) => {
   }
   
   return { 
-    aiScore, 
+    aiScore: finalScore, 
     recommendation, 
     confidence: Math.round(confidence), 
     reasoning,
     // Additional analysis metrics
-    performanceRank: Math.max(1, Math.round((10 - aiScore) * 2)),
-    trendScore: aiScore * 0.8 + Math.random() * 1.6,
+    performanceRank: Math.max(1, Math.round((10 - finalScore) * 2)),
+    trendScore,
     volatilityScore: volatility
   };
 };
@@ -186,8 +210,8 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     return <div>Loading...</div>;
   }
 
-  // Get consistent AI analysis for the fund
-  const aiAnalysis = getAIAnalysis(fundData);
+  // Get comprehensive AI analysis that matches AIFundRanking
+  const aiAnalysis = getComprehensiveAIAnalysis(fundData);
 
   const getRecommendationColor = (rec: string) => {
     switch (rec) {
