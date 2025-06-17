@@ -195,6 +195,14 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     }
   };
 
+  // Create the combined fund data for components - merge fund data with AI analysis
+  const combinedFundDataForComponents = {
+    ...fundData,
+    ...(aiAnalysis || {})
+  };
+
+  console.log('FundDetailsPage: Combined data for components:', combinedFundDataForComponents);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -329,11 +337,11 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           </TabsList>
 
           <TabsContent value="ai-analysis">
-            <AIFundRanking fundData={{...fundData, ...aiAnalysis}} />
+            <AIFundRanking fundData={combinedFundDataForComponents} />
           </TabsContent>
 
           <TabsContent value="portfolio">
-            <PortfolioHoldings fundData={{...fundData, ...aiAnalysis}} />
+            <PortfolioHoldings fundData={combinedFundDataForComponents} />
           </TabsContent>
 
           <TabsContent value="performance">

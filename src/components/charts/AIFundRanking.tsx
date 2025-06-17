@@ -30,8 +30,14 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
     }
   };
 
-  // Use real AI analysis if available, otherwise fallback to old logic
-  const hasRealAI = fundData.aiScore && fundData.analysis;
+  // Check if we have real AI analysis data - look for the specific AI analysis fields
+  const hasRealAI = fundData.aiScore && 
+                    fundData.recommendation && 
+                    fundData.confidence && 
+                    fundData.analysis && 
+                    fundData.reasoning;
+  
+  console.log('AIFundRanking: hasRealAI =', hasRealAI, 'fundData keys:', Object.keys(fundData));
   
   const overallScore = hasRealAI ? fundData.aiScore : 7.5;
   const recommendation = hasRealAI ? fundData.recommendation : 'HOLD';
@@ -282,8 +288,8 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
                 {analysis.strengths.map((strength, index) => (
                   <li key={index}>• {strength}</li>
                 ))}
-                {hasRealAI && (
-                  <li>• Performance rank: #{fundData.performanceRank || 'Top tier'}</li>
+                {hasRealAI && fundData.performanceRank && (
+                  <li>• Performance rank: #{fundData.performanceRank}</li>
                 )}
               </ul>
             </div>
