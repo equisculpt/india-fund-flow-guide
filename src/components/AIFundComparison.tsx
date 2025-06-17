@@ -75,24 +75,38 @@ const AIFundComparison = () => {
         console.log("Received pre-analyzed data:", analysisData.length, "funds");
         
         // Convert the analysis data
-        const convertedFunds: AdvancedSchemeData[] = analysisData.map(analysis => ({
-          schemeCode: analysis.schemeCode,
-          schemeName: analysis.schemeName,
-          nav: analysis.nav,
-          date: analysis.date,
-          category: analysis.category,
-          subCategory: analysis.subCategory || analysis.category,
-          amcName: analysis.amcName,
-          trendScore: analysis.trendScore, // Updated from aiScore
-          confidence: analysis.confidence,
-          historical3MonthAverage: analysis.historical3MonthAverage, // Updated from predicted3MonthReturn
-          historical3MonthData: analysis.historical3MonthData || [],
-          riskLevel: analysis.riskLevel,
-          volatilityScore: analysis.volatilityScore,
-          sharpeRatio: analysis.sharpeRatio,
-          performanceRank: analysis.performanceRank,
-          totalSchemes: analysis.totalSchemes
-        }));
+        const convertedFunds: AdvancedSchemeData[] = analysisData.map(analysis => {
+          const convertedFund = {
+            schemeCode: analysis.schemeCode,
+            schemeName: analysis.schemeName,
+            nav: analysis.nav,
+            date: analysis.date,
+            category: analysis.category,
+            subCategory: analysis.subCategory || analysis.category,
+            amcName: analysis.amcName,
+            trendScore: analysis.trendScore, // Updated from aiScore
+            confidence: analysis.confidence,
+            historical3MonthAverage: analysis.historical3MonthAverage, // Updated from predicted3MonthReturn
+            historical3MonthData: analysis.historical3MonthData || [],
+            riskLevel: analysis.riskLevel,
+            volatilityScore: analysis.volatilityScore,
+            sharpeRatio: analysis.sharpeRatio,
+            performanceRank: analysis.performanceRank,
+            totalSchemes: analysis.totalSchemes
+          };
+          
+          // Debug logging for SBI Small Cap Fund specifically
+          if (analysis.schemeName?.includes('SBI Small Cap')) {
+            console.log('🔍 AI FUND COMPARISON - Found SBI Small Cap in data:', {
+              originalAnalysis: analysis,
+              convertedFund: convertedFund,
+              schemeCodeFromAnalysis: analysis.schemeCode,
+              schemeNameFromAnalysis: analysis.schemeName
+            });
+          }
+          
+          return convertedFund;
+        });
         
         setFunds(convertedFunds);
         setFilteredFunds(convertedFunds);
@@ -190,6 +204,7 @@ const AIFundComparison = () => {
       console.log('🔍 AI FUND COMPARISON - SBI Small Cap clicked with scheme code:', fund.schemeCode);
       if (fund.schemeCode !== '125497') {
         console.error('🚨 AI FUND COMPARISON - WRONG SCHEME CODE for SBI Small Cap! Using:', fund.schemeCode, 'should be 125497');
+        console.error('🚨 FULL FUND OBJECT:', fund);
       }
     }
     
