@@ -109,10 +109,31 @@ const getAIAnalysis = (fundData: any) => {
   };
 };
 
+// Function to fetch latest NAV from API
+const fetchLatestNAV = async (schemeCode: string) => {
+  try {
+    const response = await fetch(`https://api.mfapi.in/mf/${schemeCode}/latest`);
+    if (!response.ok) throw new Error('Failed to fetch NAV');
+    
+    const data = await response.json();
+    if (data?.data?.[0]?.nav) {
+      return {
+        nav: parseFloat(data.data[0].nav),
+        date: data.data[0].date
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching latest NAV:', error);
+    return null;
+  }
+};
+
 const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   const navigate = useNavigate();
   const { fundId } = useParams();
   const [fundData, setFundData] = useState<any>(null);
+  const [latestNAV, setLatestNAV] = useState<any>(null);
 
   useEffect(() => {
     // Generate comprehensive fund data based on fundId
@@ -194,10 +215,41 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     }
 
     setFundData(mockData);
+
+    // Fetch latest NAV from API
+    if (fundId) {
+      fetchLatestNAV(fundId).then(navData => {
+        if (navData) {
+          setLatestNAV(navData);
+          // Update the mock data with latest NAV
+          setFundData(prev => ({
+            ...prev,
+            nav: navData.nav,
+            navDate: navData.date
+          }));
+        }
+      });
+    }
   }, [fundId]);
 
+  const handleBackClick = () => {
+    // Try to go back to previous page, fallback to home page
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
+
   if (!fundData) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">Loading fund details...</div>
+        </div>
+      </div>
+    );
   }
 
   // Get AI analysis that matches AIFundRanking exactly
@@ -218,7 +270,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={() => navigate(-1)}>
+        <Button variant="ghost" onClick={handleBackClick} className="mb-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
@@ -247,6 +299,11 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             <div className="text-right">
               <div className="text-3xl font-bold">₹{fundData.nav.toFixed(2)}</div>
               <div className="text-sm text-gray-600">Current NAV</div>
+              {latestNAV && (
+                <div className="text-xs text-green-600 mt-1">
+                  Updated: {latestNAV.date}
+                </div>
+              )}
               <div className="flex items-center gap-2 mt-1">
                 {fundData.returns1Y >= 0 ? 
                   <TrendingUp className="h-4 w-4 text-green-600" /> : 
