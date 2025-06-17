@@ -11,7 +11,7 @@ interface NAVHistoryChartProps {
 }
 
 const NAVHistoryChart = ({ fundId, fundName }: NAVHistoryChartProps) => {
-  const [period, setPeriod] = useState<'1M' | '3M' | '6M' | '1Y'>('1Y');
+  const [period, setPeriod] = useState<'1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y' | '10Y'>('1Y');
   const [chartData, setChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +21,13 @@ const NAVHistoryChart = ({ fundId, fundName }: NAVHistoryChartProps) => {
       try {
         console.log('Loading historical NAV for fund:', fundId);
         
-        const days = period === '1M' ? 30 : period === '3M' ? 90 : period === '6M' ? 180 : 365;
+        const days = period === '1M' ? 30 : 
+                     period === '3M' ? 90 : 
+                     period === '6M' ? 180 : 
+                     period === '1Y' ? 365 :
+                     period === '3Y' ? 1095 :
+                     period === '5Y' ? 1825 :
+                     period === '10Y' ? 3650 : 365;
         const historicalData = await FundDataService.fetchHistoricalNAV(fundId, days);
         
         console.log('Historical data received:', historicalData.length, 'records');
@@ -71,7 +77,7 @@ const NAVHistoryChart = ({ fundId, fundName }: NAVHistoryChartProps) => {
         <div className="flex items-center justify-between">
           <CardTitle>{fundName} - NAV Performance</CardTitle>
           <div className="flex gap-2 items-center">
-            <Select value={period} onValueChange={(value: '1M' | '3M' | '6M' | '1Y') => setPeriod(value)}>
+            <Select value={period} onValueChange={(value: '1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y' | '10Y') => setPeriod(value)}>
               <SelectTrigger className="w-24">
                 <SelectValue />
               </SelectTrigger>
@@ -80,6 +86,9 @@ const NAVHistoryChart = ({ fundId, fundName }: NAVHistoryChartProps) => {
                 <SelectItem value="3M">3M</SelectItem>
                 <SelectItem value="6M">6M</SelectItem>
                 <SelectItem value="1Y">1Y</SelectItem>
+                <SelectItem value="3Y">3Y</SelectItem>
+                <SelectItem value="5Y">5Y</SelectItem>
+                <SelectItem value="10Y">10Y</SelectItem>
               </SelectContent>
             </Select>
             <div className={`text-sm font-semibold ${performance.return >= 0 ? 'text-green-600' : 'text-red-600'}`}>

@@ -8,6 +8,7 @@ export class ChartDataService {
       case '1Y': return 365;
       case '3Y': return 1095;
       case '5Y': return 1825;
+      case '10Y': return 3650;
       default: return 365;
     }
   }

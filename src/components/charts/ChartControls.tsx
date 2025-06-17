@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Calculator } from 'lucide-react';
 
 interface ChartControlsProps {
-  period: '1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y';
-  setPeriod: (period: '1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y') => void;
+  period: '1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y' | '10Y';
+  setPeriod: (period: '1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y' | '10Y') => void;
   showSIPChart: boolean;
   setShowSIPChart: (show: boolean) => void;
   sipAmount: number;
@@ -49,6 +49,7 @@ const ChartControls = ({
             <SelectItem value="1Y">1Y</SelectItem>
             <SelectItem value="3Y">3Y</SelectItem>
             <SelectItem value="5Y">5Y</SelectItem>
+            <SelectItem value="10Y">10Y</SelectItem>
           </SelectContent>
         </Select>
       </div>

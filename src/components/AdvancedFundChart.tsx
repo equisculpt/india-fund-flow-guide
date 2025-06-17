@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -50,7 +49,7 @@ interface AdvancedFundChartProps {
 
 const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartProps) => {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
-  const [period, setPeriod] = useState<'1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y'>('1Y');
+  const [period, setPeriod] = useState<'1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y' | '10Y'>('1Y');
   const [loading, setLoading] = useState(true);
   const [sipAmount, setSipAmount] = useState<number>(100000);
   const [showSIPChart, setShowSIPChart] = useState(false);
