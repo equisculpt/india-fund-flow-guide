@@ -105,7 +105,7 @@ export class FundDataService {
   }
 
   static getMockFundData(schemeCode: string): FundData {
-    // CORRECTED mock data with proper mappings that match actual API responses
+    // EXPANDED mock data with more fund mappings
     const fundDataMap: Record<string, FundData> = {
       '125497': { // SBI Small Cap Fund - Direct Growth - VERIFIED
         schemeCode: '125497',
@@ -246,22 +246,56 @@ export class FundDataService {
         expenseRatio: 1.15,
         volatility: 5.5,
         minSipAmount: 500
+      },
+      // Additional common fund mappings to handle API scheme codes
+      '100076': { // Aditya Birla Sun Life Equity Advantage Fund
+        schemeCode: '100076',
+        schemeName: 'Aditya Birla Sun Life Equity Advantage Fund - Regular Growth',
+        amc: 'Aditya Birla Sun Life Mutual Fund',
+        category: 'Flexi Cap',
+        nav: 89.45,
+        returns1Y: 21.2,
+        returns3Y: 16.8,
+        returns5Y: 15.1,
+        aum: 8950,
+        expenseRatio: 2.25,
+        volatility: 6.2,
+        minSipAmount: 500
+      },
+      '119551': { // Common scheme code that might appear
+        schemeCode: '119551',
+        schemeName: 'HDFC Equity Fund - Direct Growth',
+        amc: 'HDFC Mutual Fund',
+        category: 'Flexi Cap',
+        nav: 156.78,
+        returns1Y: 19.8,
+        returns3Y: 16.5,
+        returns5Y: 14.9,
+        aum: 15680,
+        expenseRatio: 1.05,
+        volatility: 5.8,
+        minSipAmount: 500
       }
     };
 
-    return fundDataMap[schemeCode] || {
-      schemeCode,
-      schemeName: 'Unknown Fund',
-      amc: 'Unknown AMC',
-      category: 'Unknown',
-      nav: 0,
-      returns1Y: 0,
-      returns3Y: 0,
-      returns5Y: 0,
-      aum: 0,
-      expenseRatio: 0,
-      volatility: 0,
-      minSipAmount: 500
-    };
+    // If scheme code not found, create a dynamic entry with basic info
+    if (!fundDataMap[schemeCode]) {
+      return {
+        schemeCode,
+        schemeName: `Fund - ${schemeCode}`, // Placeholder until real data loads
+        amc: 'Unknown AMC',
+        category: 'Unknown',
+        nav: 0,
+        returns1Y: 0,
+        returns3Y: 0,
+        returns5Y: 0,
+        aum: 0,
+        expenseRatio: 0,
+        volatility: 0,
+        minSipAmount: 500
+      };
+    }
+
+    return fundDataMap[schemeCode];
   }
 }

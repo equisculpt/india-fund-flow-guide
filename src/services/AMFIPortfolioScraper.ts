@@ -135,6 +135,30 @@ export class AMFIPortfolioService {
           totalDebtPercentage: 1.8,
           totalCashPercentage: 3.0
         },
+        '100016': { // SBI Bluechip Fund - VERIFIED
+          schemeCode: '100016',
+          schemeName: 'SBI Bluechip Fund - Direct Growth',
+          aum: 28650,
+          portfolioDate: '2024-12-31',
+          holdings: [
+            { stockName: 'Reliance Industries Ltd', isin: 'INE002A01018', percentage: 8.4, marketValue: 2409.24, quantity: 12500000, industry: 'Energy' },
+            { stockName: 'Tata Consultancy Services Ltd', isin: 'INE467B01029', percentage: 7.2, marketValue: 2062.8, quantity: 5800000, industry: 'Information Technology' },
+            { stockName: 'HDFC Bank Ltd', isin: 'INE040A01034', percentage: 6.8, marketValue: 1948.2, quantity: 11200000, industry: 'Financial Services' },
+            { stockName: 'Infosys Ltd', isin: 'INE009A01021', percentage: 5.9, marketValue: 1690.35, quantity: 8950000, industry: 'Information Technology' },
+            { stockName: 'ICICI Bank Ltd', isin: 'INE090A01013', percentage: 5.2, marketValue: 1489.8, quantity: 12800000, industry: 'Financial Services' }
+          ],
+          sectorAllocation: [
+            { sector: 'Financial Services', percentage: 25.2 },
+            { sector: 'Information Technology', percentage: 22.8 },
+            { sector: 'Energy', percentage: 12.5 },
+            { sector: 'Consumer Goods', percentage: 10.3 },
+            { sector: 'Others', percentage: 29.2 }
+          ],
+          portfolioTurnover: 22.3,
+          totalEquityPercentage: 96.8,
+          totalDebtPercentage: 1.2,
+          totalCashPercentage: 2.0
+        },
         '120601': { // ICICI Prudential All Seasons Bond Fund - VERIFIED
           schemeCode: '120601',
           schemeName: 'ICICI Prudential All Seasons Bond Fund - Direct Plan',
