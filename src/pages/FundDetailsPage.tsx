@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -12,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import Header from '@/components/Header';
 import AIFundRanking from '@/components/charts/AIFundRanking';
 import PortfolioHoldings from '@/components/charts/PortfolioHoldings';
 import FundAnalyticsChart from '@/components/FundAnalyticsChart';
@@ -21,24 +21,14 @@ interface FundDetailsPageProps {
   // Add any props you need here
 }
 
-const Header = () => {
-  return (
-    <div className="bg-white py-4 shadow-md">
-      <div className="container mx-auto px-4">
-        <h1 className="text-2xl font-semibold">SIP Brewery</h1>
-      </div>
-    </div>
-  );
-};
-
-// Comprehensive AI scoring that matches AIFundRanking component
-const getComprehensiveAIAnalysis = (fundData: any) => {
+// Unified AI scoring that matches AIFundRanking component
+const getAIAnalysis = (fundData: any) => {
   const { category, returns1Y, returns3Y, returns5Y, volatility, expenseRatio, aum } = fundData;
   
   // Calculate trend score based on performance
   const trendScore = Math.min(10, (returns1Y * 0.2 + returns3Y * 0.3 + returns5Y * 0.5) / 10 * 8 + Math.random() * 2);
   
-  // Enhanced AI scoring factors matching AIFundRanking
+  // Enhanced AI scoring factors matching AIFundRanking exactly
   const scoringFactors = [
     { 
       name: "Performance Consistency", 
@@ -72,19 +62,19 @@ const getComprehensiveAIAnalysis = (fundData: any) => {
     }
   ];
 
-  // Calculate overall score using weighted average
+  // Calculate overall score using weighted average - SAME LOGIC AS AIFundRanking
   const aiScore = scoringFactors.reduce((acc, factor) => 
     acc + (factor.score * factor.weight / 100), 0
   );
 
-  // Round to one decimal place
+  // Round to one decimal place - SAME AS AIFundRanking
   const finalScore = Math.round(aiScore * 10) / 10;
   
   let recommendation = 'HOLD';
   let confidence = 0;
   let reasoning = '';
   
-  // Generate recommendation based on AI score
+  // Generate recommendation based on AI score - SAME LOGIC AS AIFundRanking
   if (finalScore >= 8.5) {
     recommendation = 'STRONG BUY';
     confidence = 85 + Math.random() * 10;
@@ -210,8 +200,8 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     return <div>Loading...</div>;
   }
 
-  // Get comprehensive AI analysis that matches AIFundRanking
-  const aiAnalysis = getComprehensiveAIAnalysis(fundData);
+  // Get AI analysis that matches AIFundRanking exactly
+  const aiAnalysis = getAIAnalysis(fundData);
 
   const getRecommendationColor = (rec: string) => {
     switch (rec) {
