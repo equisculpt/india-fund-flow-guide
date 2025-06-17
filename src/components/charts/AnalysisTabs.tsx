@@ -4,6 +4,7 @@ import FundManagerDetails from './FundManagerDetails';
 import PortfolioHoldings from './PortfolioHoldings';
 import AIFundRanking from './AIFundRanking';
 import MarketTimingAdvice from './MarketTimingAdvice';
+import FundComparisonContainer from './FundComparisonContainer';
 
 interface AnalysisTabsProps {
   fundData: any;
@@ -16,10 +17,11 @@ const AnalysisTabs = ({ fundData, combinedFundData }: AnalysisTabsProps) => {
 
   return (
     <Tabs defaultValue="manager" className="space-y-4">
-      <TabsList className="grid w-full grid-cols-4">
+      <TabsList className="grid w-full grid-cols-5">
         <TabsTrigger value="manager">Fund Manager</TabsTrigger>
         <TabsTrigger value="holdings">Portfolio</TabsTrigger>
         <TabsTrigger value="ranking">AI Ranking</TabsTrigger>
+        <TabsTrigger value="comparison">AI Compare</TabsTrigger>
         <TabsTrigger value="timing">Market Timing</TabsTrigger>
       </TabsList>
 
@@ -33,6 +35,10 @@ const AnalysisTabs = ({ fundData, combinedFundData }: AnalysisTabsProps) => {
 
       <TabsContent value="ranking">
         <AIFundRanking fundData={dataForComponents} />
+      </TabsContent>
+
+      <TabsContent value="comparison">
+        <FundComparisonContainer />
       </TabsContent>
 
       <TabsContent value="timing">
