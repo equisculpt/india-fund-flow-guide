@@ -16,6 +16,7 @@ interface FundCardProps {
     returns_3y: number;
     risk_level: string;
     min_sip_amount: number;
+    schemeCode?: string; // Add optional scheme code
   };
 }
 
@@ -36,7 +37,11 @@ const FundCard = ({ fund }: FundCardProps) => {
   };
 
   const handleViewDetails = () => {
-    navigate(`/fund/${fund.id}`, {
+    // Use schemeCode if available, otherwise fall back to id
+    const fundIdentifier = fund.schemeCode || fund.id;
+    console.log('FundCard: Navigating to fund details with identifier:', fundIdentifier, 'for fund:', fund.scheme_name);
+    
+    navigate(`/fund/${fundIdentifier}`, {
       state: {
         fundData: fund
       }
@@ -59,6 +64,10 @@ const FundCard = ({ fund }: FundCardProps) => {
               {fund.scheme_name}
             </CardTitle>
             <p className="text-sm text-muted-foreground">{fund.amc_name}</p>
+            {/* Add debug info */}
+            {fund.schemeCode && (
+              <p className="text-xs text-blue-600">Scheme: {fund.schemeCode}</p>
+            )}
           </div>
           <Badge variant="secondary" className="ml-2">
             {fund.category}

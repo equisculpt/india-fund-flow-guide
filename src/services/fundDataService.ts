@@ -113,6 +113,8 @@ export class FundDataService {
   }
 
   static getMockFundData(schemeCode: string): FundData {
+    console.log('FundDataService: Getting mock fund data for scheme code:', schemeCode);
+    
     // VERIFIED mock data with correct scheme code mappings
     const fundDataMap: Record<string, FundData> = {
       '125497': { // SBI Small Cap Fund - Direct Growth - VERIFIED
@@ -305,6 +307,24 @@ export class FundDataService {
       };
     }
 
-    return fundDataMap[schemeCode];
+    const result = fundDataMap[schemeCode];
+    console.log('FundDataService: Returning fund data for', schemeCode, ':', result.schemeName);
+    return result;
+  }
+
+  // Add a method to get scheme code by fund name for reverse lookup
+  static getSchemeCodeByName(fundName: string): string | null {
+    const fund = this.TOP_FUNDS.find(f => 
+      f.name.toLowerCase().includes(fundName.toLowerCase()) ||
+      fundName.toLowerCase().includes(f.name.toLowerCase())
+    );
+    
+    if (fund) {
+      console.log('FundDataService: Found scheme code', fund.schemeCode, 'for fund name:', fundName);
+      return fund.schemeCode;
+    }
+    
+    console.log('FundDataService: No scheme code found for fund name:', fundName);
+    return null;
   }
 }
