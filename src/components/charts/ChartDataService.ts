@@ -27,37 +27,57 @@ export class ChartDataService {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
     
-    // Base NAV and growth patterns
+    // Base NAV and growth patterns - more realistic for longer periods
     const baseNAV = 100;
-    const marketVolatility = 0.02; // 2% daily volatility
+    const marketVolatility = 0.015; // 1.5% daily volatility
     const trendFactor = (trendScore || 7) / 10; // Convert to factor
     
-    for (let i = 0; i <= days; i += Math.ceil(days / 50)) { // Generate ~50 data points
+    // Calculate realistic annual growth rates based on fund category and period
+    let expectedAnnualGrowth = 0.12; // 12% default
+    if (primaryFundCategory.toLowerCase().includes('large')) expectedAnnualGrowth = 0.11;
+    if (primaryFundCategory.toLowerCase().includes('mid')) expectedAnnualGrowth = 0.14;
+    if (primaryFundCategory.toLowerCase().includes('small')) expectedAnnualGrowth = 0.16;
+    if (primaryFundCategory.toLowerCase().includes('elss')) expectedAnnualGrowth = 0.13;
+    
+    // Adjust growth for trend score
+    expectedAnnualGrowth *= trendFactor;
+    
+    let currentNAV = baseNAV;
+    let totalSIPInvestment = 0;
+    let totalUnits = 0;
+    
+    for (let i = 0; i <= days; i += Math.ceil(days / 200)) { // Generate more data points for accuracy
       const currentDate = new Date(startDate);
       currentDate.setDate(startDate.getDate() + i);
       
-      // Generate realistic NAV progression
-      const timeProgress = i / days;
+      // Generate realistic NAV progression with proper compounding
+      const yearsElapsed = i / 365;
       const randomFactor = (Math.random() - 0.5) * marketVolatility;
-      const trendGrowth = trendFactor * timeProgress * 0.15; // 15% annual growth for high-scoring funds
       
-      const fundNav = baseNAV * (1 + trendGrowth + randomFactor);
-      const fundPercentage = ((fundNav - baseNAV) / baseNAV) * 100;
+      // Use compound annual growth rate formula
+      const expectedGrowth = Math.pow(1 + expectedAnnualGrowth, yearsElapsed) - 1;
+      currentNAV = baseNAV * (1 + expectedGrowth + randomFactor);
       
-      // Calculate SIP value
+      const fundPercentage = ((currentNAV - baseNAV) / baseNAV) * 100;
+      
+      // Calculate SIP investment - monthly SIPs
       const monthsElapsed = Math.floor(i / 30);
-      const totalInvested = sipAmount * monthsElapsed;
-      const avgNav = baseNAV * (1 + (trendGrowth / 2)); // Simplified average NAV
-      const units = totalInvested / avgNav;
-      const fundSIPValue = units * fundNav;
+      if (i % 30 === 0 && i > 0) { // Monthly SIP
+        totalSIPInvestment += sipAmount;
+        totalUnits += sipAmount / currentNAV;
+      }
+      
+      const fundSIPValue = totalUnits * currentNAV;
       
       dataPoints.push({
         date: currentDate.toISOString().split('T')[0],
         fundPercentage: Math.round(fundPercentage * 100) / 100,
         fundSIPValue: Math.round(fundSIPValue),
+        totalInvested: totalSIPInvestment,
         formattedDate: currentDate.toLocaleDateString('en-IN', {
           day: '2-digit',
-          month: 'short'
+          month: 'short',
+          year: i > 365 ? '2-digit' : undefined
         })
       });
     }

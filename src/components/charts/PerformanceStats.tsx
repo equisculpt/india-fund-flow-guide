@@ -3,6 +3,7 @@ interface ChartDataPoint {
   date: string;
   fundPercentage: number;
   fundSIPValue: number;
+  totalInvested?: number;
   benchmarkPercentage?: number;
   benchmarkSIPValue?: number;
   comparison1Percentage?: number;
@@ -33,33 +34,49 @@ const PerformanceStats = ({
     if (data.length < 2) return { return: 0, volatility: 0, sipReturn: 0, totalInvested: 0, sipValue: 0 };
     
     const lastPoint = data[data.length - 1];
+    const firstPoint = data[0];
     const returnPct = lastPoint.fundPercentage;
     
+    // Calculate realistic SIP returns
+    const monthsInPeriod = Math.floor(getDaysForPeriod(period) / 30);
+    const totalInvested = lastPoint.totalInvested || (sipAmount * monthsInPeriod);
+    const sipValue = lastPoint.fundSIPValue || 0;
+    
+    const sipReturn = totalInvested > 0 ? ((sipValue - totalInvested) / totalInvested) * 100 : 0;
+    
+    // Calculate volatility more accurately
     const returns = data.slice(1).map((point, i) =>
       point.fundPercentage - data[i].fundPercentage
     );
     const avgReturn = returns.reduce((sum, r) => sum + r, 0) / returns.length;
     const variance = returns.reduce((sum, r) => sum + Math.pow(r - avgReturn, 2), 0) / returns.length;
-    const volatility = Math.sqrt(variance);
-    
-    // Calculate SIP returns with better logic
-    const monthsInPeriod = Math.max(1, Math.floor(getDaysForPeriod(period) / 30));
-    const totalInvested = sipAmount * monthsInPeriod;
-    const sipReturn = totalInvested > 0 ? ((lastPoint.fundSIPValue - totalInvested) / totalInvested) * 100 : 0;
+    const volatility = Math.sqrt(variance * 252); // Annualized volatility
     
     return { 
       return: returnPct, 
-      volatility: Math.min(volatility, 50), // Cap volatility display
-      sipReturn: Math.max(-100, Math.min(1000, sipReturn)), // Cap SIP return between -100% and 1000%
+      volatility: Math.min(volatility, 50),
+      sipReturn,
       totalInvested, 
-      sipValue: lastPoint.fundSIPValue 
+      sipValue
     };
   };
 
+  const calculateRealisticIRR = (data: ChartDataPoint[]) => {
+    if (data.length < 2) return 0;
+    
+    const lastPoint = data[data.length - 1];
+    const totalReturn = lastPoint.fundPercentage;
+    const years = getDaysForPeriod(period) / 365;
+    
+    if (years <= 0 || totalReturn <= -100) return 0;
+    
+    // Use CAGR formula for IRR calculation
+    const cagr = Math.pow((100 + totalReturn) / 100, 1 / years) - 1;
+    return cagr * 100;
+  };
+
   const performance = calculatePerformance(chartData);
-  
-  // Cap IRR display between reasonable bounds
-  const displayIRR = Math.max(-100, Math.min(1000, irr));
+  const realisticIRR = calculateRealisticIRR(chartData);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -84,9 +101,9 @@ const PerformanceStats = ({
         <div className="text-xl font-bold text-orange-600">₹{performance.sipValue?.toLocaleString() || '0'}</div>
       </div>
       <div className="text-center p-3 bg-indigo-50 rounded-lg">
-        <div className="text-sm text-muted-foreground">IRR (Annualized)</div>
-        <div className={`text-xl font-bold ${displayIRR >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-          {displayIRR.toFixed(2)}%
+        <div className="text-sm text-muted-foreground">CAGR (Annualized)</div>
+        <div className={`text-xl font-bold ${realisticIRR >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {realisticIRR.toFixed(2)}%
         </div>
       </div>
     </div>

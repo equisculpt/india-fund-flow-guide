@@ -123,22 +123,14 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
   const calculateIRR = (data: ChartDataPoint[]) => {
     if (data.length < 2) return 0;
     
-    // Calculate realistic IRR based on the period and actual returns
     const lastPoint = data[data.length - 1];
     const totalReturn = lastPoint.fundPercentage;
     const years = ChartDataService.getDaysForPeriod(period) / 365;
     
-    // Convert total return to annualized return (IRR approximation)
     if (years <= 0 || totalReturn <= -100) return 0;
     
-    // For periods less than 1 year, annualize the return
-    if (years < 1) {
-      return (totalReturn / years);
-    }
-    
-    // For periods of 1 year or more, use CAGR formula
-    const annualizedReturn = Math.pow(1 + (totalReturn / 100), 1 / years) - 1;
-    return annualizedReturn * 100;
+    const cagr = Math.pow((100 + totalReturn) / 100, 1 / years) - 1;
+    return cagr * 100;
   };
 
   const performance = calculatePerformance(chartData);
