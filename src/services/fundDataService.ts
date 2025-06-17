@@ -48,18 +48,31 @@ export class FundDataService {
       }
       
       const data = await response.json();
-      console.log('FundDataService: NAV API response for', schemeCode, ':', data);
+      console.log('FundDataService: Raw API response for', schemeCode, ':', data);
       
-      // Check if we have valid data
+      // Fix: Check the correct structure - data should have nav and date directly, not in data array
+      if (data && data.nav && parseFloat(data.nav) > 0) {
+        const navValue = parseFloat(data.nav);
+        const result = {
+          nav: navValue,
+          date: data.date,
+          actualSchemeName: data.scheme_name || 'Unknown',
+          fundHouse: data.fund_house || 'Unknown'
+        };
+        console.log('FundDataService: Returning valid NAV data:', result);
+        return result;
+      }
+      
+      // Fallback: Check if data is in nested structure (some APIs return different formats)
       if (data?.data?.[0]?.nav && parseFloat(data.data[0].nav) > 0) {
         const navValue = parseFloat(data.data[0].nav);
         const result = {
           nav: navValue,
           date: data.data[0].date,
-          actualSchemeName: data.meta?.scheme_name || 'Unknown',
-          fundHouse: data.meta?.fund_house || 'Unknown'
+          actualSchemeName: data.meta?.scheme_name || data.scheme_name || 'Unknown',
+          fundHouse: data.meta?.fund_house || data.fund_house || 'Unknown'
         };
-        console.log('FundDataService: Returning valid NAV data:', result);
+        console.log('FundDataService: Returning valid NAV data from nested structure:', result);
         return result;
       }
       
