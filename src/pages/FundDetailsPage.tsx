@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -112,16 +113,25 @@ const getAIAnalysis = (fundData: any) => {
 // Function to fetch latest NAV from API
 const fetchLatestNAV = async (schemeCode: string) => {
   try {
+    console.log(`Fetching NAV for scheme: ${schemeCode}`);
     const response = await fetch(`https://api.mfapi.in/mf/${schemeCode}/latest`);
-    if (!response.ok) throw new Error('Failed to fetch NAV');
+    if (!response.ok) {
+      console.error(`NAV API responded with status: ${response.status}`);
+      throw new Error('Failed to fetch NAV');
+    }
     
     const data = await response.json();
+    console.log('NAV API response:', data);
+    
     if (data?.data?.[0]?.nav) {
-      return {
+      const navInfo = {
         nav: parseFloat(data.data[0].nav),
         date: data.data[0].date
       };
+      console.log('Parsed NAV info:', navInfo);
+      return navInfo;
     }
+    console.log('No NAV data found in response');
     return null;
   } catch (error) {
     console.error('Error fetching latest NAV:', error);
@@ -218,8 +228,10 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
 
     // Fetch latest NAV from API
     if (fundId) {
+      console.log('Starting NAV fetch for fundId:', fundId);
       fetchLatestNAV(fundId).then(navData => {
         if (navData) {
+          console.log('Successfully fetched NAV data:', navData);
           setLatestNAV(navData);
           // Update the mock data with latest NAV
           setFundData(prev => ({
@@ -227,16 +239,31 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             nav: navData.nav,
             navDate: navData.date
           }));
+        } else {
+          console.log('No NAV data received, keeping mock data');
         }
       });
     }
   }, [fundId]);
 
   const handleBackClick = () => {
-    // Try to go back to previous page, fallback to home page
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
+    console.log('Back button clicked');
+    console.log('Current location:', window.location.pathname);
+    console.log('History length:', window.history.length);
+    
+    try {
+      // First try to go back in history
+      window.history.back();
+      
+      // If that doesn't work after a short delay, navigate to home
+      setTimeout(() => {
+        if (window.location.pathname === `/fund/${fundId}`) {
+          console.log('Still on same page, navigating to home');
+          navigate('/');
+        }
+      }, 100);
+    } catch (error) {
+      console.error('Error with back navigation:', error);
       navigate('/');
     }
   };
@@ -270,7 +297,11 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={handleBackClick} className="mb-4">
+        <Button 
+          variant="ghost" 
+          onClick={handleBackClick} 
+          className="mb-4"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
