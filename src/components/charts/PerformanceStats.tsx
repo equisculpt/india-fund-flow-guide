@@ -1,4 +1,5 @@
 
+
 interface ChartDataPoint {
   date: string;
   fundPercentage: number;
@@ -39,7 +40,7 @@ const PerformanceStats = ({
     
     // Calculate MONTHLY SIP returns for all periods
     const totalDays = getDaysForPeriod(period);
-    const monthsInPeriod = Math.floor(totalDays / 30); // Always calculate monthly
+    const monthsInPeriod = Math.floor(totalDays / 30); // Always calculate monthly SIP
     const totalInvested = lastPoint.totalInvested || (sipAmount * monthsInPeriod);
     const sipValue = lastPoint.fundSIPValue || 0;
     
@@ -76,8 +77,28 @@ const PerformanceStats = ({
     return cagr * 100;
   };
 
+  const calculateSIPCAGR = (data: ChartDataPoint[]) => {
+    if (data.length < 2) return 0;
+    
+    const lastPoint = data[data.length - 1];
+    const totalInvested = lastPoint.totalInvested || 0;
+    const currentValue = lastPoint.fundSIPValue || 0;
+    const years = getDaysForPeriod(period) / 365;
+    
+    if (years <= 0 || totalInvested <= 0 || currentValue <= 0) return 0;
+    
+    // For SIP, use a more sophisticated XIRR-like calculation
+    // Simplified approach: assume average investment was made at mid-point
+    const avgInvestmentPeriod = years / 2;
+    if (avgInvestmentPeriod <= 0) return 0;
+    
+    const sipCAGR = Math.pow(currentValue / totalInvested, 1 / avgInvestmentPeriod) - 1;
+    return sipCAGR * 100;
+  };
+
   const performance = calculatePerformance(chartData);
   const realisticIRR = calculateRealisticIRR(chartData);
+  const sipCAGR = calculateSIPCAGR(chartData);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -102,9 +123,9 @@ const PerformanceStats = ({
         <div className="text-xl font-bold text-orange-600">₹{performance.sipValue?.toLocaleString() || '0'}</div>
       </div>
       <div className="text-center p-3 bg-indigo-50 rounded-lg">
-        <div className="text-sm text-muted-foreground">CAGR (Annualized)</div>
-        <div className={`text-xl font-bold ${realisticIRR >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-          {realisticIRR.toFixed(2)}%
+        <div className="text-sm text-muted-foreground">SIP CAGR</div>
+        <div className={`text-xl font-bold ${sipCAGR >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {sipCAGR.toFixed(2)}%
         </div>
       </div>
     </div>
@@ -112,3 +133,4 @@ const PerformanceStats = ({
 };
 
 export default PerformanceStats;
+

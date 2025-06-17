@@ -1,4 +1,5 @@
 
+
 export class ChartDataService {
   static getDaysForPeriod(period: string): number {
     switch (period) {
@@ -46,8 +47,11 @@ export class ChartDataService {
     let totalSIPInvestment = 0;
     let totalUnits = 0;
     
-    // Calculate total months and ensure monthly SIP for all periods
+    // Calculate total months for the entire period
     const totalMonths = Math.floor(days / 30);
+    
+    // Create monthly SIP investment schedule
+    const sipInvestments: { date: Date; amount: number; nav: number; units: number }[] = [];
     
     for (let i = 0; i <= days; i += Math.ceil(days / 200)) { // Generate more data points for accuracy
       const currentDate = new Date(startDate);
@@ -63,14 +67,25 @@ export class ChartDataService {
       
       const fundPercentage = ((currentNAV - baseNAV) / baseNAV) * 100;
       
-      // Calculate SIP investment - ALWAYS monthly, regardless of period
+      // Calculate SIP investments made up to this date
       const monthsElapsed = Math.floor(i / 30);
-      const isMonthlyInvestmentDate = i % 30 === 0 && i > 0 && monthsElapsed <= totalMonths;
       
-      if (isMonthlyInvestmentDate) {
-        totalSIPInvestment += sipAmount;
-        totalUnits += sipAmount / currentNAV;
+      // Add monthly SIP investments (but don't exceed total months)
+      while (sipInvestments.length < monthsElapsed && sipInvestments.length < totalMonths) {
+        const sipDate = new Date(startDate);
+        sipDate.setMonth(startDate.getMonth() + sipInvestments.length);
+        
+        sipInvestments.push({
+          date: sipDate,
+          amount: sipAmount,
+          nav: currentNAV,
+          units: sipAmount / currentNAV
+        });
       }
+      
+      // Calculate totals from all SIP investments made so far
+      totalSIPInvestment = sipInvestments.length * sipAmount;
+      totalUnits = sipInvestments.reduce((sum, inv) => sum + inv.units, 0);
       
       const fundSIPValue = totalUnits * currentNAV;
       
@@ -90,3 +105,4 @@ export class ChartDataService {
     return dataPoints;
   }
 }
+
