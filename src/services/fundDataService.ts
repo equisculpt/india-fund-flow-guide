@@ -23,17 +23,17 @@ interface NAVResponse {
 }
 
 export class FundDataService {
-  // Corrected Top 10 popular funds with verified scheme codes
+  // Top 10 popular funds with CORRECT scheme codes and matching names
   static readonly TOP_FUNDS = [
-    { schemeCode: '125497', name: 'SBI Small Cap Fund - Direct Growth' }, // Fixed: was 120503
+    { schemeCode: '125497', name: 'SBI Small Cap Fund - Direct Growth' },
     { schemeCode: '100016', name: 'SBI Bluechip Fund - Direct Growth' },
-    { schemeCode: '101206', name: 'SBI Overnight Fund - Regular Growth' }, // Fixed: corrected mapping
+    { schemeCode: '101206', name: 'SBI Overnight Fund - Regular Growth' },
     { schemeCode: '120601', name: 'ICICI Prudential All Seasons Bond Fund - Direct Plan' },
-    { schemeCode: '118989', name: 'HDFC Mid-Cap Opportunities Fund - Direct Growth' }, // Fixed: was wrong
+    { schemeCode: '118989', name: 'HDFC Mid-Cap Opportunities Fund - Direct Growth' },
     { schemeCode: '119078', name: 'HDFC Regular Savings Fund - Direct Plan' },
     { schemeCode: '120716', name: 'UTI Nifty 50 Index Fund - Direct Growth' },
     { schemeCode: '145553', name: 'UTI Fixed Term Income Fund - Direct Growth' },
-    { schemeCode: '120503', name: 'Axis ELSS Tax Saver Fund - Direct Growth' }, // Fixed: moved here
+    { schemeCode: '120503', name: 'Axis ELSS Tax Saver Fund - Direct Growth' },
     { schemeCode: '102885', name: 'SBI Equity Hybrid Fund - Regular Growth' }
   ];
 
@@ -105,7 +105,7 @@ export class FundDataService {
   }
 
   static getMockFundData(schemeCode: string): FundData {
-    // Corrected mock data with proper mappings
+    // Updated mock data with CORRECT mappings to match scheme codes
     const fundDataMap: Record<string, FundData> = {
       '125497': { // SBI Small Cap Fund - Direct Growth
         schemeCode: '125497',
@@ -135,7 +135,7 @@ export class FundDataService {
         volatility: 4.2,
         minSipAmount: 500
       },
-      '101206': { // SBI Overnight Fund
+      '101206': { // SBI Overnight Fund - Regular Growth
         schemeCode: '101206',
         schemeName: 'SBI Overnight Fund - Regular Growth',
         amc: 'SBI Mutual Fund',
@@ -149,7 +149,7 @@ export class FundDataService {
         volatility: 0.5,
         minSipAmount: 100
       },
-      '120601': { // ICICI Prudential All Seasons Bond Fund
+      '120601': { // ICICI Prudential All Seasons Bond Fund - Direct Plan
         schemeCode: '120601',
         schemeName: 'ICICI Prudential All Seasons Bond Fund - Direct Plan',
         amc: 'ICICI Prudential Mutual Fund',
@@ -163,7 +163,7 @@ export class FundDataService {
         volatility: 2.2,
         minSipAmount: 500
       },
-      '118989': { // HDFC Mid-Cap Opportunities Fund
+      '118989': { // HDFC Mid-Cap Opportunities Fund - Direct Growth
         schemeCode: '118989',
         schemeName: 'HDFC Mid-Cap Opportunities Fund - Direct Growth',
         amc: 'HDFC Mutual Fund',
@@ -177,7 +177,49 @@ export class FundDataService {
         volatility: 6.5,
         minSipAmount: 500
       },
-      '120503': { // Axis ELSS Tax Saver Fund
+      '119078': { // HDFC Regular Savings Fund - Direct Plan
+        schemeCode: '119078',
+        schemeName: 'HDFC Regular Savings Fund - Direct Plan',
+        amc: 'HDFC Mutual Fund',
+        category: 'Hybrid - Conservative',
+        nav: 42.15,
+        returns1Y: 12.3,
+        returns3Y: 10.8,
+        returns5Y: 9.2,
+        aum: 5670,
+        expenseRatio: 0.45,
+        volatility: 3.1,
+        minSipAmount: 500
+      },
+      '120716': { // UTI Nifty 50 Index Fund - Direct Growth
+        schemeCode: '120716',
+        schemeName: 'UTI Nifty 50 Index Fund - Direct Growth',
+        amc: 'UTI Mutual Fund',
+        category: 'Index',
+        nav: 198.45,
+        returns1Y: 16.8,
+        returns3Y: 14.2,
+        returns5Y: 13.1,
+        aum: 8920,
+        expenseRatio: 0.20,
+        volatility: 4.8,
+        minSipAmount: 500
+      },
+      '145553': { // UTI Fixed Term Income Fund - Direct Growth
+        schemeCode: '145553',
+        schemeName: 'UTI Fixed Term Income Fund - Direct Growth',
+        amc: 'UTI Mutual Fund',
+        category: 'Debt - Fixed Term',
+        nav: 25.67,
+        returns1Y: 7.2,
+        returns3Y: 6.8,
+        returns5Y: 6.5,
+        aum: 1250,
+        expenseRatio: 0.35,
+        volatility: 1.2,
+        minSipAmount: 1000
+      },
+      '120503': { // Axis ELSS Tax Saver Fund - Direct Growth
         schemeCode: '120503',
         schemeName: 'Axis ELSS Tax Saver Fund - Direct Growth',
         amc: 'Axis Mutual Fund',
@@ -189,6 +231,20 @@ export class FundDataService {
         aum: 12800,
         expenseRatio: 0.75,
         volatility: 5.8,
+        minSipAmount: 500
+      },
+      '102885': { // SBI Equity Hybrid Fund - Regular Growth
+        schemeCode: '102885',
+        schemeName: 'SBI Equity Hybrid Fund - Regular Growth',
+        amc: 'SBI Mutual Fund',
+        category: 'Hybrid - Aggressive',
+        nav: 178.92,
+        returns1Y: 19.5,
+        returns3Y: 16.2,
+        returns5Y: 14.8,
+        aum: 18750,
+        expenseRatio: 1.15,
+        volatility: 5.5,
         minSipAmount: 500
       }
     };

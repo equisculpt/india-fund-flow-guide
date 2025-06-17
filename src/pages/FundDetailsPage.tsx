@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -161,14 +162,22 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   const handleBackClick = () => {
     console.log('Back button clicked, navigating to funds section');
     
-    try {
-      // Navigate to the funds section of the home page
-      window.location.hash = '#funds';
-      window.location.reload(); // Force reload to ensure we're on the right section
-    } catch (error) {
-      console.error('Error with navigation:', error);
-      navigate('/');
-    }
+    // Navigate to home page and scroll to funds section
+    navigate('/', { replace: true });
+    
+    // Use setTimeout to ensure navigation completes before scrolling
+    setTimeout(() => {
+      const fundsSection = document.getElementById('funds');
+      if (fundsSection) {
+        fundsSection.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        // If funds section doesn't exist, try scrolling to ai-funds tab
+        const fundsTab = document.querySelector('[value="ai-funds"]');
+        if (fundsTab) {
+          (fundsTab as HTMLElement).click();
+        }
+      }
+    }, 100);
   };
 
   if (!fundData) {
