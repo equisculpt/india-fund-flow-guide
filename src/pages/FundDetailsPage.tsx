@@ -1,7 +1,8 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Star, TrendingUp, TrendingDown, Target } from 'lucide-react';
+import { ArrowLeft, Star, TrendingUp, TrendingDown, Target, Loader2 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -18,105 +19,11 @@ import AdvancedFundChart from '@/components/AdvancedFundChart';
 import NAVHistoryChart from '@/components/NAVHistoryChart';
 import { FundDataService } from '@/services/fundDataService';
 import { MutualFundSearchService } from '@/services/mutualFundSearchService';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FundDetailsPageProps {
   // Add any props you need here
 }
-
-// Deterministic AI scoring that doesn't change on refresh
-const getAIAnalysis = (fundData: any) => {
-  const { category, returns1Y, returns3Y, returns5Y, volatility, expenseRatio, aum, schemeCode } = fundData;
-  
-  // Use scheme code as seed for consistent "randomness"
-  const seed = parseInt(schemeCode) || 1000;
-  const seededRandom = (seed: number) => {
-    const x = Math.sin(seed) * 10000;
-    return x - Math.floor(x);
-  };
-  
-  // Calculate trend score based on performance - deterministic
-  const performanceScore = (returns1Y * 0.2 + returns3Y * 0.3 + returns5Y * 0.5) / 10;
-  const trendScore = Math.min(10, Math.max(3, performanceScore * 8 + seededRandom(seed) * 2));
-  
-  // Deterministic AI scoring factors
-  const scoringFactors = [
-    { 
-      name: "Performance Consistency", 
-      score: Math.min(10, Math.max(4, trendScore + seededRandom(seed + 1) * 2)), 
-      weight: 25
-    },
-    { 
-      name: "Fund Manager Track Record", 
-      score: Math.min(10, Math.max(6, 8.5 + seededRandom(seed + 2) * 1.5)), 
-      weight: 20
-    },
-    { 
-      name: "Portfolio Quality", 
-      score: Math.min(10, Math.max(6, 8.0 + seededRandom(seed + 3) * 1.5)), 
-      weight: 20
-    },
-    { 
-      name: "Expense Ratio", 
-      score: Math.max(6, 10 - (expenseRatio * 4)), 
-      weight: 15
-    },
-    { 
-      name: "Risk Management", 
-      score: Math.max(6, 10 - (volatility / 2)), 
-      weight: 10
-    },
-    { 
-      name: "Portfolio Turnover", 
-      score: Math.min(10, Math.max(5, 7.2 + seededRandom(seed + 4) * 1.8)), 
-      weight: 10
-    }
-  ];
-
-  // Calculate overall score using weighted average - deterministic
-  const aiScore = scoringFactors.reduce((acc, factor) => 
-    acc + (factor.score * factor.weight / 100), 0
-  );
-
-  // Round to one decimal place
-  const finalScore = Math.round(aiScore * 10) / 10;
-  
-  let recommendation = 'HOLD';
-  let confidence = 0;
-  let reasoning = '';
-  
-  // Generate recommendation based on AI score - deterministic
-  if (finalScore >= 8.5) {
-    recommendation = 'STRONG BUY';
-    confidence = Math.round(85 + seededRandom(seed + 5) * 10);
-    reasoning = 'Exceptional performance with strong fundamentals and low risk profile';
-  } else if (finalScore >= 7.0) {
-    recommendation = 'BUY';
-    confidence = Math.round(70 + seededRandom(seed + 6) * 15);
-    reasoning = 'Good performance with solid track record and reasonable risk';
-  } else if (finalScore >= 5.5) {
-    recommendation = 'HOLD';
-    confidence = Math.round(55 + seededRandom(seed + 7) * 20);
-    reasoning = 'Average performance, suitable for existing investors';
-  } else if (finalScore >= 4.0) {
-    recommendation = 'SELL';
-    confidence = Math.round(45 + seededRandom(seed + 8) * 25);
-    reasoning = 'Below average performance, consider alternatives';
-  } else {
-    recommendation = 'STRONG SELL';
-    confidence = Math.round(65 + seededRandom(seed + 9) * 20);
-    reasoning = 'Poor performance with high risk, immediate action recommended';
-  }
-  
-  return { 
-    aiScore: finalScore, 
-    recommendation, 
-    confidence, 
-    reasoning,
-    performanceRank: Math.max(1, Math.round((10 - finalScore) * 2)),
-    trendScore,
-    volatilityScore: volatility
-  };
-};
 
 const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   const navigate = useNavigate();
@@ -125,53 +32,128 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   const [latestNAV, setLatestNAV] = useState<any>(null);
   const [historicalData, setHistoricalData] = useState<any[]>([]);
   const [navError, setNavError] = useState<string>('');
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string>('');
 
   useEffect(() => {
     if (!fundId) return;
 
     console.log('FundDetailsPage: Starting data fetch for fundId:', fundId);
-    
-    // Get base fund data from service
-    const baseFundData = FundDataService.getMockFundData(fundId);
-    console.log('FundDetailsPage: Base fund data loaded:', baseFundData);
-    setFundData(baseFundData);
-
-    // Fetch latest NAV from API
-    console.log('FundDetailsPage: Starting NAV fetch for fundId:', fundId);
-    FundDataService.fetchLatestNAV(fundId).then(navData => {
-      if (navData && navData.nav > 0) {
-        console.log('FundDetailsPage: Successfully fetched NAV data:', navData);
-        setLatestNAV(navData);
-        setNavError('');
-        
-        // Update fund data with real NAV but keep our scheme name mapping
-        setFundData(prev => ({
-          ...prev,
-          nav: navData.nav,
-          navDate: navData.date,
-          // Keep our corrected scheme name mapping
-          actualFundHouse: navData.fundHouse,
-          // Store API scheme name for comparison
-          apiSchemeName: navData.actualSchemeName
-        }));
-      } else {
-        console.log('FundDetailsPage: No valid NAV data received for', fundId, ', keeping mock data');
-        setNavError('NAV data not available from API');
-        // Keep mock NAV data when API fails
-      }
-    }).catch(error => {
-      console.error('FundDetailsPage: NAV fetch error:', error);
-      setNavError('Failed to fetch NAV data');
-    });
-
-    // Fetch historical data for charts
-    FundDataService.fetchHistoricalNAV(fundId, 365).then(historical => {
-      setHistoricalData(historical);
-      console.log('FundDetailsPage: Historical data loaded:', historical.length, 'records');
-    }).catch(error => {
-      console.error('FundDetailsPage: Historical data error:', error);
-    });
+    loadFundData();
   }, [fundId]);
+
+  const loadFundData = async () => {
+    try {
+      // First get API details to have accurate category and fund house
+      console.log('FundDetailsPage: Fetching API details for fundId:', fundId);
+      const apiDetails = await MutualFundSearchService.getFundDetails(fundId);
+      
+      if (apiDetails) {
+        console.log('FundDetailsPage: API details loaded:', apiDetails);
+        
+        // Use API data as primary source, fallback to mock data for missing fields
+        const baseFundData = FundDataService.getMockFundData(fundId);
+        
+        const combinedFundData = {
+          schemeCode: fundId,
+          schemeName: apiDetails.schemeName,
+          category: apiDetails.category || 'Unknown', // Use API category
+          fundHouse: apiDetails.fundHouse || 'Unknown', // Use API fund house
+          nav: apiDetails.nav,
+          navDate: apiDetails.navDate,
+          // Fallback to mock data for these fields if not in API
+          returns1Y: baseFundData.returns1Y,
+          returns3Y: baseFundData.returns3Y,
+          returns5Y: baseFundData.returns5Y,
+          expenseRatio: baseFundData.expenseRatio,
+          aum: baseFundData.aum,
+          minSipAmount: baseFundData.minSipAmount,
+          volatility: baseFundData.volatility,
+          amc: apiDetails.fundHouse || baseFundData.amc
+        };
+
+        console.log('FundDetailsPage: Combined fund data:', combinedFundData);
+        setFundData(combinedFundData);
+        setLatestNAV(apiDetails);
+        setNavError('');
+
+        // Trigger AI analysis with the combined data
+        await performAIAnalysis(combinedFundData);
+      } else {
+        // Fallback to mock data if API fails
+        console.log('FundDetailsPage: API failed, using mock data for fundId:', fundId);
+        const baseFundData = FundDataService.getMockFundData(fundId);
+        setFundData(baseFundData);
+        setNavError('Using mock data - API unavailable');
+        
+        // Still try AI analysis with mock data
+        await performAIAnalysis(baseFundData);
+      }
+
+      // Fetch historical data for charts
+      FundDataService.fetchHistoricalNAV(fundId, 365).then(historical => {
+        setHistoricalData(historical);
+        console.log('FundDetailsPage: Historical data loaded:', historical.length, 'records');
+      }).catch(error => {
+        console.error('FundDetailsPage: Historical data error:', error);
+      });
+
+    } catch (error) {
+      console.error('FundDetailsPage: Error loading fund data:', error);
+      setNavError('Failed to load fund data');
+    }
+  };
+
+  const performAIAnalysis = async (fundDataForAnalysis: any) => {
+    setAiLoading(true);
+    setAiError('');
+    
+    try {
+      console.log('FundDetailsPage: Starting AI analysis for:', fundDataForAnalysis.schemeName);
+      
+      const { data, error } = await supabase.functions.invoke('ai-fund-analysis', {
+        body: { fundData: fundDataForAnalysis }
+      });
+
+      if (error) {
+        throw new Error(`AI Analysis failed: ${error.message}`);
+      }
+
+      if (data.success) {
+        console.log('FundDetailsPage: AI analysis completed:', data.analysis);
+        setAiAnalysis(data.analysis);
+      } else {
+        console.log('FundDetailsPage: AI analysis failed, using fallback:', data.fallbackAnalysis);
+        setAiAnalysis(data.fallbackAnalysis);
+        setAiError('AI analysis partially failed, showing fallback assessment');
+      }
+    } catch (error) {
+      console.error('FundDetailsPage: AI analysis error:', error);
+      setAiError('AI analysis unavailable');
+      
+      // Fallback analysis
+      setAiAnalysis({
+        aiScore: 6.5,
+        recommendation: 'HOLD',
+        confidence: 60,
+        reasoning: 'AI analysis service temporarily unavailable. Manual review recommended.',
+        riskLevel: 'Moderate',
+        strengths: ['Available for investment'],
+        concerns: ['Analysis service unavailable'],
+        performanceRank: 50,
+        analysis: {
+          performanceScore: 6.5,
+          volatilityScore: 6.0,
+          expenseScore: 7.0,
+          fundManagerScore: 6.5,
+          portfolioQualityScore: 6.5
+        }
+      });
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const handleBackClick = () => {
     console.log('Back button clicked, navigating to funds section');
@@ -184,19 +166,6 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
       const fundsSection = document.getElementById('funds');
       if (fundsSection) {
         fundsSection.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        // If funds section doesn't exist, try scrolling to ai-funds tab
-        const fundsTab = document.querySelector('[data-state="active"][value="ai-funds"]') || 
-                         document.querySelector('[value="ai-funds"]');
-        if (fundsTab) {
-          (fundsTab as HTMLElement).click();
-          setTimeout(() => {
-            const fundsSection = document.getElementById('funds');
-            if (fundsSection) {
-              fundsSection.scrollIntoView({ behavior: 'smooth' });
-            }
-          }, 100);
-        }
       }
     }, 100);
   };
@@ -206,14 +175,14 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
       <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center">Loading fund details...</div>
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <div>Loading fund details...</div>
+          </div>
         </div>
       </div>
     );
   }
-
-  // Get AI analysis that matches AIFundRanking exactly
-  const aiAnalysis = getAIAnalysis(fundData);
 
   const getRecommendationColor = (rec: string) => {
     switch (rec) {
@@ -247,36 +216,46 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
                 {fundData.schemeName}
               </h2>
               <p className="text-gray-600">
-                {fundData.actualFundHouse || fundData.amc} • {fundData.category}
+                {fundData.fundHouse} • {fundData.category}
               </p>
-              
-              {/* Show API scheme name for debugging/verification */}
-              {latestNAV && fundData.apiSchemeName && fundData.apiSchemeName !== fundData.schemeName && (
-                <p className="text-sm text-blue-600 mt-1">
-                  API scheme: {fundData.apiSchemeName}
-                </p>
-              )}
               
               {/* Show NAV error if any */}
               {navError && (
                 <p className="text-sm text-orange-600 mt-1">
-                  ⚠️ {navError} - Using mock data
+                  ⚠️ {navError}
                 </p>
               )}
               
               <div className="flex items-center gap-4 mt-2">
-                <div className="flex items-center gap-1">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-bold text-lg">{aiAnalysis.aiScore}/10</span>
-                  <span className="text-sm text-gray-600">AI Score</span>
-                </div>
-                <Badge className={getRecommendationColor(aiAnalysis.recommendation)}>
-                  {aiAnalysis.recommendation}
-                </Badge>
-                <Badge variant="outline">
-                  {aiAnalysis.confidence}% Confidence
-                </Badge>
+                {aiLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin text-purple-600" />
+                    <span className="text-sm text-gray-600">AI analyzing...</span>
+                  </div>
+                ) : aiAnalysis ? (
+                  <>
+                    <div className="flex items-center gap-1">
+                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      <span className="font-bold text-lg">{aiAnalysis.aiScore}/10</span>
+                      <span className="text-sm text-gray-600">AI Score</span>
+                    </div>
+                    <Badge className={getRecommendationColor(aiAnalysis.recommendation)}>
+                      {aiAnalysis.recommendation}
+                    </Badge>
+                    <Badge variant="outline">
+                      {aiAnalysis.confidence}% Confidence
+                    </Badge>
+                  </>
+                ) : (
+                  <div className="text-sm text-gray-500">AI analysis unavailable</div>
+                )}
               </div>
+              
+              {aiError && (
+                <p className="text-sm text-orange-600 mt-1">
+                  ⚠️ {aiError}
+                </p>
+              )}
             </div>
             
             <div className="text-right">
@@ -286,7 +265,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
               </div>
               {latestNAV && (
                 <div className="text-xs text-green-600 mt-1">
-                  Updated: {latestNAV.date}
+                  Updated: {latestNAV.navDate}
                 </div>
               )}
               <div className="flex items-center gap-2 mt-1">
@@ -302,41 +281,43 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           </div>
 
           {/* AI Recommendation Card */}
-          <Card className="mt-4 border-l-4 border-l-blue-500">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-blue-600" />
-                AI Investment Recommendation
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="text-center">
-                  <div className={`inline-block px-4 py-2 rounded-lg font-bold text-lg ${getRecommendationColor(aiAnalysis.recommendation)}`}>
-                    {aiAnalysis.recommendation}
+          {aiAnalysis && (
+            <Card className="mt-4 border-l-4 border-l-blue-500">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-blue-600" />
+                  AI Investment Recommendation
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <div className={`inline-block px-4 py-2 rounded-lg font-bold text-lg ${getRecommendationColor(aiAnalysis.recommendation)}`}>
+                      {aiAnalysis.recommendation}
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">{aiAnalysis.confidence}% AI Confidence</p>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">{aiAnalysis.confidence}% AI Confidence</p>
-                </div>
-                <div className="md:col-span-2">
-                  <p className="text-gray-700">{aiAnalysis.reasoning}</p>
-                  <div className="grid grid-cols-3 gap-4 mt-3 text-sm">
-                    <div>
-                      <span className="text-gray-600">Performance Rank:</span>
-                      <span className="font-semibold ml-1">#{aiAnalysis.performanceRank}</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Risk Level:</span>
-                      <span className="font-semibold ml-1">{aiAnalysis.volatilityScore < 5 ? 'Low' : aiAnalysis.volatilityScore < 7 ? 'Moderate' : 'High'}</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Min SIP:</span>
-                      <span className="font-semibold ml-1">₹{fundData.minSipAmount}</span>
+                  <div className="md:col-span-2">
+                    <p className="text-gray-700">{aiAnalysis.reasoning}</p>
+                    <div className="grid grid-cols-3 gap-4 mt-3 text-sm">
+                      <div>
+                        <span className="text-gray-600">Performance Rank:</span>
+                        <span className="font-semibold ml-1">#{aiAnalysis.performanceRank}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Risk Level:</span>
+                        <span className="font-semibold ml-1">{aiAnalysis.riskLevel}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Min SIP:</span>
+                        <span className="font-semibold ml-1">₹{fundData.minSipAmount}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <Tabs defaultValue="ai-analysis" className="w-full">
@@ -369,7 +350,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
                 schemeName: fundData.schemeName,
                 category: fundData.category,
                 nav: fundData.nav,
-                trendScore: aiAnalysis.trendScore
+                trendScore: aiAnalysis?.analysis?.performanceScore || 7
               }}
             />
           </TabsContent>
@@ -380,7 +361,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           <CardHeader>
             <CardTitle>Ready to Invest?</CardTitle>
             <CardDescription>
-              Start your SIP journey with this {aiAnalysis.recommendation.toLowerCase()} rated fund
+              Start your SIP journey with this {aiAnalysis?.recommendation?.toLowerCase() || 'available'} fund
             </CardDescription>
           </CardHeader>
           <CardContent>
