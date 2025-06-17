@@ -23,13 +23,20 @@ interface FundCardProps {
 const FundCard = ({ fund }: FundCardProps) => {
   const navigate = useNavigate();
   
-  // Debug logging to see what data we're receiving
+  // Enhanced debug logging to see what data we're receiving
   console.log('FundCard: Received fund data:', {
     id: fund.id,
     scheme_name: fund.scheme_name,
     schemeCode: fund.schemeCode,
-    amc_name: fund.amc_name
+    amc_name: fund.amc_name,
+    'Full fund object': fund
   });
+  
+  // Check if this is the expected SBI fund
+  if (fund.scheme_name?.includes('SBI Small Cap')) {
+    console.log('🔍 SBI SMALL CAP FUND DETECTED - ID should be 125497 but is:', fund.id);
+    console.log('🔍 SBI SMALL CAP - schemeCode:', fund.schemeCode);
+  }
   
   const getRiskColor = (risk: string) => {
     switch (risk?.toLowerCase()) {
@@ -49,6 +56,11 @@ const FundCard = ({ fund }: FundCardProps) => {
     const fundIdentifier = fund.schemeCode || fund.id;
     console.log('FundCard: Navigating to fund details with identifier:', fundIdentifier, 'for fund:', fund.scheme_name);
     console.log('FundCard: fund.schemeCode =', fund.schemeCode, 'fund.id =', fund.id);
+    
+    // Additional warning for wrong mapping
+    if (fund.scheme_name?.includes('SBI Small Cap') && fundIdentifier !== '125497') {
+      console.error('🚨 WRONG MAPPING: SBI Small Cap Fund has wrong identifier:', fundIdentifier, 'should be 125497');
+    }
     
     navigate(`/fund/${fundIdentifier}`, {
       state: {
@@ -73,10 +85,14 @@ const FundCard = ({ fund }: FundCardProps) => {
               {fund.scheme_name}
             </CardTitle>
             <p className="text-sm text-muted-foreground">{fund.amc_name}</p>
-            {/* Add debug info */}
-            <div className="text-xs text-blue-600 mt-1">
-              <div>ID: {fund.id}</div>
-              {fund.schemeCode && <div>Scheme: {fund.schemeCode}</div>}
+            {/* Enhanced debug info with warning colors */}
+            <div className="text-xs mt-1">
+              <div className="text-blue-600">ID: {fund.id}</div>
+              {fund.schemeCode && <div className="text-blue-600">Scheme: {fund.schemeCode}</div>}
+              {/* Warning for wrong mapping */}
+              {fund.scheme_name?.includes('SBI Small Cap') && fund.id !== '125497' && (
+                <div className="text-red-600 font-bold">⚠️ WRONG ID! Should be 125497</div>
+              )}
             </div>
           </div>
           <Badge variant="secondary" className="ml-2">
