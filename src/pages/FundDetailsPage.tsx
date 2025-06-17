@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Star, TrendingUp, TrendingDown, Shield, Target } from 'lucide-react';
+import { ArrowLeft, Star, TrendingUp, TrendingDown, Target } from 'lucide-react';
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -31,38 +31,68 @@ const Header = () => {
   );
 };
 
-// AI-based recommendation engine
-const getAIRecommendation = (fundData: any) => {
-  const { aiScore, category, volatilityScore, trendScore, performanceRank } = fundData;
+// AI-based recommendation engine with consistent scoring
+const getAIAnalysis = (fundData: any) => {
+  const { category, returns1Y, returns3Y, returns5Y, volatility, expenseRatio, aum } = fundData;
   
-  // Calculate recommendation based on multiple factors
+  // Calculate comprehensive AI score based on multiple factors
+  let aiScore = 0;
   let recommendation = 'HOLD';
   let confidence = 0;
   let reasoning = '';
   
+  // Performance scoring (40% weight)
+  const performanceScore = (returns1Y * 0.2 + returns3Y * 0.3 + returns5Y * 0.5) / 10;
+  aiScore += Math.min(performanceScore * 4, 4);
+  
+  // Risk-adjusted scoring (30% weight)
+  const riskScore = Math.max(0, 3 - (volatility / 5));
+  aiScore += riskScore;
+  
+  // Cost efficiency (20% weight)
+  const costScore = Math.max(0, 2 - expenseRatio);
+  aiScore += costScore;
+  
+  // Fund size stability (10% weight)
+  const sizeScore = Math.min(aum / 10000, 1);
+  aiScore += sizeScore;
+  
+  // Round to one decimal place
+  aiScore = Math.round(aiScore * 10) / 10;
+  
+  // Generate recommendation based on AI score
   if (aiScore >= 8.5) {
     recommendation = 'STRONG BUY';
-    confidence = 90 + Math.random() * 10;
-    reasoning = 'Exceptional performance with strong fundamentals and low risk';
-  } else if (aiScore >= 7.5) {
+    confidence = 85 + Math.random() * 10;
+    reasoning = 'Exceptional performance with strong fundamentals and low risk profile';
+  } else if (aiScore >= 7.0) {
     recommendation = 'BUY';
-    confidence = 75 + Math.random() * 15;
+    confidence = 70 + Math.random() * 15;
     reasoning = 'Good performance with solid track record and reasonable risk';
-  } else if (aiScore >= 6.5) {
+  } else if (aiScore >= 5.5) {
     recommendation = 'HOLD';
-    confidence = 60 + Math.random() * 20;
+    confidence = 55 + Math.random() * 20;
     reasoning = 'Average performance, suitable for existing investors';
-  } else if (aiScore >= 5.0) {
+  } else if (aiScore >= 4.0) {
     recommendation = 'SELL';
-    confidence = 50 + Math.random() * 25;
+    confidence = 45 + Math.random() * 25;
     reasoning = 'Below average performance, consider alternatives';
   } else {
     recommendation = 'STRONG SELL';
-    confidence = 70 + Math.random() * 20;
+    confidence = 65 + Math.random() * 20;
     reasoning = 'Poor performance with high risk, immediate action recommended';
   }
   
-  return { recommendation, confidence: confidence.toFixed(0), reasoning };
+  return { 
+    aiScore, 
+    recommendation, 
+    confidence: Math.round(confidence), 
+    reasoning,
+    // Additional analysis metrics
+    performanceRank: Math.max(1, Math.round((10 - aiScore) * 2)),
+    trendScore: aiScore * 0.8 + Math.random() * 1.6,
+    volatilityScore: volatility
+  };
 };
 
 const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
@@ -78,15 +108,12 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
       amc: '',
       category: '',
       nav: 0,
-      aiScore: 0,
-      trendScore: 0,
-      volatilityScore: 0,
-      performanceRank: 0,
       returns1Y: 0,
       returns3Y: 0,
       returns5Y: 0,
       aum: 0,
       expenseRatio: 0,
+      volatility: 0,
       minSipAmount: 500
     };
 
@@ -97,15 +124,12 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         amc: 'Axis Mutual Fund',
         category: 'Mid Cap',
         nav: 89.45,
-        aiScore: 8.7,
-        trendScore: 8.2,
-        volatilityScore: 6.5,
-        performanceRank: 8,
         returns1Y: 24.5,
         returns3Y: 18.2,
         returns5Y: 16.8,
         aum: 15420,
         expenseRatio: 0.68,
+        volatility: 6.5,
         minSipAmount: 500
       };
     } else if (fundId === '100016') {
@@ -115,15 +139,12 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         amc: 'SBI Mutual Fund',
         category: 'Large Cap',
         nav: 76.32,
-        aiScore: 7.9,
-        trendScore: 7.5,
-        volatilityScore: 4.2,
-        performanceRank: 12,
         returns1Y: 18.7,
         returns3Y: 15.4,
         returns5Y: 14.2,
         aum: 28650,
         expenseRatio: 0.52,
+        volatility: 4.2,
         minSipAmount: 500
       };
     } else if (fundId === '101206') {
@@ -133,15 +154,12 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         amc: 'HDFC Mutual Fund',
         category: 'Large Cap',
         nav: 832.15,
-        aiScore: 8.1,
-        trendScore: 7.8,
-        volatilityScore: 4.8,
-        performanceRank: 6,
         returns1Y: 20.3,
         returns3Y: 16.1,
         returns5Y: 15.7,
         aum: 22340,
         expenseRatio: 0.58,
+        volatility: 4.8,
         minSipAmount: 500
       };
     } else if (fundId === '120601') {
@@ -151,15 +169,12 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         amc: 'SBI Mutual Fund',
         category: 'Small Cap',
         nav: 125.67,
-        aiScore: 7.4,
-        trendScore: 6.8,
-        volatilityScore: 8.2,
-        performanceRank: 15,
         returns1Y: 28.9,
         returns3Y: 22.1,
         returns5Y: 19.4,
         aum: 3402,
         expenseRatio: 1.85,
+        volatility: 8.2,
         minSipAmount: 500
       };
     }
@@ -171,7 +186,8 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     return <div>Loading...</div>;
   }
 
-  const aiRecommendation = getAIRecommendation(fundData);
+  // Get consistent AI analysis for the fund
+  const aiAnalysis = getAIAnalysis(fundData);
 
   const getRecommendationColor = (rec: string) => {
     switch (rec) {
@@ -202,14 +218,14 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
               <div className="flex items-center gap-4 mt-2">
                 <div className="flex items-center gap-1">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-bold text-lg">{fundData.aiScore}/10</span>
+                  <span className="font-bold text-lg">{aiAnalysis.aiScore}/10</span>
                   <span className="text-sm text-gray-600">AI Score</span>
                 </div>
-                <Badge className={getRecommendationColor(aiRecommendation.recommendation)}>
-                  {aiRecommendation.recommendation}
+                <Badge className={getRecommendationColor(aiAnalysis.recommendation)}>
+                  {aiAnalysis.recommendation}
                 </Badge>
                 <Badge variant="outline">
-                  {aiRecommendation.confidence}% Confidence
+                  {aiAnalysis.confidence}% Confidence
                 </Badge>
               </div>
             </div>
@@ -240,21 +256,21 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className={`inline-block px-4 py-2 rounded-lg font-bold text-lg ${getRecommendationColor(aiRecommendation.recommendation)}`}>
-                    {aiRecommendation.recommendation}
+                  <div className={`inline-block px-4 py-2 rounded-lg font-bold text-lg ${getRecommendationColor(aiAnalysis.recommendation)}`}>
+                    {aiAnalysis.recommendation}
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">{aiRecommendation.confidence}% AI Confidence</p>
+                  <p className="text-sm text-gray-600 mt-1">{aiAnalysis.confidence}% AI Confidence</p>
                 </div>
                 <div className="md:col-span-2">
-                  <p className="text-gray-700">{aiRecommendation.reasoning}</p>
+                  <p className="text-gray-700">{aiAnalysis.reasoning}</p>
                   <div className="grid grid-cols-3 gap-4 mt-3 text-sm">
                     <div>
                       <span className="text-gray-600">Performance Rank:</span>
-                      <span className="font-semibold ml-1">#{fundData.performanceRank}</span>
+                      <span className="font-semibold ml-1">#{aiAnalysis.performanceRank}</span>
                     </div>
                     <div>
                       <span className="text-gray-600">Risk Level:</span>
-                      <span className="font-semibold ml-1">{fundData.volatilityScore < 5 ? 'Low' : fundData.volatilityScore < 7 ? 'Moderate' : 'High'}</span>
+                      <span className="font-semibold ml-1">{aiAnalysis.volatilityScore < 5 ? 'Low' : aiAnalysis.volatilityScore < 7 ? 'Moderate' : 'High'}</span>
                     </div>
                     <div>
                       <span className="text-gray-600">Min SIP:</span>
@@ -276,11 +292,11 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           </TabsList>
 
           <TabsContent value="ai-analysis">
-            <AIFundRanking fundData={fundData} />
+            <AIFundRanking fundData={{...fundData, ...aiAnalysis}} />
           </TabsContent>
 
           <TabsContent value="portfolio">
-            <PortfolioHoldings fundData={fundData} />
+            <PortfolioHoldings fundData={{...fundData, ...aiAnalysis}} />
           </TabsContent>
 
           <TabsContent value="performance">
@@ -297,7 +313,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
                 schemeName: fundData.schemeName,
                 category: fundData.category,
                 nav: fundData.nav,
-                trendScore: fundData.trendScore
+                trendScore: aiAnalysis.trendScore
               }}
             />
           </TabsContent>
@@ -308,7 +324,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           <CardHeader>
             <CardTitle>Ready to Invest?</CardTitle>
             <CardDescription>
-              Start your SIP journey with this {aiRecommendation.recommendation.toLowerCase()} rated fund
+              Start your SIP journey with this {aiAnalysis.recommendation.toLowerCase()} rated fund
             </CardDescription>
           </CardHeader>
           <CardContent>
