@@ -17,6 +17,7 @@ import PortfolioHoldings from '@/components/charts/PortfolioHoldings';
 import AdvancedFundChart from '@/components/AdvancedFundChart';
 import NAVHistoryChart from '@/components/NAVHistoryChart';
 import { FundDataService } from '@/services/fundDataService';
+import { MutualFundSearchService } from '@/services/mutualFundSearchService';
 
 interface FundDetailsPageProps {
   // Add any props you need here
