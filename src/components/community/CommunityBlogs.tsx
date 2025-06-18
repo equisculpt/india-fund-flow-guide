@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Calendar, User, ArrowRight } from 'lucide-react';
+import { Eye, Calendar, User, ArrowRight, Edit } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -19,6 +20,10 @@ interface BlogPost {
   published_at: string;
   created_at: string;
   author_id: string;
+  moderation_status: string;
+  edited_by_admin: boolean;
+  admin_edited_title: string | null;
+  admin_edited_content: string | null;
   profiles?: {
     full_name: string;
   } | null;
@@ -45,6 +50,7 @@ const CommunityBlogs = () => {
         .from('blog_posts')
         .select('*')
         .eq('status', 'published')
+        .eq('moderation_status', 'approved')
         .order('published_at', { ascending: false });
 
       if (category !== 'all') {
@@ -124,7 +130,7 @@ const CommunityBlogs = () => {
                 <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
                   <img 
                     src={blog.featured_image_url} 
-                    alt={blog.title}
+                    alt={blog.admin_edited_title || blog.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -138,12 +144,19 @@ const CommunityBlogs = () => {
                     {blog.views_count}
                   </span>
                 </div>
-                <CardTitle className="text-lg line-clamp-2">{blog.title}</CardTitle>
+                <CardTitle className="text-lg line-clamp-2">
+                  {blog.admin_edited_title || blog.title}
+                  {blog.edited_by_admin && (
+                    <span className="ml-2 inline-flex items-center">
+                      <Edit className="h-3 w-3 text-blue-500" />
+                    </span>
+                  )}
+                </CardTitle>
               </CardHeader>
               
               <CardContent>
                 <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                  {blog.excerpt || blog.content.substring(0, 120) + '...'}
+                  {blog.excerpt || (blog.admin_edited_content || blog.content).substring(0, 120) + '...'}
                 </p>
                 
                 {blog.tags && blog.tags.length > 0 && (
@@ -160,10 +173,15 @@ const CommunityBlogs = () => {
                   <div className="flex items-center gap-2">
                     <User className="h-3 w-3" />
                     <span>{blog.profiles?.full_name || 'Anonymous'}</span>
+                    {blog.edited_by_admin && (
+                      <Badge variant="outline" className="text-xs bg-blue-50">
+                        Edited by SIPBrewery
+                      </Badge>
+                    )}
                   </div>
                   <div className="flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
-                    <span>{new Date(blog.published_at).toLocaleDateString()}</span>
+                    <span>{new Date(blog.published_at || blog.created_at).toLocaleDateString()}</span>
                   </div>
                 </div>
                 

@@ -296,6 +296,9 @@ export type Database = {
           content: string
           created_at: string | null
           id: string
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_status: string | null
           parent_id: string | null
           post_id: string
           updated_at: string | null
@@ -305,6 +308,9 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_status?: string | null
           parent_id?: string | null
           post_id: string
           updated_at?: string | null
@@ -314,6 +320,9 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_status?: string | null
           parent_id?: string | null
           post_id?: string
           updated_at?: string | null
@@ -338,13 +347,20 @@ export type Database = {
       }
       blog_posts: {
         Row: {
+          admin_edited_content: string | null
+          admin_edited_title: string | null
+          admin_notes: string | null
           author_id: string
           category: string | null
           content: string
           created_at: string | null
+          edited_by_admin: boolean | null
           excerpt: string | null
           featured_image_url: string | null
           id: string
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_status: string | null
           published_at: string | null
           status: string | null
           tags: string[] | null
@@ -353,13 +369,20 @@ export type Database = {
           views_count: number | null
         }
         Insert: {
+          admin_edited_content?: string | null
+          admin_edited_title?: string | null
+          admin_notes?: string | null
           author_id: string
           category?: string | null
           content: string
           created_at?: string | null
+          edited_by_admin?: boolean | null
           excerpt?: string | null
           featured_image_url?: string | null
           id?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_status?: string | null
           published_at?: string | null
           status?: string | null
           tags?: string[] | null
@@ -368,13 +391,20 @@ export type Database = {
           views_count?: number | null
         }
         Update: {
+          admin_edited_content?: string | null
+          admin_edited_title?: string | null
+          admin_notes?: string | null
           author_id?: string
           category?: string | null
           content?: string
           created_at?: string | null
+          edited_by_admin?: boolean | null
           excerpt?: string | null
           featured_image_url?: string | null
           id?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_status?: string | null
           published_at?: string | null
           status?: string | null
           tags?: string[] | null

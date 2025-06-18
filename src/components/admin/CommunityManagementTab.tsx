@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageSquare, BookOpen, AlertCircle, CheckCircle, Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import BlogModerationTab from './BlogModerationTab';
 
 interface Question {
   id: string;
@@ -43,7 +44,8 @@ const CommunityManagementTab = () => {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [newQuestionsCount, setNewQuestionsCount] = useState(0);
-  const [draftBlogsCount, setDraftBlogsCount] = useState(0);
+  const [pendingBlogsCount, setPendingBlogsCount] = useState(0);
+  const [activeTab, setActiveTab] = useState('questions');
 
   const fetchCommunityData = async () => {
     try {
@@ -97,9 +99,13 @@ const CommunityManagementTab = () => {
       const unansweredCount = questionsWithProfiles.filter(q => !q.is_answered).length;
       setNewQuestionsCount(unansweredCount);
 
-      // Count draft blogs
-      const draftCount = blogsWithProfiles.filter(b => b.status === 'draft').length;
-      setDraftBlogsCount(draftCount);
+      // Count pending blogs
+      const { count: pendingCount } = await supabase
+        .from('blog_posts')
+        .select('*', { count: 'exact', head: true })
+        .eq('moderation_status', 'pending');
+
+      setPendingBlogsCount(pendingCount || 0);
     } catch (error) {
       console.error('Error fetching community data:', error);
       toast.error('Failed to load community data');
@@ -143,7 +149,8 @@ const CommunityManagementTab = () => {
         .from('blog_posts')
         .update({ 
           status: 'published', 
-          published_at: new Date().toISOString() 
+          published_at: new Date().toISOString(),
+          moderation_status: 'approved'
         })
         .eq('id', blogId);
 
@@ -168,7 +175,7 @@ const CommunityManagementTab = () => {
   return (
     <div className="space-y-6">
       {/* Notifications */}
-      {(newQuestionsCount > 0 || draftBlogsCount > 0) && (
+      {(newQuestionsCount > 0 || pendingBlogsCount > 0) && (
         <div className="grid md:grid-cols-2 gap-4">
           {newQuestionsCount > 0 && (
             <Card className="border-orange-200 bg-orange-50">
@@ -183,13 +190,13 @@ const CommunityManagementTab = () => {
             </Card>
           )}
           
-          {draftBlogsCount > 0 && (
+          {pendingBlogsCount > 0 && (
             <Card className="border-blue-200 bg-blue-50">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
                   <BookOpen className="h-5 w-5 text-blue-600" />
                   <span className="font-medium text-blue-800">
-                    {draftBlogsCount} draft blog{draftBlogsCount > 1 ? 's' : ''} pending
+                    {pendingBlogsCount} blog post{pendingBlogsCount > 1 ? 's' : ''} pending review
                   </span>
                 </div>
               </CardContent>
@@ -198,11 +205,11 @@ const CommunityManagementTab = () => {
         </div>
       )}
 
-      <Tabs defaultValue="questions" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="questions" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
-            Questions Management
+            Questions
             {newQuestionsCount > 0 && (
               <Badge variant="destructive" className="ml-1">
                 {newQuestionsCount}
@@ -211,10 +218,14 @@ const CommunityManagementTab = () => {
           </TabsTrigger>
           <TabsTrigger value="blogs" className="flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
-            Blog Management
-            {draftBlogsCount > 0 && (
+            Recent Blogs
+          </TabsTrigger>
+          <TabsTrigger value="moderation" className="flex items-center gap-2">
+            <CheckCircle className="h-4 w-4" />
+            Blog Moderation
+            {pendingBlogsCount > 0 && (
               <Badge variant="secondary" className="ml-1">
-                {draftBlogsCount}
+                {pendingBlogsCount}
               </Badge>
             )}
           </TabsTrigger>
@@ -323,6 +334,10 @@ const CommunityManagementTab = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="moderation" className="space-y-4">
+          <BlogModerationTab />
         </TabsContent>
       </Tabs>
     </div>
