@@ -26,79 +26,72 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
   const [searchResults, setSearchResults] = useState<FundSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
 
-  // Reset state when dialog opens to fix the search issue
+  // Reset all state when dialog opens/closes
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
-    if (newOpen) {
-      // Reset search state when opening
+    if (!newOpen) {
+      // Reset everything when closing
       setQuery('');
       setSearchResults([]);
       setSearching(false);
-      console.log('FundSearchAutocomplete: Dialog opened, reset search state');
     }
   };
 
-  useEffect(() => {
-    const searchFunds = async () => {
-      if (query.length < 2) {
+  // Search function
+  const performSearch = async (searchQuery: string) => {
+    if (searchQuery.length < 2) {
+      setSearchResults([]);
+      setSearching(false);
+      return;
+    }
+
+    setSearching(true);
+    try {
+      console.log('FundSearchAutocomplete: Searching for:', searchQuery);
+      
+      const results = await MutualFundSearchService.searchFunds(searchQuery);
+      console.log('FundSearchAutocomplete: API returned:', results.length, 'results');
+      
+      if (results.length === 0) {
         setSearchResults([]);
-        setSearching(false);
         return;
       }
+      
+      // Enhanced filtering for multi-word searches
+      const searchTerms = searchQuery.toLowerCase().split(' ').filter(term => term.length > 0);
+      
+      // Filter results - ALL search terms must be present
+      const filteredResults = results.filter(fund => {
+        const schemeName = fund.schemeName.toLowerCase();
+        return searchTerms.every(term => schemeName.includes(term));
+      });
+      
+      // Map to our format
+      const mappedResults = filteredResults.slice(0, 15).map(fund => {
+        const category = MutualFundSearchService.detectCategory(fund.schemeName);
+        return {
+          schemeCode: fund.schemeCode.toString(),
+          schemeName: fund.schemeName,
+          category: category,
+          fundHouse: 'Unknown'
+        };
+      });
+      
+      console.log('FundSearchAutocomplete: Final results:', mappedResults.length);
+      setSearchResults(mappedResults);
+    } catch (error) {
+      console.error('FundSearchAutocomplete: Search error:', error);
+      setSearchResults([]);
+    } finally {
+      setSearching(false);
+    }
+  };
 
-      setSearching(true);
-      try {
-        console.log('FundSearchAutocomplete: Starting search for:', query);
-        
-        // Get results from API
-        const results = await MutualFundSearchService.searchFunds(query);
-        console.log('FundSearchAutocomplete: API returned:', results.length, 'results');
-        
-        if (results.length === 0) {
-          console.warn('FundSearchAutocomplete: No results from API for query:', query);
-          setSearchResults([]);
-          setSearching(false);
-          return;
-        }
-        
-        // Enhanced filtering for multi-word searches
-        const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0);
-        console.log('FundSearchAutocomplete: Search terms:', searchTerms);
-        
-        // Filter results - ALL search terms must be present
-        const filteredResults = results.filter(fund => {
-          const schemeName = fund.schemeName.toLowerCase();
-          const allTermsPresent = searchTerms.every(term => schemeName.includes(term));
-          if (allTermsPresent) {
-            console.log('FundSearchAutocomplete: Match found:', fund.schemeName);
-          }
-          return allTermsPresent;
-        });
-        
-        console.log('FundSearchAutocomplete: Filtered to', filteredResults.length, 'matches');
-        
-        // Map to our format
-        const mappedResults = filteredResults.slice(0, 15).map(fund => {
-          const category = MutualFundSearchService.detectCategory(fund.schemeName);
-          return {
-            schemeCode: fund.schemeCode.toString(),
-            schemeName: fund.schemeName,
-            category: category,
-            fundHouse: 'Unknown'
-          };
-        });
-        
-        console.log('FundSearchAutocomplete: Final results:', mappedResults.length);
-        setSearchResults(mappedResults);
-      } catch (error) {
-        console.error('FundSearchAutocomplete: Search error:', error);
-        setSearchResults([]);
-      } finally {
-        setSearching(false);
-      }
-    };
-
-    const debounceTimer = setTimeout(searchFunds, 300);
+  // Debounced search effect
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      performSearch(query);
+    }, 300);
     return () => clearTimeout(debounceTimer);
   }, [query]);
 
@@ -106,9 +99,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
     if (selectedFunds.length < maxFunds && !selectedFunds.find(f => f.schemeCode === fund.schemeCode)) {
       console.log('FundSearchAutocomplete: Selecting fund:', fund);
       onFundSelect(fund);
-      setOpen(false);
-      setQuery('');
-      setSearchResults([]); // Clear results after selection
+      setOpen(false); // Close dialog after selection
     }
   };
 
@@ -119,7 +110,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
       {canAddMore && (
         <Button
           variant="outline"
-          onClick={() => handleOpenChange(true)}
+          onClick={() => setOpen(true)}
           className="flex items-center gap-2 w-full justify-start"
         >
           <Plus className="h-4 w-4" />
@@ -128,7 +119,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
       )}
 
       <CommandDialog open={open} onOpenChange={handleOpenChange}>
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder="Type fund name to search (e.g., 'hdfc small cap')..."
             value={query}
@@ -150,27 +141,29 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
                 </div>
               )}
             </CommandEmpty>
-            <CommandGroup>
-              {searchResults.map((fund) => (
-                <CommandItem
-                  key={fund.schemeCode}
-                  onSelect={() => handleSelect(fund)}
-                  className="cursor-pointer"
-                >
-                  <div className="flex flex-col w-full">
-                    <span className="font-medium">{fund.schemeName}</span>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span>Code: {fund.schemeCode}</span>
-                      {fund.category && (
-                        <Badge variant="outline" className="text-xs">
-                          {fund.category}
-                        </Badge>
-                      )}
+            {searchResults.length > 0 && (
+              <CommandGroup>
+                {searchResults.map((fund) => (
+                  <CommandItem
+                    key={fund.schemeCode}
+                    onSelect={() => handleSelect(fund)}
+                    className="cursor-pointer"
+                  >
+                    <div className="flex flex-col w-full">
+                      <span className="font-medium">{fund.schemeName}</span>
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span>Code: {fund.schemeCode}</span>
+                        {fund.category && (
+                          <Badge variant="outline" className="text-xs">
+                            {fund.category}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </CommandItem>
-              ))}
-            </CommandGroup>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
           </CommandList>
         </Command>
       </CommandDialog>
