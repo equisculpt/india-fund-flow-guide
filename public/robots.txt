@@ -1,8 +1,18 @@
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://sipbrewery.com/sitemap.xml
+
+# Specific bot instructions
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Twitterbot
 Allow: /
@@ -10,5 +20,19 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+# Optimize for mutual fund searches
 User-agent: *
-Allow: /
+Allow: /fund/
+Allow: /funds/
+Allow: /sip-calculator
+Allow: /fund-comparison
+Allow: /explore-funds
+
+# Block admin and sensitive areas
+Disallow: /admin
+Disallow: /api/
+Disallow: /private/
+
+# Cache instructions
+User-agent: *
+Clean-param: utm_source&utm_medium&utm_campaign

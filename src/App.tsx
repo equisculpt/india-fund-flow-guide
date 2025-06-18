@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/toaster";
 import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
 import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
@@ -31,42 +32,44 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrandingProvider>
-        <SupabaseAuthProvider>
-          <EnhancedAuthProvider>
-            <Router>
-              <MobileLayout>
-                <div className="min-h-screen bg-background font-sans antialiased">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/admin" element={<AdminPage />} />
-                    <Route path="/admin-portal" element={<AdminPortalPage />} />
-                    <Route path="/fund/:fundId" element={<FundDetailsPage />} />
-                    <Route path="/fund-comparison" element={<FundComparisonPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/onboarding" element={<OnboardingPage />} />
-                    <Route path="/agent" element={<AgentHomePage />} />
-                    <Route path="/referral" element={<ReferralPage />} />
-                    <Route path="/dashboard" element={<ComprehensiveDashboard />} />
-                    <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
-                    <Route path="/user-dashboard" element={<UserDashboard />} />
-                    <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
-                    <Route path="/public-funds" element={<PublicFundsPage />} />
-                    <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
-                    <Route path="/terms" element={<TermsOfServicePage />} />
-                    <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                  <Toaster />
-                </div>
-              </MobileLayout>
-            </Router>
-          </EnhancedAuthProvider>
-        </SupabaseAuthProvider>
-      </BrandingProvider>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrandingProvider>
+          <SupabaseAuthProvider>
+            <EnhancedAuthProvider>
+              <Router>
+                <MobileLayout>
+                  <div className="min-h-screen bg-background font-sans antialiased">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/admin" element={<AdminPage />} />
+                      <Route path="/admin-portal" element={<AdminPortalPage />} />
+                      <Route path="/fund/:fundId" element={<FundDetailsPage />} />
+                      <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                      <Route path="/about" element={<AboutPage />} />
+                      <Route path="/contact" element={<ContactPage />} />
+                      <Route path="/onboarding" element={<OnboardingPage />} />
+                      <Route path="/agent" element={<AgentHomePage />} />
+                      <Route path="/referral" element={<ReferralPage />} />
+                      <Route path="/dashboard" element={<ComprehensiveDashboard />} />
+                      <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
+                      <Route path="/user-dashboard" element={<UserDashboard />} />
+                      <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
+                      <Route path="/public-funds" element={<PublicFundsPage />} />
+                      <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
+                      <Route path="/terms" element={<TermsOfServicePage />} />
+                      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                    <Toaster />
+                  </div>
+                </MobileLayout>
+              </Router>
+            </EnhancedAuthProvider>
+          </SupabaseAuthProvider>
+        </BrandingProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
