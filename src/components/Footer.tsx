@@ -56,7 +56,7 @@ const Footer = () => {
               <li><Link to="/terms" className="text-gray-300 hover:text-white transition-colors">Terms of Service</Link></li>
               <li><Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link to="/risk-disclosure" className="text-gray-300 hover:text-white transition-colors">Risk Disclosure</Link></li>
-              <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Grievance Redressal</Link></li>
+              <li><button onClick={() => setIsContactModalOpen(true)} className="text-gray-300 hover:text-white transition-colors text-left">Grievance Redressal</button></li>
             </ul>
           </div>
 
