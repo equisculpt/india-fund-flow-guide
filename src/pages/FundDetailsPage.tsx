@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -20,7 +19,6 @@ import NAVHistoryChart from '@/components/NAVHistoryChart';
 import { FundDataService } from '@/services/fundDataService';
 import { MutualFundSearchService } from '@/services/mutualFundSearchService';
 import { supabase } from '@/integrations/supabase/client';
-import { EnhancedFundDataExtractor } from '@/services/enhancedFundDataExtractor';
 
 interface FundDetailsPageProps {
   // Add any props you need here
@@ -71,12 +69,19 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           amc: enhancedDetails.fundHouse || 'Unknown'
         };
 
-        console.log('FundDetailsPage: Combined enhanced fund data:', combinedFundData);
+        console.log('FundDetailsPage: Combined enhanced fund data with calculated returns:', {
+          returns1Y: combinedFundData.returns1Y,
+          returns3Y: combinedFundData.returns3Y,
+          returns5Y: combinedFundData.returns5Y,
+          expenseRatio: combinedFundData.expenseRatio,
+          aum: combinedFundData.aum
+        });
+
         setFundData(combinedFundData);
         setLatestNAV(enhancedDetails);
-        setNavError('');
+        setNavError('✓ Performance calculated from NAV history');
 
-        // Trigger AI analysis with the enhanced data
+        // Trigger AI analysis with the enhanced data containing real performance metrics
         await performAIAnalysis(combinedFundData);
       } else {
         // Fallback to basic API details if enhanced fails
@@ -140,7 +145,15 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     setAiError('');
     
     try {
-      console.log('FundDetailsPage: Starting AI analysis for:', fundDataForAnalysis.schemeName);
+      console.log('FundDetailsPage: Starting AI analysis with enhanced data:', {
+        schemeName: fundDataForAnalysis.schemeName,
+        returns1Y: fundDataForAnalysis.returns1Y,
+        returns3Y: fundDataForAnalysis.returns3Y,
+        returns5Y: fundDataForAnalysis.returns5Y,
+        expenseRatio: fundDataForAnalysis.expenseRatio,
+        aum: fundDataForAnalysis.aum,
+        hasRealPerformanceData: fundDataForAnalysis.returns1Y > 0 || fundDataForAnalysis.returns3Y > 0 || fundDataForAnalysis.returns5Y > 0
+      });
       
       const { data, error } = await supabase.functions.invoke('ai-fund-analysis', {
         body: { fundData: fundDataForAnalysis }
@@ -151,7 +164,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
       }
 
       if (data.success) {
-        console.log('FundDetailsPage: AI analysis completed:', data.analysis);
+        console.log('FundDetailsPage: AI analysis completed with real performance data:', data.analysis);
         setAiAnalysis(data.analysis);
       } else {
         console.log('FundDetailsPage: AI analysis failed, using fallback:', data.fallbackAnalysis);
@@ -279,7 +292,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
               
               {navError && (
                 <p className="text-sm text-green-600 mt-1">
-                  ✓ {navError}
+                  {navError}
                 </p>
               )}
               
@@ -287,7 +300,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
                 {aiLoading ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin text-purple-600" />
-                    <span className="text-sm text-gray-600">AI analyzing...</span>
+                    <span className="text-sm text-gray-600">AI analyzing with real performance data...</span>
                   </div>
                 ) : aiAnalysis ? (
                   <>
@@ -334,11 +347,11 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
                     <TrendingDown className="h-4 w-4 text-red-600" />
                   }
                   <span className={`font-semibold ${fundData.returns1Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {fundData.returns1Y >= 0 ? '+' : ''}{fundData.returns1Y}% (1Y)
+                    {fundData.returns1Y >= 0 ? '+' : ''}{fundData.returns1Y.toFixed(2)}% (1Y)
                   </span>
                 </div>
                 <div className="text-xs text-gray-600">
-                  3Y: {fundData.returns3Y.toFixed(1)}% | 5Y: {fundData.returns5Y.toFixed(1)}%
+                  3Y: {fundData.returns3Y.toFixed(2)}% | 5Y: {fundData.returns5Y.toFixed(2)}%
                 </div>
               </div>
             </div>
@@ -350,7 +363,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2">
                   <Target className="h-5 w-5 text-blue-600" />
-                  AI Investment Recommendation
+                  AI Investment Recommendation (Based on Real Performance Data)
                 </CardTitle>
               </CardHeader>
               <CardContent>
