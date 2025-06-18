@@ -44,7 +44,9 @@ const FundComparisonPage = () => {
               returns3M: Math.random() * 20 - 10,
               returns6M: Math.random() * 25 - 12,
               returns1Y: Math.random() * 30 - 15,
+              returns2Y: Math.random() * 25 - 10,
               returns3Y: Math.random() * 20 + 5,
+              returns4Y: Math.random() * 18 + 4,
               returns5Y: Math.random() * 15 + 8,
               expenseRatio: Math.random() * 2 + 0.5,
               aum: Math.random() * 50000 + 1000,
@@ -53,7 +55,9 @@ const FundComparisonPage = () => {
         );
 
         setFundsWithDetails(fundDetails);
-        const comparison = FundComparisonLogic.performComparison(fundDetails);
+        
+        console.log('FundComparisonPage: Starting AI comparison...');
+        const comparison = await FundComparisonLogic.performComparison(fundDetails);
         setComparisonResult(comparison);
       } catch (error) {
         console.error('Error loading fund details:', error);
@@ -66,20 +70,14 @@ const FundComparisonPage = () => {
   }, [location.state, navigate]);
 
   const getInvestmentHorizonAdvice = () => {
-    if (!comparisonResult) return null;
-
-    const funds = comparisonResult.analysis;
-    const shortTermBest = funds.reduce((prev, current) => 
-      current.recentScore > prev.recentScore ? current : prev
-    );
-    const longTermBest = funds.reduce((prev, current) => 
-      current.aiScore > prev.aiScore ? current : prev
-    );
+    if (!comparisonResult?.categoryComparison) return null;
 
     return {
-      shortTerm: shortTermBest,
-      longTerm: longTermBest,
-      overall: funds.find(f => f.schemeName === comparisonResult.bestFund)
+      shortTerm: comparisonResult.categoryComparison.bestForShortTerm,
+      mediumTerm: comparisonResult.categoryComparison.bestForMediumTerm,
+      longTerm: comparisonResult.categoryComparison.bestForLongTerm,
+      lowestRisk: comparisonResult.categoryComparison.lowestRisk,
+      highestPotential: comparisonResult.categoryComparison.highestPotential
     };
   };
 
@@ -92,7 +90,8 @@ const FundComparisonPage = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p>Analyzing funds with AI...</p>
+            <p className="text-lg">🤖 AI is analyzing your funds...</p>
+            <p className="text-sm text-gray-600 mt-2">This may take a few moments for comprehensive analysis</p>
           </div>
         </div>
       </div>
@@ -127,18 +126,18 @@ const FundComparisonPage = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Home
           </Button>
-          <h1 className="text-2xl font-bold">AI Fund Comparison Analysis</h1>
+          <h1 className="text-2xl font-bold">🤖 AI Fund Comparison Analysis</h1>
           <div></div>
         </div>
 
-        {/* Winner Announcement */}
+        {/* AI Winner Announcement */}
         <Card className="border-2 border-green-500 bg-green-50">
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
               <Trophy className="h-8 w-8 text-green-600" />
               <div>
                 <h2 className="text-xl font-bold text-green-800">
-                  Overall Winner: {comparisonResult.bestFund}
+                  🏆 AI Winner: {comparisonResult.bestFund}
                 </h2>
                 <p className="text-green-700">
                   AI Score: {comparisonResult.bestScore}/10 • {comparisonResult.reasoning}
@@ -147,6 +146,28 @@ const FundComparisonPage = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* AI Key Insights */}
+        {comparisonResult.keyInsights && (
+          <Card className="bg-blue-50 border-blue-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-blue-800">
+                <Star className="h-5 w-5" />
+                🤖 AI Key Insights
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {comparisonResult.keyInsights.map((insight: string, index: number) => (
+                  <li key={index} className="text-blue-700 flex items-start gap-2">
+                    <span className="text-blue-600">•</span>
+                    {insight}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Investment Horizon Recommendations */}
         {advice && (
@@ -159,13 +180,8 @@ const FundComparisonPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="font-semibold mb-2">{advice.shortTerm.schemeName}</p>
-                <p className="text-sm text-gray-600 mb-2">
-                  Best recent momentum with {advice.shortTerm.recentScore.toFixed(1)}/10 score
-                </p>
-                <Badge variant="outline" className="text-xs">
-                  Recent Trend: {advice.shortTerm.recentPerformance.recentTrend}
-                </Badge>
+                <p className="font-semibold mb-2">{advice.shortTerm}</p>
+                <Badge variant="outline" className="text-xs">Best for Quick Gains</Badge>
               </CardContent>
             </Card>
 
@@ -177,13 +193,8 @@ const FundComparisonPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="font-semibold mb-2">{advice.longTerm.schemeName}</p>
-                <p className="text-sm text-gray-600 mb-2">
-                  Highest overall AI score of {advice.longTerm.aiScore.toFixed(1)}/10
-                </p>
-                <Badge variant="outline" className="text-xs">
-                  Recommendation: {advice.longTerm.recommendation}
-                </Badge>
+                <p className="font-semibold mb-2">{advice.mediumTerm}</p>
+                <Badge variant="outline" className="text-xs">Balanced Growth</Badge>
               </CardContent>
             </Card>
 
@@ -195,19 +206,14 @@ const FundComparisonPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="font-semibold mb-2">{advice.overall.schemeName}</p>
-                <p className="text-sm text-gray-600 mb-2">
-                  Best balanced performance across all metrics
-                </p>
-                <Badge variant="outline" className="text-xs">
-                  Overall Winner
-                </Badge>
+                <p className="font-semibold mb-2">{advice.longTerm}</p>
+                <Badge variant="outline" className="text-xs">Wealth Creation</Badge>
               </CardContent>
             </Card>
           </div>
         )}
 
-        {/* Detailed Fund Comparison */}
+        {/* Detailed AI Fund Analysis */}
         <div className="grid md:grid-cols-2 gap-6">
           {comparisonResult.analysis.map((fund, index) => (
             <Card key={fund.schemeCode} className={fund.schemeName === comparisonResult.bestFund ? 'border-2 border-green-400' : ''}>
@@ -228,49 +234,70 @@ const FundComparisonPage = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-blue-600">{fund.aiScore}/10</span>
+                  <span className="text-2xl font-bold text-blue-600">🤖 {fund.aiScore}/10</span>
                   <Badge className={fund.recommendation === 'STRONG BUY' ? 'bg-green-600' : fund.recommendation === 'BUY' ? 'bg-green-500' : 'bg-yellow-500'}>
                     {fund.recommendation}
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-600">Portfolio Quality</p>
-                    <p className="font-bold">{fund.portfolioScore.toFixed(1)}/10</p>
+                {/* AI Analysis Sections */}
+                {fund.strengths && (
+                  <div className="bg-green-50 p-3 rounded-lg">
+                    <h5 className="font-semibold text-green-800 mb-2">✅ AI Identified Strengths:</h5>
+                    <ul className="text-sm text-green-700 space-y-1">
+                      {fund.strengths.map((strength: string, idx: number) => (
+                        <li key={idx}>• {strength}</li>
+                      ))}
+                    </ul>
                   </div>
-                  <div>
-                    <p className="text-gray-600">Recent Momentum</p>
-                    <p className="font-bold">{fund.recentScore.toFixed(1)}/10</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Expense Ratio</p>
-                    <p className="font-bold">{fund.expenseRatio.toFixed(2)}%</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Market Score</p>
-                    <p className="font-bold">{fund.marketScore.toFixed(1)}/10</p>
-                  </div>
-                </div>
+                )}
 
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm">{fund.recentPerformance.insight}</p>
-                </div>
+                {fund.concerns && (
+                  <div className="bg-red-50 p-3 rounded-lg">
+                    <h5 className="font-semibold text-red-800 mb-2">⚠️ AI Identified Concerns:</h5>
+                    <ul className="text-sm text-red-700 space-y-1">
+                      {fund.concerns.map((concern: string, idx: number) => (
+                        <li key={idx}>• {concern}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {fund.reasoning && (
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <h5 className="font-semibold text-gray-800 mb-2">🧠 AI Performance Analysis:</h5>
+                    <p className="text-sm text-gray-700">{fund.reasoning}</p>
+                  </div>
+                )}
+
+                {fund.investmentRecommendation && (
+                  <div className="bg-blue-50 p-3 rounded-lg">
+                    <h5 className="font-semibold text-blue-800 mb-2">📊 AI Investment Recommendation:</h5>
+                    <p className="text-sm text-blue-700">{fund.investmentRecommendation}</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* Market Recommendation */}
-        <Card className="bg-blue-50 border-blue-200">
+        {/* AI Market Recommendation */}
+        <Card className="bg-purple-50 border-purple-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-blue-800">
+            <CardTitle className="flex items-center gap-2 text-purple-800">
               <Shield className="h-5 w-5" />
-              Current Market Analysis
+              🤖 AI Market Analysis & Timing
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-blue-700">{comparisonResult.marketRecommendation}</p>
+            <p className="text-purple-700 mb-4">{comparisonResult.marketRecommendation}</p>
+            {comparisonResult.marketTiming && (
+              <div className="bg-white p-3 rounded-lg">
+                <p className="text-sm">
+                  <strong>Current Phase:</strong> {comparisonResult.marketTiming.currentPhase}
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

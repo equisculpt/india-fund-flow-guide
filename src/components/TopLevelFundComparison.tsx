@@ -40,20 +40,17 @@ const TopLevelFundComparison = () => {
     }
   };
 
-  const getFundColors = () => {
-    return ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444'];
-  };
-
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="h-5 w-5 text-blue-600" />
-            AI Fund Comparison Tool
+            🤖 Real AI Fund Comparison Tool
           </CardTitle>
           <p className="text-muted-foreground">
-            Select 2-5 mutual funds for comprehensive AI-powered comparison. Add funds below and click compare when ready.
+            Select 2-5 mutual funds for comprehensive AI-powered comparison using advanced Gemini AI. 
+            Our AI analyzes performance, risk metrics, fund manager profiles, and market conditions to provide intelligent recommendations.
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -65,10 +62,10 @@ const TopLevelFundComparison = () => {
               maxFunds={5}
               placeholder={
                 selectedFunds.length === 0 
-                  ? "Search and add your first fund..." 
+                  ? "🔍 Search and add your first fund for AI analysis..." 
                   : selectedFunds.length >= 5 
-                    ? "Maximum 5 funds selected" 
-                    : "Search and add another fund..."
+                    ? "Maximum 5 funds selected for AI comparison" 
+                    : "🔍 Search and add another fund for comparison..."
               }
             />
           </div>
@@ -77,12 +74,12 @@ const TopLevelFundComparison = () => {
           {selectedFunds.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Selected Funds</h3>
+                <h3 className="text-lg font-semibold">Selected Funds for AI Analysis</h3>
                 <div className="flex items-center gap-2">
                   <Badge variant="outline">{selectedFunds.length}/5 funds</Badge>
                   {selectedFunds.length >= 2 && (
                     <Badge variant="secondary" className="bg-green-100 text-green-800">
-                      Ready to Compare
+                      🤖 Ready for AI Analysis
                     </Badge>
                   )}
                 </div>
@@ -124,32 +121,35 @@ const TopLevelFundComparison = () => {
                 {selectedFunds.length >= 2 ? (
                   <Button 
                     onClick={handleCompareNow} 
-                    className="w-full flex items-center gap-2"
+                    className="w-full flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                     size="lg"
                   >
                     <BarChart3 className="h-5 w-5" />
-                    Compare {selectedFunds.length} Funds with AI Analysis
+                    🤖 Analyze {selectedFunds.length} Funds with Real AI
                   </Button>
                 ) : (
                   <div className="text-center">
                     <p className="text-sm text-gray-600 mb-3">
-                      Add {2 - selectedFunds.length} more fund{2 - selectedFunds.length !== 1 ? 's' : ''} to start comparison
+                      Add {2 - selectedFunds.length} more fund{2 - selectedFunds.length !== 1 ? 's' : ''} to start AI analysis
                     </p>
                     <Button disabled className="w-full" size="lg">
                       <BarChart3 className="h-5 w-5 mr-2" />
-                      Compare Funds (Need {2 - selectedFunds.length} more)
+                      🤖 AI Analysis (Need {2 - selectedFunds.length} more)
                     </Button>
                   </div>
                 )}
               </div>
 
-              {/* Tips */}
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-medium text-blue-900 mb-2">💡 Comparison Tips</h4>
+              {/* Enhanced Tips */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-200">
+                <h4 className="font-medium text-blue-900 mb-2">🤖 AI Comparison Features</h4>
                 <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• Compare funds from similar categories for better insights</li>
-                  <li>• Our AI analyzes performance, expense ratios, and market conditions</li>
-                  <li>• Results include investment horizon recommendations</li>
+                  <li>• Real AI analysis using advanced Gemini AI model</li>
+                  <li>• Comprehensive evaluation of performance, risk metrics & fund managers</li>
+                  <li>• Analysis of 1M, 2M, 3M, 6M, 1Y, 2Y, 3Y, 4Y, 5Y performance periods</li>
+                  <li>• Sharpe ratio, Beta, Alpha, volatility and expense ratio analysis</li>
+                  <li>• Market timing and investment horizon recommendations</li>
+                  <li>• Personalized investment advice based on current market conditions</li>
                 </ul>
               </div>
             </div>
