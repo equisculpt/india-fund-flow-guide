@@ -39,13 +39,22 @@ const EnhancedFundSearch = ({
 
   const handleFundSelect = (fund: FundSearchResult) => {
     console.log('EnhancedFundSearch: Fund selected:', fund);
+    console.log('EnhancedFundSearch: Current location:', location.pathname);
+    console.log('EnhancedFundSearch: About to navigate to:', `/fund/${fund.schemeCode}`);
+    
     const selectedFund = handleResultSelect(fund);
     
-    // Always navigate to fund details page when a fund is selected
-    navigate(`/fund/${selectedFund.schemeCode}`);
+    try {
+      // Always navigate to fund details page when a fund is selected
+      navigate(`/fund/${selectedFund.schemeCode}`, { replace: true });
+      console.log('EnhancedFundSearch: Navigation called successfully');
+    } catch (error) {
+      console.error('EnhancedFundSearch: Navigation error:', error);
+    }
     
     // Also call the callback if provided (for any additional handling)
     if (onFundSelect) {
+      console.log('EnhancedFundSearch: Calling onFundSelect callback');
       onFundSelect(selectedFund);
     }
   };
