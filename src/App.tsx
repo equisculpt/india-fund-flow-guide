@@ -28,6 +28,9 @@ import WhatsAppBotPage from "@/pages/WhatsAppBotPage";
 import TermsOfServicePage from "@/pages/TermsOfServicePage";
 import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
 import SBISmallCapFundPage from "@/pages/SBISmallCapFundPage";
+import BestSIPPlansPage from "@/pages/BestSIPPlansPage";
+import SIPCalculatorPage from "@/pages/SIPCalculatorPage";
+import MutualFundDistributorPage from "@/pages/MutualFundDistributorPage";
 import UniversalFundSEOPage from "@/components/UniversalFundSEOPage";
 import NotFound from "@/pages/NotFound";
 
