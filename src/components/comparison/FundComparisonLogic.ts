@@ -1,5 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
+import { StableComparisonCache } from "@/services/stableComparisonCache";
 
 export interface FundWithDetails {
   schemeCode: string;
@@ -50,7 +50,21 @@ export class FundComparisonLogic {
   static async performComparison(funds: FundWithDetails[]): Promise<EnhancedComparisonResult | null> {
     if (funds.length < 2) return null;
 
-    console.log('FundComparisonLogic: Starting REAL AI comparison for', funds.length, 'funds');
+    const fundIds = funds.map(f => f.schemeCode);
+    
+    // Check for cached stable result
+    const cachedResult = StableComparisonCache.getCachedComparison(fundIds);
+    
+    if (cachedResult && !StableComparisonCache.shouldRefreshComparison(cachedResult, funds)) {
+      console.log('FundComparisonLogic: Using stable cached AI comparison result');
+      return {
+        ...cachedResult.analysis,
+        isStableResult: true,
+        validUntil: cachedResult.validUntil
+      };
+    }
+
+    console.log('FundComparisonLogic: Performing fresh AI comparison for', funds.length, 'funds');
 
     try {
       // Enhance fund data with additional metrics for AI analysis
@@ -81,7 +95,7 @@ export class FundComparisonLogic {
       }
 
       if (data.success && data.analysis) {
-        console.log('FundComparisonLogic: AI analysis completed successfully');
+        console.log('FundComparisonLogic: AI analysis completed successfully - CACHING STABLE RESULT');
         
         // Transform AI analysis to match expected format
         const aiAnalysis = data.analysis;
@@ -106,7 +120,7 @@ export class FundComparisonLogic {
           };
         });
 
-        return {
+        const result = {
           bestFund: bestFund.fundName,
           bestScore: bestFund.aiScore,
           analysis: analysisResults,
@@ -124,6 +138,11 @@ export class FundComparisonLogic {
           categoryComparison: aiAnalysis.categoryComparison,
           keyInsights: aiAnalysis.keyInsights
         };
+
+        // Cache the stable result
+        StableComparisonCache.cacheComparison(fundIds, result, enhancedFunds);
+
+        return result;
       } else {
         console.log('FundComparisonLogic: AI analysis failed, using fallback');
         throw new Error('AI analysis returned invalid data');

@@ -3,10 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Trophy, TrendingUp, Shield, Target, Calendar, Star } from 'lucide-react';
+import { ArrowLeft, Trophy, TrendingUp, Shield, Target, Calendar, Star, RefreshCw } from 'lucide-react';
 import Header from '@/components/Header';
 import { FundComparisonLogic, FundWithDetails } from '@/components/comparison/FundComparisonLogic';
 import { MutualFundSearchService } from '@/services/mutualFundSearchService';
+import { StableComparisonCache } from '@/services/stableComparisonCache';
 
 interface ComparisonPageState {
   funds: any[];
@@ -55,7 +56,7 @@ const FundComparisonPage = () => {
 
         setFundsWithDetails(fundDetails);
         
-        console.log('FundComparisonPage: Starting AI comparison...');
+        console.log('FundComparisonPage: Starting stable AI comparison...');
         const comparison = await FundComparisonLogic.performComparison(fundDetails);
         setComparisonResult(comparison);
       } catch (error) {
@@ -67,6 +68,18 @@ const FundComparisonPage = () => {
 
     loadFundDetails();
   }, [location.state, navigate]);
+
+  const handleForceRefresh = () => {
+    if (fundsWithDetails.length >= 2) {
+      const fundIds = fundsWithDetails.map(f => f.schemeCode);
+      StableComparisonCache.clearCache();
+      
+      setLoading(true);
+      FundComparisonLogic.performComparison(fundsWithDetails)
+        .then(setComparisonResult)
+        .finally(() => setLoading(false));
+    }
+  };
 
   const getInvestmentHorizonAdvice = () => {
     if (!comparisonResult?.categoryComparison) return null;
@@ -126,8 +139,25 @@ const FundComparisonPage = () => {
             Back to Home
           </Button>
           <h1 className="text-2xl font-bold">🤖 AI Fund Comparison Analysis</h1>
-          <div></div>
+          <Button variant="outline" onClick={handleForceRefresh} disabled={loading}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Force Refresh
+          </Button>
         </div>
+
+        {/* Stability Indicator */}
+        {comparisonResult.isStableResult && (
+          <Card className="border-green-200 bg-green-50">
+            <CardContent className="pt-4">
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-green-600" />
+                <p className="text-green-800 text-sm">
+                  ✅ Stable AI Analysis - Results will remain consistent until market conditions or fund data changes
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* AI Winner Announcement */}
         <Card className="border-2 border-green-500 bg-green-50">
