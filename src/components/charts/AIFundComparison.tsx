@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Clock } from 'lucide-react';
 import { FundDataService } from '@/services/fundDataService';
-import { FundComparisonLogic } from '@/components/comparison/FundComparisonLogic';
+import { FundComparisonLogic, EnhancedComparisonResult } from '@/components/comparison/FundComparisonLogic';
 import FundAnalysisCard from '../comparison/FundAnalysisCard';
 import AnalysisResults from '../comparison/AnalysisResults';
 import MarketTimingDashboard from '../MarketTimingDashboard';
@@ -40,7 +40,7 @@ interface FundComparisonData {
 
 const AIFundComparison = () => {
   const [selectedFunds, setSelectedFunds] = useState<FundComparisonData[]>([]);
-  const [comparisonResult, setComparisonResult] = useState<any>(null);
+  const [comparisonResult, setComparisonResult] = useState<EnhancedComparisonResult | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [showMarketTiming, setShowMarketTiming] = useState(false);
 
@@ -91,7 +91,7 @@ const AIFundComparison = () => {
     try {
       console.log('🔄 STABLE AI COMPARISON - Starting analysis for', selectedFunds.length, 'funds');
 
-      const result = FundComparisonLogic.performComparison(selectedFunds);
+      const result = await FundComparisonLogic.performComparison(selectedFunds);
       
       if (result) {
         console.log('✅ STABLE AI COMPARISON - Analysis complete. Stable result:', result.isStableResult);
