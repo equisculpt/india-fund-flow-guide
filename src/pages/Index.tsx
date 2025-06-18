@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,6 +11,7 @@ import InvestmentCalculator from '@/components/InvestmentCalculator';
 import GoalBasedInvesting from '@/components/GoalBasedInvesting';
 import ComplianceFooter from '@/components/ComplianceFooter';
 import TopLevelFundComparison from '@/components/TopLevelFundComparison';
+import AIFundComparison from '@/components/AIFundComparison';
 
 interface Fund {
   id: string;
@@ -88,12 +88,17 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Fund Search and Analysis */}
+      {/* Fund Search and Analysis - Restored Original View */}
       <section id="funds" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">Explore Mutual Funds</h2>
             <p className="text-gray-600">Discover top-rated funds for your investment portfolio.</p>
+          </div>
+
+          {/* Original AI Fund Comparison Component */}
+          <div className="mb-8">
+            <AIFundComparison />
           </div>
 
           {/* Search Bar */}

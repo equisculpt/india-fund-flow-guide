@@ -36,8 +36,20 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
       setSearching(true);
       try {
         console.log('FundSearchAutocomplete: Searching for:', query);
+        
+        // First try to get all funds to ensure service is working
+        const allFunds = await MutualFundSearchService.getAllFunds();
+        console.log('FundSearchAutocomplete: Total funds available:', allFunds.length);
+        
+        if (allFunds.length === 0) {
+          console.warn('FundSearchAutocomplete: No funds returned from service');
+          setSearchResults([]);
+          setSearching(false);
+          return;
+        }
+        
         const results = await MutualFundSearchService.searchFunds(query);
-        console.log('FundSearchAutocomplete: Raw search results:', results.length);
+        console.log('FundSearchAutocomplete: Search results:', results.length);
         
         const mappedResults = results.map(fund => {
           const category = MutualFundSearchService.detectCategory(fund.schemeName);
@@ -45,12 +57,12 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
             schemeCode: fund.schemeCode.toString(),
             schemeName: fund.schemeName,
             category: category,
-            fundHouse: 'Unknown' // Will be determined when fund is selected
+            fundHouse: 'Unknown'
           };
         });
         
-        console.log('FundSearchAutocomplete: Mapped results with categories:', mappedResults.slice(0, 5));
-        setSearchResults(mappedResults.slice(0, 20)); // Limit to 20 results
+        console.log('FundSearchAutocomplete: Mapped results:', mappedResults.slice(0, 5));
+        setSearchResults(mappedResults.slice(0, 20));
       } catch (error) {
         console.error('Fund search error:', error);
         setSearchResults([]);
@@ -96,7 +108,19 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
           />
           <CommandList>
             <CommandEmpty>
-              {searching ? "Searching..." : query.length < 2 ? "Type at least 2 characters to search" : "No funds found"}
+              {searching ? (
+                <div className="flex items-center justify-center gap-2 py-4">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <span>Searching funds...</span>
+                </div>
+              ) : query.length < 2 ? (
+                "Type at least 2 characters to search"
+              ) : (
+                <div className="py-4 text-center">
+                  <p>No funds found matching "{query}"</p>
+                  <p className="text-sm text-gray-500 mt-1">Try a different search term</p>
+                </div>
+              )}
             </CommandEmpty>
             <CommandGroup>
               {searchResults.map((fund) => (
