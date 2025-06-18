@@ -8,7 +8,7 @@ interface StableComparisonResult {
 }
 
 export class StableComparisonCache {
-  private static readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+  private static readonly CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
   private static readonly CACHE_KEY_PREFIX = 'stable_ai_comparison_';
 
   static generateFundDataHash(funds: any[]): string {
@@ -22,7 +22,6 @@ export class StableComparisonCache {
   static generateMarketContextHash(): string {
     const marketData = {
       date: new Date().toDateString(), // Changes daily
-      // Add other market indicators that should trigger refresh
     };
     
     return btoa(JSON.stringify(marketData)).slice(0, 16);
@@ -37,12 +36,13 @@ export class StableComparisonCache {
       
       const result: StableComparisonResult = JSON.parse(cached);
       
-      // Check if cache is still valid
+      // Check if cache is still valid (7 days max)
       const now = new Date().getTime();
       const validUntil = new Date(result.validUntil).getTime();
       
       if (now > validUntil) {
         localStorage.removeItem(cacheKey);
+        console.log('StableComparisonCache: Cache expired after 7 days, removing...');
         return null;
       }
       
@@ -57,6 +57,16 @@ export class StableComparisonCache {
     cachedResult: StableComparisonResult, 
     currentFunds: any[]
   ): boolean {
+    // Check if 7 days have passed since cache creation
+    const now = new Date().getTime();
+    const cacheTime = new Date(cachedResult.timestamp).getTime();
+    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+    
+    if (now - cacheTime > sevenDaysInMs) {
+      console.log('StableComparisonCache: 7 days passed, refreshing...');
+      return true;
+    }
+
     const currentFundHash = this.generateFundDataHash(currentFunds);
     const currentMarketHash = this.generateMarketContextHash();
     
@@ -93,7 +103,7 @@ export class StableComparisonCache {
       };
       
       localStorage.setItem(cacheKey, JSON.stringify(cacheData));
-      console.log('StableComparisonCache: Cached comparison result');
+      console.log('StableComparisonCache: Cached comparison result for 7 days');
     } catch (error) {
       console.error('StableComparisonCache: Error caching result:', error);
     }

@@ -2,11 +2,10 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, RefreshCw } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Header from '@/components/Header';
 import { FundComparisonLogic, FundWithDetails } from '@/components/comparison/FundComparisonLogic';
 import { MutualFundSearchService } from '@/services/mutualFundSearchService';
-import { StableComparisonCache } from '@/services/stableComparisonCache';
 import StabilityIndicator from '@/components/comparison/StabilityIndicator';
 import WinnerAnnouncement from '@/components/comparison/WinnerAnnouncement';
 import KeyInsights from '@/components/comparison/KeyInsights';
@@ -62,7 +61,7 @@ const FundComparisonPage = () => {
 
         setFundsWithDetails(fundDetails);
         
-        console.log('FundComparisonPage: Starting stable AI comparison...');
+        console.log('FundComparisonPage: Starting AI comparison with 7-day caching...');
         const comparison = await FundComparisonLogic.performComparison(fundDetails);
         setComparisonResult(comparison);
       } catch (error) {
@@ -74,18 +73,6 @@ const FundComparisonPage = () => {
 
     loadFundDetails();
   }, [location.state, navigate]);
-
-  const handleForceRefresh = () => {
-    if (fundsWithDetails.length >= 2) {
-      const fundIds = fundsWithDetails.map(f => f.schemeCode);
-      StableComparisonCache.clearCache();
-      
-      setLoading(true);
-      FundComparisonLogic.performComparison(fundsWithDetails)
-        .then(setComparisonResult)
-        .finally(() => setLoading(false));
-    }
-  };
 
   const getInvestmentHorizonAdvice = () => {
     if (!comparisonResult?.categoryComparison) return null;
@@ -134,10 +121,7 @@ const FundComparisonPage = () => {
             Back to Home
           </Button>
           <h1 className="text-2xl font-bold">🤖 AI Fund Comparison Analysis</h1>
-          <Button variant="outline" onClick={handleForceRefresh} disabled={loading}>
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Force Refresh
-          </Button>
+          <div></div>
         </div>
 
         {/* Stability Indicator */}
