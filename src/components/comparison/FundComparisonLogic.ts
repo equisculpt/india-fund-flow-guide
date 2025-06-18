@@ -5,7 +5,7 @@ import { MetricsEstimationService } from './MetricsEstimationService';
 import { AIComparisonService } from './AIComparisonService';
 import { FallbackComparisonService } from './FallbackComparisonService';
 
-export { FundWithDetails, EnhancedComparisonResult } from './types';
+export type { FundWithDetails, EnhancedComparisonResult } from './types';
 
 export class FundComparisonLogic {
   static async performComparison(funds: FundWithDetails[]): Promise<EnhancedComparisonResult | null> {
