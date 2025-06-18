@@ -37,21 +37,28 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
       try {
         console.log('FundSearchAutocomplete: Searching for:', query);
         
-        // First try to get all funds to ensure service is working
-        const allFunds = await MutualFundSearchService.getAllFunds();
-        console.log('FundSearchAutocomplete: Total funds available:', allFunds.length);
+        // Improved search with multiple search terms
+        const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0);
+        const results = await MutualFundSearchService.searchFunds(query);
+        console.log('FundSearchAutocomplete: Raw search results:', results.length);
         
-        if (allFunds.length === 0) {
-          console.warn('FundSearchAutocomplete: No funds returned from service');
+        if (results.length === 0) {
+          console.warn('FundSearchAutocomplete: No funds returned from search for:', query);
           setSearchResults([]);
           setSearching(false);
           return;
         }
         
-        const results = await MutualFundSearchService.searchFunds(query);
-        console.log('FundSearchAutocomplete: Search results:', results.length);
+        // Enhanced filtering to include partial matches
+        const enhancedResults = results.filter(fund => {
+          const schemeName = fund.schemeName.toLowerCase();
+          // Check if all search terms are present in the scheme name
+          return searchTerms.every(term => schemeName.includes(term));
+        });
         
-        const mappedResults = results.map(fund => {
+        console.log('FundSearchAutocomplete: Enhanced filtered results:', enhancedResults.length);
+        
+        const mappedResults = enhancedResults.map(fund => {
           const category = MutualFundSearchService.detectCategory(fund.schemeName);
           return {
             schemeCode: fund.schemeCode.toString(),
@@ -61,7 +68,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
           };
         });
         
-        console.log('FundSearchAutocomplete: Mapped results:', mappedResults.slice(0, 5));
+        console.log('FundSearchAutocomplete: Final mapped results:', mappedResults.slice(0, 5));
         setSearchResults(mappedResults.slice(0, 20));
       } catch (error) {
         console.error('Fund search error:', error);
@@ -102,7 +109,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
       <CommandDialog open={open} onOpenChange={setOpen}>
         <Command>
           <CommandInput
-            placeholder="Type fund name to search..."
+            placeholder="Type fund name to search (e.g., 'hdfc small cap')..."
             value={query}
             onValueChange={setQuery}
           />
@@ -118,7 +125,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
               ) : (
                 <div className="py-4 text-center">
                   <p>No funds found matching "{query}"</p>
-                  <p className="text-sm text-gray-500 mt-1">Try a different search term</p>
+                  <p className="text-sm text-gray-500 mt-1">Try different keywords like "hdfc equity" or "sbi small"</p>
                 </div>
               )}
             </CommandEmpty>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -88,7 +89,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Fund Search and Analysis - Restored Original View */}
+      {/* Fund Search and Analysis - Restored Original View with Smaller Cards */}
       <section id="funds" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
@@ -96,51 +97,57 @@ const Index = () => {
             <p className="text-gray-600">Discover top-rated funds for your investment portfolio.</p>
           </div>
 
-          {/* Original AI Fund Comparison Component */}
-          <div className="mb-8">
-            <AIFundComparison />
-          </div>
-
           {/* Search Bar */}
           <div className="mb-6">
-            <div className="relative">
+            <div className="relative max-w-md mx-auto">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input
                 type="search"
                 placeholder="Search for funds..."
-                className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
             </div>
           </div>
 
-          {/* Fund Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Fund Cards - Made Smaller */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
             {filteredFunds.map(fund => (
-              <Card key={fund.id}>
-                <CardHeader>
-                  <CardTitle>{fund.name}</CardTitle>
-                  <CardDescription>{fund.category} Fund</CardDescription>
+              <Card key={fund.id} className="hover:shadow-md transition-shadow">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base font-semibold line-clamp-2">{fund.name}</CardTitle>
+                  <CardDescription className="text-sm">{fund.category} Fund</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex items-center mb-2">
-                    <Star className="h-5 w-5 fill-yellow-400 text-yellow-400 mr-2" />
-                    <span>{fund.rating}</span>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                      <span className="text-sm font-medium">{fund.rating}</span>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {fund.risk} Risk
+                    </Badge>
                   </div>
-                  <div className="mb-2">
-                    <span className="font-semibold">Returns:</span> {fund.returns}%
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Returns:</span>
+                      <span className={`font-semibold ${fund.returns >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {fund.returns >= 0 ? '+' : ''}{fund.returns}%
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-semibold">Risk:</span> {fund.risk}
-                  </div>
+                  <Button size="sm" className="w-full text-xs">
+                    <BarChart3 className="h-3 w-3 mr-1" />
+                    View Details
+                  </Button>
                 </CardContent>
               </Card>
             ))}
             {filteredFunds.length === 0 && (
-              <div className="col-span-full text-center">
+              <div className="col-span-full text-center py-8">
                 <p className="text-gray-500">No funds found matching your search.</p>
               </div>
             )}
