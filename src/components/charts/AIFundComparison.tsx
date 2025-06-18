@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart3, Clock, CheckCircle } from 'lucide-react';
@@ -16,6 +15,7 @@ interface FundComparisonData {
   schemeName: string;
   category: string;
   nav: number;
+  navDate: string; // Added missing property
   returns1M: number;
   returns2M: number;
   returns3M: number;
@@ -57,9 +57,10 @@ const AIFundComparison = () => {
       // Get detailed fund data
       const fundData = FundDataService.getMockFundData(fundSearch.schemeCode);
       
-      // Add recent performance data (mock for now)
+      // Add recent performance data and navDate (mock for now)
       const enhancedFund: FundComparisonData = {
         ...fundData,
+        navDate: new Date().toISOString().split('T')[0], // Added navDate
         returns1M: 2 + Math.random() * 8,
         returns2M: 3 + Math.random() * 10,
         returns3M: 4 + Math.random() * 12,

@@ -26,6 +26,18 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
   const [searchResults, setSearchResults] = useState<FundSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
 
+  // Reset state when dialog opens to fix the search issue
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (newOpen) {
+      // Reset search state when opening
+      setQuery('');
+      setSearchResults([]);
+      setSearching(false);
+      console.log('FundSearchAutocomplete: Dialog opened, reset search state');
+    }
+  };
+
   useEffect(() => {
     const searchFunds = async () => {
       if (query.length < 2) {
@@ -107,7 +119,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
       {canAddMore && (
         <Button
           variant="outline"
-          onClick={() => setOpen(true)}
+          onClick={() => handleOpenChange(true)}
           className="flex items-center gap-2 w-full justify-start"
         >
           <Plus className="h-4 w-4" />
@@ -115,7 +127,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
         </Button>
       )}
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog open={open} onOpenChange={handleOpenChange}>
         <Command>
           <CommandInput
             placeholder="Type fund name to search (e.g., 'hdfc small cap')..."
