@@ -1,12 +1,15 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, Clock, CheckCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { FundDataService } from '@/services/fundDataService';
-import { RecentPerformanceAnalyzer } from '@/services/recentPerformanceAnalyzer';
+import { FundComparisonLogic } from '@/components/comparison/FundComparisonLogic';
 import FundSearchAutocomplete from './FundSearchAutocomplete';
 import FundAnalysisCard from '../comparison/FundAnalysisCard';
 import AnalysisResults from '../comparison/AnalysisResults';
+import MarketTimingDashboard from '../MarketTimingDashboard';
 
 interface FundComparisonData {
   schemeCode: string;
@@ -35,29 +38,15 @@ interface FundComparisonData {
   marketConditionScore?: number;
 }
 
-interface ComparisonResult {
-  topFund: FundComparisonData;
-  analysis: {
-    portfolioScores: { [key: string]: number };
-    recentMomentumScores: { [key: string]: number };
-    expenseScores: { [key: string]: number };
-    marketConditionScores: { [key: string]: number };
-    overallScores: { [key: string]: number };
-  };
-  conclusion: string;
-  recommendation: string;
-  keyInsights: string[];
-  marketConditionAdvice: string;
-}
-
 const AIFundComparison = () => {
   const [selectedFunds, setSelectedFunds] = useState<FundComparisonData[]>([]);
-  const [comparisonResult, setComparisonResult] = useState<ComparisonResult | null>(null);
+  const [comparisonResult, setComparisonResult] = useState<any>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [showMarketTiming, setShowMarketTiming] = useState(false);
 
   useEffect(() => {
     if (selectedFunds.length >= 2) {
-      performEnhancedAIComparison();
+      performStableComparison();
     }
   }, [selectedFunds]);
 
@@ -77,10 +66,7 @@ const AIFundComparison = () => {
         returns6M: 6 + Math.random() * 15,
       };
 
-      // Get AI enhancement
-      const aiEnhanced = await enhanceFundWithAI(enhancedFund);
-      
-      setSelectedFunds([...selectedFunds, aiEnhanced]);
+      setSelectedFunds([...selectedFunds, enhancedFund]);
     } catch (error) {
       console.error('Error selecting fund:', error);
     }
@@ -91,211 +77,62 @@ const AIFundComparison = () => {
     setSelectedFunds(selectedFunds.filter(fund => fund.schemeCode !== schemeCode));
   };
 
-  const enhanceFundWithAI = async (fundData: FundComparisonData): Promise<FundComparisonData> => {
-    try {
-      const { data, error } = await supabase.functions.invoke('ai-fund-analysis', {
-        body: { fundData }
-      });
-
-      if (data?.success && data?.analysis) {
-        return {
-          ...fundData,
-          aiScore: data.analysis.aiScore,
-          recommendation: data.analysis.recommendation,
-          confidence: data.analysis.confidence,
-          reasoning: data.analysis.reasoning,
-          riskLevel: data.analysis.riskLevel,
-          strengths: data.analysis.strengths,
-          concerns: data.analysis.concerns,
-          performanceRank: data.analysis.performanceRank
-        };
-      }
-    } catch (error) {
-      console.error('Error enhancing fund with AI:', error);
-    }
-
-    return fundData;
-  };
-
-  const performEnhancedAIComparison = async () => {
+  const performStableComparison = async () => {
     if (selectedFunds.length < 2) return;
 
     setAnalyzing(true);
     try {
-      console.log('Starting enhanced AI comparison for', selectedFunds.length, 'funds');
+      console.log('🔄 STABLE AI COMPARISON - Starting analysis for', selectedFunds.length, 'funds');
 
-      const analysis = {
-        portfolioScores: {},
-        recentMomentumScores: {},
-        expenseScores: {},
-        marketConditionScores: {},
-        overallScores: {}
-      };
-
-      const marketWeights = RecentPerformanceAnalyzer.getMarketConditionWeights();
+      // Use the enhanced stable comparison logic
+      const result = FundComparisonLogic.performComparison(selectedFunds);
       
-      // Analyze each fund
-      for (const fund of selectedFunds) {
-        // Portfolio Quality Score (40% weight)
-        const portfolioScore = calculatePortfolioScore(fund);
-        analysis.portfolioScores[fund.schemeCode] = portfolioScore;
-
-        // Recent Momentum Score (35% weight)
-        const recentPerformance = RecentPerformanceAnalyzer.analyzeRecentPerformance({
-          returns1M: fund.returns1M,
-          returns2M: fund.returns2M,
-          returns3M: fund.returns3M,
-          returns6M: fund.returns6M,
-          returns1Y: fund.returns1Y,
-          returns3Y: fund.returns3Y,
-          returns5Y: fund.returns5Y
-        });
-        analysis.recentMomentumScores[fund.schemeCode] = recentPerformance.momentumScore;
-
-        // Expense Efficiency Score (15% weight)
-        const expenseScore = calculateExpenseScore(fund);
-        analysis.expenseScores[fund.schemeCode] = expenseScore;
-
-        // Market Condition Score (10% weight)
-        const marketScore = (marketWeights[fund.category] || 1.0) * 5; // Convert to 1-10 scale
-        analysis.marketConditionScores[fund.schemeCode] = marketScore;
-
-        // Overall Weighted Score
-        const overallScore = (portfolioScore * 0.4) + 
-                           (recentPerformance.momentumScore * 0.35) + 
-                           (expenseScore * 0.15) + 
-                           (marketScore * 0.1);
-        analysis.overallScores[fund.schemeCode] = overallScore;
+      if (result) {
+        console.log('✅ STABLE AI COMPARISON - Analysis complete. Stable result:', result.isStableResult);
+        setComparisonResult(result);
       }
 
-      // Find top fund
-      const topFundCode = Object.entries(analysis.overallScores)
-        .reduce((a, b) => a[1] > b[1] ? a : b)[0];
-      const topFund = selectedFunds.find(f => f.schemeCode === topFundCode)!;
-
-      // Generate insights
-      const keyInsights = generateKeyInsights(selectedFunds, analysis);
-      const marketConditionAdvice = RecentPerformanceAnalyzer.getCategoryRecommendation();
-
-      // Generate AI conclusion
-      let conclusion = '';
-      let recommendation = '';
-
-      try {
-        const { data } = await supabase.functions.invoke('ai-fund-analysis', {
-          body: {
-            fundData: {
-              funds: selectedFunds,
-              analysis: analysis,
-              comparisonType: 'multi_fund_comparison'
-            }
-          }
-        });
-
-        if (data?.success && data?.analysis) {
-          conclusion = data.analysis.conclusion || '';
-          recommendation = data.analysis.recommendation || '';
-        }
-      } catch (error) {
-        console.error('AI analysis failed, using fallback:', error);
-      }
-
-      // Fallback conclusion
-      if (!conclusion) {
-        const topScore = analysis.overallScores[topFundCode];
-        conclusion = `After comprehensive analysis of ${selectedFunds.length} funds, ${topFund.schemeName} emerges as the top choice with an overall score of ${topScore.toFixed(1)}/10. The analysis prioritizes portfolio quality (40%), recent momentum (35%), expense efficiency (15%), and current market conditions (10%).`;
-        recommendation = `Recommended: ${topFund.schemeName} for its balanced performance across all key metrics.`;
-      }
-
-      const result: ComparisonResult = {
-        topFund,
-        analysis,
-        conclusion,
-        recommendation,
-        keyInsights,
-        marketConditionAdvice
-      };
-
-      setComparisonResult(result);
     } catch (error) {
-      console.error('Enhanced AI comparison error:', error);
+      console.error('Stable AI comparison error:', error);
     } finally {
       setAnalyzing(false);
     }
   };
 
-  const calculatePortfolioScore = (fund: FundComparisonData): number => {
-    let score = 5; // Base score
+  const refreshComparison = () => {
+    // Force fresh calculation by clearing cache
+    const fundIds = selectedFunds.map(f => f.schemeCode);
+    const cacheKey = fundIds.sort().join('_');
+    localStorage.removeItem(`stable_fund_comparison_${cacheKey}`);
     
-    if (fund.aiScore) {
-      score += (fund.aiScore - 5) * 0.5;
-    }
-    
-    if (fund.aum > 10000) score += 1;
-    else if (fund.aum > 5000) score += 0.5;
-    
-    if (fund.category.includes('Large Cap')) score += 0.5;
-    if (fund.category.includes('Small Cap')) score += 1;
-    
-    if (fund.performanceRank && fund.performanceRank < 25) score += 1;
-    else if (fund.performanceRank && fund.performanceRank < 50) score += 0.5;
-    
-    return Math.min(10, Math.max(1, score));
-  };
-
-  const calculateExpenseScore = (fund: FundComparisonData): number => {
-    let score = 5;
-    const expense = fund.expenseRatio || 1.5;
-    
-    if (expense < 0.5) score += 2;
-    else if (expense < 1.0) score += 1.5;
-    else if (expense < 1.5) score += 1;
-    else if (expense < 2.0) score += 0.5;
-    else score -= 1;
-    
-    return Math.min(10, Math.max(1, score));
-  };
-
-  const generateKeyInsights = (funds: FundComparisonData[], analysis: any): string[] => {
-    const insights: string[] = [];
-    
-    // Recent performance insight
-    const momentumScores = Object.values(analysis.recentMomentumScores) as number[];
-    const avgMomentum = momentumScores.reduce((a, b) => a + b, 0) / momentumScores.length;
-    
-    if (avgMomentum > 7) {
-      insights.push('Strong recent momentum across selected funds indicates favorable market conditions');
-    } else if (avgMomentum < 4) {
-      insights.push('Recent performance challenges suggest market headwinds or strategy adjustments needed');
-    }
-    
-    // Category diversity insight
-    const categories = [...new Set(funds.map(f => f.category))];
-    if (categories.length > 1) {
-      insights.push(`Comparing across ${categories.length} categories: ${categories.join(', ')}`);
-    }
-    
-    // Expense efficiency insight
-    const expenseScores = Object.values(analysis.expenseScores) as number[];
-    const avgExpenseScore = expenseScores.reduce((a, b) => a + b, 0) / expenseScores.length;
-    
-    if (avgExpenseScore > 7) {
-      insights.push('All funds demonstrate excellent expense efficiency');
-    } else if (avgExpenseScore < 5) {
-      insights.push('Consider expense ratios - some funds have higher costs impacting returns');
-    }
-    
-    return insights;
+    performStableComparison();
   };
 
   return (
     <div className="space-y-6">
+      {/* Market Timing Dashboard Toggle */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">AI Fund Analysis</h2>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setShowMarketTiming(!showMarketTiming)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+          >
+            <Clock className="h-4 w-4" />
+            {showMarketTiming ? 'Hide' : 'Show'} Market Timing
+          </button>
+        </div>
+      </div>
+
+      {/* Market Timing Dashboard */}
+      {showMarketTiming && <MarketTimingDashboard />}
+
       {/* Fund Selection */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />
-            AI-Powered Fund Comparison (2-5 funds)
+            Stable AI Fund Comparison (2-5 funds)
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -306,12 +143,33 @@ const AIFundComparison = () => {
             placeholder="Search and add funds to compare..."
           />
           
-          {selectedFunds.length >= 2 && (
-            <div className="mt-4 text-sm text-gray-600">
-              Comparing {selectedFunds.length} fund{selectedFunds.length > 1 ? 's' : ''} • 
-              {selectedFunds.length < 5 && ' Add more funds for comprehensive analysis'}
+          <div className="flex items-center justify-between mt-4">
+            <div className="text-sm text-gray-600">
+              {selectedFunds.length >= 2 && (
+                <>
+                  Comparing {selectedFunds.length} fund{selectedFunds.length > 1 ? 's' : ''} • 
+                  {selectedFunds.length < 5 && ' Add more funds for comprehensive analysis'}
+                </>
+              )}
             </div>
-          )}
+            
+            {comparisonResult && (
+              <div className="flex items-center gap-2">
+                {comparisonResult.isStableResult && (
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3" />
+                    Stable Result
+                  </Badge>
+                )}
+                <button
+                  onClick={refreshComparison}
+                  className="text-xs text-blue-600 hover:text-blue-800 underline"
+                >
+                  Force Refresh
+                </button>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -323,7 +181,7 @@ const AIFundComparison = () => {
               key={fund.schemeCode}
               fund={fund}
               index={index}
-              isWinner={comparisonResult?.topFund.schemeCode === fund.schemeCode}
+              isWinner={comparisonResult?.bestFund === fund.schemeName}
               canRemove={selectedFunds.length > 2}
               onRemove={removeFund}
             />
@@ -331,13 +189,60 @@ const AIFundComparison = () => {
         </div>
       )}
 
-      {/* AI Analysis Results */}
+      {/* AI Analysis Results with Market Timing */}
       {selectedFunds.length >= 2 && (
         <AnalysisResults
           analyzing={analyzing}
           comparisonResult={comparisonResult}
           selectedFunds={selectedFunds}
         />
+      )}
+
+      {/* Market Timing Advice Card */}
+      {comparisonResult?.marketTiming && (
+        <Card className="border-2 border-purple-200 bg-purple-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-purple-800">
+              <Clock className="h-5 w-5" />
+              AI Market Timing Analysis
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-purple-800 mb-2">Current Market Phase</h4>
+                  <p className="text-lg font-bold text-purple-700">{comparisonResult.marketTiming.currentPhase}</p>
+                  <p className="text-sm text-purple-600">
+                    Confidence: {comparisonResult.marketTiming.confidence}/10
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-purple-800 mb-2">Recommended Allocation</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span>Equity:</span>
+                      <span className="font-bold">{comparisonResult.marketTiming.allocation.equity}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Debt:</span>
+                      <span className="font-bold">{comparisonResult.marketTiming.allocation.debt}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white p-4 rounded-lg">
+                <p className="text-sm text-purple-700">{comparisonResult.marketRecommendation}</p>
+              </div>
+              
+              <div className="text-xs text-purple-600">
+                Next review expected: {comparisonResult.marketTiming.nextReview}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
