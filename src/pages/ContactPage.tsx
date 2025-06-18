@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -166,15 +165,15 @@ const ContactPage = () => {
               </CardContent>
             </Card>
 
-            {/* Contact Information */}
-            <div className="space-y-6">
-              <Card>
+            {/* Contact Information - Centered */}
+            <div className="space-y-6 flex flex-col items-center text-center">
+              <Card className="w-full">
                 <CardHeader>
-                  <CardTitle>Contact Information</CardTitle>
+                  <CardTitle className="text-center">Contact Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="flex items-start space-x-4">
-                    <Mail className="h-5 w-5 text-blue-600 mt-1" />
+                  <div className="flex flex-col items-center space-y-2">
+                    <Mail className="h-5 w-5 text-blue-600" />
                     <div>
                       <h3 className="font-semibold">Email</h3>
                       <p className="text-gray-600">hello@equisculpt.in</p>
@@ -182,8 +181,8 @@ const ContactPage = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-4">
-                    <Phone className="h-5 w-5 text-blue-600 mt-1" />
+                  <div className="flex flex-col items-center space-y-2">
+                    <Phone className="h-5 w-5 text-blue-600" />
                     <div>
                       <h3 className="font-semibold">Phone</h3>
                       <p className="text-gray-600">+91 7760997030</p>
@@ -191,8 +190,8 @@ const ContactPage = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-4">
-                    <MapPin className="h-5 w-5 text-blue-600 mt-1" />
+                  <div className="flex flex-col items-center space-y-2">
+                    <MapPin className="h-5 w-5 text-blue-600" />
                     <div>
                       <h3 className="font-semibold">Address</h3>
                       <p className="text-gray-600">Hyderabad, India</p>
@@ -200,8 +199,8 @@ const ContactPage = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-4">
-                    <Clock className="h-5 w-5 text-blue-600 mt-1" />
+                  <div className="flex flex-col items-center space-y-2">
+                    <Clock className="h-5 w-5 text-blue-600" />
                     <div>
                       <h3 className="font-semibold">Business Hours</h3>
                       <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
@@ -212,16 +211,16 @@ const ContactPage = () => {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="w-full">
                 <CardHeader>
-                  <CardTitle>Grievance Redressal</CardTitle>
+                  <CardTitle className="text-center">Grievance Redressal</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="text-left">
                   <p className="text-gray-600 mb-4">
                     If you have any complaints or grievances regarding our services, please reach out to us using the contact form or the details provided above. We are committed to resolving all issues promptly and fairly.
                   </p>
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-semibold text-blue-900 mb-2">Response Time</h4>
+                    <h4 className="font-semibold text-blue-900 mb-2 text-center">Response Time</h4>
                     <ul className="text-sm text-blue-800 space-y-1">
                       <li>• General inquiries: Within 24 hours</li>
                       <li>• Technical support: Within 12 hours</li>
@@ -232,12 +231,12 @@ const ContactPage = () => {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="w-full">
                 <CardHeader>
-                  <CardTitle>Regulatory Information</CardTitle>
+                  <CardTitle className="text-center">Regulatory Information</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 text-left">
                     SIP Brewery is operated by Equisculpt Ventures Pvt. Ltd., a SEBI registered mutual fund distributor. 
                     All investments are subject to market risks. Please read all scheme-related documents carefully before investing.
                   </p>
