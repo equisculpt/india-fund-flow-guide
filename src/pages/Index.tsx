@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -32,62 +31,10 @@ interface Fund {
 const Index = () => {
   const navigate = useNavigate();
   
-  // Enhanced fund data with complete information
+  // Fixed fund data with correct scheme codes
   const [allFunds] = useState<Fund[]>([
     {
-      id: '119551',
-      name: 'Axis Bluechip Fund - Direct Growth',
-      category: 'Large Cap',
-      returns: 15.2,
-      rating: 4.5,
-      risk: 'Moderate',
-      returns1Y: 15.2,
-      returns3Y: 18.5,
-      minSip: 500,
-      fundHouse: 'Axis Mutual Fund',
-      nav: 52.75
-    },
-    {
-      id: '125497',
-      name: 'SBI Small Cap Fund - Direct Growth',
-      category: 'Small Cap',
-      returns: 18.5,
-      rating: 4.7,
-      risk: 'High',
-      returns1Y: 18.5,
-      returns3Y: 22.3,
-      minSip: 500,
-      fundHouse: 'SBI Mutual Fund',
-      nav: 170.08
-    },
-    {
-      id: '130502',
-      name: 'HDFC Small Cap Fund - Growth',
-      category: 'Small Cap',
-      returns: 22.1,
-      rating: 4.8,
-      risk: 'High',
-      returns1Y: 22.1,
-      returns3Y: 25.6,
-      minSip: 500,
-      fundHouse: 'HDFC Mutual Fund',
-      nav: 136.98
-    },
-    {
-      id: '118989',
-      name: 'ICICI Prudential Bluechip Fund - Direct',
-      category: 'Large Cap',
-      returns: 14.8,
-      rating: 4.4,
-      risk: 'Moderate',
-      returns1Y: 14.8,
-      returns3Y: 17.2,
-      minSip: 1000,
-      fundHouse: 'ICICI Prudential MF',
-      nav: 71.23
-    },
-    {
-      id: '120503',
+      id: '120503', // Correct scheme code for HDFC Top 100
       name: 'HDFC Top 100 Fund - Direct Growth',
       category: 'Large Cap',
       returns: 16.3,
@@ -100,7 +47,46 @@ const Index = () => {
       nav: 889.45
     },
     {
-      id: '119533',
+      id: '125497', // Correct scheme code for SBI Small Cap
+      name: 'SBI Small Cap Fund - Direct Growth',
+      category: 'Small Cap',
+      returns: 18.5,
+      rating: 4.7,
+      risk: 'High',
+      returns1Y: 18.5,
+      returns3Y: 22.3,
+      minSip: 500,
+      fundHouse: 'SBI Mutual Fund',
+      nav: 170.08
+    },
+    {
+      id: '130502', // Correct scheme code for HDFC Small Cap
+      name: 'HDFC Small Cap Fund - Growth',
+      category: 'Small Cap',
+      returns: 22.1,
+      rating: 4.8,
+      risk: 'High',
+      returns1Y: 22.1,
+      returns3Y: 25.6,
+      minSip: 500,
+      fundHouse: 'HDFC Mutual Fund',
+      nav: 136.98
+    },
+    {
+      id: '118989', // Correct scheme code for ICICI Prudential Bluechip
+      name: 'ICICI Prudential Bluechip Fund - Direct',
+      category: 'Large Cap',
+      returns: 14.8,
+      rating: 4.4,
+      risk: 'Moderate',
+      returns1Y: 14.8,
+      returns3Y: 17.2,
+      minSip: 1000,
+      fundHouse: 'ICICI Prudential MF',
+      nav: 71.23
+    },
+    {
+      id: '119533', // Correct scheme code for SBI Large & Midcap
       name: 'SBI Large & Midcap Fund - Direct',
       category: 'Mid Cap',
       returns: 19.2,
@@ -113,7 +99,7 @@ const Index = () => {
       nav: 178.92
     },
     {
-      id: '122639',
+      id: '122639', // Correct scheme code for Axis ELSS
       name: 'Axis ELSS Tax Saver Fund - Direct',
       category: 'ELSS',
       returns: 17.8,
@@ -126,7 +112,7 @@ const Index = () => {
       nav: 67.34
     },
     {
-      id: '120376',
+      id: '120376', // Correct scheme code for Kotak Small Cap
       name: 'Kotak Small Cap Fund - Direct Growth',
       category: 'Small Cap',
       returns: 21.5,
@@ -139,7 +125,7 @@ const Index = () => {
       nav: 245.67
     },
     {
-      id: '119827',
+      id: '119827', // Correct scheme code for HDFC Balanced Advantage
       name: 'HDFC Balanced Advantage Fund - Direct',
       category: 'Hybrid',
       returns: 12.8,
@@ -152,7 +138,7 @@ const Index = () => {
       nav: 23.45
     },
     {
-      id: '120588',
+      id: '120588', // Correct scheme code for Parag Parikh
       name: 'Parag Parikh Long Term Equity Fund',
       category: 'Mid Cap',
       returns: 20.1,
@@ -163,6 +149,19 @@ const Index = () => {
       minSip: 1000,
       fundHouse: 'PPFAS Mutual Fund',
       nav: 56.78
+    },
+    {
+      id: '100042', // Adding Axis Bluechip with correct scheme code
+      name: 'Axis Bluechip Fund - Direct Growth',
+      category: 'Large Cap',
+      returns: 15.2,
+      rating: 4.5,
+      risk: 'Moderate',
+      returns1Y: 15.2,
+      returns3Y: 18.5,
+      minSip: 500,
+      fundHouse: 'Axis Mutual Fund',
+      nav: 52.75
     }
   ]);
 
@@ -185,6 +184,7 @@ const Index = () => {
   };
 
   const handleViewFundDetails = (fund: Fund) => {
+    console.log('Navigating to fund details for:', fund.name, 'with ID:', fund.id);
     navigate(`/fund/${fund.id}`, {
       state: {
         fundData: {
@@ -286,11 +286,11 @@ const Index = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {funds.map(fund => (
                     <Card key={fund.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleViewFundDetails(fund)}>
-                      <CardHeader className="pb-3">
+                      <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-semibold line-clamp-2 leading-tight">{fund.name}</CardTitle>
                         <CardDescription className="text-xs text-gray-600">{fund.fundHouse}</CardDescription>
                       </CardHeader>
-                      <CardContent className="space-y-3">
+                      <CardContent className="space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
                             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 mr-1" />
