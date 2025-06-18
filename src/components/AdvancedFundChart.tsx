@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import ChartControls from './charts/ChartControls';
@@ -7,7 +6,7 @@ import PerformanceStats from './charts/PerformanceStats';
 import AdvancedFundHeader from './charts/AdvancedFundHeader';
 import ChartGrid from './charts/ChartGrid';
 import AnalysisTabs from './charts/AnalysisTabs';
-import { useAdvancedFundData } from './charts/useAdvancedFundData';
+import { useAdvancedFundData } from './charts/hooks/useAdvancedFundData';
 
 interface FundComparison {
   id: string;
