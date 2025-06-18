@@ -54,15 +54,23 @@ const AIFundComparison = () => {
     if (selectedFunds.length >= 5) return;
 
     try {
-      const fundData = FundDataService.getMockFundData(fundSearch.schemeCode);
+      const fundData = await FundDataService.getMockFundData(fundSearch.schemeCode);
       
       const enhancedFund: FundComparisonData = {
-        ...fundData,
+        schemeCode: fundData.schemeCode,
+        schemeName: fundData.schemeName,
+        category: fundData.category,
+        nav: fundData.nav,
         navDate: new Date().toISOString().split('T')[0],
         returns1M: 2 + Math.random() * 8,
         returns2M: 3 + Math.random() * 10,
         returns3M: 4 + Math.random() * 12,
         returns6M: 6 + Math.random() * 15,
+        returns1Y: fundData.returns1Y,
+        returns3Y: fundData.returns3Y,
+        returns5Y: fundData.returns5Y,
+        expenseRatio: fundData.expenseRatio,
+        aum: fundData.aum,
       };
 
       setSelectedFunds([...selectedFunds, enhancedFund]);

@@ -44,6 +44,26 @@ export class MutualFundSearchService {
     }
   }
 
+  static async getAllFunds(): Promise<FundSearchResult[]> {
+    try {
+      console.log('MutualFundSearchService: Fetching all funds');
+      
+      // This would typically fetch from a comprehensive API endpoint
+      // For now, we'll return a sample of funds or implement pagination
+      const results = await FundApiService.searchFunds(''); // Empty query to get all
+      
+      return results.map(fund => ({
+        schemeCode: fund.schemeCode.toString(),
+        schemeName: fund.schemeName,
+        category: this.detectCategory(fund.schemeName),
+        fundHouse: this.extractFundHouse(fund.schemeName)
+      }));
+    } catch (error) {
+      console.error('MutualFundSearchService: Error fetching all funds:', error);
+      return [];
+    }
+  }
+
   static async getFundDetails(schemeCode: string): Promise<FundSearchResult | null> {
     try {
       console.log('MutualFundSearchService: Fetching details for scheme:', schemeCode);
@@ -71,6 +91,30 @@ export class MutualFundSearchService {
     } catch (error) {
       console.error('MutualFundSearchService: Error fetching fund details:', error);
       return null;
+    }
+  }
+
+  static async getMultipleFundDetails(schemeCodes: string[]): Promise<Map<string, FundSearchResult>> {
+    const results = new Map<string, FundSearchResult>();
+    
+    try {
+      console.log('MutualFundSearchService: Fetching details for multiple funds:', schemeCodes.length);
+      
+      // Fetch details for each scheme code
+      const promises = schemeCodes.map(async (schemeCode) => {
+        const details = await this.getFundDetails(schemeCode);
+        if (details) {
+          results.set(schemeCode, details);
+        }
+      });
+      
+      await Promise.all(promises);
+      
+      console.log('MutualFundSearchService: Fetched details for', results.size, 'funds');
+      return results;
+    } catch (error) {
+      console.error('MutualFundSearchService: Error fetching multiple fund details:', error);
+      return results;
     }
   }
 

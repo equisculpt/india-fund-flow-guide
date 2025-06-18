@@ -28,31 +28,35 @@ const AIFundComparison = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const prepareFundsData = () => {
+    const prepareFundsData = async () => {
       console.log('🔄 AI FUND COMPARISON - Preparing display data from NAV data...');
       
       const funds: FundDisplayData[] = [];
       
       // Convert NAV data to display format using FundDataService mock data
-      FundDataService.TOP_FUNDS.forEach(topFund => {
-        const navInfo = navData.get(topFund.schemeCode);
-        const mockData = FundDataService.getMockFundData(topFund.schemeCode);
-        
-        const fund: FundDisplayData = {
-          id: topFund.schemeCode,
-          scheme_name: navInfo?.actualSchemeName || mockData.schemeName,
-          amc_name: navInfo?.fundHouse || mockData.amc,
-          category: mockData.category,
-          nav: navInfo?.nav || mockData.nav,
-          returns_1y: mockData.returns1Y,
-          returns_3y: mockData.returns3Y,
-          risk_level: getRiskLevel(mockData.category),
-          min_sip_amount: mockData.minSipAmount,
-          schemeCode: topFund.schemeCode
-        };
-        
-        funds.push(fund);
-      });
+      for (const topFund of FundDataService.TOP_FUNDS) {
+        try {
+          const navInfo = navData.get(topFund.schemeCode);
+          const mockData = await FundDataService.getMockFundData(topFund.schemeCode);
+          
+          const fund: FundDisplayData = {
+            id: topFund.schemeCode,
+            scheme_name: navInfo?.actualSchemeName || mockData.schemeName,
+            amc_name: navInfo?.fundHouse || mockData.amc,
+            category: mockData.category,
+            nav: navInfo?.nav || mockData.nav,
+            returns_1y: mockData.returns1Y,
+            returns_3y: mockData.returns3Y,
+            risk_level: getRiskLevel(mockData.category),
+            min_sip_amount: mockData.minSipAmount,
+            schemeCode: topFund.schemeCode
+          };
+          
+          funds.push(fund);
+        } catch (error) {
+          console.error('Error preparing fund data for', topFund.schemeCode, ':', error);
+        }
+      }
       
       console.log('✅ AI FUND COMPARISON - Prepared', funds.length, 'funds for display');
       setFundsData(funds);

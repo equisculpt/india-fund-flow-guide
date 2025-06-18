@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -85,7 +86,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         if (apiDetails) {
           console.log('FundDetailsPage: Basic API details loaded:', apiDetails);
           
-          const baseFundData = FundDataService.getMockFundData(fundId);
+          const baseFundData = await FundDataService.getMockFundData(fundId);
           
           const combinedFundData = {
             schemeCode: fundId,
@@ -112,7 +113,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           await performAIAnalysis(combinedFundData);
         } else {
           console.log('FundDetailsPage: All API calls failed, using mock data for fundId:', fundId);
-          const baseFundData = FundDataService.getMockFundData(fundId);
+          const baseFundData = await FundDataService.getMockFundData(fundId);
           setFundData(baseFundData);
           setNavError('Using mock data - API unavailable');
           
