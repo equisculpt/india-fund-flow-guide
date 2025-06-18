@@ -7,10 +7,10 @@ export class EnhancedFundDataExtractor {
     xirr3Y: number;
     xirr5Y: number;
   } {
-    console.log('EnhancedFundDataExtractor: Calculating performance from NAV history:', navHistory.length, 'records');
+    console.log('EnhancedFundDataExtractor: Starting CORRECTED performance calculation with', navHistory.length, 'NAV records');
     
     if (!navHistory || navHistory.length < 50) {
-      console.log('EnhancedFundDataExtractor: Insufficient NAV history data (need at least 50 records)');
+      console.log('EnhancedFundDataExtractor: Insufficient NAV history data');
       return { 
         returns1Y: 0, returns3Y: 0, returns5Y: 0,
         xirr1Y: 0, xirr3Y: 0, xirr5Y: 0
@@ -21,7 +21,7 @@ export class EnhancedFundDataExtractor {
     const currentNAV = parseFloat(navHistory[0]?.nav || '0');
     const currentDate = new Date(navHistory[0]?.date);
     
-    console.log('EnhancedFundDataExtractor: Current NAV:', currentNAV, 'from date:', navHistory[0]?.date);
+    console.log('EnhancedFundDataExtractor: Current NAV:', currentNAV, 'Date:', navHistory[0]?.date);
     
     if (currentNAV <= 0) {
       console.log('EnhancedFundDataExtractor: Invalid current NAV');
@@ -31,7 +31,7 @@ export class EnhancedFundDataExtractor {
       };
     }
 
-    // Find NAV values for different time periods by looking for exact date matches or closest dates
+    // Calculate target dates - EXACTLY 1, 3, 5 years ago
     const oneYearAgo = new Date(currentDate);
     oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
     
@@ -41,22 +41,25 @@ export class EnhancedFundDataExtractor {
     const fiveYearsAgo = new Date(currentDate);
     fiveYearsAgo.setFullYear(currentDate.getFullYear() - 5);
 
-    // Find closest NAV values for each period
-    const nav1Y = this.findClosestNAV(navHistory, oneYearAgo);
-    const nav3Y = this.findClosestNAV(navHistory, threeYearsAgo);
-    const nav5Y = this.findClosestNAV(navHistory, fiveYearsAgo);
+    console.log('EnhancedFundDataExtractor: Target dates - 1Y:', oneYearAgo.toISOString().split('T')[0], 
+                '3Y:', threeYearsAgo.toISOString().split('T')[0], 
+                '5Y:', fiveYearsAgo.toISOString().split('T')[0]);
 
-    console.log('EnhancedFundDataExtractor: NAV values found:', {
-      current: { nav: currentNAV, date: navHistory[0]?.date },
-      oneYear: nav1Y,
-      threeYear: nav3Y,
-      fiveYear: nav5Y
+    // Find closest NAV values for each period
+    const nav1Y = this.findClosestNAVWithinRange(navHistory, oneYearAgo, 30); // 30 days tolerance
+    const nav3Y = this.findClosestNAVWithinRange(navHistory, threeYearsAgo, 60); // 60 days tolerance
+    const nav5Y = this.findClosestNAVWithinRange(navHistory, fiveYearsAgo, 90); // 90 days tolerance
+
+    console.log('EnhancedFundDataExtractor: Found NAV values:', {
+      '1Y': nav1Y,
+      '3Y': nav3Y,
+      '5Y': nav5Y
     });
 
-    // Calculate absolute returns using the correct formula: (Current - Previous) / Previous * 100
+    // Calculate SIMPLE returns using correct formula: (Current - Past) / Past * 100
     const returns1Y = nav1Y.nav > 0 ? ((currentNAV - nav1Y.nav) / nav1Y.nav) * 100 : 0;
     
-    // Calculate CAGR (Compound Annual Growth Rate) for multi-year periods
+    // For multi-year periods, calculate CAGR (annualized returns)
     const actualYears3Y = this.calculateActualYears(nav3Y.date, currentDate);
     const actualYears5Y = this.calculateActualYears(nav5Y.date, currentDate);
     
@@ -66,10 +69,10 @@ export class EnhancedFundDataExtractor {
     const returns5Y = nav5Y.nav > 0 && actualYears5Y > 0 ? 
       (Math.pow(currentNAV / nav5Y.nav, 1/actualYears5Y) - 1) * 100 : 0;
 
-    // Calculate proper XIRR using the correct time periods
-    const xirr1Y = this.calculateProperXIRR(nav1Y.nav, currentNAV, 1);
-    const xirr3Y = this.calculateProperXIRR(nav3Y.nav, currentNAV, actualYears3Y);
-    const xirr5Y = this.calculateProperXIRR(nav5Y.nav, currentNAV, actualYears5Y);
+    // XIRR is same as CAGR for lumpsum investments
+    const xirr1Y = returns1Y; // For 1 year, XIRR = simple return
+    const xirr3Y = returns3Y; // For CAGR, XIRR = CAGR
+    const xirr5Y = returns5Y; // For CAGR, XIRR = CAGR
 
     const result = {
       returns1Y: Math.round(returns1Y * 100) / 100,
@@ -80,66 +83,49 @@ export class EnhancedFundDataExtractor {
       xirr5Y: Math.round(xirr5Y * 100) / 100
     };
 
-    console.log('EnhancedFundDataExtractor: CORRECTED PERFORMANCE CALCULATION:', result);
+    console.log('EnhancedFundDataExtractor: FINAL CORRECTED PERFORMANCE:', result);
     return result;
   }
 
-  private static findClosestNAV(navHistory: any[], targetDate: Date): { nav: number; date: string } {
-    let closestRecord = navHistory[navHistory.length - 1]; // Default to oldest record
+  private static findClosestNAVWithinRange(navHistory: any[], targetDate: Date, toleranceDays: number): { nav: number; date: string } {
+    let closestRecord = null;
     let minDifference = Infinity;
+    const toleranceMs = toleranceDays * 24 * 60 * 60 * 1000;
 
     for (const record of navHistory) {
       const recordDate = new Date(record.date);
       const difference = Math.abs(recordDate.getTime() - targetDate.getTime());
       
-      if (difference < minDifference) {
+      // Only consider records within tolerance and closer than current best
+      if (difference <= toleranceMs && difference < minDifference) {
         minDifference = difference;
         closestRecord = record;
       }
     }
 
+    if (!closestRecord) {
+      console.log('EnhancedFundDataExtractor: No NAV found within', toleranceDays, 'days of', targetDate.toISOString().split('T')[0]);
+      return { nav: 0, date: '' };
+    }
+
+    console.log('EnhancedFundDataExtractor: Found NAV', closestRecord.nav, 'on', closestRecord.date, 
+                'for target', targetDate.toISOString().split('T')[0], 
+                '(difference:', Math.round(minDifference / (24 * 60 * 60 * 1000)), 'days)');
+
     return {
-      nav: parseFloat(closestRecord?.nav || '0'),
-      date: closestRecord?.date || ''
+      nav: parseFloat(closestRecord.nav || '0'),
+      date: closestRecord.date || ''
     };
   }
 
   private static calculateActualYears(startDate: string, endDate: Date): number {
+    if (!startDate) return 0;
     const start = new Date(startDate);
     const timeDiff = endDate.getTime() - start.getTime();
     return timeDiff / (1000 * 60 * 60 * 24 * 365.25); // Account for leap years
   }
 
-  private static calculateProperXIRR(startNAV: number, currentNAV: number, years: number): number {
-    if (startNAV <= 0 || currentNAV <= 0 || years <= 0) return 0;
-    
-    // XIRR formula: (Ending Value / Beginning Value)^(1/years) - 1
-    const xirr = Math.pow(currentNAV / startNAV, 1 / years) - 1;
-    return xirr * 100;
-  }
-
-  static calculateXIRR(navData: any[], currentNAV: number): number {
-    if (!navData || navData.length < 2) return 0;
-
-    try {
-      const startNAV = parseFloat(navData[navData.length - 1]?.nav || '0');
-      if (startNAV <= 0) return 0;
-
-      const startDate = new Date(navData[navData.length - 1]?.date);
-      const endDate = new Date(navData[0]?.date);
-      const years = this.calculateActualYears(navData[navData.length - 1]?.date, endDate);
-      
-      if (years <= 0) return 0;
-      
-      // Proper XIRR calculation
-      const xirr = Math.pow(currentNAV / startNAV, 1 / years) - 1;
-      return xirr * 100;
-    } catch (error) {
-      console.error('Error calculating XIRR:', error);
-      return 0;
-    }
-  }
-
+  
   static estimateExpenseRatio(category: string, fundHouse: string): number {
     // Industry average expense ratios by category
     const categoryRatios: { [key: string]: number } = {
@@ -199,5 +185,27 @@ export class EnhancedFundDataExtractor {
     // Estimate age based on NAV history length
     const historyLength = navHistory.length;
     return Math.max(1, Math.round(historyLength / 250)); // Rough estimate: 250 trading days per year
+  }
+
+  static calculateXIRR(navData: any[], currentNAV: number): number {
+    if (!navData || navData.length < 2) return 0;
+
+    try {
+      const startNAV = parseFloat(navData[navData.length - 1]?.nav || '0');
+      if (startNAV <= 0) return 0;
+
+      const startDate = new Date(navData[navData.length - 1]?.date);
+      const endDate = new Date(navData[0]?.date);
+      const years = this.calculateActualYears(navData[navData.length - 1]?.date, endDate);
+      
+      if (years <= 0) return 0;
+      
+      // Proper XIRR calculation
+      const xirr = Math.pow(currentNAV / startNAV, 1 / years) - 1;
+      return xirr * 100;
+    } catch (error) {
+      console.error('Error calculating XIRR:', error);
+      return 0;
+    }
   }
 }
