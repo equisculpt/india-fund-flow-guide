@@ -1,5 +1,5 @@
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useFundSearch } from "@/hooks/useFundSearch";
 import SearchInput from "./search/SearchInput";
 import SearchResults from "./search/SearchResults";
@@ -25,6 +25,7 @@ const EnhancedFundSearch = ({
   className = "" 
 }: EnhancedFundSearchProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     searchQuery,
     searchResults,
@@ -40,12 +41,18 @@ const EnhancedFundSearch = ({
     console.log('EnhancedFundSearch: Fund selected:', fund);
     const selectedFund = handleResultSelect(fund);
     
-    // Always navigate to fund details page for proper analytics
-    navigate(`/fund/${selectedFund.schemeCode}`);
-    
-    // Also call the callback if provided
-    if (onFundSelect) {
+    // If we're on the public-funds page, don't navigate away - just call the callback
+    if (location.pathname === '/public-funds' && onFundSelect) {
+      console.log('EnhancedFundSearch: On public-funds page, using callback instead of navigation');
       onFundSelect(selectedFund);
+    } else {
+      // For other pages, navigate to fund details page
+      navigate(`/fund/${selectedFund.schemeCode}`);
+      
+      // Also call the callback if provided
+      if (onFundSelect) {
+        onFundSelect(selectedFund);
+      }
     }
   };
 
