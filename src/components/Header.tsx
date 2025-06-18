@@ -47,7 +47,7 @@ const Header = () => {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
               <NavLink to="/">Home</NavLink>
-              <NavLink to="/fund-comparison">Compare Funds</NavLink>
+              <NavLink to="/#fund-comparison">Compare Funds</NavLink>
               <NavLink to="/public-funds">Browse Funds</NavLink>
               {user && (
                 <NavLink to="/advanced-features">
@@ -120,7 +120,7 @@ const Header = () => {
             <div className="md:hidden py-4 border-t">
               <div className="flex flex-col space-y-2">
                 <NavLink to="/" onClick={() => setIsMenuOpen(false)}>Home</NavLink>
-                <NavLink to="/fund-comparison" onClick={() => setIsMenuOpen(false)}>Compare Funds</NavLink>
+                <NavLink to="/#fund-comparison" onClick={() => setIsMenuOpen(false)}>Compare Funds</NavLink>
                 <NavLink to="/public-funds" onClick={() => setIsMenuOpen(false)}>Browse Funds</NavLink>
                 {user && (
                   <NavLink to="/advanced-features" onClick={() => setIsMenuOpen(false)}>AI Features</NavLink>
