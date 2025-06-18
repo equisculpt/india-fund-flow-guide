@@ -11,6 +11,7 @@ import CommunityQuestions from '@/components/community/CommunityQuestions';
 import CommunityBlogs from '@/components/community/CommunityBlogs';
 import AskQuestionModal from '@/components/community/AskQuestionModal';
 import CreateBlogModal from '@/components/community/CreateBlogModal';
+import EnhancedLoginModal from '@/components/EnhancedLoginModal';
 import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
 
 const CommunityPage = () => {
@@ -18,13 +19,13 @@ const CommunityPage = () => {
   const { user } = useSupabaseAuthContext();
   const [showAskQuestion, setShowAskQuestion] = useState(false);
   const [showCreateBlog, setShowCreateBlog] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleAskQuestion = () => {
     if (user) {
       setShowAskQuestion(true);
     } else {
-      // Show login modal or redirect to login instead of home
-      navigate('/');
+      setShowLoginModal(true);
     }
   };
 
@@ -121,6 +122,11 @@ const CommunityPage = () => {
       <CreateBlogModal 
         isOpen={showCreateBlog} 
         onClose={() => setShowCreateBlog(false)} 
+      />
+
+      <EnhancedLoginModal 
+        isOpen={showLoginModal} 
+        onClose={() => setShowLoginModal(false)} 
       />
 
       <Footer />
