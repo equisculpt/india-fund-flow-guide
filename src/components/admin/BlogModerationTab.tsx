@@ -46,7 +46,7 @@ const BlogModerationTab = () => {
     try {
       let query = supabase
         .from('blog_posts')
-        .select('*, profiles(full_name)')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (moderationTab !== 'edited') {
@@ -59,13 +59,20 @@ const BlogModerationTab = () => {
 
       if (error) throw error;
 
-      // Type assertion to fix type issue with profiles
-      const typedBlogsData = blogsData?.map(blog => ({
-        ...blog,
-        profiles: blog.profiles as BlogPost['profiles']
-      })) || [];
+      // Fetch profiles separately
+      const authorIds = blogsData?.map(b => b.author_id) || [];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', authorIds);
 
-      setBlogs(typedBlogsData);
+      // Combine data with profiles
+      const blogsWithProfiles = (blogsData || []).map(blog => ({
+        ...blog,
+        profiles: profiles?.find(p => p.id === blog.author_id) || null
+      }));
+
+      setBlogs(blogsWithProfiles);
     } catch (error) {
       console.error('Error fetching blogs:', error);
       toast.error('Failed to load blog posts');

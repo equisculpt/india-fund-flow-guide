@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageSquare, BookOpen, AlertCircle, CheckCircle, Eye } from 'lucide-react';
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { toast } from 'sonner';
 import BlogModerationTab from './BlogModerationTab';
+import CommunityNotifications from './community/CommunityNotifications';
+import CommunityTabNavigation from './community/CommunityTabNavigation';
+import QuestionsTab from './community/QuestionsTab';
+import RecentBlogsTab from './community/RecentBlogsTab';
 
 interface Question {
   id: string;
@@ -139,7 +139,6 @@ const CommunityManagementTab = () => {
   }, []);
 
   const handleAnswerQuestion = async (questionId: string) => {
-    // This would open a modal or navigate to answer page
     window.open(`/community/question/${questionId}`, '_blank');
   };
 
@@ -174,166 +173,29 @@ const CommunityManagementTab = () => {
 
   return (
     <div className="space-y-6">
-      {/* Notifications */}
-      {(newQuestionsCount > 0 || pendingBlogsCount > 0) && (
-        <div className="grid md:grid-cols-2 gap-4">
-          {newQuestionsCount > 0 && (
-            <Card className="border-orange-200 bg-orange-50">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5 text-orange-600" />
-                  <span className="font-medium text-orange-800">
-                    {newQuestionsCount} unanswered question{newQuestionsCount > 1 ? 's' : ''}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-          
-          {pendingBlogsCount > 0 && (
-            <Card className="border-blue-200 bg-blue-50">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-blue-600" />
-                  <span className="font-medium text-blue-800">
-                    {pendingBlogsCount} blog post{pendingBlogsCount > 1 ? 's' : ''} pending review
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      )}
+      <CommunityNotifications 
+        newQuestionsCount={newQuestionsCount}
+        pendingBlogsCount={pendingBlogsCount}
+      />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="questions" className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4" />
-            Questions
-            {newQuestionsCount > 0 && (
-              <Badge variant="destructive" className="ml-1">
-                {newQuestionsCount}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="blogs" className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            Recent Blogs
-          </TabsTrigger>
-          <TabsTrigger value="moderation" className="flex items-center gap-2">
-            <CheckCircle className="h-4 w-4" />
-            Blog Moderation
-            {pendingBlogsCount > 0 && (
-              <Badge variant="secondary" className="ml-1">
-                {pendingBlogsCount}
-              </Badge>
-            )}
-          </TabsTrigger>
-        </TabsList>
+        <CommunityTabNavigation 
+          newQuestionsCount={newQuestionsCount}
+          pendingBlogsCount={pendingBlogsCount}
+        />
 
         <TabsContent value="questions" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Questions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {questions.map((question) => (
-                  <div key={question.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium">{question.title}</h4>
-                      <div className="flex gap-2">
-                        {!question.is_answered && (
-                          <Badge variant="destructive">Unanswered</Badge>
-                        )}
-                        {question.expert_only && (
-                          <Badge variant="outline">Expert Only</Badge>
-                        )}
-                        <Badge variant="secondary">{question.category}</Badge>
-                      </div>
-                    </div>
-                    
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {question.content}
-                    </p>
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">
-                        By {question.profiles?.full_name || 'Anonymous'} • {new Date(question.created_at).toLocaleDateString()}
-                      </span>
-                      <Button 
-                        size="sm" 
-                        onClick={() => handleAnswerQuestion(question.id)}
-                        variant={question.is_answered ? "outline" : "default"}
-                      >
-                        {question.is_answered ? 'View' : 'Answer'}
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <QuestionsTab 
+            questions={questions}
+            onAnswerQuestion={handleAnswerQuestion}
+          />
         </TabsContent>
 
         <TabsContent value="blogs" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Blog Posts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {blogs.map((blog) => (
-                  <div key={blog.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium">{blog.title}</h4>
-                      <div className="flex gap-2">
-                        <Badge 
-                          variant={blog.status === 'published' ? 'default' : 'secondary'}
-                        >
-                          {blog.status}
-                        </Badge>
-                        <Badge variant="outline">{blog.category}</Badge>
-                      </div>
-                    </div>
-                    
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {blog.content.substring(0, 150)}...
-                    </p>
-                    
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <span>By {blog.profiles?.full_name || 'Anonymous'}</span>
-                        <span className="flex items-center gap-1">
-                          <Eye className="h-3 w-3" />
-                          {blog.views_count} views
-                        </span>
-                        <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => window.open(`/community/blog/${blog.id}`, '_blank')}
-                        >
-                          View
-                        </Button>
-                        {blog.status === 'draft' && (
-                          <Button 
-                            size="sm" 
-                            onClick={() => handlePublishBlog(blog.id)}
-                          >
-                            Publish
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <RecentBlogsTab 
+            blogs={blogs}
+            onPublishBlog={handlePublishBlog}
+          />
         </TabsContent>
 
         <TabsContent value="moderation" className="space-y-4">
