@@ -1,3 +1,4 @@
+
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -30,6 +31,16 @@ import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Sitemap route handler
+const SitemapHandler = () => {
+  React.useEffect(() => {
+    // Redirect to the actual sitemap.xml file
+    window.location.href = '/sitemap.xml';
+  }, []);
+  
+  return null;
+};
+
 function App() {
   return (
     <HelmetProvider>
@@ -59,6 +70,7 @@ function App() {
                       <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                       <Route path="/terms" element={<TermsOfServicePage />} />
                       <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                      <Route path="/sitemap.xml" element={<SitemapHandler />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                     <Toaster />
