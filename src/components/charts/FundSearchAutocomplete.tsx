@@ -35,13 +35,21 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
 
       setSearching(true);
       try {
+        console.log('FundSearchAutocomplete: Searching for:', query);
         const results = await MutualFundSearchService.searchFunds(query);
-        const mappedResults = results.map(fund => ({
-          schemeCode: fund.schemeCode.toString(),
-          schemeName: fund.schemeName,
-          category: 'Unknown', // Will be determined when fund is selected
-          fundHouse: 'Unknown'
-        }));
+        console.log('FundSearchAutocomplete: Raw search results:', results.length);
+        
+        const mappedResults = results.map(fund => {
+          const category = MutualFundSearchService.detectCategory(fund.schemeName);
+          return {
+            schemeCode: fund.schemeCode.toString(),
+            schemeName: fund.schemeName,
+            category: category,
+            fundHouse: 'Unknown' // Will be determined when fund is selected
+          };
+        });
+        
+        console.log('FundSearchAutocomplete: Mapped results with categories:', mappedResults.slice(0, 5));
         setSearchResults(mappedResults.slice(0, 20)); // Limit to 20 results
       } catch (error) {
         console.error('Fund search error:', error);
@@ -57,6 +65,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
 
   const handleSelect = (fund: FundSearchResult) => {
     if (selectedFunds.length < maxFunds && !selectedFunds.find(f => f.schemeCode === fund.schemeCode)) {
+      console.log('FundSearchAutocomplete: Selecting fund:', fund);
       onFundSelect(fund);
       setOpen(false);
       setQuery('');
@@ -98,7 +107,14 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
                 >
                   <div className="flex flex-col w-full">
                     <span className="font-medium">{fund.schemeName}</span>
-                    <span className="text-sm text-gray-500">Code: {fund.schemeCode}</span>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <span>Code: {fund.schemeCode}</span>
+                      {fund.category && (
+                        <Badge variant="outline" className="text-xs">
+                          {fund.category}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </CommandItem>
               ))}

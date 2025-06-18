@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -61,6 +62,10 @@ const Index = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
+  };
+
+  const handleRiskProfilingComplete = (result: any) => {
+    console.log('Risk profiling completed:', result);
   };
 
   return (
@@ -145,7 +150,7 @@ const Index = () => {
             <h2 className="text-3xl font-bold mb-4">Risk Profiling</h2>
             <p className="text-gray-600">Determine your risk tolerance and find suitable investment options.</p>
           </div>
-          <RiskProfiling />
+          <RiskProfiling onComplete={handleRiskProfilingComplete} />
         </div>
       </section>
 
