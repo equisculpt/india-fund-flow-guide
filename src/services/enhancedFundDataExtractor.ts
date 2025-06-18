@@ -5,28 +5,60 @@ export class EnhancedFundDataExtractor {
     returns3Y: number;
     returns5Y: number;
   } {
+    console.log('EnhancedFundDataExtractor: Calculating performance from NAV history:', navHistory.length, 'records');
+    
     if (!navHistory || navHistory.length < 30) {
+      console.log('EnhancedFundDataExtractor: Insufficient NAV history data');
       return { returns1Y: 0, returns3Y: 0, returns5Y: 0 };
     }
 
+    // NAV history is typically in reverse chronological order (latest first)
     const currentNAV = parseFloat(navHistory[0]?.nav || '0');
-    const oneYearAgo = navHistory.find((_, index) => index >= 250) || navHistory[navHistory.length - 1];
-    const threeYearsAgo = navHistory.find((_, index) => index >= 750) || navHistory[navHistory.length - 1];
-    const fiveYearsAgo = navHistory.find((_, index) => index >= 1250) || navHistory[navHistory.length - 1];
+    console.log('EnhancedFundDataExtractor: Current NAV:', currentNAV);
+    
+    if (currentNAV <= 0) {
+      console.log('EnhancedFundDataExtractor: Invalid current NAV');
+      return { returns1Y: 0, returns3Y: 0, returns5Y: 0 };
+    }
 
-    const nav1Y = parseFloat(oneYearAgo?.nav || '0');
-    const nav3Y = parseFloat(threeYearsAgo?.nav || '0');
-    const nav5Y = parseFloat(fiveYearsAgo?.nav || '0');
+    // Find NAV values for different time periods
+    // Assuming ~250 trading days per year
+    const oneYearIndex = Math.min(250, navHistory.length - 1);
+    const threeYearIndex = Math.min(750, navHistory.length - 1);
+    const fiveYearIndex = Math.min(1250, navHistory.length - 1);
 
+    const nav1Y = parseFloat(navHistory[oneYearIndex]?.nav || '0');
+    const nav3Y = parseFloat(navHistory[threeYearIndex]?.nav || '0');
+    const nav5Y = parseFloat(navHistory[fiveYearIndex]?.nav || '0');
+
+    console.log('EnhancedFundDataExtractor: NAV values found:', {
+      current: currentNAV,
+      oneYear: nav1Y,
+      threeYear: nav3Y,
+      fiveYear: nav5Y,
+      indices: { oneYearIndex, threeYearIndex, fiveYearIndex }
+    });
+
+    // Calculate absolute returns
     const returns1Y = nav1Y > 0 ? ((currentNAV - nav1Y) / nav1Y) * 100 : 0;
-    const returns3Y = nav3Y > 0 ? Math.pow(currentNAV / nav3Y, 1/3) - 1 : 0; // CAGR
-    const returns5Y = nav5Y > 0 ? Math.pow(currentNAV / nav5Y, 1/5) - 1 : 0; // CAGR
+    
+    // Calculate CAGR for 3Y and 5Y
+    const returns3Y = nav3Y > 0 && threeYearIndex >= 750 ? 
+      (Math.pow(currentNAV / nav3Y, 1/3) - 1) * 100 : 
+      nav3Y > 0 ? ((currentNAV - nav3Y) / nav3Y) * 100 : 0;
+    
+    const returns5Y = nav5Y > 0 && fiveYearIndex >= 1250 ? 
+      (Math.pow(currentNAV / nav5Y, 1/5) - 1) * 100 : 
+      nav5Y > 0 ? ((currentNAV - nav5Y) / nav5Y) * 100 : 0;
 
-    return {
+    const result = {
       returns1Y: Math.round(returns1Y * 100) / 100,
-      returns3Y: Math.round(returns3Y * 10000) / 100, // Convert to percentage
-      returns5Y: Math.round(returns5Y * 10000) / 100  // Convert to percentage
+      returns3Y: Math.round(returns3Y * 100) / 100,
+      returns5Y: Math.round(returns5Y * 100) / 100
     };
+
+    console.log('EnhancedFundDataExtractor: Calculated performance:', result);
+    return result;
   }
 
   static estimateExpenseRatio(category: string, fundHouse: string): number {

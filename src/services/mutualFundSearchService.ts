@@ -124,14 +124,21 @@ export class MutualFundSearchService {
       
       // Get basic fund details
       const basicDetails = await this.getFundDetails(schemeCode);
-      if (!basicDetails) return null;
+      if (!basicDetails) {
+        console.log('MutualFundSearchService: No basic details found for scheme:', schemeCode);
+        return null;
+      }
 
       // Get historical NAV data for performance calculation
+      console.log('MutualFundSearchService: Fetching historical data for performance calculation...');
       const historicalData = await FundApiService.getFundDetails(schemeCode);
       const navHistory = historicalData?.data || [];
+      
+      console.log('MutualFundSearchService: Retrieved', navHistory.length, 'NAV records for performance calculation');
 
       // Calculate performance from NAV history
       const performance = EnhancedFundDataExtractor.calculatePerformanceFromNAV(navHistory);
+      console.log('MutualFundSearchService: Performance calculated:', performance);
       
       // Estimate missing data
       const schemeAge = EnhancedFundDataExtractor.extractSchemeAge(navHistory);
@@ -157,7 +164,14 @@ export class MutualFundSearchService {
         volatility: volatility
       };
 
-      console.log('MutualFundSearchService: Enhanced details:', enhancedDetails);
+      console.log('MutualFundSearchService: Enhanced details with REAL performance data:', {
+        schemeName: enhancedDetails.schemeName,
+        returns1Y: enhancedDetails.returns1Y,
+        returns3Y: enhancedDetails.returns3Y,
+        returns5Y: enhancedDetails.returns5Y,
+        hasRealReturns: enhancedDetails.returns1Y !== 0 || enhancedDetails.returns3Y !== 0 || enhancedDetails.returns5Y !== 0
+      });
+
       return enhancedDetails;
     } catch (error) {
       console.error('MutualFundSearchService: Error fetching enhanced details:', error);
