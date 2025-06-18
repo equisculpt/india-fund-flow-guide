@@ -59,10 +59,10 @@ const AIComparisonTab = ({ selectedFund }: AIComparisonTabProps) => {
               Try searching for funds like "HDFC Top 100", "SBI Small Cap", or "Axis ELSS"
             </div>
           </div>
-        </CardContent>
-      </Card>
-    );
-  }
+        </div>
+      </CardContent>
+    </Card>
+  );
 };
 
 export default AIComparisonTab;
