@@ -31,10 +31,8 @@ import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
-// Sitemap route handler
 const SitemapHandler = () => {
   React.useEffect(() => {
-    // Redirect to the actual sitemap.xml file
     window.location.href = '/sitemap.xml';
   }, []);
   
