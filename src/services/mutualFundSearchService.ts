@@ -1,4 +1,3 @@
-
 import { FundApiService } from './fundApiService';
 import { EnhancedFundDataExtractor } from './enhancedFundDataExtractor';
 
@@ -16,6 +15,9 @@ interface EnhancedFundDetails extends FundSearchResult {
   returns1Y: number;
   returns3Y: number;
   returns5Y: number;
+  xirr1Y: number;
+  xirr3Y: number;
+  xirr5Y: number;
   expenseRatio: number;
   aum: number;
   volatility: number;
@@ -136,9 +138,9 @@ export class MutualFundSearchService {
       
       console.log('MutualFundSearchService: Retrieved', navHistory.length, 'NAV records for performance calculation');
 
-      // Calculate performance from the FULL NAV history
+      // Calculate performance from the FULL NAV history with XIRR
       const performance = EnhancedFundDataExtractor.calculatePerformanceFromNAV(navHistory);
-      console.log('MutualFundSearchService: Performance calculated from', navHistory.length, 'records:', performance);
+      console.log('MutualFundSearchService: ENHANCED Performance calculated from', navHistory.length, 'records:', performance);
       
       // Estimate missing data
       const schemeAge = EnhancedFundDataExtractor.extractSchemeAge(navHistory);
@@ -159,17 +161,23 @@ export class MutualFundSearchService {
         returns1Y: performance.returns1Y,
         returns3Y: performance.returns3Y,
         returns5Y: performance.returns5Y,
+        xirr1Y: performance.xirr1Y,
+        xirr3Y: performance.xirr3Y,
+        xirr5Y: performance.xirr5Y,
         expenseRatio: expenseRatio,
         aum: aum,
         volatility: volatility
       };
 
-      console.log('MutualFundSearchService: Enhanced details with CALCULATED PERFORMANCE:', {
+      console.log('MutualFundSearchService: FINAL Enhanced details with CALCULATED PERFORMANCE AND XIRR:', {
         schemeName: enhancedDetails.schemeName,
         totalNAVRecords: navHistory.length,
         returns1Y: enhancedDetails.returns1Y,
         returns3Y: enhancedDetails.returns3Y,
         returns5Y: enhancedDetails.returns5Y,
+        xirr1Y: enhancedDetails.xirr1Y,
+        xirr3Y: enhancedDetails.xirr3Y,
+        xirr5Y: enhancedDetails.xirr5Y,
         hasRealReturns: enhancedDetails.returns1Y !== 0 || enhancedDetails.returns3Y !== 0 || enhancedDetails.returns5Y !== 0
       });
 

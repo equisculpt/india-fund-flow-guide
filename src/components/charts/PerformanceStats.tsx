@@ -1,5 +1,4 @@
 
-
 interface ChartDataPoint {
   date: string;
   fundPercentage: number;
@@ -21,6 +20,7 @@ interface PerformanceStatsProps {
   primaryFundNav: number;
   getDaysForPeriod: (period: string) => number;
   irr: number;
+  fundData?: any; // Add fundData to access calculated performance
 }
 
 const PerformanceStats = ({ 
@@ -29,14 +29,34 @@ const PerformanceStats = ({
   period, 
   primaryFundNav,
   getDaysForPeriod,
-  irr 
+  irr,
+  fundData 
 }: PerformanceStatsProps) => {
   const calculatePerformance = (data: ChartDataPoint[]) => {
     if (data.length < 2) return { return: 0, volatility: 0, sipReturn: 0, totalInvested: 0, sipValue: 0 };
     
     const lastPoint = data[data.length - 1];
     const firstPoint = data[0];
-    const returnPct = lastPoint.fundPercentage;
+    
+    // Use the actual calculated performance from fundData if available for the selected period
+    let actualReturn = lastPoint.fundPercentage;
+    if (fundData) {
+      switch (period) {
+        case '1Y':
+          actualReturn = fundData.returns1Y || lastPoint.fundPercentage;
+          break;
+        case '3Y':
+          actualReturn = fundData.returns3Y || lastPoint.fundPercentage;
+          break;
+        case '5Y':
+          actualReturn = fundData.returns5Y || lastPoint.fundPercentage;
+          break;
+        default:
+          actualReturn = lastPoint.fundPercentage;
+      }
+    }
+    
+    console.log('PerformanceStats: Using actual return for', period, ':', actualReturn);
     
     // Calculate MONTHLY SIP returns for all periods
     const totalDays = getDaysForPeriod(period);
@@ -55,7 +75,7 @@ const PerformanceStats = ({
     const volatility = Math.sqrt(variance * 252); // Annualized volatility
     
     return { 
-      return: returnPct, 
+      return: actualReturn, // Use the corrected actual return
       volatility: Math.min(volatility, 50),
       sipReturn,
       totalInvested, 
@@ -65,6 +85,18 @@ const PerformanceStats = ({
 
   const calculateRealisticIRR = (data: ChartDataPoint[]) => {
     if (data.length < 2) return 0;
+    
+    // Use XIRR from fundData if available for the period
+    if (fundData) {
+      switch (period) {
+        case '1Y':
+          return fundData.xirr1Y || 0;
+        case '3Y':
+          return fundData.xirr3Y || 0;
+        case '5Y':
+          return fundData.xirr5Y || 0;
+      }
+    }
     
     const lastPoint = data[data.length - 1];
     const totalReturn = lastPoint.fundPercentage;
@@ -109,13 +141,13 @@ const PerformanceStats = ({
       <div className="text-center p-3 bg-green-50 rounded-lg">
         <div className="text-sm text-muted-foreground">Performance ({period})</div>
         <div className={`text-xl font-bold ${performance.return >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-          {performance.return.toFixed(2)}%
+          {performance.return >= 0 ? '+' : ''}{performance.return.toFixed(2)}%
         </div>
       </div>
       <div className="text-center p-3 bg-purple-50 rounded-lg">
         <div className="text-sm text-muted-foreground">Monthly SIP Returns</div>
         <div className={`text-xl font-bold ${performance.sipReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-          {performance.sipReturn.toFixed(2)}%
+          {performance.sipReturn >= 0 ? '+' : ''}{performance.sipReturn.toFixed(2)}%
         </div>
       </div>
       <div className="text-center p-3 bg-orange-50 rounded-lg">
@@ -123,9 +155,9 @@ const PerformanceStats = ({
         <div className="text-xl font-bold text-orange-600">₹{performance.sipValue?.toLocaleString() || '0'}</div>
       </div>
       <div className="text-center p-3 bg-indigo-50 rounded-lg">
-        <div className="text-sm text-muted-foreground">SIP CAGR</div>
-        <div className={`text-xl font-bold ${sipCAGR >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-          {sipCAGR.toFixed(2)}%
+        <div className="text-sm text-muted-foreground">XIRR/IRR ({period})</div>
+        <div className={`text-xl font-bold ${realisticIRR >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {realisticIRR >= 0 ? '+' : ''}{realisticIRR.toFixed(2)}%
         </div>
       </div>
     </div>
@@ -133,4 +165,3 @@ const PerformanceStats = ({
 };
 
 export default PerformanceStats;
-

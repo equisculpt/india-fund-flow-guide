@@ -8,6 +8,21 @@ interface FundMetricsProps {
 }
 
 const FundMetrics = ({ fundData, latestNAV, navError }: FundMetricsProps) => {
+  // Use the calculated performance data from fundData
+  const currentReturns1Y = fundData.returns1Y || 0;
+  const currentReturns3Y = fundData.returns3Y || 0;
+  const currentReturns5Y = fundData.returns5Y || 0;
+  
+  // Use XIRR values if available
+  const xirr1Y = fundData.xirr1Y || currentReturns1Y;
+  
+  console.log('FundMetrics: Using performance data:', {
+    returns1Y: currentReturns1Y,
+    returns3Y: currentReturns3Y,
+    returns5Y: currentReturns5Y,
+    xirr1Y: xirr1Y
+  });
+
   return (
     <div className="text-right">
       <div className="text-3xl font-bold">₹{fundData.nav.toFixed(4)}</div>
@@ -20,20 +35,25 @@ const FundMetrics = ({ fundData, latestNAV, navError }: FundMetricsProps) => {
         </div>
       )}
       
-      {/* Enhanced Performance Display */}
+      {/* Enhanced Performance Display with Calculated Data */}
       <div className="mt-2 space-y-1">
         <div className="flex items-center gap-2">
-          {fundData.returns1Y >= 0 ? 
+          {currentReturns1Y >= 0 ? 
             <TrendingUp className="h-4 w-4 text-green-600" /> : 
             <TrendingDown className="h-4 w-4 text-red-600" />
           }
-          <span className={`font-semibold ${fundData.returns1Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {fundData.returns1Y >= 0 ? '+' : ''}{fundData.returns1Y.toFixed(2)}% (1Y)
+          <span className={`font-semibold ${currentReturns1Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {currentReturns1Y >= 0 ? '+' : ''}{currentReturns1Y.toFixed(2)}% (1Y)
           </span>
         </div>
         <div className="text-xs text-gray-600">
-          3Y: {fundData.returns3Y.toFixed(2)}% | 5Y: {fundData.returns5Y.toFixed(2)}%
+          3Y: {currentReturns3Y >= 0 ? '+' : ''}{currentReturns3Y.toFixed(2)}% | 5Y: {currentReturns5Y >= 0 ? '+' : ''}{currentReturns5Y.toFixed(2)}%
         </div>
+        {fundData.xirr1Y && (
+          <div className="text-xs text-blue-600">
+            XIRR (1Y): {xirr1Y >= 0 ? '+' : ''}{xirr1Y.toFixed(2)}%
+          </div>
+        )}
       </div>
     </div>
   );

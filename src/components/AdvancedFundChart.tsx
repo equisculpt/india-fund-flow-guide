@@ -130,6 +130,7 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
                 return days[p] || 365;
               }}
               irr={irr}
+              fundData={primaryFund}
             />
           </div>
         </CardContent>
