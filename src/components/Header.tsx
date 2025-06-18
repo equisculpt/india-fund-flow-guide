@@ -2,9 +2,12 @@
 import React, { useState } from 'react';
 import { Menu, X, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import BreweryLogo from './BreweryLogo';
+import { useBranding } from '@/contexts/BrandingContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { brandConfig } = useBranding();
 
   return (
     <header className="bg-white shadow-sm border-b">
@@ -12,7 +15,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-blue-600">MutualFund Pro</h1>
+            <BreweryLogo size="md" showText={true} />
           </div>
 
           {/* Desktop Navigation - All items centered */}

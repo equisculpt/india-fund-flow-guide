@@ -34,7 +34,7 @@ const Index = () => {
   // Fixed fund data with correct scheme codes
   const [allFunds] = useState<Fund[]>([
     {
-      id: '120503', // Correct scheme code for HDFC Top 100
+      id: '120503', // HDFC Top 100 Fund
       name: 'HDFC Top 100 Fund - Direct Growth',
       category: 'Large Cap',
       returns: 16.3,
@@ -47,7 +47,7 @@ const Index = () => {
       nav: 889.45
     },
     {
-      id: '125497', // Correct scheme code for SBI Small Cap
+      id: '125497', // SBI Small Cap Fund
       name: 'SBI Small Cap Fund - Direct Growth',
       category: 'Small Cap',
       returns: 18.5,
@@ -60,7 +60,7 @@ const Index = () => {
       nav: 170.08
     },
     {
-      id: '130502', // Correct scheme code for HDFC Small Cap
+      id: '130502', // HDFC Small Cap Fund
       name: 'HDFC Small Cap Fund - Growth',
       category: 'Small Cap',
       returns: 22.1,
@@ -73,7 +73,7 @@ const Index = () => {
       nav: 136.98
     },
     {
-      id: '118989', // Correct scheme code for ICICI Prudential Bluechip
+      id: '118989', // ICICI Prudential Bluechip
       name: 'ICICI Prudential Bluechip Fund - Direct',
       category: 'Large Cap',
       returns: 14.8,
@@ -86,7 +86,7 @@ const Index = () => {
       nav: 71.23
     },
     {
-      id: '119533', // Correct scheme code for SBI Large & Midcap
+      id: '119533', // SBI Large & Midcap
       name: 'SBI Large & Midcap Fund - Direct',
       category: 'Mid Cap',
       returns: 19.2,
@@ -99,7 +99,7 @@ const Index = () => {
       nav: 178.92
     },
     {
-      id: '122639', // Correct scheme code for Axis ELSS
+      id: '122639', // Axis ELSS Tax Saver
       name: 'Axis ELSS Tax Saver Fund - Direct',
       category: 'ELSS',
       returns: 17.8,
@@ -112,7 +112,7 @@ const Index = () => {
       nav: 67.34
     },
     {
-      id: '120376', // Correct scheme code for Kotak Small Cap
+      id: '120376', // Kotak Small Cap
       name: 'Kotak Small Cap Fund - Direct Growth',
       category: 'Small Cap',
       returns: 21.5,
@@ -125,7 +125,7 @@ const Index = () => {
       nav: 245.67
     },
     {
-      id: '119827', // Correct scheme code for HDFC Balanced Advantage
+      id: '119827', // HDFC Balanced Advantage
       name: 'HDFC Balanced Advantage Fund - Direct',
       category: 'Hybrid',
       returns: 12.8,
@@ -138,7 +138,7 @@ const Index = () => {
       nav: 23.45
     },
     {
-      id: '120588', // Correct scheme code for Parag Parikh
+      id: '120588', // Parag Parikh Long Term Equity
       name: 'Parag Parikh Long Term Equity Fund',
       category: 'Mid Cap',
       returns: 20.1,
@@ -151,7 +151,7 @@ const Index = () => {
       nav: 56.78
     },
     {
-      id: '100042', // Adding Axis Bluechip with correct scheme code
+      id: '100042', // Axis Bluechip Fund - CORRECT MAPPING
       name: 'Axis Bluechip Fund - Direct Growth',
       category: 'Large Cap',
       returns: 15.2,
@@ -184,7 +184,7 @@ const Index = () => {
   };
 
   const handleViewFundDetails = (fund: Fund) => {
-    console.log('Navigating to fund details for:', fund.name, 'with ID:', fund.id);
+    console.log('Navigating to fund details for:', fund.name, 'with correct ID:', fund.id);
     navigate(`/fund/${fund.id}`, {
       state: {
         fundData: {
@@ -197,7 +197,7 @@ const Index = () => {
           returns_3y: fund.returns3Y,
           risk_level: fund.risk,
           min_sip_amount: fund.minSip,
-          schemeCode: fund.id
+          schemeCode: fund.id // Ensure schemeCode matches id
         }
       }
     });
