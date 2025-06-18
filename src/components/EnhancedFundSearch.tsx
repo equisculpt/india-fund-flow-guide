@@ -41,18 +41,12 @@ const EnhancedFundSearch = ({
     console.log('EnhancedFundSearch: Fund selected:', fund);
     const selectedFund = handleResultSelect(fund);
     
-    // If we're on the public-funds page, don't navigate away - just call the callback
-    if (location.pathname === '/public-funds' && onFundSelect) {
-      console.log('EnhancedFundSearch: On public-funds page, using callback instead of navigation');
+    // Always navigate to fund details page when a fund is selected
+    navigate(`/fund/${selectedFund.schemeCode}`);
+    
+    // Also call the callback if provided (for any additional handling)
+    if (onFundSelect) {
       onFundSelect(selectedFund);
-    } else {
-      // For other pages, navigate to fund details page
-      navigate(`/fund/${selectedFund.schemeCode}`);
-      
-      // Also call the callback if provided
-      if (onFundSelect) {
-        onFundSelect(selectedFund);
-      }
     }
   };
 
