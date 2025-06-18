@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import AIFundComparison from "@/components/AIFundComparison";
 import AdvancedFundChart from "@/components/AdvancedFundChart";
@@ -135,53 +136,48 @@ const PublicFundsPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-green-600" />
-                  Live NAV Updates with Real-time Benchmarks
+                  Live NAV Updates with Real-time Search
                 </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Search for any mutual fund to get real-time NAV data and AI analysis
+                </p>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* Enhanced live NAV cards with AI scores */}
-                  {[
-                    { name: "HDFC Top 100", nav: 856.32, change: +2.45, aiScore: 8.5, category: "Large Cap" },
-                    { name: "SBI Small Cap", nav: 234.67, change: -1.23, aiScore: 9.2, category: "Small Cap" },
-                    { name: "ICICI Prudential", nav: 678.91, change: +0.89, aiScore: 7.8, category: "Large Cap" },
-                    { name: "Axis Long Term", nav: 445.78, change: +3.21, aiScore: 8.9, category: "ELSS" },
-                    { name: "Kotak Emerging", nav: 567.23, change: +1.67, aiScore: 8.1, category: "Mid Cap" },
-                    { name: "Mirae Asset", nav: 789.45, change: -0.45, aiScore: 7.5, category: "Large Cap" }
-                  ].map((fund, index) => (
-                    <Card key={index} className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
-                          onClick={() => setSelectedFund({
-                            schemeCode: `FUND_${index}`,
-                            schemeName: fund.name,
-                            category: fund.category,
-                            nav: fund.nav,
-                            aiScore: fund.aiScore
-                          })}>
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-semibold text-sm">{fund.name}</h4>
-                        <div className="flex items-center gap-1">
-                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                          <span className="text-xs font-semibold">{fund.aiScore}</span>
+                {/* Search Section */}
+                <div className="mb-6">
+                  <EnhancedFundSearch 
+                    onFundSelect={handleFundSearchSelect}
+                    placeholder="Search any mutual fund for live NAV data (e.g., HDFC Top 100, SBI Small Cap...)"
+                    className="w-full"
+                  />
+                </div>
+
+                {/* Selected Fund Display */}
+                {selectedFund && (
+                  <div className="mb-6">
+                    <Card className="p-4 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-semibold text-blue-900 mb-1">{selectedFund.schemeName}</h3>
+                          <p className="text-sm text-blue-700 mb-2">{selectedFund.category}</p>
+                          <div className="text-2xl font-bold text-green-600">₹{selectedFund.nav?.toFixed(4) || 'Loading...'}</div>
+                          <p className="text-xs text-gray-600 mt-1">Last updated: {new Date().toLocaleString()}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge className="bg-blue-600 text-white">
+                            <Star className="h-3 w-3 mr-1" />
+                            AI Score: {selectedFund.aiScore?.toFixed(1)}
+                          </Badge>
                         </div>
                       </div>
-                      <div className="text-xl font-bold">₹{fund.nav}</div>
-                      <div className={`text-sm ${fund.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {fund.change >= 0 ? '+' : ''}{fund.change} ({fund.change >= 0 ? '+' : ''}{(fund.change / fund.nav * 100).toFixed(2)}%)
-                      </div>
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="text-xs text-muted-foreground">{fund.category}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date().toLocaleTimeString()}
-                        </span>
-                      </div>
                     </Card>
-                  ))}
-                </div>
+                  </div>
+                )}
                 
-                <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
+                <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
                   <p className="text-sm text-green-800">
-                    <strong>Enhanced Live Data:</strong> NAV prices update in real-time with AI analysis. 
-                    Click any fund to view advanced charts with benchmark comparisons and predictive analytics.
+                    <strong>Real-time NAV Data:</strong> Search for any mutual fund to get live NAV prices with AI analysis. 
+                    Use the search bar above to find specific funds and view their current performance metrics.
                   </p>
                 </div>
               </CardContent>

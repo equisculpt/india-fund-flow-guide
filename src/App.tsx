@@ -51,6 +51,7 @@ function App() {
                   <Route path="/dashboard" element={<ComprehensiveDashboard />} />
                   <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
                   <Route path="/user-dashboard" element={<UserDashboard />} />
+                  <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
                   <Route path="/public-funds" element={<PublicFundsPage />} />
                   <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                   <Route path="/terms" element={<TermsOfServicePage />} />
