@@ -154,8 +154,8 @@ export const useAdvancedFundData = (
 
   const loadAvailableFunds = async () => {
     try {
-      // This would load funds for comparison
-      const funds = await FundDataService.getPopularFunds();
+      // Use the correct method from FundDataService
+      const funds = FundDataService.getDynamicTopFunds();
       setAvailableFunds(funds.slice(0, 10)); // Limit to 10 for performance
     } catch (error) {
       console.error('useAdvancedFundData: Error loading available funds:', error);
