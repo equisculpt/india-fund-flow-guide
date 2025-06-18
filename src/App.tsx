@@ -1,4 +1,3 @@
-
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -27,6 +26,7 @@ import PublicFundsPage from "@/pages/PublicFundsPage";
 import WhatsAppBotPage from "@/pages/WhatsAppBotPage";
 import TermsOfServicePage from "@/pages/TermsOfServicePage";
 import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
+import RiskDisclosurePage from "@/pages/RiskDisclosurePage";
 import SBISmallCapFundPage from "@/pages/SBISmallCapFundPage";
 import BestSIPPlansPage from "@/pages/BestSIPPlansPage";
 import SIPCalculatorPage from "@/pages/SIPCalculatorPage";
@@ -75,6 +75,7 @@ function App() {
                       <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                       <Route path="/terms" element={<TermsOfServicePage />} />
                       <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                      <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
                       
                       {/* Community Routes */}
                       <Route path="/community" element={<CommunityPage />} />
