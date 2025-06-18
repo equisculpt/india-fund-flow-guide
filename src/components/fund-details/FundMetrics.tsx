@@ -8,15 +8,15 @@ interface FundMetricsProps {
 }
 
 const FundMetrics = ({ fundData, latestNAV, navError }: FundMetricsProps) => {
-  // Use the calculated performance data from fundData
+  // Use the CORRECTED calculated performance data from fundData
   const currentReturns1Y = fundData.returns1Y || 0;
   const currentReturns3Y = fundData.returns3Y || 0;
   const currentReturns5Y = fundData.returns5Y || 0;
   
-  // Use XIRR values if available
+  // Use XIRR values if available (should match returns for consistency)
   const xirr1Y = fundData.xirr1Y || currentReturns1Y;
   
-  console.log('FundMetrics: Using performance data:', {
+  console.log('FundMetrics: Using CORRECTED performance data:', {
     returns1Y: currentReturns1Y,
     returns3Y: currentReturns3Y,
     returns5Y: currentReturns5Y,
@@ -35,7 +35,7 @@ const FundMetrics = ({ fundData, latestNAV, navError }: FundMetricsProps) => {
         </div>
       )}
       
-      {/* Enhanced Performance Display with Calculated Data */}
+      {/* CORRECTED Performance Display with Accurate Calculations */}
       <div className="mt-2 space-y-1">
         <div className="flex items-center gap-2">
           {currentReturns1Y >= 0 ? 
@@ -49,7 +49,7 @@ const FundMetrics = ({ fundData, latestNAV, navError }: FundMetricsProps) => {
         <div className="text-xs text-gray-600">
           3Y: {currentReturns3Y >= 0 ? '+' : ''}{currentReturns3Y.toFixed(2)}% | 5Y: {currentReturns5Y >= 0 ? '+' : ''}{currentReturns5Y.toFixed(2)}%
         </div>
-        {fundData.xirr1Y && (
+        {fundData.xirr1Y && Math.abs(fundData.xirr1Y - currentReturns1Y) > 0.1 && (
           <div className="text-xs text-blue-600">
             XIRR (1Y): {xirr1Y >= 0 ? '+' : ''}{xirr1Y.toFixed(2)}%
           </div>

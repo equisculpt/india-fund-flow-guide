@@ -24,11 +24,11 @@ export const useFundDetails = (fundId: string | undefined) => {
     try {
       console.log('useFundDetails: Fetching enhanced fund details for fundId:', fundId);
       
-      // Get enhanced fund details with calculated performance data
+      // Get enhanced fund details with CORRECTED calculated performance data
       const enhancedDetails = await MutualFundSearchService.getEnhancedFundDetails(fundId);
       
       if (enhancedDetails) {
-        console.log('useFundDetails: Enhanced details loaded:', enhancedDetails);
+        console.log('useFundDetails: Enhanced details loaded with CORRECTED performance:', enhancedDetails);
         
         const combinedFundData = {
           schemeCode: fundId,
@@ -40,6 +40,9 @@ export const useFundDetails = (fundId: string | undefined) => {
           returns1Y: enhancedDetails.returns1Y,
           returns3Y: enhancedDetails.returns3Y,
           returns5Y: enhancedDetails.returns5Y,
+          xirr1Y: enhancedDetails.xirr1Y,
+          xirr3Y: enhancedDetails.xirr3Y,
+          xirr5Y: enhancedDetails.xirr5Y,
           expenseRatio: enhancedDetails.expenseRatio,
           aum: enhancedDetails.aum,
           minSipAmount: 500,
@@ -47,19 +50,22 @@ export const useFundDetails = (fundId: string | undefined) => {
           amc: enhancedDetails.fundHouse || 'Unknown'
         };
 
-        console.log('useFundDetails: Combined enhanced fund data with calculated returns:', {
+        console.log('useFundDetails: Combined enhanced fund data with CORRECTED returns:', {
           returns1Y: combinedFundData.returns1Y,
           returns3Y: combinedFundData.returns3Y,
           returns5Y: combinedFundData.returns5Y,
+          xirr1Y: combinedFundData.xirr1Y,
+          xirr3Y: combinedFundData.xirr3Y,
+          xirr5Y: combinedFundData.xirr5Y,
           expenseRatio: combinedFundData.expenseRatio,
           aum: combinedFundData.aum
         });
 
         setFundData(combinedFundData);
         setLatestNAV(enhancedDetails);
-        setNavError('✓ Performance calculated from NAV history');
+        setNavError('✓ Performance calculated with corrected mathematical formula from NAV history');
 
-        // Trigger AI analysis with the enhanced data containing real performance metrics
+        // Trigger AI analysis with the CORRECTED enhanced data containing real performance metrics
         await performAIAnalysis(combinedFundData);
       } else {
         // Fallback to basic API details if enhanced fails
@@ -123,14 +129,15 @@ export const useFundDetails = (fundId: string | undefined) => {
     setAiError('');
     
     try {
-      console.log('useFundDetails: Starting AI analysis with enhanced data:', {
+      console.log('useFundDetails: Starting AI analysis with CORRECTED enhanced data:', {
         schemeName: fundDataForAnalysis.schemeName,
         returns1Y: fundDataForAnalysis.returns1Y,
         returns3Y: fundDataForAnalysis.returns3Y,
         returns5Y: fundDataForAnalysis.returns5Y,
+        xirr1Y: fundDataForAnalysis.xirr1Y,
         expenseRatio: fundDataForAnalysis.expenseRatio,
         aum: fundDataForAnalysis.aum,
-        hasRealPerformanceData: fundDataForAnalysis.returns1Y > 0 || fundDataForAnalysis.returns3Y > 0 || fundDataForAnalysis.returns5Y > 0
+        hasCorrectedPerformanceData: fundDataForAnalysis.returns1Y > 0 || fundDataForAnalysis.returns3Y > 0 || fundDataForAnalysis.returns5Y > 0
       });
       
       const { data, error } = await supabase.functions.invoke('ai-fund-analysis', {
@@ -142,7 +149,7 @@ export const useFundDetails = (fundId: string | undefined) => {
       }
 
       if (data.success) {
-        console.log('useFundDetails: AI analysis completed with real performance data:', data.analysis);
+        console.log('useFundDetails: AI analysis completed with CORRECTED performance data:', data.analysis);
         setAiAnalysis(data.analysis);
       } else {
         console.log('useFundDetails: AI analysis failed, using fallback:', data.fallbackAnalysis);

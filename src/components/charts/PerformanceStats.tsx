@@ -1,4 +1,3 @@
-
 interface ChartDataPoint {
   date: string;
   fundPercentage: number;
@@ -20,7 +19,7 @@ interface PerformanceStatsProps {
   primaryFundNav: number;
   getDaysForPeriod: (period: string) => number;
   irr: number;
-  fundData?: any; // Add fundData to access calculated performance
+  fundData?: any; // Add fundData to access CORRECTED calculated performance
 }
 
 const PerformanceStats = ({ 
@@ -38,25 +37,28 @@ const PerformanceStats = ({
     const lastPoint = data[data.length - 1];
     const firstPoint = data[0];
     
-    // Use the actual calculated performance from fundData if available for the selected period
-    let actualReturn = lastPoint.fundPercentage;
+    // ALWAYS use the CORRECTED actual calculated performance from fundData for consistency
+    let actualReturn = 0;
     if (fundData) {
       switch (period) {
         case '1Y':
-          actualReturn = fundData.returns1Y || lastPoint.fundPercentage;
+          actualReturn = fundData.returns1Y || 0;
           break;
         case '3Y':
-          actualReturn = fundData.returns3Y || lastPoint.fundPercentage;
+          actualReturn = fundData.returns3Y || 0;
           break;
         case '5Y':
-          actualReturn = fundData.returns5Y || lastPoint.fundPercentage;
+          actualReturn = fundData.returns5Y || 0;
           break;
         default:
+          // For other periods, calculate from chart data
           actualReturn = lastPoint.fundPercentage;
       }
+    } else {
+      actualReturn = lastPoint.fundPercentage;
     }
     
-    console.log('PerformanceStats: Using actual return for', period, ':', actualReturn);
+    console.log('PerformanceStats: Using CORRECTED actual return for', period, ':', actualReturn);
     
     // Calculate MONTHLY SIP returns for all periods
     const totalDays = getDaysForPeriod(period);
@@ -75,7 +77,7 @@ const PerformanceStats = ({
     const volatility = Math.sqrt(variance * 252); // Annualized volatility
     
     return { 
-      return: actualReturn, // Use the corrected actual return
+      return: actualReturn, // Use the CORRECTED actual return
       volatility: Math.min(volatility, 50),
       sipReturn,
       totalInvested, 
@@ -86,7 +88,7 @@ const PerformanceStats = ({
   const calculateRealisticIRR = (data: ChartDataPoint[]) => {
     if (data.length < 2) return 0;
     
-    // Use XIRR from fundData if available for the period
+    // ALWAYS use CORRECTED XIRR from fundData if available for the period
     if (fundData) {
       switch (period) {
         case '1Y':
