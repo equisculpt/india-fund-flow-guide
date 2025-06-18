@@ -34,7 +34,8 @@ const EnhancedFundSearch = ({
   const navigate = useNavigate();
 
   const searchFunds = useCallback(async (query: string) => {
-    if (!query || query.length < 2) {
+    // Only search if query has at least 3 characters - no top funds feature
+    if (!query || query.length < 3) {
       setSearchResults([]);
       setShowResults(false);
       return;
@@ -113,7 +114,7 @@ const EnhancedFundSearch = ({
   };
 
   const handleInputFocus = () => {
-    if (searchQuery.length >= 2 && searchResults.length > 0) {
+    if (searchQuery.length >= 3 && searchResults.length > 0) {
       setShowResults(true);
     }
   };
@@ -203,7 +204,7 @@ const EnhancedFundSearch = ({
               </div>
             ) : searchResults.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
-                {searchQuery.length >= 2 ? 'No funds found matching your search' : 'Type at least 2 characters to search...'}
+                {searchQuery.length >= 3 ? 'No funds found matching your search' : 'Type at least 3 characters to search...'}
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
