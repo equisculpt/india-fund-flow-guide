@@ -181,7 +181,6 @@ const PushNotificationManager = () => {
                           <Switch 
                             checked={setting.channels.push}
                             onCheckedChange={() => toggleChannel(setting.id, 'push')}
-                            size="sm"
                           />
                         </div>
                         <div className="flex items-center justify-between p-2 border rounded">
@@ -192,7 +191,6 @@ const PushNotificationManager = () => {
                           <Switch 
                             checked={setting.channels.email}
                             onCheckedChange={() => toggleChannel(setting.id, 'email')}
-                            size="sm"
                           />
                         </div>
                         <div className="flex items-center justify-between p-2 border rounded">
@@ -203,7 +201,6 @@ const PushNotificationManager = () => {
                           <Switch 
                             checked={setting.channels.sms}
                             onCheckedChange={() => toggleChannel(setting.id, 'sms')}
-                            size="sm"
                           />
                         </div>
                       </div>
