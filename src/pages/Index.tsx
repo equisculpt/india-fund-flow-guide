@@ -18,7 +18,7 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "SIP Brewery",
-    "description": "India's #1 mutual fund distributor and SIP investment platform with zero commission, cashback rewards, and AI-powered analysis",
+    "description": "India's #1 SEBI registered mutual fund distributor offering regular mutual funds with professional advisory and consistency rewards",
     "url": "https://sipbrewery.com",
     "potentialAction": {
       "@type": "SearchAction",
@@ -33,13 +33,13 @@ const Index = () => {
       "offers": [
         {
           "@type": "Offer",
-          "name": "Zero Commission SIP Investment",
-          "description": "Start SIP with ₹500, get cashback rewards and track performance"
+          "name": "Regular Mutual Fund SIP Investment",
+          "description": "Start SIP with ₹500, get consistency rewards and professional advisory"
         },
         {
           "@type": "Offer", 
           "name": "Best SIP Plans India 2025",
-          "description": "Top performing mutual funds with AI recommendations"
+          "description": "Top performing regular mutual funds with professional recommendations"
         },
         {
           "@type": "Offer",
@@ -56,15 +56,15 @@ const Index = () => {
             "itemOffered": {
               "@type": "Service",
               "name": "Best SIP Plans India 2025",
-              "description": "Start SIP investment online with top performing mutual funds. Zero commission, cashback rewards, AMFI registered distributor."
+              "description": "Start SIP investment online with top performing regular mutual funds. Professional advisory, consistency rewards, SEBI & AMFI registered distributor."
             }
           },
           {
             "@type": "Offer",
             "itemOffered": {
               "@type": "Service", 
-              "name": "Direct Mutual Fund Investment Platform",
-              "description": "Invest in direct mutual funds online with SIP calculator, performance tracker, and refer & earn program"
+              "name": "Regular Mutual Fund Investment Platform",
+              "description": "Invest in regular mutual funds online with SIP calculator, performance tracker, and refer & earn program"
             }
           },
           {
@@ -72,7 +72,7 @@ const Index = () => {
             "itemOffered": {
               "@type": "Service",
               "name": "SIP vs Lump Sum Calculator",
-              "description": "Compare SIP vs lump sum investment strategies with AI-powered recommendations"
+              "description": "Compare SIP vs lump sum investment strategies with professional recommendations"
             }
           }
         ]
@@ -83,9 +83,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOHead
-        title="Best Mutual Fund Platform India 2025 | Start SIP ₹500 | Zero Commission + Cashback | SIP Brewery"
-        description="India's #1 mutual fund distributor & SIP investment platform. Start SIP online with ₹500, get cashback rewards. AMFI registered, zero commission, AI-powered fund analysis. Best SIP plans 2025."
-        keywords="mutual fund distributor India, best SIP plans India 2025, invest in mutual funds online, SIP investment platform, start SIP online, best mutual fund platform India, SIP calculator India, SIP vs lump sum, zero commission mutual fund app, direct mutual funds India, SIP cashback offer, AMFI registered distributor, SIP rewards India, mutual fund comparison tool"
+        title="Best Mutual Fund Platform India 2025 | Start SIP ₹500 | SEBI Registered | SIP Brewery"
+        description="India's #1 SEBI registered mutual fund distributor & SIP investment platform. Start SIP online with ₹500, get consistency rewards. Professional advisory, regular mutual funds, best SIP plans 2025."
+        keywords="mutual fund distributor India, best SIP plans India 2025, invest in mutual funds online, SIP investment platform, start SIP online, best mutual fund platform India, SIP calculator India, SIP vs lump sum, regular mutual fund app, mutual funds India, SIP consistency rewards, SEBI registered distributor, SIP rewards India, mutual fund comparison tool"
         structuredData={structuredData}
       />
       
@@ -98,15 +98,15 @@ const Index = () => {
       <section className="py-12 bg-gradient-to-r from-blue-50 to-indigo-50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6">India's Best Mutual Fund Distributor & SIP Investment Platform</h2>
+            <h2 className="text-3xl font-bold mb-6">India's Best SEBI Registered Mutual Fund Distributor & SIP Investment Platform</h2>
             <div className="grid md:grid-cols-3 gap-8 mb-8">
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl font-semibold mb-3 text-blue-600">Start SIP Online - ₹500 Monthly</h3>
-                <p className="text-gray-700">Begin your SIP investment journey with India's top mutual fund platform. Zero commission, instant portfolio tracking, and cashback rewards on every SIP.</p>
+                <p className="text-gray-700">Begin your SIP investment journey with India's top mutual fund platform. Professional advisory, instant portfolio tracking, and consistency rewards on regular SIPs.</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl font-semibold mb-3 text-green-600">Best SIP Plans India 2025</h3>
-                <p className="text-gray-700">Discover top-performing SIP plans with AI-powered recommendations. Compare mutual funds, calculate returns, and invest in direct schemes with zero fees.</p>
+                <p className="text-gray-700">Discover top-performing SIP plans with professional recommendations. Compare mutual funds, calculate returns, and invest in regular schemes with expert guidance.</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl font-semibold mb-3 text-purple-600">SIP Calculator & Comparison</h3>
@@ -118,15 +118,15 @@ const Index = () => {
               <h3 className="text-2xl font-bold mb-4">Why Choose SIP Brewery - India's #1 SIP Investment Platform?</h3>
               <div className="grid md:grid-cols-2 gap-6 text-left">
                 <div>
-                  <h4 className="font-semibold text-lg mb-2">🏆 AMFI Registered Mutual Fund Distributor</h4>
-                  <p className="text-gray-700 mb-4">Fully regulated and registered with AMFI. Your investments are safe and secure with India's most trusted mutual fund platform.</p>
+                  <h4 className="font-semibold text-lg mb-2">🏆 SEBI Registered & AMFI Compliant Mutual Fund Distributor</h4>
+                  <p className="text-gray-700 mb-4">Fully regulated and registered with SEBI & AMFI. Your investments are safe and secure with India's most trusted mutual fund platform.</p>
                   
-                  <h4 className="font-semibold text-lg mb-2">💰 Zero Commission + SIP Cashback Rewards</h4>
-                  <p className="text-gray-700 mb-4">Invest in direct mutual funds with zero commission. Earn cashback on every SIP and refer friends to earn more rewards.</p>
+                  <h4 className="font-semibold text-lg mb-2">💰 Regular Mutual Funds + SIP Consistency Rewards</h4>
+                  <p className="text-gray-700 mb-4">Invest in regular mutual funds with professional advisory. Earn consistency rewards and gift cards for maintaining regular SIPs. Terms apply as per SEBI guidelines.</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-lg mb-2">🤖 AI-Powered Fund Analysis & Recommendations</h4>
-                  <p className="text-gray-700 mb-4">Get personalized mutual fund recommendations based on your risk profile, goals, and market conditions using advanced AI algorithms.</p>
+                  <h4 className="font-semibold text-lg mb-2">👨‍💼 Professional Fund Recommendations</h4>
+                  <p className="text-gray-700 mb-4">Get personalized mutual fund recommendations based on your risk profile, goals, and market conditions from SEBI registered investment advisors.</p>
                   
                   <h4 className="font-semibold text-lg mb-2">📊 Advanced SIP Calculator & Performance Tracker</h4>
                   <p className="text-gray-700 mb-4">Calculate SIP returns, compare SIP vs lump sum, track portfolio performance, and get detailed fund analysis reports.</p>
@@ -151,12 +151,12 @@ const Index = () => {
             <div className="space-y-6">
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold mb-3">How to Start SIP Online with SIP Brewery?</h3>
-                <p className="text-gray-700">Starting SIP online is simple with SIP Brewery. Just sign up, complete your KYC, choose from best SIP plans in India, and start investing with just ₹500 monthly. Our platform offers zero commission direct mutual fund investment with cashback rewards.</p>
+                <p className="text-gray-700">Starting SIP online is simple with SIP Brewery. Just sign up, complete your KYC, choose from best SIP plans in India, and start investing with just ₹500 monthly. Our platform offers regular mutual fund investment with professional advisory and consistency rewards.</p>
               </div>
               
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold mb-3">Which are the Best SIP Plans to Start in 2025?</h3>
-                <p className="text-gray-700">The best SIP plans for 2025 include top-performing large cap, mid cap, and small cap mutual funds. Our AI-powered platform analyzes 1000+ mutual funds to recommend the best SIP plans based on your investment goals and risk appetite.</p>
+                <p className="text-gray-700">The best SIP plans for 2025 include top-performing large cap, mid cap, and small cap mutual funds. Our professional advisors analyze 1000+ mutual funds to recommend the best SIP plans based on your investment goals and risk appetite.</p>
               </div>
               
               <div className="bg-gray-50 p-6 rounded-lg">
@@ -165,8 +165,8 @@ const Index = () => {
               </div>
               
               <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold mb-3">Can I Get Cashback on SIP Investment?</h3>
-                <p className="text-gray-700">Yes! SIP Brewery offers cashback rewards on every SIP investment. Our refer and earn program also provides additional rewards when you invite friends to start their SIP journey with India's best mutual fund platform.</p>
+                <h3 className="text-xl font-semibold mb-3">Can I Get Rewards on SIP Investment?</h3>
+                <p className="text-gray-700">Yes! SIP Brewery offers consistency rewards and gift cards for maintaining regular SIP investments. Our refer and earn program also provides rewards when you invite friends to start their SIP journey. All rewards are subject to terms and conditions as per SEBI guidelines.</p>
               </div>
             </div>
           </div>

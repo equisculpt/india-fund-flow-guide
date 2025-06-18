@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -21,9 +20,10 @@ const CommunityPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOHead
-        title="SIP Brewery Community - Ask Questions, Share Knowledge | Mutual Fund Community"
-        description="Join SIP Brewery community to ask mutual fund questions, get expert answers, and read daily investment blogs. Connect with fellow investors and learn together."
-        keywords="mutual fund community, SIP questions, investment advice, mutual fund blog, expert answers, investment community India"
+        title="SIP Brewery Community - Ask Questions, Share Knowledge | Mutual Fund Community India"
+        description="Join SIP Brewery community to ask mutual fund questions, get expert answers, and read daily investment blogs. Connect with fellow investors and learn together. Dynamic Q&A and fresh content updated daily."
+        keywords="mutual fund community, SIP questions, investment advice, mutual fund blog, expert answers, investment community India, mutual fund discussion, SIP advice, investment forum"
+        isDynamic={true}
       />
       
       <Header />

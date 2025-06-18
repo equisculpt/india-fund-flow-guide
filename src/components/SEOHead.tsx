@@ -8,15 +8,17 @@ interface SEOHeadProps {
   canonicalUrl?: string;
   ogImage?: string;
   structuredData?: object;
+  isDynamic?: boolean;
 }
 
 const SEOHead = ({ 
   title = "SIP Brewery - Best Mutual Fund Investment Platform India | SIP Calculator",
-  description = "India's #1 mutual fund investment platform. Compare 1000+ mutual funds, AI-powered recommendations, SIP calculator, goal-based investing. Start SIP with ₹500. SEBI registered.",
-  keywords = "mutual funds india, SIP investment, mutual fund comparison, best mutual funds 2024, SIP calculator, ELSS funds, large cap funds, small cap funds, mutual fund analysis, investment advisor, portfolio tracker",
+  description = "India's #1 SEBI registered mutual fund investment platform. Compare 1000+ mutual funds, professional recommendations, SIP calculator, goal-based investing. Start SIP with ₹500. Regular mutual funds only.",
+  keywords = "mutual funds india, SIP investment, mutual fund comparison, best mutual funds 2024, SIP calculator, ELSS funds, large cap funds, small cap funds, mutual fund analysis, investment advisor, portfolio tracker, regular mutual funds",
   canonicalUrl,
   ogImage = "/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
-  structuredData
+  structuredData,
+  isDynamic = false
 }: SEOHeadProps) => {
   const currentUrl = canonicalUrl || window.location.href;
 
@@ -24,7 +26,7 @@ const SEOHead = ({
     "@context": "https://schema.org",
     "@type": "FinancialService",
     "name": "SIP Brewery",
-    "description": "India's leading mutual fund investment platform with AI-powered fund analysis and recommendations",
+    "description": "India's leading SEBI registered mutual fund investment platform with professional fund analysis and recommendations",
     "url": "https://sipbrewery.com",
     "logo": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
     "sameAs": [
@@ -45,19 +47,52 @@ const SEOHead = ({
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "SIP Investment Plans"
+            "name": "Regular Mutual Fund SIP Investment Plans"
           }
         },
         {
           "@type": "Offer", 
           "itemOffered": {
             "@type": "Service",
-            "name": "Mutual Fund Comparison"
+            "name": "Mutual Fund Comparison & Advisory"
           }
         }
       ]
     }
   };
+
+  // Dynamic content structured data for better indexing
+  const dynamicStructuredData = isDynamic ? {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": title,
+    "description": description,
+    "url": currentUrl,
+    "mainEntity": {
+      "@type": "QAPage",
+      "mainContentOfPage": {
+        "@type": "WebPageElement",
+        "text": description
+      }
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://sipbrewery.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Community",
+          "item": "https://sipbrewery.com/community"
+        }
+      ]
+    }
+  } : null;
 
   return (
     <Helmet>
@@ -65,6 +100,19 @@ const SEOHead = ({
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <link rel="canonical" href={currentUrl} />
+      
+      {/* Dynamic content indexing */}
+      {isDynamic && (
+        <>
+          <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1, max-snippet-length:320" />
+          <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+          <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+          <meta httpEquiv="cache-control" content="no-cache, no-store, must-revalidate" />
+          <meta httpEquiv="pragma" content="no-cache" />
+          <meta httpEquiv="expires" content="0" />
+          <meta name="revisit-after" content="1 hour" />
+        </>
+      )}
       
       {/* Open Graph */}
       <meta property="og:title" content={title} />
@@ -87,7 +135,7 @@ const SEOHead = ({
       
       {/* Structured Data */}
       <script type="application/ld+json">
-        {JSON.stringify(structuredData || defaultStructuredData)}
+        {JSON.stringify(dynamicStructuredData || structuredData || defaultStructuredData)}
       </script>
       
       {/* Additional meta tags for financial services */}
@@ -96,6 +144,14 @@ const SEOHead = ({
       <meta name="language" content="en-IN" />
       <meta name="author" content="SIP Brewery" />
       <meta name="publisher" content="SIP Brewery" />
+      
+      {/* Dynamic content freshness indicators */}
+      {isDynamic && (
+        <>
+          <meta name="last-modified" content={new Date().toISOString()} />
+          <meta name="content-freshness" content="dynamic" />
+        </>
+      )}
     </Helmet>
   );
 };

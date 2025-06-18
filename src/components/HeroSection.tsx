@@ -81,7 +81,7 @@ const HeroSection = () => {
           <div className="mb-6">
             <span className="inline-flex items-center bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-6 py-3 rounded-full text-sm font-semibold mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
               <Sparkles className="h-4 w-4 mr-2" />
-              🎉 Limited Time: Earn up to ₹70,000 wallet credits + up to ₹500 per referral!
+              🎉 SEBI Registered: Earn consistency rewards + gift cards for regular SIPs + referral rewards!
             </span>
           </div>
           
@@ -94,12 +94,12 @@ const HeroSection = () => {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
-            Invest in top-performing mutual funds with professional guidance. 
-            Earn up to <span className="font-bold text-green-600">₹20,000</span> wallet credits for 12 uninterrupted SIPs 
-            AND up to <span className="font-bold text-blue-600">₹50,000</span> for portfolio transfers!
+            Invest in top-performing regular mutual funds with professional SEBI registered advisory. 
+            Earn consistency rewards and gift cards for maintaining <span className="font-bold text-green-600">12 uninterrupted SIPs</span> 
+            AND portfolio transfer incentives up to <span className="font-bold text-blue-600">₹50,000</span>!
             <br />
             <span className="text-lg text-purple-600 font-semibold">
-              PLUS: Refer friends and earn up to ₹500 per successful referral!
+              PLUS: Refer friends and earn rewards per successful referral! (T&C Apply)
             </span>
           </p>
           
@@ -153,7 +153,7 @@ const HeroSection = () => {
               <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
                 <Shield className="h-10 w-10 text-white" />
               </div>
-              <h3 className="font-bold text-xl text-gray-900 mb-2">SEBI Regulated</h3>
+              <h3 className="font-bold text-xl text-gray-900 mb-2">SEBI Registered</h3>
               <p className="text-gray-600 font-medium">100% safe & transparent investing platform</p>
             </div>
             
@@ -161,8 +161,8 @@ const HeroSection = () => {
               <div className="bg-gradient-to-br from-purple-400 to-purple-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
                 <Award className="h-10 w-10 text-white" />
               </div>
-              <h3 className="font-bold text-xl text-gray-900 mb-2">Triple Rewards</h3>
-              <p className="text-gray-600 font-medium">SIP rewards + Transfer bonus + Referral earnings</p>
+              <h3 className="font-bold text-xl text-gray-900 mb-2">Consistency Rewards</h3>
+              <p className="text-gray-600 font-medium">SIP consistency rewards + Transfer incentives + Referral earnings</p>
             </div>
           </div>
 
@@ -187,7 +187,7 @@ const HeroSection = () => {
                   Past performance is not indicative of future returns. All investments are regulated by SEBI and compliant with AMFI guidelines.
                   <br /><br />
                   <strong>Registration Details:</strong> SEBI Registered Investment Advisor | AMFI Compliant Platform | 
-                  All wallet credit rewards and referral bonuses are promotional incentives and do not guarantee investment returns.
+                  All consistency rewards, gift cards and referral incentives are promotional benefits subject to terms and conditions as per SEBI guidelines and do not guarantee investment returns.
                 </p>
               </div>
             </div>
