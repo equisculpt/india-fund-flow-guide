@@ -27,6 +27,7 @@ import PublicFundsPage from "@/pages/PublicFundsPage";
 import WhatsAppBotPage from "@/pages/WhatsAppBotPage";
 import TermsOfServicePage from "@/pages/TermsOfServicePage";
 import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
+import SBISmallCapFundPage from "@/pages/SBISmallCapFundPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -68,6 +69,13 @@ function App() {
                       <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                       <Route path="/terms" element={<TermsOfServicePage />} />
                       <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                      
+                      {/* SEO-optimized SBI Small Cap Fund pages */}
+                      <Route path="/sbi-small-cap-mutual-fund" element={<SBISmallCapFundPage />} />
+                      <Route path="/sbi-small-cap-fund-review" element={<SBISmallCapFundPage />} />
+                      <Route path="/sbi-small-cap-fund-performance" element={<SBISmallCapFundPage />} />
+                      <Route path="/sbi-small-cap-fund-nav" element={<SBISmallCapFundPage />} />
+                      
                       <Route path="/sitemap.xml" element={<SitemapHandler />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
