@@ -49,12 +49,14 @@ const Header = () => {
               <NavLink to="/">Home</NavLink>
               <NavLink to="/fund-comparison">Compare Funds</NavLink>
               <NavLink to="/public-funds">Browse Funds</NavLink>
-              <NavLink to="/advanced-features">
-                <div className="flex items-center gap-1">
-                  <Brain className="h-4 w-4" />
-                  AI Features
-                </div>
-              </NavLink>
+              {user && (
+                <NavLink to="/advanced-features">
+                  <div className="flex items-center gap-1">
+                    <Brain className="h-4 w-4" />
+                    AI Features
+                  </div>
+                </NavLink>
+              )}
               {user && (
                 <>
                   <NavLink to="/dashboard">
@@ -120,7 +122,9 @@ const Header = () => {
                 <NavLink to="/" onClick={() => setIsMenuOpen(false)}>Home</NavLink>
                 <NavLink to="/fund-comparison" onClick={() => setIsMenuOpen(false)}>Compare Funds</NavLink>
                 <NavLink to="/public-funds" onClick={() => setIsMenuOpen(false)}>Browse Funds</NavLink>
-                <NavLink to="/advanced-features" onClick={() => setIsMenuOpen(false)}>AI Features</NavLink>
+                {user && (
+                  <NavLink to="/advanced-features" onClick={() => setIsMenuOpen(false)}>AI Features</NavLink>
+                )}
                 {user && (
                   <>
                     <NavLink to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</NavLink>
