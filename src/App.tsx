@@ -28,6 +28,7 @@ import WhatsAppBotPage from "@/pages/WhatsAppBotPage";
 import TermsOfServicePage from "@/pages/TermsOfServicePage";
 import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
 import SBISmallCapFundPage from "@/pages/SBISmallCapFundPage";
+import UniversalFundSEOPage from "@/components/UniversalFundSEOPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -71,11 +72,69 @@ function App() {
                       <Route path="/terms" element={<TermsOfServicePage />} />
                       <Route path="/privacy" element={<PrivacyPolicyPage />} />
                       
-                      {/* SEO-optimized SBI Small Cap Fund pages */}
+                      {/* SBI Fund SEO Pages */}
                       <Route path="/sbi-small-cap-mutual-fund" element={<SBISmallCapFundPage />} />
                       <Route path="/sbi-small-cap-fund-review" element={<SBISmallCapFundPage />} />
                       <Route path="/sbi-small-cap-fund-performance" element={<SBISmallCapFundPage />} />
                       <Route path="/sbi-small-cap-fund-nav" element={<SBISmallCapFundPage />} />
+                      
+                      {/* Universal Fund SEO Pages - SBI */}
+                      <Route path="/sbi-bluechip-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/sbi-large-midcap-fund" element={<UniversalFundSEOPage />} />
+                      
+                      {/* Universal Fund SEO Pages - HDFC */}
+                      <Route path="/hdfc-top-100-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/hdfc-small-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/hdfc-balanced-advantage-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/hdfc-large-cap-fund" element={<UniversalFundSEOPage />} />
+                      
+                      {/* Universal Fund SEO Pages - ICICI Prudential */}
+                      <Route path="/icici-prudential-bluechip-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/icici-prudential-small-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/icici-prudential-large-cap-fund" element={<UniversalFundSEOPage />} />
+                      
+                      {/* Universal Fund SEO Pages - Axis */}
+                      <Route path="/axis-bluechip-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/axis-small-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/axis-long-term-equity-fund" element={<UniversalFundSEOPage />} />
+                      
+                      {/* Universal Fund SEO Pages - Other AMCs */}
+                      <Route path="/kotak-small-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/kotak-emerging-equity-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/mirae-asset-large-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/mirae-asset-emerging-bluechip-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/parag-parikh-flexi-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/parag-parikh-long-term-equity-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/motilal-oswal-nasdaq-100-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/motilal-oswal-midcap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/nippon-india-small-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/nippon-india-large-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/uti-nifty-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/uti-flexi-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/dsp-small-cap-fund" element={<UniversalFundSEOPage />} />
+                      <Route path="/dsp-midcap-fund" element={<UniversalFundSEOPage />} />
+                      
+                      {/* AMC Company Pages */}
+                      <Route path="/sbi-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/hdfc-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/icici-prudential-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/axis-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/kotak-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/mirae-asset-mutual-funds" element={<UniversalFundSEOPage />} />
+                      
+                      {/* Category and Investment Pages */}
+                      <Route path="/best-mutual-funds-2024" element={<UniversalFundSEOPage />} />
+                      <Route path="/small-cap-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/large-cap-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/mid-cap-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/elss-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/index-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/debt-mutual-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/flexi-cap-funds" element={<UniversalFundSEOPage />} />
+                      <Route path="/sip-investment" element={<UniversalFundSEOPage />} />
+                      <Route path="/mutual-fund-calculator" element={<UniversalFundSEOPage />} />
+                      <Route path="/best-sip-plans" element={<UniversalFundSEOPage />} />
+                      <Route path="/top-performing-mutual-funds" element={<UniversalFundSEOPage />} />
                       
                       <Route path="/sitemap.xml" element={<SitemapHandler />} />
                       <Route path="*" element={<NotFound />} />
