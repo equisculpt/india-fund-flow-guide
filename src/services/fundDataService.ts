@@ -1,8 +1,9 @@
-
 import { FundData, NAVResponse, TopFund } from '@/types/fundTypes';
 import { FundDataMappings } from './fundDataMappings';
 import { NAVService } from './navService';
 import { FundAnalysisService } from './fundAnalysisService';
+import { MutualFundSearchService } from './mutualFundSearchService';
+import { EnhancedFundDataExtractor } from './enhancedFundDataExtractor';
 
 export class FundDataService {
   static get TOP_FUNDS(): TopFund[] {
@@ -53,8 +54,37 @@ export class FundDataService {
     return dynamicTopFunds.length > 0 ? dynamicTopFunds : FundDataMappings.TOP_FUNDS;
   }
 
-  static getMockFundData(schemeCode: string): FundData {
-    console.log('FundDataService: Getting mock fund data for scheme code:', schemeCode);
+  static async getMockFundData(schemeCode: string): Promise<FundData> {
+    console.log('FundDataService: Getting enhanced fund data for scheme code:', schemeCode);
+    
+    try {
+      // Try to get enhanced data first
+      const enhancedData = await MutualFundSearchService.getEnhancedFundDetails(schemeCode);
+      
+      if (enhancedData) {
+        console.log('FundDataService: Using enhanced API data for:', enhancedData.schemeName);
+        return {
+          schemeCode: enhancedData.schemeCode,
+          schemeName: enhancedData.schemeName,
+          amc: enhancedData.fundHouse || 'Unknown',
+          category: enhancedData.category || 'Unknown',
+          nav: enhancedData.nav || 0,
+          returns1Y: enhancedData.returns1Y,
+          returns3Y: enhancedData.returns3Y,
+          returns5Y: enhancedData.returns5Y,
+          aum: enhancedData.aum,
+          expenseRatio: enhancedData.expenseRatio,
+          volatility: enhancedData.volatility,
+          minSipAmount: 500,
+          navDate: enhancedData.navDate
+        };
+      }
+    } catch (error) {
+      console.error('FundDataService: Error getting enhanced data:', error);
+    }
+
+    // Fallback to existing logic
+    console.log('FundDataService: Falling back to existing data sources for scheme code:', schemeCode);
     
     // First check if we have analysis results with this scheme code
     const analysisResults = FundAnalysisService.loadAnalysisResults();

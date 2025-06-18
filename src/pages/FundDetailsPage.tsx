@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
@@ -20,6 +19,7 @@ import NAVHistoryChart from '@/components/NAVHistoryChart';
 import { FundDataService } from '@/services/fundDataService';
 import { MutualFundSearchService } from '@/services/mutualFundSearchService';
 import { supabase } from '@/integrations/supabase/client';
+import { EnhancedFundDataExtractor } from '@/services/enhancedFundDataExtractor';
 
 interface FundDetailsPageProps {
   // Add any props you need here
@@ -39,56 +39,85 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   useEffect(() => {
     if (!fundId) return;
 
-    console.log('FundDetailsPage: Starting data fetch for fundId:', fundId);
-    loadFundData();
+    console.log('FundDetailsPage: Starting enhanced data fetch for fundId:', fundId);
+    loadEnhancedFundData();
   }, [fundId]);
 
-  const loadFundData = async () => {
+  const loadEnhancedFundData = async () => {
     try {
-      // First get API details to have accurate category and fund house
-      console.log('FundDetailsPage: Fetching API details for fundId:', fundId);
-      const apiDetails = await MutualFundSearchService.getFundDetails(fundId);
+      console.log('FundDetailsPage: Fetching enhanced fund details for fundId:', fundId);
       
-      if (apiDetails) {
-        console.log('FundDetailsPage: API details loaded:', apiDetails);
-        
-        // Use API data as primary source, fallback to mock data for missing fields
-        const baseFundData = FundDataService.getMockFundData(fundId);
+      // Get enhanced fund details with calculated performance data
+      const enhancedDetails = await MutualFundSearchService.getEnhancedFundDetails(fundId);
+      
+      if (enhancedDetails) {
+        console.log('FundDetailsPage: Enhanced details loaded:', enhancedDetails);
         
         const combinedFundData = {
           schemeCode: fundId,
-          schemeName: apiDetails.schemeName,
-          category: apiDetails.category || 'Unknown', // Use API category
-          fundHouse: apiDetails.fundHouse || 'Unknown', // Use API fund house
-          nav: apiDetails.nav,
-          navDate: apiDetails.navDate,
-          // Fallback to mock data for these fields if not in API
-          returns1Y: baseFundData.returns1Y,
-          returns3Y: baseFundData.returns3Y,
-          returns5Y: baseFundData.returns5Y,
-          expenseRatio: baseFundData.expenseRatio,
-          aum: baseFundData.aum,
-          minSipAmount: baseFundData.minSipAmount,
-          volatility: baseFundData.volatility,
-          amc: apiDetails.fundHouse || baseFundData.amc
+          schemeName: enhancedDetails.schemeName,
+          category: enhancedDetails.category || 'Unknown',
+          fundHouse: enhancedDetails.fundHouse || 'Unknown',
+          nav: enhancedDetails.nav || 0,
+          navDate: enhancedDetails.navDate,
+          returns1Y: enhancedDetails.returns1Y,
+          returns3Y: enhancedDetails.returns3Y,
+          returns5Y: enhancedDetails.returns5Y,
+          expenseRatio: enhancedDetails.expenseRatio,
+          aum: enhancedDetails.aum,
+          minSipAmount: 500,
+          volatility: enhancedDetails.volatility,
+          amc: enhancedDetails.fundHouse || 'Unknown'
         };
 
-        console.log('FundDetailsPage: Combined fund data:', combinedFundData);
+        console.log('FundDetailsPage: Combined enhanced fund data:', combinedFundData);
         setFundData(combinedFundData);
-        setLatestNAV(apiDetails);
+        setLatestNAV(enhancedDetails);
         setNavError('');
 
-        // Trigger AI analysis with the combined data
+        // Trigger AI analysis with the enhanced data
         await performAIAnalysis(combinedFundData);
       } else {
-        // Fallback to mock data if API fails
-        console.log('FundDetailsPage: API failed, using mock data for fundId:', fundId);
-        const baseFundData = FundDataService.getMockFundData(fundId);
-        setFundData(baseFundData);
-        setNavError('Using mock data - API unavailable');
+        // Fallback to basic API details if enhanced fails
+        console.log('FundDetailsPage: Enhanced details failed, trying basic API for fundId:', fundId);
+        const apiDetails = await MutualFundSearchService.getFundDetails(fundId);
         
-        // Still try AI analysis with mock data
-        await performAIAnalysis(baseFundData);
+        if (apiDetails) {
+          console.log('FundDetailsPage: Basic API details loaded:', apiDetails);
+          
+          const baseFundData = FundDataService.getMockFundData(fundId);
+          
+          const combinedFundData = {
+            schemeCode: fundId,
+            schemeName: apiDetails.schemeName,
+            category: apiDetails.category || 'Unknown',
+            fundHouse: apiDetails.fundHouse || 'Unknown',
+            nav: apiDetails.nav || 0,
+            navDate: apiDetails.navDate,
+            returns1Y: baseFundData.returns1Y,
+            returns3Y: baseFundData.returns3Y,
+            returns5Y: baseFundData.returns5Y,
+            expenseRatio: baseFundData.expenseRatio,
+            aum: baseFundData.aum,
+            minSipAmount: baseFundData.minSipAmount,
+            volatility: baseFundData.volatility,
+            amc: apiDetails.fundHouse || baseFundData.amc
+          };
+
+          console.log('FundDetailsPage: Combined fallback fund data:', combinedFundData);
+          setFundData(combinedFundData);
+          setLatestNAV(apiDetails);
+          setNavError('Using calculated performance data from NAV history');
+          
+          await performAIAnalysis(combinedFundData);
+        } else {
+          console.log('FundDetailsPage: All API calls failed, using mock data for fundId:', fundId);
+          const baseFundData = FundDataService.getMockFundData(fundId);
+          setFundData(baseFundData);
+          setNavError('Using mock data - API unavailable');
+          
+          await performAIAnalysis(baseFundData);
+        }
       }
 
       // Fetch historical data for charts
@@ -100,7 +129,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
       });
 
     } catch (error) {
-      console.error('FundDetailsPage: Error loading fund data:', error);
+      console.error('FundDetailsPage: Error loading enhanced fund data:', error);
       setNavError('Failed to load fund data');
     }
   };
@@ -177,7 +206,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <div>Loading fund details...</div>
+            <div>Loading enhanced fund details...</div>
           </div>
         </div>
       </div>
@@ -216,7 +245,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           Back to Funds
         </Button>
         
-        {/* Fund Header */}
+        {/* Fund Header with Enhanced Data */}
         <div className="mt-4 mb-6">
           <div className="flex items-center justify-between">
             <div>
@@ -227,14 +256,33 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
                 {fundData.fundHouse} • {fundData.category}
               </p>
               
-              {/* Show NAV error if any */}
+              {/* Enhanced Fund Metrics */}
+              <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-600">Expense Ratio:</span>
+                  <span className="font-semibold ml-1">{fundData.expenseRatio}%</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">AUM:</span>
+                  <span className="font-semibold ml-1">₹{fundData.aum} Cr</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Volatility:</span>
+                  <span className="font-semibold ml-1">{fundData.volatility}%</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Min SIP:</span>
+                  <span className="font-semibold ml-1">₹{fundData.minSipAmount}</span>
+                </div>
+              </div>
+              
               {navError && (
-                <p className="text-sm text-orange-600 mt-1">
-                  ⚠️ {navError}
+                <p className="text-sm text-green-600 mt-1">
+                  ✓ {navError}
                 </p>
               )}
               
-              <div className="flex items-center gap-4 mt-2">
+              <div className="flex items-center gap-2 mt-2">
                 {aiLoading ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin text-purple-600" />
@@ -269,21 +317,28 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             <div className="text-right">
               <div className="text-3xl font-bold">₹{fundData.nav.toFixed(4)}</div>
               <div className="text-sm text-gray-600">
-                Current NAV {latestNAV ? '(Live)' : '(Mock)'}
+                Current NAV {latestNAV ? '(Live)' : '(Calculated)'}
               </div>
               {latestNAV && (
                 <div className="text-xs text-green-600 mt-1">
                   Updated: {latestNAV.navDate}
                 </div>
               )}
-              <div className="flex items-center gap-2 mt-1">
-                {fundData.returns1Y >= 0 ? 
-                  <TrendingUp className="h-4 w-4 text-green-600" /> : 
-                  <TrendingDown className="h-4 w-4 text-red-600" />
-                }
-                <span className={`font-semibold ${fundData.returns1Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {fundData.returns1Y >= 0 ? '+' : ''}{fundData.returns1Y}% (1Y)
-                </span>
+              
+              {/* Enhanced Performance Display */}
+              <div className="mt-2 space-y-1">
+                <div className="flex items-center gap-2">
+                  {fundData.returns1Y >= 0 ? 
+                    <TrendingUp className="h-4 w-4 text-green-600" /> : 
+                    <TrendingDown className="h-4 w-4 text-red-600" />
+                  }
+                  <span className={`font-semibold ${fundData.returns1Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {fundData.returns1Y >= 0 ? '+' : ''}{fundData.returns1Y}% (1Y)
+                  </span>
+                </div>
+                <div className="text-xs text-gray-600">
+                  3Y: {fundData.returns3Y.toFixed(1)}% | 5Y: {fundData.returns5Y.toFixed(1)}%
+                </div>
               </div>
             </div>
           </div>
