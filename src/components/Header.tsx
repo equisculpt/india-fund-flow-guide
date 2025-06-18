@@ -39,6 +39,20 @@ const Header = () => {
     setIsMenuOpen(false);
   };
 
+  const handleBrowseFundsClick = () => {
+    if (location.pathname === '/') {
+      // If already on home page, scroll to search section
+      const element = document.getElementById('explore-funds');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // If on different page, navigate to home with anchor
+      navigate('/#explore-funds');
+    }
+    setIsMenuOpen(false);
+  };
+
   const NavLink = ({ to, children, onClick }: { to?: string; children: React.ReactNode; onClick?: () => void }) => (
     <Link
       to={to || '#'}
@@ -68,7 +82,12 @@ const Header = () => {
               >
                 Compare Funds
               </button>
-              <NavLink to="/public-funds">Browse Funds</NavLink>
+              <button
+                onClick={handleBrowseFundsClick}
+                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Browse Funds
+              </button>
               {user && (
                 <NavLink to="/advanced-features">
                   <div className="flex items-center gap-1">
@@ -146,7 +165,12 @@ const Header = () => {
                 >
                   Compare Funds
                 </button>
-                <NavLink to="/public-funds" onClick={() => setIsMenuOpen(false)}>Browse Funds</NavLink>
+                <button
+                  onClick={handleBrowseFundsClick}
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left"
+                >
+                  Browse Funds
+                </button>
                 {user && (
                   <NavLink to="/advanced-features" onClick={() => setIsMenuOpen(false)}>AI Features</NavLink>
                 )}
