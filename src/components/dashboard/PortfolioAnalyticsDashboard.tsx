@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Download, TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
 import { usePortfolioAnalytics, useAIInsights, useCalculatePortfolioAnalytics } from '@/hooks/usePortfolioAnalytics';
-import { useMutualFundAnalytics } from '@/hooks/useMutualFundAnalytics';
 import { format } from 'date-fns';
 
 const PortfolioAnalyticsDashboard = () => {
