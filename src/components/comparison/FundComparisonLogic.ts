@@ -1,7 +1,8 @@
-
 import { RecentPerformanceAnalyzer } from "@/services/recentPerformanceAnalyzer";
 import { MarketCycleAnalyzer } from "@/services/marketCycleAnalyzer";
 import { StableFundComparison } from "@/services/stableFundComparison";
+import { FundScoring } from "./FundScoring";
+import { RecommendationGenerator } from "./RecommendationGenerator";
 
 export interface FundWithDetails {
   schemeCode: string;
@@ -57,7 +58,21 @@ export class FundComparisonLogic {
     console.log('FundComparisonLogic: Market phase:', marketCycle.phase, 'Confidence:', marketCycle.confidenceLevel);
 
     // Perform fresh analysis with market context
-    const analysisResults = funds.map(fund => {
+    const analysisResults = this.performFreshAnalysis(funds, marketCycle);
+
+    // Find the best fund and save stable comparison
+    const bestFund = analysisResults.reduce((prev, current) => 
+      (current.aiScore > prev.aiScore) ? current : prev
+    );
+
+    this.saveStableComparison(fundIds, analysisResults, marketCycle);
+
+    // Generate comparison result
+    return this.generateComparisonResult(analysisResults, bestFund, marketCycle, funds);
+  }
+
+  private static performFreshAnalysis(funds: FundWithDetails[], marketCycle: any) {
+    return funds.map(fund => {
       const recentPerformance = RecentPerformanceAnalyzer.analyzeRecentPerformance({
         returns1M: fund.returns1M || 0,
         returns2M: fund.returns2M || 0,
@@ -69,12 +84,12 @@ export class FundComparisonLogic {
       });
 
       // Calculate base scores
-      const portfolioScore = this.calculatePortfolioScore(fund);
+      const portfolioScore = FundScoring.calculatePortfolioScore(fund);
       const recentScore = recentPerformance.momentumScore;
-      const expenseScore = this.calculateExpenseScore(fund);
+      const expenseScore = FundScoring.calculateExpenseScore(fund);
       
       // Apply market cycle adjustments
-      const marketWeight = this.getMarketCycleWeight(fund.category || 'Large Cap', marketCycle);
+      const marketWeight = FundScoring.getMarketCycleWeight(fund.category || 'Large Cap', marketCycle);
       const marketScore = 5 * marketWeight;
 
       // Calculate base AI score
@@ -100,17 +115,13 @@ export class FundComparisonLogic {
         marketScore,
         confidence: stabilityScore.confidence,
         recentPerformance,
-        recommendation: this.getRecommendation(stabilityScore.marketAdjustedScore),
+        recommendation: FundScoring.getRecommendation(stabilityScore.marketAdjustedScore),
         validUntil: stabilityScore.nextReviewDate
       };
     });
+  }
 
-    // Find the best fund based on market-adjusted scores
-    const bestFund = analysisResults.reduce((prev, current) => 
-      (current.aiScore > prev.aiScore) ? current : prev
-    );
-
-    // Save stable comparison for future use
+  private static saveStableComparison(fundIds: string[], analysisResults: any[], marketCycle: any) {
     const stableRankings = analysisResults.map(fund => ({
       fundId: fund.schemeCode,
       baseScore: fund.baseScore,
@@ -128,14 +139,15 @@ export class FundComparisonLogic {
       marketCycle.reasoning,
       avgConfidence
     );
+  }
 
-    // Generate comparison result
-    const comparison: EnhancedComparisonResult = {
+  private static generateComparisonResult(analysisResults: any[], bestFund: any, marketCycle: any, funds: FundWithDetails[]): EnhancedComparisonResult {
+    return {
       bestFund: bestFund.schemeName,
       bestScore: bestFund.aiScore,
       analysis: analysisResults,
-      reasoning: this.generateEnhancedReasoning(analysisResults, bestFund, marketCycle),
-      marketRecommendation: this.generateMarketAwareRecommendation(funds, marketCycle),
+      reasoning: RecommendationGenerator.generateEnhancedReasoning(analysisResults, bestFund, marketCycle),
+      marketRecommendation: RecommendationGenerator.generateMarketAwareRecommendation(funds, marketCycle),
       marketTiming: {
         currentPhase: marketCycle.phase,
         allocation: marketCycle.allocationRecommendation,
@@ -145,8 +157,6 @@ export class FundComparisonLogic {
       isStableResult: false,
       validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
     };
-
-    return comparison;
   }
 
   private static formatStableResult(funds: FundWithDetails[], stableComparison: any): EnhancedComparisonResult {
@@ -157,7 +167,7 @@ export class FundComparisonLogic {
         ...fund,
         aiScore: stableScore?.marketAdjustedScore || 5,
         confidence: stableScore?.confidence || 7,
-        recommendation: this.getRecommendation(stableScore?.marketAdjustedScore || 5),
+        recommendation: FundScoring.getRecommendation(stableScore?.marketAdjustedScore || 5),
         isStableResult: true
       };
     });
@@ -183,123 +193,5 @@ export class FundComparisonLogic {
       isStableResult: true,
       validUntil: stableComparison.validUntil
     };
-  }
-
-  private static getMarketCycleWeight(category: string, marketCycle: any): number {
-    const phaseWeights = {
-      'Bottom': {
-        'Small Cap': 1.3,
-        'Mid Cap': 1.2,
-        'Large Cap': 1.0,
-        'Debt': 0.8,
-        'ELSS': 1.1,
-        'Hybrid': 0.9
-      },
-      'Recovery': {
-        'Small Cap': 1.2,
-        'Mid Cap': 1.15,
-        'Large Cap': 1.05,
-        'Debt': 0.9,
-        'ELSS': 1.1,
-        'Hybrid': 1.0
-      },
-      'Growth': {
-        'Small Cap': 1.1,
-        'Mid Cap': 1.1,
-        'Large Cap': 1.0,
-        'Debt': 1.0,
-        'ELSS': 1.05,
-        'Hybrid': 1.0
-      },
-      'Peak': {
-        'Small Cap': 0.8,
-        'Mid Cap': 0.85,
-        'Large Cap': 1.1,
-        'Debt': 1.3,
-        'ELSS': 0.9,
-        'Hybrid': 1.15
-      },
-      'Correction': {
-        'Small Cap': 0.7,
-        'Mid Cap': 0.8,
-        'Large Cap': 1.2,
-        'Debt': 1.4,
-        'ELSS': 0.9,
-        'Hybrid': 1.1
-      }
-    };
-
-    return phaseWeights[marketCycle.phase]?.[category] || 1.0;
-  }
-
-  private static calculatePortfolioScore(fund: FundWithDetails): number {
-    let score = 5; // Base score
-    
-    // AUM factor
-    if (fund.aum && fund.aum > 10000) score += 1;
-    else if (fund.aum && fund.aum > 5000) score += 0.5;
-    
-    // Category stability factor
-    if (fund.category?.includes('Large Cap')) score += 0.5;
-    if (fund.category?.includes('Small Cap')) score += 1; // Higher growth potential
-    
-    return Math.min(10, Math.max(1, score));
-  }
-
-  private static calculateExpenseScore(fund: FundWithDetails): number {
-    if (!fund.expenseRatio) return 5;
-    
-    if (fund.expenseRatio < 0.5) return 9;
-    if (fund.expenseRatio < 1.0) return 8;
-    if (fund.expenseRatio < 1.5) return 6;
-    if (fund.expenseRatio < 2.0) return 4;
-    return 2;
-  }
-
-  private static getRecommendation(score: number): string {
-    if (score >= 8.5) return 'STRONG BUY';
-    if (score >= 7.5) return 'BUY';
-    if (score >= 6.5) return 'HOLD';
-    if (score >= 5.5) return 'WEAK HOLD';
-    return 'AVOID';
-  }
-
-  private static generateEnhancedReasoning(analysis: any[], bestFund: any, marketCycle: any): string {
-    const marketContext = `In current ${marketCycle.phase} market phase, `;
-    const bestFundReasons = [];
-    
-    if (bestFund.portfolioScore > 7) bestFundReasons.push('strong portfolio quality');
-    if (bestFund.recentScore > 7) bestFundReasons.push('excellent recent momentum');
-    if (bestFund.expenseScore > 7) bestFundReasons.push('cost efficiency');
-    if (bestFund.marketScore > 6) bestFundReasons.push('favorable market positioning');
-    
-    return marketContext + bestFundReasons.join(', ') + ` gives ${bestFund.schemeName} the highest market-adjusted score of ${bestFund.aiScore.toFixed(1)}/10.`;
-  }
-
-  private static generateMarketAwareRecommendation(funds: FundWithDetails[], marketCycle: any): string {
-    const categories = [...new Set(funds.map(f => f.category))];
-    const phase = marketCycle.phase;
-    const allocation = marketCycle.allocationRecommendation;
-    
-    let recommendation = `Market Timing Analysis: Currently in ${phase} phase. `;
-    recommendation += `Recommended allocation - Equity: ${allocation.equity}%, Debt: ${allocation.debt}%. `;
-    
-    if (categories.length === 1) {
-      const category = categories[0];
-      switch (phase) {
-        case 'Bottom':
-          recommendation += category?.includes('Small') ? 'Excellent timing for small cap investments.' : 'Good time to accumulate quality equity funds.';
-          break;
-        case 'Peak':
-          recommendation += category?.includes('Debt') ? 'Debt funds well-positioned in current environment.' : 'Consider reducing equity exposure gradually.';
-          break;
-        default:
-          recommendation += 'Maintain systematic investment approach.';
-      }
-    } else {
-      recommendation += `Among compared categories (${categories.join(', ')}), market favors diversified approach with current phase preferences.`;
-    }
-    
-    return recommendation;
   }
 }

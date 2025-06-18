@@ -2,9 +2,10 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Brain, Star, TrendingUp, Shield, Target, Zap, RefreshCw, AlertCircle } from 'lucide-react';
+import { Brain, Star, TrendingUp, Shield, Target, RefreshCw, AlertCircle } from 'lucide-react';
 import { AMFIPortfolioService } from '@/services/AMFIPortfolioScraper';
+import AIAnalysisIndicator from './AIAnalysisIndicator';
+import FundScoringBreakdown from './FundScoringBreakdown';
 
 interface AIFundRankingProps {
   fundData: any;
@@ -30,21 +31,19 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
     }
   };
 
-  // Check if we have real AI analysis data - look for the specific AI analysis fields
+  // Check if we have real AI analysis data
   const hasRealAI = fundData.aiScore && 
                     fundData.recommendation && 
                     fundData.confidence && 
                     fundData.analysis && 
                     fundData.reasoning;
   
-  console.log('AIFundRanking: hasRealAI =', hasRealAI, 'fundData keys:', Object.keys(fundData));
-  
   const overallScore = hasRealAI ? fundData.aiScore : 7.5;
   const recommendation = hasRealAI ? fundData.recommendation : 'HOLD';
   const confidence = hasRealAI ? fundData.confidence : 75;
   const reasoning = hasRealAI ? fundData.reasoning : 'Standard fund analysis based on historical data';
 
-  // Use real AI scoring factors if available
+  // Generate scoring factors based on available data
   const scoringFactors = hasRealAI ? [
     { 
       name: "Performance Analysis", 
@@ -83,7 +82,7 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
       description: "AI evaluation of fund's competitive position in the market"
     }
   ] : [
-    // Fallback to old deterministic logic if no real AI
+    // Fallback scoring factors
     { 
       name: "Performance Consistency", 
       score: 7.5, 
@@ -216,45 +215,10 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
           </div>
 
           {/* Analysis Method Indicator */}
-          <div className={`p-3 rounded-lg ${hasRealAI ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'}`}>
-            <div className="flex items-center gap-2 text-sm">
-              {hasRealAI ? (
-                <>
-                  <Zap className="h-4 w-4 text-green-600" />
-                  <span className="text-green-800 font-medium">Real AI Analysis Completed</span>
-                  <Badge variant="outline" className="text-xs">{confidence}% Confidence</Badge>
-                </>
-              ) : (
-                <>
-                  <AlertCircle className="h-4 w-4 text-yellow-600" />
-                  <span className="text-yellow-800 font-medium">Using Mathematical Analysis</span>
-                  <span className="text-yellow-700 text-xs">(AI analysis unavailable)</span>
-                </>
-              )}
-            </div>
-          </div>
+          <AIAnalysisIndicator hasRealAI={hasRealAI} confidence={confidence} />
 
           {/* Scoring Breakdown */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-lg">
-              {hasRealAI ? 'AI Scoring Breakdown' : 'Analysis Breakdown'}
-            </h3>
-            {scoringFactors.map((factor, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{factor.name}</span>
-                    <Badge variant="outline" className="text-xs">
-                      {factor.weight}% weight
-                    </Badge>
-                  </div>
-                  <span className="font-bold text-lg">{factor.score.toFixed(1)}/10</span>
-                </div>
-                <Progress value={factor.score * 10} className="h-2" />
-                <p className="text-sm text-gray-600">{factor.description}</p>
-              </div>
-            ))}
-          </div>
+          <FundScoringBreakdown scoringFactors={scoringFactors} hasRealAI={hasRealAI} />
 
           {/* Portfolio Insights */}
           {portfolioData && (
