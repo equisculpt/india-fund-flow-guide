@@ -1,10 +1,14 @@
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 import ComplianceFooter from './ComplianceFooter';
 import TrademarkNotice from './TrademarkNotice';
+import ContactFormModal from './ContactFormModal';
 
 const Footer = () => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <footer className="bg-gray-900 text-white">
       {/* Main Footer Content */}
@@ -73,12 +77,12 @@ const Footer = () => {
                 <span className="text-gray-300">Hyderabad, India</span>
               </div>
             </div>
-            <Link 
-              to="/contact" 
+            <button 
+              onClick={() => setIsContactModalOpen(true)}
               className="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
             >
               Contact Us
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -98,6 +102,11 @@ const Footer = () => {
           </p>
         </div>
       </div>
+
+      <ContactFormModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </footer>
   );
 };

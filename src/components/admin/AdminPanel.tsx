@@ -1,82 +1,132 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut } from 'lucide-react';
-import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
-import InvestmentOverviewTab from '@/components/admin/InvestmentOverviewTab';
-import MutualFundManagementTab from '@/components/admin/MutualFundManagementTab';
-import UserManagementTab from '@/components/admin/UserManagementTab';
-import AgentManagementTab from '@/components/admin/AgentManagementTab';
-import CommissionManagementTab from '@/components/admin/CommissionManagementTab';
-import FundAnalysisTab from '@/components/admin/FundAnalysisTab';
-import CommunityManagementTab from '@/components/admin/CommunityManagementTab';
+import { useState, useEffect } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import FundTable from './FundTable';
+import UserTable from './UserTable';
+import AgentTable from './AgentTable';
+import CommissionTable from './CommissionTable';
+import CommunityContentTable from './CommunityContentTable';
+import BlogTable from './BlogTable';
+import AnalysisDashboard from './AnalysisDashboard';
+import ContactSubmissionsTab from './ContactSubmissionsTab';
 
 const AdminPanel = () => {
-  const [activeTab, setActiveTab] = useState("overview");
-  const { signOut } = useSupabaseAuthContext();
-  const navigate = useNavigate();
+  const [funds, setFunds] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [agents, setAgents] = useState([]);
+  const [commissions, setCommissions] = useState([]);
+  const [communityContent, setCommunityContent] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const { data: fundsData, error: fundsError } = await supabase.from('funds').select('*');
+      if (fundsError) throw fundsError;
+      setFunds(fundsData || []);
+
+      const { data: usersData, error: usersError } = await supabase.from('users').select('*');
+      if (usersError) throw usersError;
+      setUsers(usersData || []);
+
+      const { data: agentsData, error: agentsError } = await supabase.from('agents').select('*');
+      if (agentsError) throw agentsError;
+      setAgents(agentsData || []);
+
+      const { data: commissionsData, error: commissionsError } = await supabase.from('commissions').select('*');
+      if (commissionsError) throw commissionsError;
+      setCommissions(commissionsData || []);
+
+      const { data: communityData, error: communityError } = await supabase.from('community_content').select('*');
+      if (communityError) throw communityError;
+      setCommunityContent(communityData || []);
+
+      const { data: blogsData, error: blogsError } = await supabase.from('blogs').select('*');
+      if (blogsError) throw blogsError;
+      setBlogs(blogsData || []);
+
+    } catch (error: any) {
+      console.error("Error fetching data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load data",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center h-16">
-            <h1 className="text-xl font-semibold">SIP Brewery Admin Portal</h1>
-            <Button variant="outline" onClick={handleSignOut}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
+    <div className="container mx-auto p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <p className="text-gray-600">Manage your SIP Brewery platform</p>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="funds">Funds</TabsTrigger>
-            <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="agents">Agents</TabsTrigger>
-            <TabsTrigger value="investments">Investments</TabsTrigger>
-            <TabsTrigger value="analysis">Analysis</TabsTrigger>
-            <TabsTrigger value="community">Community</TabsTrigger>
-          </TabsList>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-9">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="funds">Funds</TabsTrigger>
+          <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="agents">Agents</TabsTrigger>
+          <TabsTrigger value="commissions">Commissions</TabsTrigger>
+          <TabsTrigger value="community">Community</TabsTrigger>
+          <TabsTrigger value="blogs">Blogs</TabsTrigger>
+          <TabsTrigger value="analysis">Analysis</TabsTrigger>
+          <TabsTrigger value="contact">Contact</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
-            <InvestmentOverviewTab />
-          </TabsContent>
+        <TabsContent value="overview">
+          <Card>
+            <CardHeader>
+              <CardTitle>Platform Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Quick statistics and summaries about the platform.</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <TabsContent value="funds" className="space-y-6">
-            <MutualFundManagementTab />
-          </TabsContent>
+        <TabsContent value="funds">
+          <FundTable funds={funds} />
+        </TabsContent>
 
-          <TabsContent value="users" className="space-y-6">
-            <UserManagementTab />
-          </TabsContent>
+        <TabsContent value="users">
+          <UserTable users={users} />
+        </TabsContent>
 
-          <TabsContent value="agents" className="space-y-6">
-            <AgentManagementTab />
-          </TabsContent>
+        <TabsContent value="agents">
+          <AgentTable agents={agents} />
+        </TabsContent>
 
-          <TabsContent value="investments" className="space-y-6">
-            <CommissionManagementTab />
-          </TabsContent>
+        <TabsContent value="commissions">
+          <CommissionTable commissions={commissions} />
+        </TabsContent>
 
-          <TabsContent value="analysis" className="space-y-6">
-            <FundAnalysisTab />
-          </TabsContent>
+        <TabsContent value="community">
+          <CommunityContentTable content={communityContent} />
+        </TabsContent>
 
-          <TabsContent value="community" className="space-y-6">
-            <CommunityManagementTab />
-          </TabsContent>
-        </Tabs>
-      </div>
+        <TabsContent value="blogs">
+          <BlogTable blogs={blogs} />
+        </TabsContent>
+
+        <TabsContent value="analysis">
+          <AnalysisDashboard />
+        </TabsContent>
+
+        <TabsContent value="contact">
+          <ContactSubmissionsTab />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
