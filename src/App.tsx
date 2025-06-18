@@ -19,6 +19,7 @@ import AgentHomePage from "@/pages/AgentHomePage";
 import ReferralPage from "@/pages/ReferralPage";
 import ComprehensiveDashboard from "@/pages/ComprehensiveDashboard";
 import AIPortfolioDashboard from "@/pages/AIPortfolioDashboard";
+import UserDashboard from "@/pages/UserDashboard";
 import PublicFundsPage from "@/pages/PublicFundsPage";
 import WhatsAppBotPage from "@/pages/WhatsAppBotPage";
 import TermsOfServicePage from "@/pages/TermsOfServicePage";
@@ -48,6 +49,7 @@ function App() {
                   <Route path="/referral" element={<ReferralPage />} />
                   <Route path="/dashboard" element={<ComprehensiveDashboard />} />
                   <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
+                  <Route path="/user-dashboard" element={<UserDashboard />} />
                   <Route path="/public-funds" element={<PublicFundsPage />} />
                   <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                   <Route path="/terms" element={<TermsOfServicePage />} />
