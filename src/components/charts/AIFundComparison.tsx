@@ -3,16 +3,21 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Star, TrendingUp, TrendingDown, Target, Loader2, Zap } from 'lucide-react';
+import { Star, TrendingUp, TrendingDown, Target, Loader2, Zap, X, BarChart3 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { FundDataService } from '@/services/fundDataService';
+import { RecentPerformanceAnalyzer } from '@/services/recentPerformanceAnalyzer';
+import FundSearchAutocomplete from './FundSearchAutocomplete';
 
 interface FundComparisonData {
   schemeCode: string;
   schemeName: string;
   category: string;
   nav: number;
+  returns1M: number;
+  returns2M: number;
+  returns3M: number;
+  returns6M: number;
   returns1Y: number;
   returns3Y: number;
   returns5Y: number;
@@ -26,18 +31,24 @@ interface FundComparisonData {
   strengths?: string[];
   concerns?: string[];
   performanceRank?: number;
-  analysis?: any;
+  recentMomentumScore?: number;
+  recentTrend?: string;
+  marketConditionScore?: number;
 }
 
 interface ComparisonResult {
-  winner: 'fund1' | 'fund2' | 'tie';
-  portfolioScore: { fund1: number; fund2: number };
-  returnsScore: { fund1: number; fund2: number };
-  expenseScore: { fund1: number; fund2: number };
-  overallScore: { fund1: number; fund2: number };
+  topFund: FundComparisonData;
+  analysis: {
+    portfolioScores: { [key: string]: number };
+    recentMomentumScores: { [key: string]: number };
+    expenseScores: { [key: string]: number };
+    marketConditionScores: { [key: string]: number };
+    overallScores: { [key: string]: number };
+  };
   conclusion: string;
   recommendation: string;
-  keyDifferences: string[];
+  keyInsights: string[];
+  marketConditionAdvice: string;
 }
 
 const AIFundComparison = ({ fund1, fund2, onFund1Change, onFund2Change, availableFunds }: {
@@ -47,91 +58,181 @@ const AIFundComparison = ({ fund1, fund2, onFund1Change, onFund2Change, availabl
   onFund2Change: (fund: FundComparisonData) => void;
   availableFunds: any[];
 }) => {
+  const [selectedFunds, setSelectedFunds] = useState<FundComparisonData[]>([]);
   const [comparisonResult, setComparisonResult] = useState<ComparisonResult | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
 
   useEffect(() => {
-    if (fund1 && fund2) {
-      performAIComparison();
+    if (selectedFunds.length >= 2) {
+      performEnhancedAIComparison();
     }
-  }, [fund1, fund2]);
+  }, [selectedFunds]);
 
-  const performAIComparison = async () => {
-    if (!fund1 || !fund2) return;
+  const handleFundSelect = async (fundSearch: any) => {
+    if (selectedFunds.length >= 5) return;
+
+    try {
+      // Get detailed fund data
+      const fundData = FundDataService.getMockFundData(fundSearch.schemeCode);
+      
+      // Add recent performance data (mock for now)
+      const enhancedFund: FundComparisonData = {
+        ...fundData,
+        returns1M: 2 + Math.random() * 8, // Mock 1M return
+        returns2M: 3 + Math.random() * 10, // Mock 2M return
+        returns3M: 4 + Math.random() * 12, // Mock 3M return
+        returns6M: 6 + Math.random() * 15, // Mock 6M return
+      };
+
+      // Get AI enhancement
+      const aiEnhanced = await enhanceFundWithAI(enhancedFund);
+      
+      setSelectedFunds([...selectedFunds, aiEnhanced]);
+    } catch (error) {
+      console.error('Error selecting fund:', error);
+    }
+  };
+
+  const removeFund = (schemeCode: string) => {
+    if (selectedFunds.length <= 2) return; // Keep minimum 2 funds
+    setSelectedFunds(selectedFunds.filter(fund => fund.schemeCode !== schemeCode));
+  };
+
+  const enhanceFundWithAI = async (fundData: FundComparisonData): Promise<FundComparisonData> => {
+    try {
+      console.log('Enhancing fund with AI analysis:', fundData.schemeName);
+      
+      const { data, error } = await supabase.functions.invoke('ai-fund-analysis', {
+        body: { fundData }
+      });
+
+      if (data?.success && data?.analysis) {
+        return {
+          ...fundData,
+          aiScore: data.analysis.aiScore,
+          recommendation: data.analysis.recommendation,
+          confidence: data.analysis.confidence,
+          reasoning: data.analysis.reasoning,
+          riskLevel: data.analysis.riskLevel,
+          strengths: data.analysis.strengths,
+          concerns: data.analysis.concerns,
+          performanceRank: data.analysis.performanceRank
+        };
+      } else if (data?.fallbackAnalysis) {
+        return {
+          ...fundData,
+          ...data.fallbackAnalysis
+        };
+      }
+    } catch (error) {
+      console.error('Error enhancing fund with AI:', error);
+    }
+
+    return fundData;
+  };
+
+  const performEnhancedAIComparison = async () => {
+    if (selectedFunds.length < 2) return;
 
     setAnalyzing(true);
     try {
-      console.log('Starting AI comparison between:', fund1.schemeName, 'vs', fund2.schemeName);
+      console.log('Starting enhanced AI comparison for', selectedFunds.length, 'funds');
 
-      // Calculate portfolio quality scores (highest priority)
-      const portfolioScore1 = calculatePortfolioScore(fund1);
-      const portfolioScore2 = calculatePortfolioScore(fund2);
+      const analysis = {
+        portfolioScores: {},
+        recentMomentumScores: {},
+        expenseScores: {},
+        marketConditionScores: {},
+        overallScores: {}
+      };
 
-      // Calculate returns scores (medium priority)
-      const returnsScore1 = calculateReturnsScore(fund1);
-      const returnsScore2 = calculateReturnsScore(fund2);
+      const marketWeights = RecentPerformanceAnalyzer.getMarketConditionWeights();
+      
+      // Analyze each fund
+      for (const fund of selectedFunds) {
+        // Portfolio Quality Score (40% weight)
+        const portfolioScore = calculatePortfolioScore(fund);
+        analysis.portfolioScores[fund.schemeCode] = portfolioScore;
 
-      // Calculate expense scores (lowest priority)
-      const expenseScore1 = calculateExpenseScore(fund1);
-      const expenseScore2 = calculateExpenseScore(fund2);
+        // Recent Momentum Score (35% weight)
+        const recentPerformance = RecentPerformanceAnalyzer.analyzeRecentPerformance({
+          returns1M: fund.returns1M,
+          returns2M: fund.returns2M,
+          returns3M: fund.returns3M,
+          returns6M: fund.returns6M,
+          returns1Y: fund.returns1Y,
+          returns3Y: fund.returns3Y,
+          returns5Y: fund.returns5Y
+        });
+        analysis.recentMomentumScores[fund.schemeCode] = recentPerformance.momentumScore;
 
-      // Calculate overall weighted scores
-      const overallScore1 = (portfolioScore1 * 0.5) + (returnsScore1 * 0.35) + (expenseScore1 * 0.15);
-      const overallScore2 = (portfolioScore2 * 0.5) + (returnsScore2 * 0.35) + (expenseScore2 * 0.15);
+        // Expense Efficiency Score (15% weight)
+        const expenseScore = calculateExpenseScore(fund);
+        analysis.expenseScores[fund.schemeCode] = expenseScore;
 
-      // Get AI analysis for detailed comparison
-      const { data, error } = await supabase.functions.invoke('ai-fund-analysis', {
-        body: {
-          fundData: {
-            fund1: fund1,
-            fund2: fund2,
-            comparisonType: 'detailed_comparison'
-          }
-        }
-      });
+        // Market Condition Score (10% weight)
+        const marketScore = (marketWeights[fund.category] || 1.0) * 5; // Convert to 1-10 scale
+        analysis.marketConditionScores[fund.schemeCode] = marketScore;
 
-      let aiConclusion = '';
-      let aiRecommendation = '';
-      let keyDifferences: string[] = [];
-
-      if (data?.success && data?.analysis) {
-        aiConclusion = data.analysis.conclusion || '';
-        aiRecommendation = data.analysis.recommendation || '';
-        keyDifferences = data.analysis.keyDifferences || [];
+        // Overall Weighted Score
+        const overallScore = (portfolioScore * 0.4) + 
+                           (recentPerformance.momentumScore * 0.35) + 
+                           (expenseScore * 0.15) + 
+                           (marketScore * 0.1);
+        analysis.overallScores[fund.schemeCode] = overallScore;
       }
 
-      // Fallback analysis if AI fails
-      if (!aiConclusion) {
-        const winner = overallScore1 > overallScore2 ? fund1.schemeName : fund2.schemeName;
-        const winnerScore = Math.max(overallScore1, overallScore2);
-        
-        aiConclusion = `Based on comprehensive analysis, ${winner} scores ${winnerScore.toFixed(1)}/10 overall. Portfolio quality (50% weight) is the primary differentiator, followed by historical returns (35% weight) and expense efficiency (15% weight).`;
-        
-        aiRecommendation = overallScore1 > overallScore2 ? 
-          `${fund1.schemeName} is recommended` : 
-          `${fund2.schemeName} is recommended`;
+      // Find top fund
+      const topFundCode = Object.entries(analysis.overallScores)
+        .reduce((a, b) => a[1] > b[1] ? a : b)[0];
+      const topFund = selectedFunds.find(f => f.schemeCode === topFundCode)!;
 
-        keyDifferences = [
-          `Portfolio Quality: ${portfolioScore1.toFixed(1)} vs ${portfolioScore2.toFixed(1)}`,
-          `Returns Score: ${returnsScore1.toFixed(1)} vs ${returnsScore2.toFixed(1)}`,
-          `Expense Efficiency: ${expenseScore1.toFixed(1)} vs ${expenseScore2.toFixed(1)}`
-        ];
+      // Generate insights
+      const keyInsights = generateKeyInsights(selectedFunds, analysis);
+      const marketConditionAdvice = RecentPerformanceAnalyzer.getCategoryRecommendation();
+
+      // Generate AI conclusion
+      let conclusion = '';
+      let recommendation = '';
+
+      try {
+        const { data } = await supabase.functions.invoke('ai-fund-analysis', {
+          body: {
+            fundData: {
+              funds: selectedFunds,
+              analysis: analysis,
+              comparisonType: 'multi_fund_comparison'
+            }
+          }
+        });
+
+        if (data?.success && data?.analysis) {
+          conclusion = data.analysis.conclusion || '';
+          recommendation = data.analysis.recommendation || '';
+        }
+      } catch (error) {
+        console.error('AI analysis failed, using fallback:', error);
+      }
+
+      // Fallback conclusion
+      if (!conclusion) {
+        const topScore = analysis.overallScores[topFundCode];
+        conclusion = `After comprehensive analysis of ${selectedFunds.length} funds, ${topFund.schemeName} emerges as the top choice with an overall score of ${topScore.toFixed(1)}/10. The analysis prioritizes portfolio quality (40%), recent momentum (35%), expense efficiency (15%), and current market conditions (10%).`;
+        recommendation = `Recommended: ${topFund.schemeName} for its balanced performance across all key metrics.`;
       }
 
       const result: ComparisonResult = {
-        winner: overallScore1 > overallScore2 ? 'fund1' : overallScore1 < overallScore2 ? 'fund2' : 'tie',
-        portfolioScore: { fund1: portfolioScore1, fund2: portfolioScore2 },
-        returnsScore: { fund1: returnsScore1, fund2: returnsScore2 },
-        expenseScore: { fund1: expenseScore1, fund2: expenseScore2 },
-        overallScore: { fund1: overallScore1, fund2: overallScore2 },
-        conclusion: aiConclusion,
-        recommendation: aiRecommendation,
-        keyDifferences
+        topFund,
+        analysis,
+        conclusion,
+        recommendation,
+        keyInsights,
+        marketConditionAdvice
       };
 
       setComparisonResult(result);
     } catch (error) {
-      console.error('AI comparison error:', error);
+      console.error('Enhanced AI comparison error:', error);
     } finally {
       setAnalyzing(false);
     }
@@ -140,66 +241,65 @@ const AIFundComparison = ({ fund1, fund2, onFund1Change, onFund2Change, availabl
   const calculatePortfolioScore = (fund: FundComparisonData): number => {
     let score = 5; // Base score
     
-    // AI score contribution (if available)
     if (fund.aiScore) {
       score += (fund.aiScore - 5) * 0.5;
     }
     
-    // AUM quality (larger AUM generally indicates stability)
     if (fund.aum > 10000) score += 1;
     else if (fund.aum > 5000) score += 0.5;
     
-    // Category-based adjustments
-    if (fund.category.includes('Large Cap')) score += 0.5; // More stable
-    if (fund.category.includes('Small Cap')) score += 1; // Higher growth potential
+    if (fund.category.includes('Large Cap')) score += 0.5;
+    if (fund.category.includes('Small Cap')) score += 1;
     
-    // Performance rank (if available)
     if (fund.performanceRank && fund.performanceRank < 25) score += 1;
     else if (fund.performanceRank && fund.performanceRank < 50) score += 0.5;
     
     return Math.min(10, Math.max(1, score));
   };
 
-  const calculateReturnsScore = (fund: FundComparisonData): number => {
-    let score = 5; // Base score
-    
-    // Recent vs historical performance analysis
-    const recent1Y = fund.returns1Y || 0;
-    const historical3Y = fund.returns3Y || 0;
-    const historical5Y = fund.returns5Y || 0;
-    
-    // Recent performance weight (60%)
-    if (recent1Y > 20) score += 2;
-    else if (recent1Y > 15) score += 1.5;
-    else if (recent1Y > 10) score += 1;
-    else if (recent1Y > 5) score += 0.5;
-    
-    // Historical performance weight (40%)
-    const avgHistorical = (historical3Y + historical5Y) / 2;
-    if (avgHistorical > 15) score += 1.5;
-    else if (avgHistorical > 12) score += 1;
-    else if (avgHistorical > 8) score += 0.5;
-    
-    // Consistency bonus (recent vs historical alignment)
-    const consistency = Math.abs(recent1Y - avgHistorical);
-    if (consistency < 3) score += 0.5; // Consistent performance
-    
-    return Math.min(10, Math.max(1, score));
-  };
-
   const calculateExpenseScore = (fund: FundComparisonData): number => {
-    let score = 5; // Base score
-    
+    let score = 5;
     const expense = fund.expenseRatio || 1.5;
     
-    // Lower expense ratio = higher score
     if (expense < 0.5) score += 2;
     else if (expense < 1.0) score += 1.5;
     else if (expense < 1.5) score += 1;
     else if (expense < 2.0) score += 0.5;
-    else score -= 1; // Penalty for high expense
+    else score -= 1;
     
     return Math.min(10, Math.max(1, score));
+  };
+
+  const generateKeyInsights = (funds: FundComparisonData[], analysis: any): string[] => {
+    const insights: string[] = [];
+    
+    // Recent performance insight
+    const momentumScores = Object.values(analysis.recentMomentumScores) as number[];
+    const avgMomentum = momentumScores.reduce((a, b) => a + b, 0) / momentumScores.length;
+    
+    if (avgMomentum > 7) {
+      insights.push('Strong recent momentum across selected funds indicates favorable market conditions');
+    } else if (avgMomentum < 4) {
+      insights.push('Recent performance challenges suggest market headwinds or strategy adjustments needed');
+    }
+    
+    // Category diversity insight
+    const categories = [...new Set(funds.map(f => f.category))];
+    if (categories.length > 1) {
+      insights.push(`Comparing across ${categories.length} categories: ${categories.join(', ')}`);
+    }
+    
+    // Expense efficiency insight
+    const expenseScores = Object.values(analysis.expenseScores) as number[];
+    const avgExpenseScore = expenseScores.reduce((a, b) => a + b, 0) / expenseScores.length;
+    
+    if (avgExpenseScore > 7) {
+      insights.push('All funds demonstrate excellent expense efficiency');
+    } else if (avgExpenseScore < 5) {
+      insights.push('Consider expense ratios - some funds have higher costs impacting returns');
+    }
+    
+    return insights;
   };
 
   const getScoreColor = (score: number) => {
@@ -208,195 +308,110 @@ const AIFundComparison = ({ fund1, fund2, onFund1Change, onFund2Change, availabl
     return 'text-red-600 bg-red-50';
   };
 
-  const getWinnerColor = (isWinner: boolean) => {
-    return isWinner ? 'border-green-500 bg-green-50' : 'border-gray-200';
-  };
-
   return (
     <div className="space-y-6">
       {/* Fund Selection */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Select Fund 1</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Select onValueChange={(value) => {
-              const [schemeCode, schemeName] = value.split('|');
-              const fundData = FundDataService.getMockFundData(schemeCode);
-              onFund1Change({
-                ...fundData,
-                schemeCode,
-                schemeName
-              });
-            }}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choose first fund to compare" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableFunds.slice(0, 20).map((fund) => (
-                  <SelectItem key={fund.schemeCode} value={`${fund.schemeCode}|${fund.schemeName}`}>
-                    {fund.schemeName.substring(0, 50)}...
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            AI-Powered Fund Comparison (2-5 funds)
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FundSearchAutocomplete
+            onFundSelect={handleFundSelect}
+            selectedFunds={selectedFunds.map(f => ({ schemeCode: f.schemeCode, schemeName: f.schemeName, category: f.category }))}
+            maxFunds={5}
+            placeholder="Search and add funds to compare..."
+          />
+          
+          {selectedFunds.length >= 2 && (
+            <div className="mt-4 text-sm text-gray-600">
+              Comparing {selectedFunds.length} fund{selectedFunds.length > 1 ? 's' : ''} • 
+              {selectedFunds.length < 5 && ' Add more funds for comprehensive analysis'}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Select Fund 2</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Select onValueChange={(value) => {
-              const [schemeCode, schemeName] = value.split('|');
-              const fundData = FundDataService.getMockFundData(schemeCode);
-              onFund2Change({
-                ...fundData,
-                schemeCode,
-                schemeName
-              });
-            }}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choose second fund to compare" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableFunds.slice(0, 20).map((fund) => (
-                  <SelectItem key={fund.schemeCode} value={`${fund.schemeCode}|${fund.schemeName}`}>
-                    {fund.schemeName.substring(0, 50)}...
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Fund Comparison Cards */}
-      {fund1 && fund2 && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <Card className={`${comparisonResult?.winner === 'fund1' ? getWinnerColor(true) : getWinnerColor(false)} border-2`}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{fund1.schemeName.substring(0, 40)}...</CardTitle>
-                {comparisonResult?.winner === 'fund1' && (
-                  <Badge className="bg-green-600 text-white">
-                    <Target className="h-3 w-3 mr-1" />
-                    Winner
-                  </Badge>
+      {/* Fund Cards */}
+      {selectedFunds.length >= 2 && (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {selectedFunds.map((fund, index) => (
+            <Card key={fund.schemeCode} className={`border-2 ${comparisonResult?.topFund.schemeCode === fund.schemeCode ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm">{fund.schemeName.substring(0, 30)}...</CardTitle>
+                  <div className="flex items-center gap-2">
+                    {comparisonResult?.topFund.schemeCode === fund.schemeCode && (
+                      <Badge className="bg-green-600 text-white">
+                        <Target className="h-3 w-3 mr-1" />
+                        Winner
+                      </Badge>
+                    )}
+                    {selectedFunds.length > 2 && (
+                      <X 
+                        className="h-4 w-4 cursor-pointer hover:text-red-500" 
+                        onClick={() => removeFund(fund.schemeCode)}
+                      />
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-gray-600">NAV:</span>
+                    <div className="font-bold">₹{fund.nav.toFixed(4)}</div>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Category:</span>
+                    <div className="font-semibold text-xs">{fund.category}</div>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">1M:</span>
+                    <div className={`font-bold ${fund.returns1M >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {fund.returns1M >= 0 ? '+' : ''}{fund.returns1M.toFixed(1)}%
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">3M:</span>
+                    <div className={`font-bold ${fund.returns3M >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {fund.returns3M >= 0 ? '+' : ''}{fund.returns3M.toFixed(1)}%
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">1Y:</span>
+                    <div className={`font-bold ${fund.returns1Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {fund.returns1Y >= 0 ? '+' : ''}{fund.returns1Y.toFixed(1)}%
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Expense:</span>
+                    <div className="font-bold">{fund.expenseRatio.toFixed(2)}%</div>
+                  </div>
+                </div>
+                
+                {fund.aiScore && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                    <span className="font-bold text-sm">{fund.aiScore}/10</span>
+                  </div>
                 )}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-gray-600">Current NAV:</span>
-                  <div className="font-bold">₹{fund1.nav.toFixed(4)}</div>
-                </div>
-                <div>
-                  <span className="text-gray-600">Category:</span>
-                  <div className="font-semibold">{fund1.category}</div>
-                </div>
-                <div>
-                  <span className="text-gray-600">1Y Return:</span>
-                  <div className={`font-bold ${fund1.returns1Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {fund1.returns1Y >= 0 ? '+' : ''}{fund1.returns1Y.toFixed(1)}%
-                  </div>
-                </div>
-                <div>
-                  <span className="text-gray-600">3Y Return:</span>
-                  <div className={`font-bold ${fund1.returns3Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {fund1.returns3Y >= 0 ? '+' : ''}{fund1.returns3Y.toFixed(1)}%
-                  </div>
-                </div>
-                <div>
-                  <span className="text-gray-600">5Y Return:</span>
-                  <div className={`font-bold ${fund1.returns5Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {fund1.returns5Y >= 0 ? '+' : ''}{fund1.returns5Y.toFixed(1)}%
-                  </div>
-                </div>
-                <div>
-                  <span className="text-gray-600">Expense Ratio:</span>
-                  <div className="font-bold">{fund1.expenseRatio.toFixed(2)}%</div>
-                </div>
-              </div>
-              
-              {fund1.aiScore && (
-                <div className="flex items-center gap-2 mt-3">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-bold">{fund1.aiScore}/10</span>
-                  <span className="text-sm text-gray-600">AI Score</span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className={`${comparisonResult?.winner === 'fund2' ? getWinnerColor(true) : getWinnerColor(false)} border-2`}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{fund2.schemeName.substring(0, 40)}...</CardTitle>
-                {comparisonResult?.winner === 'fund2' && (
-                  <Badge className="bg-green-600 text-white">
-                    <Target className="h-3 w-3 mr-1" />
-                    Winner
-                  </Badge>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-gray-600">Current NAV:</span>
-                  <div className="font-bold">₹{fund2.nav.toFixed(4)}</div>
-                </div>
-                <div>
-                  <span className="text-gray-600">Category:</span>
-                  <div className="font-semibold">{fund2.category}</div>
-                </div>
-                <div>
-                  <span className="text-gray-600">1Y Return:</span>
-                  <div className={`font-bold ${fund2.returns1Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {fund2.returns1Y >= 0 ? '+' : ''}{fund2.returns1Y.toFixed(1)}%
-                  </div>
-                </div>
-                <div>
-                  <span className="text-gray-600">3Y Return:</span>
-                  <div className={`font-bold ${fund2.returns3Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {fund2.returns3Y >= 0 ? '+' : ''}{fund2.returns3Y.toFixed(1)}%
-                  </div>
-                </div>
-                <div>
-                  <span className="text-gray-600">5Y Return:</span>
-                  <div className={`font-bold ${fund2.returns5Y >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {fund2.returns5Y >= 0 ? '+' : ''}{fund2.returns5Y.toFixed(1)}%
-                  </div>
-                </div>
-                <div>
-                  <span className="text-gray-600">Expense Ratio:</span>
-                  <div className="font-bold">{fund2.expenseRatio.toFixed(2)}%</div>
-                </div>
-              </div>
-              
-              {fund2.aiScore && (
-                <div className="flex items-center gap-2 mt-3">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-bold">{fund2.aiScore}/10</span>
-                  <span className="text-sm text-gray-600">AI Score</span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       )}
 
       {/* AI Analysis Results */}
-      {fund1 && fund2 && (
+      {selectedFunds.length >= 2 && (
         <Card className="border-2 border-blue-200">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Zap className="h-5 w-5 text-blue-600" />
-              AI Comparison Analysis
+              Enhanced AI Comparison Analysis
               {analyzing && <Loader2 className="h-4 w-4 animate-spin" />}
             </CardTitle>
           </CardHeader>
@@ -404,69 +419,104 @@ const AIFundComparison = ({ fund1, fund2, onFund1Change, onFund2Change, availabl
             {analyzing ? (
               <div className="text-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-                <p className="text-gray-600">AI is analyzing both funds...</p>
+                <p className="text-gray-600">AI is analyzing {selectedFunds.length} funds...</p>
               </div>
             ) : comparisonResult ? (
               <div className="space-y-6">
                 {/* Scoring Breakdown */}
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 border rounded-lg">
-                    <h4 className="font-semibold mb-2">Portfolio Quality (50%)</h4>
-                    <div className="flex justify-between text-sm">
-                      <span className={`px-2 py-1 rounded ${getScoreColor(comparisonResult.portfolioScore.fund1)}`}>
-                        {comparisonResult.portfolioScore.fund1.toFixed(1)}
-                      </span>
-                      <span className="text-gray-400">vs</span>
-                      <span className={`px-2 py-1 rounded ${getScoreColor(comparisonResult.portfolioScore.fund2)}`}>
-                        {comparisonResult.portfolioScore.fund2.toFixed(1)}
-                      </span>
+                <div className="grid md:grid-cols-4 gap-4">
+                  <div className="text-center p-3 border rounded-lg">
+                    <h4 className="font-semibold mb-2 text-sm">Portfolio Quality (40%)</h4>
+                    <div className="space-y-1">
+                      {Object.entries(comparisonResult.analysis.portfolioScores).map(([code, score], index) => (
+                        <div key={code} className="flex items-center justify-between text-xs">
+                          <div 
+                            className="w-2 h-2 rounded-full mr-2" 
+                            style={{ backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444'][index] }}
+                          />
+                          <span className={`px-2 py-1 rounded ${getScoreColor(score)}`}>
+                            {score.toFixed(1)}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                   
-                  <div className="text-center p-4 border rounded-lg">
-                    <h4 className="font-semibold mb-2">Returns Analysis (35%)</h4>
-                    <div className="flex justify-between text-sm">
-                      <span className={`px-2 py-1 rounded ${getScoreColor(comparisonResult.returnsScore.fund1)}`}>
-                        {comparisonResult.returnsScore.fund1.toFixed(1)}
-                      </span>
-                      <span className="text-gray-400">vs</span>
-                      <span className={`px-2 py-1 rounded ${getScoreColor(comparisonResult.returnsScore.fund2)}`}>
-                        {comparisonResult.returnsScore.fund2.toFixed(1)}
-                      </span>
+                  <div className="text-center p-3 border rounded-lg">
+                    <h4 className="font-semibold mb-2 text-sm">Recent Momentum (35%)</h4>
+                    <div className="space-y-1">
+                      {Object.entries(comparisonResult.analysis.recentMomentumScores).map(([code, score], index) => (
+                        <div key={code} className="flex items-center justify-between text-xs">
+                          <div 
+                            className="w-2 h-2 rounded-full mr-2" 
+                            style={{ backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444'][index] }}
+                          />
+                          <span className={`px-2 py-1 rounded ${getScoreColor(score)}`}>
+                            {score.toFixed(1)}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                   
-                  <div className="text-center p-4 border rounded-lg">
-                    <h4 className="font-semibold mb-2">Expense Efficiency (15%)</h4>
-                    <div className="flex justify-between text-sm">
-                      <span className={`px-2 py-1 rounded ${getScoreColor(comparisonResult.expenseScore.fund1)}`}>
-                        {comparisonResult.expenseScore.fund1.toFixed(1)}
-                      </span>
-                      <span className="text-gray-400">vs</span>
-                      <span className={`px-2 py-1 rounded ${getScoreColor(comparisonResult.expenseScore.fund2)}`}>
-                        {comparisonResult.expenseScore.fund2.toFixed(1)}
-                      </span>
+                  <div className="text-center p-3 border rounded-lg">
+                    <h4 className="font-semibold mb-2 text-sm">Expense Efficiency (15%)</h4>
+                    <div className="space-y-1">
+                      {Object.entries(comparisonResult.analysis.expenseScores).map(([code, score], index) => (
+                        <div key={code} className="flex items-center justify-between text-xs">
+                          <div 
+                            className="w-2 h-2 rounded-full mr-2" 
+                            style={{ backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444'][index] }}
+                          />
+                          <span className={`px-2 py-1 rounded ${getScoreColor(score)}`}>
+                            {score.toFixed(1)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="text-center p-3 border rounded-lg">
+                    <h4 className="font-semibold mb-2 text-sm">Market Conditions (10%)</h4>
+                    <div className="space-y-1">
+                      {Object.entries(comparisonResult.analysis.marketConditionScores).map(([code, score], index) => (
+                        <div key={code} className="flex items-center justify-between text-xs">
+                          <div 
+                            className="w-2 h-2 rounded-full mr-2" 
+                            style={{ backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444'][index] }}
+                          />
+                          <span className={`px-2 py-1 rounded ${getScoreColor(score)}`}>
+                            {score.toFixed(1)}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
 
                 {/* Overall Scores */}
                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg">
-                  <h4 className="font-bold text-lg mb-3 text-center">Overall AI Scores</h4>
-                  <div className="flex justify-center items-center gap-8">
-                    <div className="text-center">
-                      <div className={`text-3xl font-bold ${getScoreColor(comparisonResult.overallScore.fund1).includes('green') ? 'text-green-600' : getScoreColor(comparisonResult.overallScore.fund1).includes('yellow') ? 'text-yellow-600' : 'text-red-600'}`}>
-                        {comparisonResult.overallScore.fund1.toFixed(1)}
-                      </div>
-                      <div className="text-sm text-gray-600">Fund 1</div>
-                    </div>
-                    <div className="text-2xl text-gray-400">VS</div>
-                    <div className="text-center">
-                      <div className={`text-3xl font-bold ${getScoreColor(comparisonResult.overallScore.fund2).includes('green') ? 'text-green-600' : getScoreColor(comparisonResult.overallScore.fund2).includes('yellow') ? 'text-yellow-600' : 'text-red-600'}`}>
-                        {comparisonResult.overallScore.fund2.toFixed(1)}
-                      </div>
-                      <div className="text-sm text-gray-600">Fund 2</div>
-                    </div>
+                  <h4 className="font-bold text-lg mb-3 text-center">Final AI Scores</h4>
+                  <div className="flex justify-center items-center gap-4 flex-wrap">
+                    {Object.entries(comparisonResult.analysis.overallScores).map(([code, score], index) => {
+                      const fund = selectedFunds.find(f => f.schemeCode === code);
+                      const isWinner = comparisonResult.topFund.schemeCode === code;
+                      return (
+                        <div key={code} className={`text-center ${isWinner ? 'ring-2 ring-green-500 rounded-lg p-2' : ''}`}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <div 
+                              className="w-3 h-3 rounded-full" 
+                              style={{ backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444'][index] }}
+                            />
+                            {isWinner && <Target className="h-4 w-4 text-green-600" />}
+                          </div>
+                          <div className={`text-2xl font-bold ${getScoreColor(score).includes('green') ? 'text-green-600' : getScoreColor(score).includes('yellow') ? 'text-yellow-600' : 'text-red-600'}`}>
+                            {score.toFixed(1)}
+                          </div>
+                          <div className="text-xs text-gray-600 max-w-20 truncate">{fund?.schemeName}</div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -480,18 +530,23 @@ const AIFundComparison = ({ fund1, fund2, onFund1Change, onFund2Change, availabl
                     <p className="text-blue-800">{comparisonResult.recommendation}</p>
                   </div>
 
-                  <div>
-                    <h5 className="font-semibold mb-2">Key Differences:</h5>
+                  <div className="mb-3">
+                    <h5 className="font-semibold mb-2">Key Insights:</h5>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                      {comparisonResult.keyDifferences.map((diff, index) => (
-                        <li key={index}>{diff}</li>
+                      {comparisonResult.keyInsights.map((insight, index) => (
+                        <li key={index}>{insight}</li>
                       ))}
                     </ul>
+                  </div>
+
+                  <div className="bg-yellow-50 p-3 rounded">
+                    <h5 className="font-semibold text-yellow-900 mb-1">Current Market Conditions:</h5>
+                    <p className="text-yellow-800 text-sm">{comparisonResult.marketConditionAdvice}</p>
                   </div>
                 </div>
               </div>
             ) : (
-              <p className="text-center text-gray-500">Select two funds to see AI comparison</p>
+              <p className="text-center text-gray-500">Select at least 2 funds to see AI comparison</p>
             )}
           </CardContent>
         </Card>
