@@ -140,7 +140,7 @@ function App() {
                       <Route path="/flexi-cap-funds" element={<UniversalFundSEOPage />} />
                       <Route path="/sip-investment" element={<UniversalFundSEOPage />} />
                       <Route path="/mutual-fund-calculator" element={<UniversalFundSEOPage />} />
-                      <Route path="/best-sip-plans" element={<UniversalFundSEOPage />} />
+                      <Route path="/best-sip-plans" element={<BestSIPPlansPage />} />
                       <Route path="/top-performing-mutual-funds" element={<UniversalFundSEOPage />} />
                       
                       <Route path="/sitemap.xml" element={<SitemapHandler />} />

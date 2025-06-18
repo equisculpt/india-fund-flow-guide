@@ -19,6 +19,15 @@ const CommunityPage = () => {
   const [showAskQuestion, setShowAskQuestion] = useState(false);
   const [showCreateBlog, setShowCreateBlog] = useState(false);
 
+  const handleAskQuestion = () => {
+    if (user) {
+      setShowAskQuestion(true);
+    } else {
+      // Show login modal or redirect to login instead of home
+      navigate('/');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOHead
@@ -75,7 +84,7 @@ const CommunityPage = () => {
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold">Community Questions</h2>
                 <Button 
-                  onClick={() => user ? setShowAskQuestion(true) : navigate('/')}
+                  onClick={handleAskQuestion}
                   className="flex items-center gap-2"
                 >
                   <Plus className="h-4 w-4" />

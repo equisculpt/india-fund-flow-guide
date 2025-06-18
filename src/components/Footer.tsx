@@ -41,6 +41,7 @@ const Footer = () => {
               <li><Link to="/community" className="text-gray-300 hover:text-white transition-colors">Community</Link></li>
               <li><Link to="/best-sip-plans" className="text-gray-300 hover:text-white transition-colors">Best SIP Plans</Link></li>
               <li><Link to="/fund-comparison" className="text-gray-300 hover:text-white transition-colors">Fund Comparison</Link></li>
+              <li><Link to="/advanced-features" className="text-gray-300 hover:text-white transition-colors">Advanced Features</Link></li>
             </ul>
           </div>
 
@@ -50,8 +51,8 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><Link to="/terms" className="text-gray-300 hover:text-white transition-colors">Terms of Service</Link></li>
               <li><Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Risk Disclosure</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Grievance Redressal</a></li>
+              <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">Risk Disclosure</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Grievance Redressal</Link></li>
             </ul>
           </div>
 
