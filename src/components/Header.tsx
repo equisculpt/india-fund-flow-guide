@@ -41,8 +41,7 @@ const Header = () => {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <BreweryLogo />
-              <span className="font-bold text-xl text-gray-900">SIP Brewery</span>
+              <BreweryLogo showText={true} />
             </Link>
 
             {/* Desktop Navigation */}
