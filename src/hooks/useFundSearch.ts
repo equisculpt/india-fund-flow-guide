@@ -78,6 +78,7 @@ export const useFundSearch = () => {
     
     if (value.length === 0) {
       setShowResults(false);
+      setSearchResults([]);
     }
   };
 
@@ -88,9 +89,17 @@ export const useFundSearch = () => {
   };
 
   const handleResultSelect = (fund: FundSearchResult) => {
+    console.log('useFundSearch: Fund selected, hiding results:', fund.schemeName);
     setShowResults(false);
+    setSearchResults([]);
     setSearchQuery(fund.schemeName);
     return fund;
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setSearchResults([]);
+    setShowResults(false);
   };
 
   return {
@@ -100,6 +109,7 @@ export const useFundSearch = () => {
     showResults,
     handleInputChange,
     handleInputFocus,
-    handleResultSelect
+    handleResultSelect,
+    clearSearch
   };
 };

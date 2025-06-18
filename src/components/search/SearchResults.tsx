@@ -43,7 +43,10 @@ const SearchResults = ({ results, loading, searchQuery, onFundSelect, showResult
               <FundResultItem
                 key={`${fund.schemeCode}-${index}`}
                 fund={fund}
-                onSelect={onFundSelect}
+                onSelect={(selectedFund) => {
+                  console.log('SearchResults: Fund being selected:', selectedFund.schemeName);
+                  onFundSelect(selectedFund);
+                }}
               />
             ))}
           </div>

@@ -32,7 +32,8 @@ const EnhancedFundSearch = ({
     showResults,
     handleInputChange,
     handleInputFocus,
-    handleResultSelect
+    handleResultSelect,
+    clearSearch
   } = useFundSearch();
 
   const handleFundSelect = (fund: FundSearchResult) => {
@@ -48,12 +49,19 @@ const EnhancedFundSearch = ({
     }
   };
 
+  const handleInputClick = () => {
+    if (searchQuery.length === 0) {
+      clearSearch();
+    }
+    handleInputFocus();
+  };
+
   return (
     <div className={`relative w-full ${className}`}>
       <SearchInput
         value={searchQuery}
         onChange={handleInputChange}
-        onFocus={handleInputFocus}
+        onFocus={handleInputClick}
         placeholder={placeholder}
         loading={loading}
       />
