@@ -8,6 +8,9 @@ export interface FundData {
   returns1Y: number;
   returns3Y: number;
   returns5Y: number;
+  xirr1Y?: number;
+  xirr3Y?: number;
+  xirr5Y?: number;
   aum: number;
   expenseRatio: number;
   volatility: number;
