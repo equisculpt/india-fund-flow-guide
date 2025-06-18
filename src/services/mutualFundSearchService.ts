@@ -122,23 +122,23 @@ export class MutualFundSearchService {
     try {
       console.log('MutualFundSearchService: Fetching enhanced details for scheme:', schemeCode);
       
-      // Get basic fund details
+      // Get basic fund details first (this uses /latest endpoint)
       const basicDetails = await this.getFundDetails(schemeCode);
       if (!basicDetails) {
         console.log('MutualFundSearchService: No basic details found for scheme:', schemeCode);
         return null;
       }
 
-      // Get historical NAV data for performance calculation
-      console.log('MutualFundSearchService: Fetching historical data for performance calculation...');
-      const historicalData = await FundApiService.getFundDetails(schemeCode);
-      const navHistory = historicalData?.data || [];
+      // Get FULL historical NAV data for performance calculation (this uses full endpoint)
+      console.log('MutualFundSearchService: Fetching FULL historical data for performance calculation...');
+      const fullHistoricalData = await FundApiService.getFundHistoricalData(schemeCode);
+      const navHistory = fullHistoricalData?.data || [];
       
       console.log('MutualFundSearchService: Retrieved', navHistory.length, 'NAV records for performance calculation');
 
-      // Calculate performance from NAV history
+      // Calculate performance from the FULL NAV history
       const performance = EnhancedFundDataExtractor.calculatePerformanceFromNAV(navHistory);
-      console.log('MutualFundSearchService: Performance calculated:', performance);
+      console.log('MutualFundSearchService: Performance calculated from', navHistory.length, 'records:', performance);
       
       // Estimate missing data
       const schemeAge = EnhancedFundDataExtractor.extractSchemeAge(navHistory);
@@ -164,8 +164,9 @@ export class MutualFundSearchService {
         volatility: volatility
       };
 
-      console.log('MutualFundSearchService: Enhanced details with REAL performance data:', {
+      console.log('MutualFundSearchService: Enhanced details with CALCULATED PERFORMANCE:', {
         schemeName: enhancedDetails.schemeName,
+        totalNAVRecords: navHistory.length,
         returns1Y: enhancedDetails.returns1Y,
         returns3Y: enhancedDetails.returns3Y,
         returns5Y: enhancedDetails.returns5Y,

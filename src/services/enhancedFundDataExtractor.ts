@@ -7,14 +7,14 @@ export class EnhancedFundDataExtractor {
   } {
     console.log('EnhancedFundDataExtractor: Calculating performance from NAV history:', navHistory.length, 'records');
     
-    if (!navHistory || navHistory.length < 30) {
-      console.log('EnhancedFundDataExtractor: Insufficient NAV history data');
+    if (!navHistory || navHistory.length < 50) {
+      console.log('EnhancedFundDataExtractor: Insufficient NAV history data (need at least 50 records)');
       return { returns1Y: 0, returns3Y: 0, returns5Y: 0 };
     }
 
     // NAV history is typically in reverse chronological order (latest first)
     const currentNAV = parseFloat(navHistory[0]?.nav || '0');
-    console.log('EnhancedFundDataExtractor: Current NAV:', currentNAV);
+    console.log('EnhancedFundDataExtractor: Current NAV:', currentNAV, 'from date:', navHistory[0]?.date);
     
     if (currentNAV <= 0) {
       console.log('EnhancedFundDataExtractor: Invalid current NAV');
@@ -22,7 +22,7 @@ export class EnhancedFundDataExtractor {
     }
 
     // Find NAV values for different time periods
-    // Assuming ~250 trading days per year
+    // Use actual trading days calculation (approximately 250 trading days per year)
     const oneYearIndex = Math.min(250, navHistory.length - 1);
     const threeYearIndex = Math.min(750, navHistory.length - 1);
     const fiveYearIndex = Math.min(1250, navHistory.length - 1);
@@ -33,21 +33,21 @@ export class EnhancedFundDataExtractor {
 
     console.log('EnhancedFundDataExtractor: NAV values found:', {
       current: currentNAV,
-      oneYear: nav1Y,
-      threeYear: nav3Y,
-      fiveYear: nav5Y,
-      indices: { oneYearIndex, threeYearIndex, fiveYearIndex }
+      currentDate: navHistory[0]?.date,
+      oneYear: { nav: nav1Y, date: navHistory[oneYearIndex]?.date, index: oneYearIndex },
+      threeYear: { nav: nav3Y, date: navHistory[threeYearIndex]?.date, index: threeYearIndex },
+      fiveYear: { nav: nav5Y, date: navHistory[fiveYearIndex]?.date, index: fiveYearIndex }
     });
 
-    // Calculate absolute returns
+    // Calculate returns
     const returns1Y = nav1Y > 0 ? ((currentNAV - nav1Y) / nav1Y) * 100 : 0;
     
-    // Calculate CAGR for 3Y and 5Y
-    const returns3Y = nav3Y > 0 && threeYearIndex >= 750 ? 
+    // Calculate CAGR for 3Y and 5Y if we have sufficient data
+    const returns3Y = nav3Y > 0 && threeYearIndex >= 500 ? 
       (Math.pow(currentNAV / nav3Y, 1/3) - 1) * 100 : 
       nav3Y > 0 ? ((currentNAV - nav3Y) / nav3Y) * 100 : 0;
     
-    const returns5Y = nav5Y > 0 && fiveYearIndex >= 1250 ? 
+    const returns5Y = nav5Y > 0 && fiveYearIndex >= 1000 ? 
       (Math.pow(currentNAV / nav5Y, 1/5) - 1) * 100 : 
       nav5Y > 0 ? ((currentNAV - nav5Y) / nav5Y) * 100 : 0;
 
@@ -57,7 +57,7 @@ export class EnhancedFundDataExtractor {
       returns5Y: Math.round(returns5Y * 100) / 100
     };
 
-    console.log('EnhancedFundDataExtractor: Calculated performance:', result);
+    console.log('EnhancedFundDataExtractor: FINAL CALCULATED PERFORMANCE:', result);
     return result;
   }
 

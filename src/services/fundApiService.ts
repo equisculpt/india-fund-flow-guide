@@ -1,4 +1,3 @@
-
 interface APIFundList {
   schemeCode: number;
   schemeName: string;
@@ -8,6 +7,7 @@ export class FundApiService {
   private static fundListCache: APIFundList[] | null = null;
   private static lastFetchTime: number = 0;
   private static readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+  private static readonly BASE_URL = 'https://api.mfapi.in/mf';
 
   // Fallback fund data when API is not available
   private static readonly FALLBACK_FUNDS: APIFundList[] = [
@@ -114,6 +114,32 @@ export class FundApiService {
           date: new Date().toISOString().split('T')[0]
         }]
       };
+    }
+  }
+
+  static async getFundHistoricalData(schemeCode: string): Promise<any> {
+    try {
+      console.log('FundApiService: Fetching FULL historical data for scheme:', schemeCode);
+      const url = `${this.BASE_URL}/${schemeCode}`;
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('FundApiService: Full historical data response:', {
+        scheme: schemeCode,
+        recordCount: data?.data?.length || 0,
+        sampleFirst: data?.data?.[0],
+        sampleLast: data?.data?.[data?.data?.length - 1]
+      });
+      
+      return data;
+    } catch (error) {
+      console.error('FundApiService: Error fetching full historical data:', error);
+      throw error;
     }
   }
 }
