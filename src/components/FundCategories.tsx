@@ -1,20 +1,14 @@
 
 import React from 'react';
 import EnhancedFundSearch from './EnhancedFundSearch';
-import { useNavigate } from 'react-router-dom';
 
 interface FundCategoriesProps {
   allFunds: any[];
 }
 
 const FundCategories = ({ allFunds }: FundCategoriesProps) => {
-  const navigate = useNavigate();
-
-  const handleFundSelect = (fund: any) => {
-    console.log('FundCategories: Fund selected:', fund);
-    // Navigate to fund details or public funds page with the selected fund
-    navigate('/public-funds', { state: { selectedFund: fund } });
-  };
+  // Remove the custom handleFundSelect function since EnhancedFundSearch 
+  // now handles navigation directly to fund details page
 
   return (
     <section id="explore-funds" className="py-16 bg-white">
@@ -28,7 +22,6 @@ const FundCategories = ({ allFunds }: FundCategoriesProps) => {
           {/* Enhanced Search Bar */}
           <div className="max-w-2xl mx-auto">
             <EnhancedFundSearch 
-              onFundSelect={handleFundSelect}
               placeholder="Search any mutual fund by name (e.g., HDFC Top 100, SBI Small Cap...)"
               className="w-full"
             />
