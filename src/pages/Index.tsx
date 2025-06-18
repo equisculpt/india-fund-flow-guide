@@ -89,7 +89,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Fund Search and Analysis - Restored Original View with Smaller Cards */}
+      {/* Fund Search and Analysis - Smaller Cards with Compact Text */}
       <section id="funds" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
@@ -113,33 +113,33 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Fund Cards - Made Smaller */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+          {/* Fund Cards - Smaller and More Compact */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 max-w-7xl mx-auto">
             {filteredFunds.map(fund => (
-              <Card key={fund.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base font-semibold line-clamp-2">{fund.name}</CardTitle>
-                  <CardDescription className="text-sm">{fund.category} Fund</CardDescription>
+              <Card key={fund.id} className="hover:shadow-md transition-shadow h-fit">
+                <CardHeader className="pb-2 px-3 pt-3">
+                  <CardTitle className="text-xs font-semibold line-clamp-2 leading-tight h-8">{fund.name}</CardTitle>
+                  <CardDescription className="text-xs text-gray-600">{fund.category} Fund</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-2 px-3 pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                      <span className="text-sm font-medium">{fund.rating}</span>
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 mr-1" />
+                      <span className="text-xs font-medium">{fund.rating}</span>
                     </div>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs px-1 py-0">
                       {fund.risk} Risk
                     </Badge>
                   </div>
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-xs">
                       <span className="text-gray-600">Returns:</span>
                       <span className={`font-semibold ${fund.returns >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         {fund.returns >= 0 ? '+' : ''}{fund.returns}%
                       </span>
                     </div>
                   </div>
-                  <Button size="sm" className="w-full text-xs">
+                  <Button size="sm" className="w-full text-xs h-7">
                     <BarChart3 className="h-3 w-3 mr-1" />
                     View Details
                   </Button>

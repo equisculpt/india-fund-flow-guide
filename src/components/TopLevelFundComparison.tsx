@@ -1,12 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Target } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import FundSearchAutocomplete from "./charts/FundSearchAutocomplete";
-import { MutualFundSearchService } from "@/services/mutualFundSearchService";
-import { FundComparisonLogic, FundWithDetails } from "./comparison/FundComparisonLogic";
-import ComparisonResult from "./comparison/ComparisonResult";
 
 interface FundSearchResult {
   schemeCode: string;
@@ -17,62 +16,29 @@ interface FundSearchResult {
 
 const TopLevelFundComparison = () => {
   const [selectedFunds, setSelectedFunds] = useState<FundSearchResult[]>([]);
-  const [fundsWithDetails, setFundsWithDetails] = useState<FundWithDetails[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [comparisonResult, setComparisonResult] = useState<any>(null);
+  const navigate = useNavigate();
 
-  const handleFundSelect = async (fund: FundSearchResult) => {
+  const handleFundSelect = (fund: FundSearchResult) => {
     const newSelectedFunds = [...selectedFunds, fund];
     setSelectedFunds(newSelectedFunds);
     
-    setLoading(true);
-    try {
-      // Fetch detailed fund information
-      const details = await MutualFundSearchService.getFundDetails(fund.schemeCode);
-      if (details) {
-        const fundWithDetails: FundWithDetails = {
-          ...fund,
-          nav: details.nav,
-          navDate: details.navDate,
-          category: details.category,
-          fundHouse: details.fundHouse,
-          // Mock performance data - in real app, fetch from your API
-          returns1M: Math.random() * 10 - 5,
-          returns2M: Math.random() * 15 - 7,
-          returns3M: Math.random() * 20 - 10,
-          returns6M: Math.random() * 25 - 12,
-          returns1Y: Math.random() * 30 - 15,
-          returns3Y: Math.random() * 20 + 5,
-          returns5Y: Math.random() * 15 + 8,
-          expenseRatio: Math.random() * 2 + 0.5,
-          aum: Math.random() * 50000 + 1000,
-        };
-        
-        setFundsWithDetails(prev => [...prev, fundWithDetails]);
-        
-        // If we have 2 or more funds, perform comparison
-        if (newSelectedFunds.length >= 2) {
-          const comparison = FundComparisonLogic.performComparison([...fundsWithDetails, fundWithDetails]);
-          setComparisonResult(comparison);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching fund details:', error);
-    } finally {
-      setLoading(false);
+    // Automatically navigate to comparison page when 2+ funds are selected
+    if (newSelectedFunds.length >= 2) {
+      navigate('/fund-comparison', { 
+        state: { funds: newSelectedFunds }
+      });
     }
   };
 
   const removeFund = (schemeCode: string) => {
     setSelectedFunds(prev => prev.filter(f => f.schemeCode !== schemeCode));
-    setFundsWithDetails(prev => prev.filter(f => f.schemeCode !== schemeCode));
-    
-    const remainingFunds = fundsWithDetails.filter(f => f.schemeCode !== schemeCode);
-    if (remainingFunds.length >= 2) {
-      const comparison = FundComparisonLogic.performComparison(remainingFunds);
-      setComparisonResult(comparison);
-    } else {
-      setComparisonResult(null);
+  };
+
+  const handleCompareNow = () => {
+    if (selectedFunds.length >= 2) {
+      navigate('/fund-comparison', { 
+        state: { funds: selectedFunds }
+      });
     }
   };
 
@@ -85,7 +51,7 @@ const TopLevelFundComparison = () => {
             AI Fund Comparison Tool
           </CardTitle>
           <p className="text-muted-foreground">
-            Compare up to 5 mutual funds with AI-powered analysis. Focus on portfolio quality, recent performance trends, and market conditions.
+            Compare up to 5 mutual funds with AI-powered analysis. Comparison will start automatically when you select 2 funds.
           </p>
         </CardHeader>
         <CardContent>
@@ -120,21 +86,17 @@ const TopLevelFundComparison = () => {
                   </Badge>
                 ))}
               </div>
-            </div>
-          )}
 
-          {loading && (
-            <div className="mt-6 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-2 text-sm text-gray-600">Analyzing funds...</p>
-            </div>
-          )}
+              {selectedFunds.length >= 2 && (
+                <Button onClick={handleCompareNow} className="w-full">
+                  Compare {selectedFunds.length} Funds with AI Analysis
+                </Button>
+              )}
 
-          {comparisonResult && (
-            <ComparisonResult 
-              comparisonResult={comparisonResult} 
-              selectedFunds={selectedFunds}
-            />
+              {selectedFunds.length === 1 && (
+                <p className="text-sm text-gray-600">Add one more fund to start comparison</p>
+              )}
+            </div>
           )}
         </CardContent>
       </Card>

@@ -10,6 +10,7 @@ import Index from "@/pages/Index";
 import AdminPage from "@/pages/AdminPage";
 import AdminPortalPage from "@/pages/AdminPortalPage";
 import FundDetailsPage from "@/pages/FundDetailsPage";
+import FundComparisonPage from "@/pages/FundComparisonPage";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import OnboardingPage from "@/pages/OnboardingPage";
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin-portal" element={<AdminPortalPage />} />
                 <Route path="/fund/:fundId" element={<FundDetailsPage />} />
+                <Route path="/fund-comparison" element={<FundComparisonPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/onboarding" element={<OnboardingPage />} />
