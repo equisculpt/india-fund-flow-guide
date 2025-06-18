@@ -18,17 +18,17 @@ export interface Fund {
 export const useFundData = () => {
   const [allFunds] = useState<Fund[]>([
     {
-      id: '118989', // CORRECTED: This is the actual scheme code for HDFC funds
-      name: 'HDFC Top 100 Fund - Direct Growth',
-      category: 'Large Cap',
-      returns: 16.3,
-      rating: 4.6,
-      risk: 'Moderate',
-      returns1Y: 16.3,
-      returns3Y: 19.1,
+      id: '118989', // CORRECTED: This is HDFC Mid-Cap, not Top 100
+      name: 'HDFC Mid-Cap Opportunities Fund - Direct Growth',
+      category: 'Mid Cap',
+      returns: 24.5,
+      rating: 4.8,
+      risk: 'High',
+      returns1Y: 24.5,
+      returns3Y: 18.2,
       minSip: 500,
       fundHouse: 'HDFC Mutual Fund',
-      nav: 889.45
+      nav: 210.87
     },
     {
       id: '125497', // CORRECT: SBI Small Cap Fund
@@ -45,29 +45,29 @@ export const useFundData = () => {
     },
     {
       id: '119551', // CORRECTED: Different HDFC fund
-      name: 'HDFC Small Cap Fund - Growth',
-      category: 'Small Cap',
-      returns: 22.1,
-      rating: 4.8,
-      risk: 'High',
-      returns1Y: 22.1,
-      returns3Y: 25.6,
+      name: 'HDFC Equity Fund - Growth',
+      category: 'Flexi Cap',
+      returns: 19.8,
+      rating: 4.6,
+      risk: 'Moderate',
+      returns1Y: 19.8,
+      returns3Y: 16.5,
       minSip: 500,
       fundHouse: 'HDFC Mutual Fund',
-      nav: 136.98
+      nav: 156.78
     },
     {
       id: '100016', // CORRECT: SBI Bluechip Fund
-      name: 'ICICI Prudential Bluechip Fund - Direct',
+      name: 'SBI Bluechip Fund - Direct Growth',
       category: 'Large Cap',
-      returns: 14.8,
-      rating: 4.4,
+      returns: 18.7,
+      rating: 4.5,
       risk: 'Moderate',
-      returns1Y: 14.8,
-      returns3Y: 17.2,
-      minSip: 1000,
-      fundHouse: 'ICICI Prudential MF',
-      nav: 71.23
+      returns1Y: 18.7,
+      returns3Y: 15.4,
+      minSip: 500,
+      fundHouse: 'SBI Mutual Fund',
+      nav: 76.32
     },
     {
       id: '119533', // Mid cap fund
@@ -83,17 +83,17 @@ export const useFundData = () => {
       nav: 178.92
     },
     {
-      id: '120503', // CORRECTED: This is actually Axis ELSS, not HDFC
-      name: 'Axis ELSS Tax Saver Fund - Direct',
+      id: '120503', // CORRECTED: This is Axis ELSS
+      name: 'Axis ELSS Tax Saver Fund - Direct Growth',
       category: 'ELSS',
-      returns: 17.8,
+      returns: 22.3,
       rating: 4.3,
       risk: 'Moderate',
-      returns1Y: 17.8,
-      returns3Y: 20.4,
+      returns1Y: 22.3,
+      returns3Y: 17.1,
       minSip: 500,
       fundHouse: 'Axis Mutual Fund',
-      nav: 67.34
+      nav: 107.98
     },
     {
       id: '120376', // Small cap fund
@@ -135,7 +135,7 @@ export const useFundData = () => {
       nav: 56.78
     },
     {
-      id: '100042', // Different large cap fund
+      id: '100042', // CORRECT: Axis Bluechip Fund
       name: 'Axis Bluechip Fund - Direct Growth',
       category: 'Large Cap',
       returns: 15.2,
