@@ -30,35 +30,43 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
     const searchFunds = async () => {
       if (query.length < 2) {
         setSearchResults([]);
+        setSearching(false);
         return;
       }
 
       setSearching(true);
       try {
-        console.log('FundSearchAutocomplete: Searching for:', query);
+        console.log('FundSearchAutocomplete: Starting search for:', query);
         
-        // Improved search with multiple search terms
-        const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0);
+        // Get results from API
         const results = await MutualFundSearchService.searchFunds(query);
-        console.log('FundSearchAutocomplete: Raw search results:', results.length);
+        console.log('FundSearchAutocomplete: API returned:', results.length, 'results');
         
         if (results.length === 0) {
-          console.warn('FundSearchAutocomplete: No funds returned from search for:', query);
+          console.warn('FundSearchAutocomplete: No results from API for query:', query);
           setSearchResults([]);
           setSearching(false);
           return;
         }
         
-        // Enhanced filtering to include partial matches
-        const enhancedResults = results.filter(fund => {
+        // Enhanced filtering for multi-word searches
+        const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0);
+        console.log('FundSearchAutocomplete: Search terms:', searchTerms);
+        
+        // Filter results - ALL search terms must be present
+        const filteredResults = results.filter(fund => {
           const schemeName = fund.schemeName.toLowerCase();
-          // Check if all search terms are present in the scheme name
-          return searchTerms.every(term => schemeName.includes(term));
+          const allTermsPresent = searchTerms.every(term => schemeName.includes(term));
+          if (allTermsPresent) {
+            console.log('FundSearchAutocomplete: Match found:', fund.schemeName);
+          }
+          return allTermsPresent;
         });
         
-        console.log('FundSearchAutocomplete: Enhanced filtered results:', enhancedResults.length);
+        console.log('FundSearchAutocomplete: Filtered to', filteredResults.length, 'matches');
         
-        const mappedResults = enhancedResults.map(fund => {
+        // Map to our format
+        const mappedResults = filteredResults.slice(0, 15).map(fund => {
           const category = MutualFundSearchService.detectCategory(fund.schemeName);
           return {
             schemeCode: fund.schemeCode.toString(),
@@ -68,10 +76,10 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
           };
         });
         
-        console.log('FundSearchAutocomplete: Final mapped results:', mappedResults.slice(0, 5));
-        setSearchResults(mappedResults.slice(0, 20));
+        console.log('FundSearchAutocomplete: Final results:', mappedResults.length);
+        setSearchResults(mappedResults);
       } catch (error) {
-        console.error('Fund search error:', error);
+        console.error('FundSearchAutocomplete: Search error:', error);
         setSearchResults([]);
       } finally {
         setSearching(false);
@@ -88,6 +96,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
       onFundSelect(fund);
       setOpen(false);
       setQuery('');
+      setSearchResults([]); // Clear results after selection
     }
   };
 
@@ -125,7 +134,7 @@ const FundSearchAutocomplete = ({ onFundSelect, selectedFunds, maxFunds, placeho
               ) : (
                 <div className="py-4 text-center">
                   <p>No funds found matching "{query}"</p>
-                  <p className="text-sm text-gray-500 mt-1">Try different keywords like "hdfc equity" or "sbi small"</p>
+                  <p className="text-sm text-gray-500 mt-1">Try keywords like "hdfc equity", "sbi small cap", or "axis large cap"</p>
                 </div>
               )}
             </CommandEmpty>

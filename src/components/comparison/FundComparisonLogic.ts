@@ -83,7 +83,7 @@ export class FundComparisonLogic {
       bestScore: bestFund.aiScore,
       analysis: analysisResults,
       reasoning: this.generateComparisonReasoning(analysisResults, bestFund),
-      marketRecommendation: RecentPerformanceAnalyzer.getCategoryRecommendation()
+      marketRecommendation: this.generateCategorySpecificRecommendation(funds)
     };
 
     return comparison;
@@ -124,5 +124,37 @@ export class FundComparisonLogic {
     }
 
     return reasons.join(', ');
+  }
+
+  private static generateCategorySpecificRecommendation(funds: FundWithDetails[]): string {
+    const categories = [...new Set(funds.map(f => f.category))];
+    
+    // If all funds are from same category
+    if (categories.length === 1) {
+      const category = categories[0];
+      
+      switch (category?.toLowerCase()) {
+        case 'small cap':
+          return `Small cap funds: Current market conditions favor quality small caps with strong fundamentals. Focus on funds with experienced management and selective stock picking.`;
+        
+        case 'mid cap':
+          return `Mid cap funds: These offer balanced growth potential. Current market supports mid-caps with reasonable valuations and growth visibility.`;
+        
+        case 'large cap':
+          return `Large cap funds: Market volatility favors stability. Large cap funds offer steady growth with lower risk, ideal for conservative investors.`;
+        
+        case 'elss':
+          return `ELSS funds: Tax-saving with equity exposure. Current market supports diversified ELSS funds for long-term wealth creation with tax benefits.`;
+        
+        case 'debt':
+          return `Debt funds: Interest rate environment affects performance. Consider duration and credit quality based on current economic conditions.`;
+        
+        default:
+          return `Current market conditions favor diversification. Consider fund manager track record and consistent performance.`;
+      }
+    }
+    
+    // If multiple categories are being compared
+    return `Comparing across categories: ${categories.join(', ')}. Consider your risk appetite and investment horizon. Large caps for stability, mid/small caps for growth potential.`;
   }
 }
