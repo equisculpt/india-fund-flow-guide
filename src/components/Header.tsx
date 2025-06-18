@@ -88,6 +88,12 @@ const Header = () => {
               >
                 Browse Funds
               </button>
+              <NavLink to="/community">
+                <div className="flex items-center gap-1">
+                  <MessageSquare className="h-4 w-4" />
+                  Community
+                </div>
+              </NavLink>
               {user && (
                 <NavLink to="/advanced-features">
                   <div className="flex items-center gap-1">
@@ -132,6 +138,10 @@ const Header = () => {
                       <Brain className="mr-2 h-4 w-4" />
                       AI Features
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/community')}>
+                      <MessageSquare className="mr-2 h-4 w-4" />
+                      Community
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="mr-2 h-4 w-4" />
                       Sign Out
@@ -171,6 +181,7 @@ const Header = () => {
                 >
                   Browse Funds
                 </button>
+                <NavLink to="/community" onClick={() => setIsMenuOpen(false)}>Community</NavLink>
                 {user && (
                   <NavLink to="/advanced-features" onClick={() => setIsMenuOpen(false)}>AI Features</NavLink>
                 )}

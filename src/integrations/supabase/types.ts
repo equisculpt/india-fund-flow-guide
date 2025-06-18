@@ -291,6 +291,99 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_comments: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          parent_id: string | null
+          post_id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          parent_id?: string | null
+          post_id: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          parent_id?: string | null
+          post_id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "blog_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_posts: {
+        Row: {
+          author_id: string
+          category: string | null
+          content: string
+          created_at: string | null
+          excerpt: string | null
+          featured_image_url: string | null
+          id: string
+          published_at: string | null
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          author_id: string
+          category?: string | null
+          content: string
+          created_at?: string | null
+          excerpt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          author_id?: string
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          excerpt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: []
+      }
       commissions: {
         Row: {
           agent_id: string | null
@@ -357,6 +450,95 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      community_answers: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_accepted: boolean | null
+          is_expert_answer: boolean | null
+          question_id: string
+          updated_at: string | null
+          upvotes_count: number | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_accepted?: boolean | null
+          is_expert_answer?: boolean | null
+          question_id: string
+          updated_at?: string | null
+          upvotes_count?: number | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_accepted?: boolean | null
+          is_expert_answer?: boolean | null
+          question_id?: string
+          updated_at?: string | null
+          upvotes_count?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_questions: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string | null
+          expert_only: boolean | null
+          id: string
+          is_answered: boolean | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          upvotes_count: number | null
+          user_id: string
+          views_count: number | null
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string | null
+          expert_only?: boolean | null
+          id?: string
+          is_answered?: boolean | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          upvotes_count?: number | null
+          user_id: string
+          views_count?: number | null
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          expert_only?: boolean | null
+          id?: string
+          is_answered?: boolean | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          upvotes_count?: number | null
+          user_id?: string
+          views_count?: number | null
+        }
+        Relationships: []
       }
       daily_fund_analysis: {
         Row: {
@@ -991,6 +1173,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_expert_status: {
+        Row: {
+          created_at: string | null
+          expertise_areas: string[] | null
+          id: string
+          is_expert: boolean | null
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expertise_areas?: string[] | null
+          id?: string
+          is_expert?: boolean | null
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expertise_areas?: string[] | null
+          id?: string
+          is_expert?: boolean | null
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {

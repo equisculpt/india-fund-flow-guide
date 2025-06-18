@@ -31,6 +31,7 @@ import SBISmallCapFundPage from "@/pages/SBISmallCapFundPage";
 import BestSIPPlansPage from "@/pages/BestSIPPlansPage";
 import SIPCalculatorPage from "@/pages/SIPCalculatorPage";
 import MutualFundDistributorPage from "@/pages/MutualFundDistributorPage";
+import CommunityPage from "@/pages/CommunityPage";
 import UniversalFundSEOPage from "@/components/UniversalFundSEOPage";
 import NotFound from "@/pages/NotFound";
 
@@ -74,6 +75,9 @@ function App() {
                       <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                       <Route path="/terms" element={<TermsOfServicePage />} />
                       <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                      
+                      {/* Community Routes */}
+                      <Route path="/community" element={<CommunityPage />} />
                       
                       {/* SBI Fund SEO Pages */}
                       <Route path="/sbi-small-cap-mutual-fund" element={<SBISmallCapFundPage />} />

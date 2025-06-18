@@ -1,75 +1,79 @@
-
-import { useAdminAuth } from '@/hooks/useAdminAuth';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, Upload, Database, BarChart3 } from 'lucide-react';
-import AdminNavUploader from './AdminNavUploader';
-import AdminPortfolioUploader from './AdminPortfolioUploader';
-import AdminLoginForm from './AdminLoginForm';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LogOut } from 'lucide-react';
+import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
+import InvestmentOverviewTab from '@/components/admin/InvestmentOverviewTab';
+import MutualFundManagementTab from '@/components/admin/MutualFundManagementTab';
+import UserManagementTab from '@/components/admin/UserManagementTab';
+import AgentManagementTab from '@/components/admin/AgentManagementTab';
+import CommissionManagementTab from '@/components/admin/CommissionManagementTab';
+import FundAnalysisTab from '@/components/admin/FundAnalysisTab';
+import CommunityManagementTab from '@/components/admin/CommunityManagementTab';
 
 const AdminPanel = () => {
-  const { adminUser, logout, isAuthenticated, loading } = useAdminAuth();
+  const [activeTab, setActiveTab] = useState("overview");
+  const { signOut } = useSupabaseAuthContext();
+  const navigate = useNavigate();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <AdminLoginForm />;
-  }
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
-              <p className="text-sm text-gray-600">Welcome, {adminUser?.full_name}</p>
-            </div>
-            <Button onClick={logout} variant="outline">
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
+      <div className="bg-white shadow">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-xl font-semibold">SIP Brewery Admin Portal</h1>
+            <Button variant="outline" onClick={handleSignOut}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign Out
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs defaultValue="nav-upload" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="nav-upload" className="flex items-center gap-2">
-              <Database className="h-4 w-4" />
-              NAV Upload
-            </TabsTrigger>
-            <TabsTrigger value="portfolio-upload" className="flex items-center gap-2">
-              <Upload className="h-4 w-4" />
-              Portfolio Upload
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Analytics
-            </TabsTrigger>
+      <div className="container mx-auto px-4 py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-7">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="funds">Funds</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="agents">Agents</TabsTrigger>
+            <TabsTrigger value="investments">Investments</TabsTrigger>
+            <TabsTrigger value="analysis">Analysis</TabsTrigger>
+            <TabsTrigger value="community">Community</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="nav-upload">
-            <AdminNavUploader />
+          <TabsContent value="overview" className="space-y-6">
+            <InvestmentOverviewTab />
           </TabsContent>
 
-          <TabsContent value="portfolio-upload">
-            <AdminPortfolioUploader />
+          <TabsContent value="funds" className="space-y-6">
+            <MutualFundManagementTab />
           </TabsContent>
 
-          <TabsContent value="analytics">
-            <div className="text-center py-12">
-              <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Analytics Dashboard</h3>
-              <p className="text-gray-600">Analytics features will be implemented here</p>
-            </div>
+          <TabsContent value="users" className="space-y-6">
+            <UserManagementTab />
+          </TabsContent>
+
+          <TabsContent value="agents" className="space-y-6">
+            <AgentManagementTab />
+          </TabsContent>
+
+          <TabsContent value="investments" className="space-y-6">
+            <CommissionManagementTab />
+          </TabsContent>
+
+          <TabsContent value="analysis" className="space-y-6">
+            <FundAnalysisTab />
+          </TabsContent>
+
+          <TabsContent value="community" className="space-y-6">
+            <CommunityManagementTab />
           </TabsContent>
         </Tabs>
       </div>
