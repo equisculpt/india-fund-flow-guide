@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,8 @@ interface Question {
   upvotes_count: number;
   status: string;
   created_at: string;
-  profiles: {
+  user_id: string;
+  profiles?: {
     full_name: string;
   } | null;
   community_answers: Array<{
@@ -40,7 +40,6 @@ const CommunityQuestions = () => {
         .from('community_questions')
         .select(`
           *,
-          profiles(full_name),
           community_answers(id, is_expert_answer)
         `)
         .order('created_at', { ascending: false });
@@ -51,10 +50,24 @@ const CommunityQuestions = () => {
         query = query.eq('expert_only', true);
       }
 
-      const { data, error } = await query;
+      const { data: questionsData, error } = await query;
 
       if (error) throw error;
-      setQuestions(data || []);
+
+      // Fetch profiles separately
+      const userIds = questionsData?.map(q => q.user_id) || [];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', userIds);
+
+      // Combine data with profiles
+      const questionsWithProfiles = (questionsData || []).map(question => ({
+        ...question,
+        profiles: profiles?.find(p => p.id === question.user_id) || null
+      }));
+
+      setQuestions(questionsWithProfiles);
     } catch (error) {
       console.error('Error fetching questions:', error);
       toast.error('Failed to load questions');

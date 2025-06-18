@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +18,8 @@ interface BlogPost {
   views_count: number;
   published_at: string;
   created_at: string;
-  profiles: {
+  author_id: string;
+  profiles?: {
     full_name: string;
   } | null;
 }
@@ -43,10 +43,7 @@ const CommunityBlogs = () => {
     try {
       let query = supabase
         .from('blog_posts')
-        .select(`
-          *,
-          profiles(full_name)
-        `)
+        .select('*')
         .eq('status', 'published')
         .order('published_at', { ascending: false });
 
@@ -54,10 +51,24 @@ const CommunityBlogs = () => {
         query = query.eq('category', category);
       }
 
-      const { data, error } = await query;
+      const { data: blogsData, error } = await query;
 
       if (error) throw error;
-      setBlogs(data || []);
+
+      // Fetch profiles separately
+      const authorIds = blogsData?.map(b => b.author_id) || [];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', authorIds);
+
+      // Combine data with profiles
+      const blogsWithProfiles = (blogsData || []).map(blog => ({
+        ...blog,
+        profiles: profiles?.find(p => p.id === blog.author_id) || null
+      }));
+
+      setBlogs(blogsWithProfiles);
     } catch (error) {
       console.error('Error fetching blogs:', error);
       toast.error('Failed to load blog posts');

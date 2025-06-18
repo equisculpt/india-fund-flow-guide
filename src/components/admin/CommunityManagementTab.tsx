@@ -17,7 +17,8 @@ interface Question {
   is_answered: boolean;
   status: string;
   created_at: string;
-  profiles: {
+  user_id: string;
+  profiles?: {
     full_name: string;
   } | null;
 }
@@ -31,7 +32,8 @@ interface BlogPost {
   views_count: number;
   created_at: string;
   published_at: string;
-  profiles: {
+  author_id: string;
+  profiles?: {
     full_name: string;
   } | null;
 }
@@ -45,39 +47,58 @@ const CommunityManagementTab = () => {
 
   const fetchCommunityData = async () => {
     try {
-      // Fetch recent questions
+      // Fetch recent questions with manual join
       const { data: questionsData, error: questionsError } = await supabase
         .from('community_questions')
-        .select(`
-          *,
-          profiles(full_name)
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(10);
 
       if (questionsError) throw questionsError;
 
-      // Fetch recent blog posts
+      // Fetch profiles for questions
+      const questionIds = questionsData?.map(q => q.user_id) || [];
+      const { data: questionProfiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', questionIds);
+
+      // Fetch recent blog posts with manual join
       const { data: blogsData, error: blogsError } = await supabase
         .from('blog_posts')
-        .select(`
-          *,
-          profiles(full_name)
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(10);
 
       if (blogsError) throw blogsError;
 
-      setQuestions(questionsData || []);
-      setBlogs(blogsData || []);
+      // Fetch profiles for blogs
+      const blogAuthorIds = blogsData?.map(b => b.author_id) || [];
+      const { data: blogProfiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', blogAuthorIds);
+
+      // Combine data with profiles
+      const questionsWithProfiles = (questionsData || []).map(question => ({
+        ...question,
+        profiles: questionProfiles?.find(p => p.id === question.user_id) || null
+      }));
+
+      const blogsWithProfiles = (blogsData || []).map(blog => ({
+        ...blog,
+        profiles: blogProfiles?.find(p => p.id === blog.author_id) || null
+      }));
+
+      setQuestions(questionsWithProfiles);
+      setBlogs(blogsWithProfiles);
 
       // Count new/unanswered questions
-      const unansweredCount = (questionsData || []).filter(q => !q.is_answered).length;
+      const unansweredCount = questionsWithProfiles.filter(q => !q.is_answered).length;
       setNewQuestionsCount(unansweredCount);
 
       // Count draft blogs
-      const draftCount = (blogsData || []).filter(b => b.status === 'draft').length;
+      const draftCount = blogsWithProfiles.filter(b => b.status === 'draft').length;
       setDraftBlogsCount(draftCount);
     } catch (error) {
       console.error('Error fetching community data:', error);
