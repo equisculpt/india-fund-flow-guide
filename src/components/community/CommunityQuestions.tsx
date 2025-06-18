@@ -21,7 +21,7 @@ interface Question {
   created_at: string;
   profiles: {
     full_name: string;
-  };
+  } | null;
   community_answers: Array<{
     id: string;
     is_expert_answer: boolean;
@@ -40,7 +40,7 @@ const CommunityQuestions = () => {
         .from('community_questions')
         .select(`
           *,
-          profiles!community_questions_user_id_fkey(full_name),
+          profiles(full_name),
           community_answers(id, is_expert_answer)
         `)
         .order('created_at', { ascending: false });

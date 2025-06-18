@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Menu, X, Settings, BarChart3, Brain } from 'lucide-react';
+import { User, LogOut, Menu, X, Settings, BarChart3, Brain, MessageSquare } from 'lucide-react';
 import BreweryLogo from './BreweryLogo';
 import EnhancedLoginModal from './EnhancedLoginModal';
 

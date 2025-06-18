@@ -21,7 +21,7 @@ interface BlogPost {
   created_at: string;
   profiles: {
     full_name: string;
-  };
+  } | null;
 }
 
 const CommunityBlogs = () => {
@@ -45,7 +45,7 @@ const CommunityBlogs = () => {
         .from('blog_posts')
         .select(`
           *,
-          profiles!blog_posts_author_id_fkey(full_name)
+          profiles(full_name)
         `)
         .eq('status', 'published')
         .order('published_at', { ascending: false });

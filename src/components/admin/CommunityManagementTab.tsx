@@ -19,7 +19,7 @@ interface Question {
   created_at: string;
   profiles: {
     full_name: string;
-  };
+  } | null;
 }
 
 interface BlogPost {
@@ -33,7 +33,7 @@ interface BlogPost {
   published_at: string;
   profiles: {
     full_name: string;
-  };
+  } | null;
 }
 
 const CommunityManagementTab = () => {
@@ -50,7 +50,7 @@ const CommunityManagementTab = () => {
         .from('community_questions')
         .select(`
           *,
-          profiles!community_questions_user_id_fkey(full_name)
+          profiles(full_name)
         `)
         .order('created_at', { ascending: false })
         .limit(10);
@@ -62,7 +62,7 @@ const CommunityManagementTab = () => {
         .from('blog_posts')
         .select(`
           *,
-          profiles!blog_posts_author_id_fkey(full_name)
+          profiles(full_name)
         `)
         .order('created_at', { ascending: false })
         .limit(10);
@@ -306,6 +306,31 @@ const CommunityManagementTab = () => {
       </Tabs>
     </div>
   );
+
+  // Add missing functions
+  const handleAnswerQuestion = async (questionId: string) => {
+    window.open(`/community/question/${questionId}`, '_blank');
+  };
+
+  const handlePublishBlog = async (blogId: string) => {
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .update({ 
+          status: 'published', 
+          published_at: new Date().toISOString() 
+        })
+        .eq('id', blogId);
+
+      if (error) throw error;
+
+      toast.success('Blog post published successfully!');
+      fetchCommunityData();
+    } catch (error) {
+      console.error('Error publishing blog:', error);
+      toast.error('Failed to publish blog post');
+    }
+  };
 };
 
 export default CommunityManagementTab;
