@@ -5,6 +5,7 @@ import AIComparisonTab from "./AIComparisonTab";
 import AdvancedChartsTab from "./AdvancedChartsTab";
 import LiveNavTab from "./LiveNavTab";
 import MarketOverviewTab from "./MarketOverviewTab";
+import { useEffect, useState } from "react";
 
 interface PublicFundsTabsProps {
   selectedFund: any;
@@ -12,8 +13,17 @@ interface PublicFundsTabsProps {
 }
 
 const PublicFundsTabs = ({ selectedFund, onFundSelect }: PublicFundsTabsProps) => {
+  const [activeTab, setActiveTab] = useState("ai-comparison");
+
+  // When a fund is selected, switch to the live-nav tab to show it
+  useEffect(() => {
+    if (selectedFund) {
+      setActiveTab("live-nav");
+    }
+  }, [selectedFund]);
+
   return (
-    <Tabs defaultValue="ai-comparison" className="space-y-6">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
       <TabsList className="grid w-full grid-cols-4">
         <TabsTrigger value="ai-comparison" className="flex items-center gap-2">
           <Brain className="h-4 w-4" />
@@ -25,7 +35,7 @@ const PublicFundsTabs = ({ selectedFund, onFundSelect }: PublicFundsTabsProps) =
         </TabsTrigger>
         <TabsTrigger value="live-nav" className="flex items-center gap-2">
           <TrendingUp className="h-4 w-4" />
-          Live NAV Data
+          {selectedFund ? 'Selected Fund' : 'Live NAV Data'}
         </TabsTrigger>
         <TabsTrigger value="market-overview" className="flex items-center gap-2">
           <Zap className="h-4 w-4" />
@@ -34,7 +44,7 @@ const PublicFundsTabs = ({ selectedFund, onFundSelect }: PublicFundsTabsProps) =
       </TabsList>
 
       <TabsContent value="ai-comparison">
-        <AIComparisonTab />
+        <AIComparisonTab selectedFund={selectedFund} />
       </TabsContent>
 
       <TabsContent value="advanced-charts">
