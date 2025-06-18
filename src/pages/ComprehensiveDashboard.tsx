@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import PortfolioDashboard from "@/components/PortfolioDashboard";
 import GoalBasedInvesting from "@/components/GoalBasedInvesting";
@@ -8,6 +7,7 @@ import AdvancedFundFilters from "@/components/AdvancedFundFilters";
 import FundCard from "@/components/FundCard";
 import ReferralSystem from "@/components/ReferralSystem";
 import AIFundComparison from "@/components/AIFundComparison";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -86,138 +86,140 @@ const ComprehensiveDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Investment Dashboard</h1>
-          <p className="text-gray-600">Manage your investments, track performance, and discover new opportunities</p>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Investment Dashboard</h1>
+            <p className="text-gray-600">Manage your investments, track performance, and discover new opportunities</p>
+          </div>
+
+          <Tabs defaultValue="ai-analysis" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-7">
+              <TabsTrigger value="ai-analysis" className="flex items-center gap-2">
+                <Brain className="h-4 w-4" />
+                AI Analysis
+              </TabsTrigger>
+              <TabsTrigger value="portfolio" className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Portfolio
+              </TabsTrigger>
+              <TabsTrigger value="ai-optimizer" className="flex items-center gap-2">
+                <Brain className="h-4 w-4" />
+                AI Optimizer
+              </TabsTrigger>
+              <TabsTrigger value="explore" className="flex items-center gap-2">
+                <Filter className="h-4 w-4" />
+                Explore Funds
+              </TabsTrigger>
+              <TabsTrigger value="goals" className="flex items-center gap-2">
+                <Target className="h-4 w-4" />
+                Goals
+              </TabsTrigger>
+              <TabsTrigger value="ai-advisor" className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4" />
+                AI Advisor
+              </TabsTrigger>
+              <TabsTrigger value="referrals" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Referrals
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="ai-analysis">
+              <AIFundComparison />
+            </TabsContent>
+
+            <TabsContent value="portfolio">
+              <PortfolioDashboard />
+            </TabsContent>
+
+            <TabsContent value="ai-optimizer">
+              <AIPortfolioOptimizer />
+            </TabsContent>
+
+            <TabsContent value="explore">
+              <div className="grid lg:grid-cols-4 gap-6">
+                <div className="lg:col-span-1">
+                  <AdvancedFundFilters onFiltersChange={setSelectedFilters} />
+                </div>
+                <div className="lg:col-span-3">
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-xl font-semibold">Available Mutual Funds</h3>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">Sort by Returns</Button>
+                          <Button variant="outline" size="sm">Sort by Rating</Button>
+                        </div>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {allFunds.map((fund) => (
+                          <FundCard key={fund.id} fund={fund} />
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="goals">
+              <GoalBasedInvesting />
+            </TabsContent>
+
+            <TabsContent value="ai-advisor">
+              <div className="grid lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <AIInvestmentChat />
+                </div>
+                <div className="space-y-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <h4 className="font-semibold mb-3">Quick Actions</h4>
+                      <div className="space-y-2">
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          Recommend funds for ₹5,000 SIP
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          Tax saving fund analysis
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          Portfolio risk assessment
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          Market outlook discussion
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-4">
+                      <h4 className="font-semibold mb-3">AI Insights</h4>
+                      <div className="space-y-3 text-sm">
+                        <div className="p-3 bg-blue-50 rounded-lg">
+                          <p className="font-medium text-blue-900">Market Update</p>
+                          <p className="text-blue-700">Small cap funds showing strong momentum this quarter</p>
+                        </div>
+                        <div className="p-3 bg-green-50 rounded-lg">
+                          <p className="font-medium text-green-900">Recommendation</p>
+                          <p className="text-green-700">Consider increasing allocation to technology sector</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="referrals">
+              <ReferralSystem />
+            </TabsContent>
+          </Tabs>
         </div>
-
-        <Tabs defaultValue="ai-analysis" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="ai-analysis" className="flex items-center gap-2">
-              <Brain className="h-4 w-4" />
-              AI Analysis
-            </TabsTrigger>
-            <TabsTrigger value="portfolio" className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Portfolio
-            </TabsTrigger>
-            <TabsTrigger value="ai-optimizer" className="flex items-center gap-2">
-              <Brain className="h-4 w-4" />
-              AI Optimizer
-            </TabsTrigger>
-            <TabsTrigger value="explore" className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              Explore Funds
-            </TabsTrigger>
-            <TabsTrigger value="goals" className="flex items-center gap-2">
-              <Target className="h-4 w-4" />
-              Goals
-            </TabsTrigger>
-            <TabsTrigger value="ai-advisor" className="flex items-center gap-2">
-              <MessageCircle className="h-4 w-4" />
-              AI Advisor
-            </TabsTrigger>
-            <TabsTrigger value="referrals" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Referrals
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="ai-analysis">
-            <AIFundComparison />
-          </TabsContent>
-
-          <TabsContent value="portfolio">
-            <PortfolioDashboard />
-          </TabsContent>
-
-          <TabsContent value="ai-optimizer">
-            <AIPortfolioOptimizer />
-          </TabsContent>
-
-          <TabsContent value="explore">
-            <div className="grid lg:grid-cols-4 gap-6">
-              <div className="lg:col-span-1">
-                <AdvancedFundFilters onFiltersChange={setSelectedFilters} />
-              </div>
-              <div className="lg:col-span-3">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-xl font-semibold">Available Mutual Funds</h3>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">Sort by Returns</Button>
-                        <Button variant="outline" size="sm">Sort by Rating</Button>
-                      </div>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      {allFunds.map((fund) => (
-                        <FundCard key={fund.id} fund={fund} />
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="goals">
-            <GoalBasedInvesting />
-          </TabsContent>
-
-          <TabsContent value="ai-advisor">
-            <div className="grid lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <AIInvestmentChat />
-              </div>
-              <div className="space-y-4">
-                <Card>
-                  <CardContent className="p-4">
-                    <h4 className="font-semibold mb-3">Quick Actions</h4>
-                    <div className="space-y-2">
-                      <Button variant="outline" size="sm" className="w-full justify-start">
-                        Recommend funds for ₹5,000 SIP
-                      </Button>
-                      <Button variant="outline" size="sm" className="w-full justify-start">
-                        Tax saving fund analysis
-                      </Button>
-                      <Button variant="outline" size="sm" className="w-full justify-start">
-                        Portfolio risk assessment
-                      </Button>
-                      <Button variant="outline" size="sm" className="w-full justify-start">
-                        Market outlook discussion
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-4">
-                    <h4 className="font-semibold mb-3">AI Insights</h4>
-                    <div className="space-y-3 text-sm">
-                      <div className="p-3 bg-blue-50 rounded-lg">
-                        <p className="font-medium text-blue-900">Market Update</p>
-                        <p className="text-blue-700">Small cap funds showing strong momentum this quarter</p>
-                      </div>
-                      <div className="p-3 bg-green-50 rounded-lg">
-                        <p className="font-medium text-green-900">Recommendation</p>
-                        <p className="text-green-700">Consider increasing allocation to technology sector</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="referrals">
-            <ReferralSystem />
-          </TabsContent>
-        </Tabs>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 };
 
