@@ -1,6 +1,7 @@
 
 import Header from "@/components/Header";
-import BreweryLogo from "@/components/BreweryLogo";
+import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,12 @@ const ContactPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEOHead
+        title="Contact SIP Brewery - Get Expert Mutual Fund Advice | SEBI Registered Platform"
+        description="Contact SIP Brewery for expert mutual fund investment advice. SEBI registered platform offering regular mutual funds, SIP planning, and professional advisory services. Reach our team for personalized investment guidance."
+        keywords="contact mutual fund advisor, SIP Brewery contact, mutual fund investment help, SEBI registered advisor contact, investment consultation India"
+      />
+      
       <Header />
       
       <div className="container mx-auto px-4 py-16">
@@ -105,9 +112,22 @@ const ContactPage = () => {
                 </div>
               </CardContent>
             </Card>
+
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="p-6">
+                <h3 className="font-semibold text-blue-900 mb-2">About SIP Brewery</h3>
+                <p className="text-blue-700 text-sm">
+                  SIP Brewery is a trademark of Equisculpt Ventures Pvt. Ltd., 
+                  a SEBI registered and AMFI compliant mutual fund distributor. 
+                  We provide professional investment advisory services and regular mutual fund distribution.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

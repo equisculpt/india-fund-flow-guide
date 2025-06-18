@@ -1,9 +1,9 @@
-
 import React from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import FundCategories from '@/components/FundCategories';
 import IndexPageSections from '@/components/IndexPageSections';
+import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import { useFundData } from '@/components/FundData';
 
@@ -172,6 +172,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
