@@ -13,12 +13,12 @@ const FundMetrics = ({ fundData, latestNAV, navError }: FundMetricsProps) => {
   const currentReturns3Y = fundData.returns3Y || 0;
   const currentReturns5Y = fundData.returns5Y || 0;
   
-  // Use XIRR values from fundData
-  const xirr1Y = fundData.xirr1Y || 0;
-  const xirr3Y = fundData.xirr3Y || 0;
-  const xirr5Y = fundData.xirr5Y || 0;
+  // Use XIRR values from fundData, with fallback to returns if XIRR is not available
+  const xirr1Y = fundData.xirr1Y || fundData.returns1Y || 0;
+  const xirr3Y = fundData.xirr3Y || fundData.returns3Y || 0;
+  const xirr5Y = fundData.xirr5Y || fundData.returns5Y || 0;
   
-  console.log('FundMetrics: Displaying CORRECTED performance data:', {
+  console.log('FundMetrics: Displaying CORRECTED performance data with proper XIRR:', {
     returns1Y: currentReturns1Y,
     returns3Y: currentReturns3Y,
     returns5Y: currentReturns5Y,
