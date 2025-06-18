@@ -34,7 +34,8 @@ const queryClient = new QueryClient();
 
 const SitemapHandler = () => {
   React.useEffect(() => {
-    window.location.href = '/sitemap.xml';
+    // Redirect to the static sitemap.xml file
+    window.location.replace('/sitemap.xml');
   }, []);
   
   return null;
