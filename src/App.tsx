@@ -20,6 +20,7 @@ import ReferralPage from "@/pages/ReferralPage";
 import ComprehensiveDashboard from "@/pages/ComprehensiveDashboard";
 import AIPortfolioDashboard from "@/pages/AIPortfolioDashboard";
 import UserDashboard from "@/pages/UserDashboard";
+import AdvancedFeaturesPage from "@/pages/AdvancedFeaturesPage";
 import PublicFundsPage from "@/pages/PublicFundsPage";
 import WhatsAppBotPage from "@/pages/WhatsAppBotPage";
 import TermsOfServicePage from "@/pages/TermsOfServicePage";
