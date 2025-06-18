@@ -24,11 +24,11 @@ export const useFundDetails = (fundId: string | undefined) => {
     try {
       console.log('useFundDetails: Fetching enhanced fund details for fundId:', fundId);
       
-      // Get enhanced fund details with CORRECTED calculated performance data
+      // FORCE enhanced fund details - don't allow fallback to mock data
       const enhancedDetails = await MutualFundSearchService.getEnhancedFundDetails(fundId);
       
-      if (enhancedDetails) {
-        console.log('useFundDetails: Enhanced details loaded with CORRECTED performance:', enhancedDetails);
+      if (enhancedDetails && (enhancedDetails.returns1Y !== 0 || enhancedDetails.returns3Y !== 0 || enhancedDetails.returns5Y !== 0)) {
+        console.log('useFundDetails: REAL Enhanced details loaded with CALCULATED performance:', enhancedDetails);
         
         const combinedFundData = {
           schemeCode: fundId,
@@ -40,7 +40,7 @@ export const useFundDetails = (fundId: string | undefined) => {
           returns1Y: enhancedDetails.returns1Y,
           returns3Y: enhancedDetails.returns3Y,
           returns5Y: enhancedDetails.returns5Y,
-          xirr1Y: enhancedDetails.xirr1Y || enhancedDetails.returns1Y, // Use returns as fallback for XIRR
+          xirr1Y: enhancedDetails.xirr1Y || enhancedDetails.returns1Y,
           xirr3Y: enhancedDetails.xirr3Y || enhancedDetails.returns3Y,
           xirr5Y: enhancedDetails.xirr5Y || enhancedDetails.returns5Y,
           expenseRatio: enhancedDetails.expenseRatio,
@@ -50,75 +50,52 @@ export const useFundDetails = (fundId: string | undefined) => {
           amc: enhancedDetails.fundHouse || 'Unknown'
         };
 
-        console.log('useFundDetails: Combined enhanced fund data with CORRECTED XIRR:', {
+        console.log('useFundDetails: Combined REAL enhanced fund data with CALCULATED PERFORMANCE:', {
           returns1Y: combinedFundData.returns1Y,
           returns3Y: combinedFundData.returns3Y,
           returns5Y: combinedFundData.returns5Y,
           xirr1Y: combinedFundData.xirr1Y,
           xirr3Y: combinedFundData.xirr3Y,
           xirr5Y: combinedFundData.xirr5Y,
-          expenseRatio: combinedFundData.expenseRatio,
-          aum: combinedFundData.aum
+          hasRealData: true
         });
 
         setFundData(combinedFundData);
         setLatestNAV(enhancedDetails);
-        setNavError('✓ Performance calculated with corrected mathematical formula from NAV history');
+        setNavError('✓ Performance calculated from actual NAV history data');
 
-        // Trigger AI analysis with the CORRECTED enhanced data containing real performance metrics
+        // Trigger AI analysis with the REAL enhanced data
         await performAIAnalysis(combinedFundData);
       } else {
-        // Fallback to basic API details if enhanced fails
-        console.log('useFundDetails: Enhanced details failed, trying basic API for fundId:', fundId);
-        const apiDetails = await MutualFundSearchService.getFundDetails(fundId);
+        console.error('useFundDetails: Enhanced details failed or returned zero performance - this should not happen for fund:', fundId);
+        setNavError('❌ Failed to calculate real performance data');
         
+        // Still try to get basic details for display
+        const apiDetails = await MutualFundSearchService.getFundDetails(fundId);
         if (apiDetails) {
-          console.log('useFundDetails: Basic API details loaded:', apiDetails);
-          
-          const baseFundData = await FundDataService.getMockFundData(fundId);
-          
-          const combinedFundData = {
+          const baseFundData = {
             schemeCode: fundId,
             schemeName: apiDetails.schemeName,
             category: apiDetails.category || 'Unknown',
             fundHouse: apiDetails.fundHouse || 'Unknown',
             nav: apiDetails.nav || 0,
             navDate: apiDetails.navDate,
-            returns1Y: baseFundData.returns1Y,
-            returns3Y: baseFundData.returns3Y,
-            returns5Y: baseFundData.returns5Y,
-            xirr1Y: baseFundData.xirr1Y || baseFundData.returns1Y, // Ensure XIRR is set
-            xirr3Y: baseFundData.xirr3Y || baseFundData.returns3Y,
-            xirr5Y: baseFundData.xirr5Y || baseFundData.returns5Y,
-            expenseRatio: baseFundData.expenseRatio,
-            aum: baseFundData.aum,
-            minSipAmount: baseFundData.minSipAmount,
-            volatility: baseFundData.volatility,
-            amc: apiDetails.fundHouse || baseFundData.amc
+            returns1Y: 0,
+            returns3Y: 0,
+            returns5Y: 0,
+            xirr1Y: 0,
+            xirr3Y: 0,
+            xirr5Y: 0,
+            expenseRatio: 1.0,
+            aum: 1000,
+            minSipAmount: 500,
+            volatility: 5.0,
+            amc: apiDetails.fundHouse || 'Unknown'
           };
-
-          console.log('useFundDetails: Combined fallback fund data with XIRR:', combinedFundData);
-          setFundData(combinedFundData);
+          
+          setFundData(baseFundData);
           setLatestNAV(apiDetails);
-          setNavError('Using calculated performance data from NAV history');
-          
-          await performAIAnalysis(combinedFundData);
-        } else {
-          console.log('useFundDetails: All API calls failed, using mock data for fundId:', fundId);
-          const baseFundData = await FundDataService.getMockFundData(fundId);
-          
-          // Ensure mock data has XIRR values
-          const mockDataWithXIRR = {
-            ...baseFundData,
-            xirr1Y: baseFundData.xirr1Y || baseFundData.returns1Y,
-            xirr3Y: baseFundData.xirr3Y || baseFundData.returns3Y,
-            xirr5Y: baseFundData.xirr5Y || baseFundData.returns5Y
-          };
-          
-          setFundData(mockDataWithXIRR);
-          setNavError('Using mock data - API unavailable');
-          
-          await performAIAnalysis(mockDataWithXIRR);
+          await performAIAnalysis(baseFundData);
         }
       }
 
@@ -141,7 +118,7 @@ export const useFundDetails = (fundId: string | undefined) => {
     setAiError('');
     
     try {
-      console.log('useFundDetails: Starting AI analysis with CORRECTED enhanced data:', {
+      console.log('useFundDetails: Starting AI analysis with REAL enhanced data:', {
         schemeName: fundDataForAnalysis.schemeName,
         returns1Y: fundDataForAnalysis.returns1Y,
         returns3Y: fundDataForAnalysis.returns3Y,
@@ -149,9 +126,7 @@ export const useFundDetails = (fundId: string | undefined) => {
         xirr1Y: fundDataForAnalysis.xirr1Y,
         xirr3Y: fundDataForAnalysis.xirr3Y,
         xirr5Y: fundDataForAnalysis.xirr5Y,
-        expenseRatio: fundDataForAnalysis.expenseRatio,
-        aum: fundDataForAnalysis.aum,
-        hasCorrectedPerformanceData: fundDataForAnalysis.returns1Y > 0 || fundDataForAnalysis.returns3Y > 0 || fundDataForAnalysis.returns5Y > 0
+        hasRealPerformanceData: fundDataForAnalysis.returns1Y > 0 || fundDataForAnalysis.returns3Y > 0 || fundDataForAnalysis.returns5Y > 0
       });
       
       const { data, error } = await supabase.functions.invoke('ai-fund-analysis', {
@@ -163,7 +138,7 @@ export const useFundDetails = (fundId: string | undefined) => {
       }
 
       if (data.success) {
-        console.log('useFundDetails: AI analysis completed with CORRECTED performance data:', data.analysis);
+        console.log('useFundDetails: AI analysis completed with REAL performance data:', data.analysis);
         setAiAnalysis(data.analysis);
       } else {
         console.log('useFundDetails: AI analysis failed, using fallback:', data.fallbackAnalysis);

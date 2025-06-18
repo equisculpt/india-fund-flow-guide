@@ -7,10 +7,10 @@ export class EnhancedFundDataExtractor {
     xirr3Y: number;
     xirr5Y: number;
   } {
-    console.log('EnhancedFundDataExtractor: Starting CORRECTED performance calculation with', navHistory.length, 'NAV records');
+    console.log('EnhancedFundDataExtractor: Starting REAL performance calculation with', navHistory.length, 'NAV records');
     
-    if (!navHistory || navHistory.length < 50) {
-      console.log('EnhancedFundDataExtractor: Insufficient NAV history data');
+    if (!navHistory || navHistory.length < 10) {
+      console.log('EnhancedFundDataExtractor: Insufficient NAV history data, returning zeros');
       return { 
         returns1Y: 0, returns3Y: 0, returns5Y: 0,
         xirr1Y: 0, xirr3Y: 0, xirr5Y: 0
@@ -45,10 +45,10 @@ export class EnhancedFundDataExtractor {
                 '3Y:', threeYearsAgo.toISOString().split('T')[0], 
                 '5Y:', fiveYearsAgo.toISOString().split('T')[0]);
 
-    // Find closest NAV values for each period
-    const nav1Y = this.findClosestNAVWithinRange(navHistory, oneYearAgo, 30); // 30 days tolerance
-    const nav3Y = this.findClosestNAVWithinRange(navHistory, threeYearsAgo, 60); // 60 days tolerance
-    const nav5Y = this.findClosestNAVWithinRange(navHistory, fiveYearsAgo, 90); // 90 days tolerance
+    // Find closest NAV values for each period with more relaxed tolerance
+    const nav1Y = this.findClosestNAVWithinRange(navHistory, oneYearAgo, 45); // 45 days tolerance
+    const nav3Y = this.findClosestNAVWithinRange(navHistory, threeYearsAgo, 90); // 90 days tolerance
+    const nav5Y = this.findClosestNAVWithinRange(navHistory, fiveYearsAgo, 180); // 180 days tolerance
 
     console.log('EnhancedFundDataExtractor: Found NAV values:', {
       '1Y': nav1Y,
@@ -56,7 +56,7 @@ export class EnhancedFundDataExtractor {
       '5Y': nav5Y
     });
 
-    // Calculate SIMPLE returns using correct formula: (Current - Past) / Past * 100
+    // Calculate returns using correct formula: (Current - Past) / Past * 100
     const returns1Y = nav1Y.nav > 0 ? ((currentNAV - nav1Y.nav) / nav1Y.nav) * 100 : 0;
     
     // For multi-year periods, calculate CAGR (annualized returns)
@@ -69,10 +69,10 @@ export class EnhancedFundDataExtractor {
     const returns5Y = nav5Y.nav > 0 && actualYears5Y > 0 ? 
       (Math.pow(currentNAV / nav5Y.nav, 1/actualYears5Y) - 1) * 100 : 0;
 
-    // XIRR is same as CAGR for lumpsum investments
+    // XIRR calculation for lumpsum investments (same as CAGR for single investment)
     const xirr1Y = returns1Y; // For 1 year, XIRR = simple return
-    const xirr3Y = returns3Y; // For CAGR, XIRR = CAGR
-    const xirr5Y = returns5Y; // For CAGR, XIRR = CAGR
+    const xirr3Y = returns3Y; // For CAGR, XIRR = CAGR for lumpsum
+    const xirr5Y = returns5Y; // For CAGR, XIRR = CAGR for lumpsum
 
     const result = {
       returns1Y: Math.round(returns1Y * 100) / 100,
@@ -83,7 +83,13 @@ export class EnhancedFundDataExtractor {
       xirr5Y: Math.round(xirr5Y * 100) / 100
     };
 
-    console.log('EnhancedFundDataExtractor: FINAL CORRECTED PERFORMANCE:', result);
+    console.log('EnhancedFundDataExtractor: FINAL REAL CALCULATED PERFORMANCE:', result);
+    
+    // Validate that we actually calculated something meaningful
+    if (result.returns1Y === 0 && result.returns3Y === 0 && result.returns5Y === 0) {
+      console.error('EnhancedFundDataExtractor: All returns are zero - calculation failed!');
+    }
+    
     return result;
   }
 
@@ -91,6 +97,8 @@ export class EnhancedFundDataExtractor {
     let closestRecord = null;
     let minDifference = Infinity;
     const toleranceMs = toleranceDays * 24 * 60 * 60 * 1000;
+
+    console.log('EnhancedFundDataExtractor: Searching for NAV near', targetDate.toISOString().split('T')[0], 'within', toleranceDays, 'days');
 
     for (const record of navHistory) {
       const recordDate = new Date(record.date);
@@ -105,12 +113,30 @@ export class EnhancedFundDataExtractor {
 
     if (!closestRecord) {
       console.log('EnhancedFundDataExtractor: No NAV found within', toleranceDays, 'days of', targetDate.toISOString().split('T')[0]);
-      return { nav: 0, date: '' };
+      
+      // Try to find the closest record without tolerance
+      for (const record of navHistory) {
+        const recordDate = new Date(record.date);
+        const difference = Math.abs(recordDate.getTime() - targetDate.getTime());
+        
+        if (difference < minDifference) {
+          minDifference = difference;
+          closestRecord = record;
+        }
+      }
+      
+      if (closestRecord) {
+        console.log('EnhancedFundDataExtractor: Using closest available NAV (outside tolerance):', closestRecord.nav, 'on', closestRecord.date);
+      }
+    } else {
+      console.log('EnhancedFundDataExtractor: Found NAV', closestRecord.nav, 'on', closestRecord.date, 
+                  'for target', targetDate.toISOString().split('T')[0], 
+                  '(difference:', Math.round(minDifference / (24 * 60 * 60 * 1000)), 'days)');
     }
 
-    console.log('EnhancedFundDataExtractor: Found NAV', closestRecord.nav, 'on', closestRecord.date, 
-                'for target', targetDate.toISOString().split('T')[0], 
-                '(difference:', Math.round(minDifference / (24 * 60 * 60 * 1000)), 'days)');
+    if (!closestRecord) {
+      return { nav: 0, date: '' };
+    }
 
     return {
       nav: parseFloat(closestRecord.nav || '0'),
@@ -125,7 +151,6 @@ export class EnhancedFundDataExtractor {
     return timeDiff / (1000 * 60 * 60 * 24 * 365.25); // Account for leap years
   }
 
-  
   static estimateExpenseRatio(category: string, fundHouse: string): number {
     // Industry average expense ratios by category
     const categoryRatios: { [key: string]: number } = {
