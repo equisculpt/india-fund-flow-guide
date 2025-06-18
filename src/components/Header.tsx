@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,10 +18,25 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleFundComparisonClick = () => {
+    if (location.pathname === '/') {
+      // If already on home page, scroll to section
+      const element = document.getElementById('fund-comparison');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // If on different page, navigate to home with anchor
+      navigate('/#fund-comparison');
+    }
+    setIsMenuOpen(false);
   };
 
   const NavLink = ({ to, children, onClick }: { to?: string; children: React.ReactNode; onClick?: () => void }) => (
@@ -47,7 +62,12 @@ const Header = () => {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
               <NavLink to="/">Home</NavLink>
-              <NavLink to="/#fund-comparison">Compare Funds</NavLink>
+              <button
+                onClick={handleFundComparisonClick}
+                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Compare Funds
+              </button>
               <NavLink to="/public-funds">Browse Funds</NavLink>
               {user && (
                 <NavLink to="/advanced-features">
@@ -120,7 +140,12 @@ const Header = () => {
             <div className="md:hidden py-4 border-t">
               <div className="flex flex-col space-y-2">
                 <NavLink to="/" onClick={() => setIsMenuOpen(false)}>Home</NavLink>
-                <NavLink to="/#fund-comparison" onClick={() => setIsMenuOpen(false)}>Compare Funds</NavLink>
+                <button
+                  onClick={handleFundComparisonClick}
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left"
+                >
+                  Compare Funds
+                </button>
                 <NavLink to="/public-funds" onClick={() => setIsMenuOpen(false)}>Browse Funds</NavLink>
                 {user && (
                   <NavLink to="/advanced-features" onClick={() => setIsMenuOpen(false)}>AI Features</NavLink>
