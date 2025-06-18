@@ -51,10 +51,10 @@ const TopLevelFundComparison = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="h-5 w-5 text-blue-600" />
-            🤖 Real AI Fund Comparison Tool
+            🤖 AI Fund Comparison Tool
           </CardTitle>
           <p className="text-muted-foreground">
-            Select 2-5 mutual funds for comprehensive AI-powered comparison using advanced Gemini AI. 
+            Select 2-5 mutual funds for comprehensive AI-powered comparison. 
             Our AI analyzes performance, risk metrics, fund manager profiles, and market conditions to provide intelligent recommendations.
           </p>
         </CardHeader>
@@ -130,7 +130,7 @@ const TopLevelFundComparison = () => {
                     size="lg"
                   >
                     <BarChart3 className="h-5 w-5" />
-                    🤖 Analyze {selectedFunds.length} Funds with Real AI
+                    🤖 Analyze {selectedFunds.length} Funds with AI
                   </Button>
                 ) : (
                   <div className="text-center">
@@ -149,7 +149,7 @@ const TopLevelFundComparison = () => {
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-200">
                 <h4 className="font-medium text-blue-900 mb-2">🤖 AI Comparison Features</h4>
                 <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• Real AI analysis using advanced Gemini AI model</li>
+                  <li>• Advanced AI analysis using sophisticated models</li>
                   <li>• Comprehensive evaluation of performance, risk metrics & fund managers</li>
                   <li>• Analysis of 1M, 2M, 3M, 6M, 1Y, 2Y, 3Y, 4Y, 5Y performance periods</li>
                   <li>• Sharpe ratio, Beta, Alpha, volatility and expense ratio analysis</li>
