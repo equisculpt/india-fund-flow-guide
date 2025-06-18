@@ -1,219 +1,182 @@
+import React, { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Star, TrendingUp, TrendingDown, Search, Calculator, Target, BarChart3, Shield } from 'lucide-react';
+import Header from '@/components/Header';
+import HeroSection from '@/components/HeroSection';
+import FundSearch from '@/components/FundSearch';
+import RiskProfiling from '@/components/RiskProfiling';
+import InvestmentCalculator from '@/components/InvestmentCalculator';
+import GoalBasedInvesting from '@/components/GoalBasedInvesting';
+import ComplianceFooter from '@/components/ComplianceFooter';
+import TopLevelFundComparison from '@/components/TopLevelFundComparison';
 
-import Header from "@/components/Header";
-import HeroSection from "@/components/HeroSection";
-import PortfolioDashboard from "@/components/PortfolioDashboard";
-import InvestmentCalculator from "@/components/InvestmentCalculator";
-import RiskProfiling from "@/components/RiskProfiling";
-import AIFundComparison from "@/components/AIFundComparison";
-import ReferralSystem from "@/components/ReferralSystem";
-import WhatsAppIntegration from "@/components/WhatsAppIntegration";
-import TrademarkNotice from "@/components/TrademarkNotice";
-import ComplianceFooter from "@/components/ComplianceFooter";
-import EnhancedFundSearch from "@/components/EnhancedFundSearch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
-import ReviewModal from "@/components/ReviewModal";
-import { useState, useEffect } from "react";
-import { TrendingUp, Calculator, Target, Sparkles, Users, Bot, Search } from "lucide-react";
-import { useTopFundsNAV } from "@/hooks/useTopFundsNAV";
+interface Fund {
+  id: string;
+  name: string;
+  category: string;
+  returns: number;
+  rating: number;
+  risk: string;
+}
 
 const Index = () => {
-  const { isAuthenticated, user } = useEnhancedAuth();
-  const [showReviewModal, setShowReviewModal] = useState(false);
-  
-  // Initialize top funds NAV fetching
-  const { navData, loading: navLoading, error: navError } = useTopFundsNAV();
+  const [funds, setFunds] = useState<Fund[]>([
+    {
+      id: '1',
+      name: 'Axis Bluechip Fund',
+      category: 'Large Cap',
+      returns: 15.2,
+      rating: 4.5,
+      risk: 'Moderate',
+    },
+    {
+      id: '2',
+      name: 'HDFC Small Cap Fund',
+      category: 'Small Cap',
+      returns: 18.5,
+      rating: 4.7,
+      risk: 'High',
+    },
+    {
+      id: '3',
+      name: 'ICICI Prudential Balanced Advantage Fund',
+      category: 'Hybrid',
+      returns: 12.8,
+      rating: 4.3,
+      risk: 'Moderate',
+    },
+  ]);
 
-  // Check for review prompt after investment activities
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredFunds, setFilteredFunds] = useState<Fund[]>(funds);
+
   useEffect(() => {
-    const checkReviewPrompt = () => {
-      const lastReviewPrompt = localStorage.getItem('lastReviewPrompt');
-      const investmentCount = localStorage.getItem('investmentCount') || '0';
-      
-      if (isAuthenticated && parseInt(investmentCount) >= 3 && 
-          (!lastReviewPrompt || Date.now() - parseInt(lastReviewPrompt) > 7 * 24 * 60 * 60 * 1000)) {
-        setShowReviewModal(true);
-      }
-    };
+    const results = funds.filter(fund =>
+      fund.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredFunds(results);
+  }, [searchTerm, funds]);
 
-    checkReviewPrompt();
-  }, [isAuthenticated]);
-
-  const handleReviewSubmitted = () => {
-    localStorage.setItem('lastReviewPrompt', Date.now().toString());
-    setShowReviewModal(false);
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
   };
-
-  const handleRiskProfileComplete = (riskProfile: any) => {
-    console.log('Risk profile completed:', riskProfile);
-  };
-
-  const handleFundSearchSelect = (fund: any) => {
-    console.log('Fund selected from search - navigating to fund details:', fund);
-    // Navigation is handled in EnhancedFundSearch component
-  };
-
-  console.log('Index page rendering, isAuthenticated:', isAuthenticated, 'user:', user);
-  console.log('Top funds NAV loading:', navLoading, 'error:', navError, 'data size:', navData.size);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50">
       <Header />
+      
+      {/* Hero Section */}
       <HeroSection />
-      
-      {/* NAV Loading Status */}
-      {navLoading && (
-        <div className="container mx-auto px-4 py-2">
-          <div className="text-center text-sm text-blue-600">
-            Loading latest NAV data for top funds...
-          </div>
-        </div>
-      )}
-      
-      {navError && (
-        <div className="container mx-auto px-4 py-2">
-          <div className="text-center text-sm text-red-600">
-            Error loading NAV data: {navError}
-          </div>
-        </div>
-      )}
-      
-      {isAuthenticated ? (
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Welcome back, {user?.name || 'Investor'}! 👋
-            </h2>
+
+      {/* Fund Comparison Tool - New Section */}
+      <section id="fund-comparison" className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">AI Fund Comparison</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Continue your investment journey with our AI-powered tools and personalized recommendations.
+              Compare mutual funds with AI-powered analysis. Get insights on portfolio quality, recent performance trends, and market conditions.
             </p>
           </div>
+          <TopLevelFundComparison />
+        </div>
+      </section>
 
-          {/* Enhanced Fund Search Section */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Search className="h-5 w-5 text-blue-600" />
-                Search Any Mutual Fund
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Search for any mutual fund in the market to view detailed analysis, NAV, and performance data
-              </p>
-            </CardHeader>
-            <CardContent>
-              <EnhancedFundSearch 
-                onFundSelect={handleFundSearchSelect}
-                placeholder="Type any mutual fund name (e.g., HDFC Top 100, SBI Small Cap, ICICI Prudential...)"
-                className="w-full"
+      {/* Fund Search and Analysis */}
+      <section id="funds" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Explore Mutual Funds</h2>
+            <p className="text-gray-600">Discover top-rated funds for your investment portfolio.</p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-6">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="search"
+                placeholder="Search for funds..."
+                className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                value={searchTerm}
+                onChange={handleSearchChange}
               />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Tabs defaultValue="dashboard" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 gap-1 bg-white/70 backdrop-blur-sm p-2 rounded-xl shadow-lg">
-              <TabsTrigger value="dashboard" className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
-                <span className="hidden sm:inline">Dashboard</span>
-              </TabsTrigger>
-              <TabsTrigger value="calculator" className="flex items-center gap-2">
-                <Calculator className="h-4 w-4" />
-                <span className="hidden sm:inline">Calculator</span>
-              </TabsTrigger>
-              <TabsTrigger value="risk" className="flex items-center gap-2">
-                <Target className="h-4 w-4" />
-                <span className="hidden sm:inline">Risk Profile</span>
-              </TabsTrigger>
-              <TabsTrigger value="ai-funds" className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                <span className="hidden sm:inline">AI Funds</span>
-              </TabsTrigger>
-              <TabsTrigger value="referral" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span className="hidden sm:inline">Referrals</span>
-              </TabsTrigger>
-              <TabsTrigger value="whatsapp" className="flex items-center gap-2">
-                <Bot className="h-4 w-4" />
-                <span className="hidden sm:inline">WhatsApp</span>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="dashboard" className="space-y-6">
-              <PortfolioDashboard />
-            </TabsContent>
-            
-            <TabsContent value="calculator" className="space-y-6">
-              <Card>
+          {/* Fund Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredFunds.map(fund => (
+              <Card key={fund.id}>
                 <CardHeader>
-                  <CardTitle>Investment Calculator</CardTitle>
+                  <CardTitle>{fund.name}</CardTitle>
+                  <CardDescription>{fund.category} Fund</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <InvestmentCalculator />
+                  <div className="flex items-center mb-2">
+                    <Star className="h-5 w-5 fill-yellow-400 text-yellow-400 mr-2" />
+                    <span>{fund.rating}</span>
+                  </div>
+                  <div className="mb-2">
+                    <span className="font-semibold">Returns:</span> {fund.returns}%
+                  </div>
+                  <div>
+                    <span className="font-semibold">Risk:</span> {fund.risk}
+                  </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-            
-            <TabsContent value="risk" className="space-y-6">
-              <RiskProfiling onComplete={handleRiskProfileComplete} />
-            </TabsContent>
-            
-            <TabsContent value="ai-funds" className="space-y-6">
-              <AIFundComparison />
-            </TabsContent>
-            
-            <TabsContent value="referral" className="space-y-6">
-              <ReferralSystem />
-            </TabsContent>
-            
-            <TabsContent value="whatsapp" className="space-y-6">
-              <WhatsAppIntegration />
-            </TabsContent>
-          </Tabs>
+            ))}
+            {filteredFunds.length === 0 && (
+              <div className="col-span-full text-center">
+                <p className="text-gray-500">No funds found matching your search.</p>
+              </div>
+            )}
+          </div>
         </div>
-      ) : (
-        <div className="container mx-auto px-4 py-16 space-y-16">
-          {/* Enhanced Fund Search Section for Non-authenticated Users */}
-          <section id="funds">
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="h-5 w-5 text-blue-600" />
-                  Search Any Mutual Fund
-                </CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Search for any mutual fund in the market to view detailed analysis, NAV, and performance data
-                </p>
-              </CardHeader>
-              <CardContent>
-                <EnhancedFundSearch 
-                  onFundSelect={handleFundSearchSelect}
-                  placeholder="Type any mutual fund name (e.g., HDFC Top 100, SBI Small Cap, ICICI Prudential...)"
-                  className="w-full"
-                />
-              </CardContent>
-            </Card>
+      </section>
 
-            <AIFundComparison />
-          </section>
-          
-          <section id="calculator">
-            <InvestmentCalculator />
-          </section>
-          
-          <section id="risk-profile">
-            <RiskProfiling onComplete={handleRiskProfileComplete} />
-          </section>
+      {/* Risk Profiling */}
+      <section id="risk-profiling" className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Risk Profiling</h2>
+            <p className="text-gray-600">Determine your risk tolerance and find suitable investment options.</p>
+          </div>
+          <RiskProfiling />
         </div>
-      )}
-      
-      <TrademarkNotice />
-      <ComplianceFooter />
-      
-      <ReviewModal 
-        open={showReviewModal}
-        onOpenChange={setShowReviewModal}
-        onReviewSubmitted={handleReviewSubmitted}
-      />
+      </section>
+
+      {/* SIP Calculator */}
+      <section id="sip-calculator" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">SIP Calculator</h2>
+            <p className="text-gray-600">Calculate the potential returns on your SIP investments.</p>
+          </div>
+          <InvestmentCalculator />
+        </div>
+      </section>
+
+      {/* Goal-Based Investing */}
+      <section id="goal-investing" className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Goal-Based Investing</h2>
+            <p className="text-gray-600">Plan your investments to achieve your financial goals.</p>
+          </div>
+          <GoalBasedInvesting />
+        </div>
+      </section>
+
+      {/* Trading Disclaimer and Footer */}
+      <section className="bg-gray-100 py-8">
+        <div className="container mx-auto px-4">
+          <ComplianceFooter />
+        </div>
+      </section>
     </div>
   );
 };
