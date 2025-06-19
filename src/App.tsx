@@ -21,9 +21,7 @@ import OnboardingPage from "./pages/OnboardingPage";
 import AgentHomePage from "./pages/AgentHomePage";
 import ReferralPage from "./pages/ReferralPage";
 import AdminPage from "./pages/AdminPage";
-import SecureAdminPage from "./pages/SecureAdmin
-
-Page";
+import SecureAdminPage from "./pages/SecureAdminPage";
 import AdminPortalPage from "./pages/AdminPortalPage";
 import ContactPage from "./pages/ContactPage";
 import AboutPage from "./pages/AboutPage";

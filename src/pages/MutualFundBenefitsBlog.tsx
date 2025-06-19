@@ -613,7 +613,7 @@ const MutualFundBenefitsBlog = () => {
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <h6 className="font-semibold mb-2 text-blue-600">⚠️ Consider Carefully:</h6>
                     <ul className="text-sm space-y-1">
-                      <li>• Short-term investors (<1 year)</li>
+                      <li>• Short-term investors (less than 1 year)</li>
                       <li>• Those expecting guaranteed returns</li>
                       <li>• Day traders/speculators</li>
                       <li>• People uncomfortable with volatility</li>
@@ -623,7 +623,7 @@ const MutualFundBenefitsBlog = () => {
                   <div className="bg-purple-50 p-4 rounded-lg">
                     <h6 className="font-semibold mb-2 text-purple-600">💡 Alternative Options:</h6>
                     <ul className="text-sm space-y-1">
-                      <li>• Ultra-short funds for <1 year goals</li>
+                      <li>• Ultra-short funds for less than 1 year goals</li>
                       <li>• Debt funds for guaranteed-like returns</li>
                       <li>• Balanced funds for moderate risk</li>
                       <li>• SIP to reduce volatility impact</li>
