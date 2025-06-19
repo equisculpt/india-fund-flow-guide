@@ -60,9 +60,7 @@ const PortfolioManagementTab = () => {
   };
 
   const handleFilesAdded = (files: PendingFile[]) => {
-    setPen
-
-dingFiles(prev => [...prev, ...files]);
+    setPendingFiles(prev => [...prev, ...files]);
   };
 
   const handleProcessFiles = async () => {
