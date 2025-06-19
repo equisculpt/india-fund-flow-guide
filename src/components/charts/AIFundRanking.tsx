@@ -2,10 +2,14 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Brain, Star, TrendingUp, Shield, Target, RefreshCw, AlertCircle } from 'lucide-react';
+import { Brain, RefreshCw, AlertCircle } from 'lucide-react';
 import { AMFIPortfolioService } from '@/services/AMFIPortfolioScraper';
 import AIAnalysisIndicator from './AIAnalysisIndicator';
 import FundScoringBreakdown from './FundScoringBreakdown';
+import AIScoreDisplay from './AIScoreDisplay';
+import AIPortfolioInsights from './AIPortfolioInsights';
+import AIStrengthsConcerns from './AIStrengthsConcerns';
+import AIInvestmentSummary from './AIInvestmentSummary';
 
 interface AIFundRankingProps {
   fundData: any;
@@ -121,20 +125,6 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
     }
   ];
 
-  const getRankingColor = (score: number) => {
-    if (score >= 8.5) return 'text-green-600 bg-green-50';
-    if (score >= 7.0) return 'text-blue-600 bg-blue-50';
-    if (score >= 6.0) return 'text-yellow-600 bg-yellow-50';
-    return 'text-red-600 bg-red-50';
-  };
-
-  const getRankingLabel = (score: number) => {
-    if (score >= 8.5) return 'Excellent';
-    if (score >= 7.0) return 'Good';
-    if (score >= 6.0) return 'Average';
-    return 'Below Average';
-  };
-
   const getDetailedAnalysis = () => {
     if (hasRealAI) {
       return {
@@ -193,26 +183,11 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
       <CardContent>
         <div className="space-y-6">
           {/* Overall AI Score */}
-          <div className="text-center p-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
-              <span className="text-2xl font-bold">
-                {hasRealAI ? 'AI Score' : 'Analysis Score'}
-              </span>
-            </div>
-            <div className="text-5xl font-bold text-purple-600 mb-2">
-              {overallScore}/10
-            </div>
-            <Badge className={`${getRankingColor(overallScore)} border-0 px-4 py-1`}>
-              {getRankingLabel(overallScore)}
-            </Badge>
-            <p className="text-sm text-gray-600 mt-2">
-              {hasRealAI 
-                ? `Based on comprehensive AI analysis with ${confidence}% confidence` 
-                : 'Based on mathematical analysis and portfolio data'
-              }
-            </p>
-          </div>
+          <AIScoreDisplay 
+            overallScore={overallScore}
+            hasRealAI={hasRealAI}
+            confidence={confidence}
+          />
 
           {/* Analysis Method Indicator */}
           <AIAnalysisIndicator hasRealAI={hasRealAI} confidence={confidence} />
@@ -221,76 +196,23 @@ const AIFundRanking = ({ fundData }: AIFundRankingProps) => {
           <FundScoringBreakdown scoringFactors={scoringFactors} hasRealAI={hasRealAI} />
 
           {/* Portfolio Insights */}
-          {portfolioData && (
-            <div className="p-4 bg-blue-50 rounded-lg">
-              <h4 className="font-semibold text-blue-800 mb-2">Portfolio Intelligence</h4>
-              <div className="grid md:grid-cols-3 gap-4 text-sm">
-                <div>
-                  <span className="text-blue-600 font-medium">Holdings:</span>
-                  <p>{portfolioData.holdings.length} stocks</p>
-                </div>
-                <div>
-                  <span className="text-blue-600 font-medium">AUM:</span>
-                  <p>₹{portfolioData.aum.toFixed(0)} Cr</p>
-                </div>
-                <div>
-                  <span className="text-blue-600 font-medium">Turnover:</span>
-                  <p>{portfolioData.portfolioTurnover.toFixed(1)}% annually</p>
-                </div>
-              </div>
-            </div>
-          )}
+          <AIPortfolioInsights portfolioData={portfolioData} />
 
           {/* Key Strengths & Concerns */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <h4 className="font-semibold text-green-700 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
-                Key Strengths
-              </h4>
-              <ul className="text-sm space-y-1 text-green-600">
-                {analysis.strengths.map((strength, index) => (
-                  <li key={index}>• {strength}</li>
-                ))}
-                {hasRealAI && fundData.performanceRank && (
-                  <li>• Performance rank: #{fundData.performanceRank}</li>
-                )}
-              </ul>
-            </div>
-            
-            <div className="space-y-2">
-              <h4 className="font-semibold text-amber-700 flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Areas of Attention
-              </h4>
-              <ul className="text-sm space-y-1 text-amber-600">
-                {analysis.concerns.length > 0 ? analysis.concerns.map((concern, index) => (
-                  <li key={index}>• {concern}</li>
-                )) : (
-                  <li>• No major concerns identified</li>
-                )}
-                <li>• Monitor market conditions for {fundData.category}</li>
-                <li>• Regular portfolio review recommended</li>
-              </ul>
-            </div>
-          </div>
+          <AIStrengthsConcerns 
+            strengths={analysis.strengths}
+            concerns={analysis.concerns}
+            hasRealAI={hasRealAI}
+            fundData={fundData}
+          />
 
-          {/* AI Recommendation */}
-          <div className="p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg">
-            <h4 className="font-semibold mb-2 flex items-center gap-2">
-              <Target className="h-4 w-4 text-purple-600" />
-              {hasRealAI ? 'AI Investment Recommendation' : 'Investment Assessment'}
-            </h4>
-            <p className="text-sm text-gray-700">
-              With a score of <strong>{overallScore}/10</strong>, this fund is rated as 
-              <strong> {getRankingLabel(overallScore).toLowerCase()}</strong> for the {fundData.category} category.
-              {hasRealAI && (
-                <span className="block mt-2 text-purple-700 font-medium">
-                  AI Recommendation: {reasoning}
-                </span>
-              )}
-            </p>
-          </div>
+          {/* AI Research Summary */}
+          <AIInvestmentSummary 
+            overallScore={overallScore}
+            fundData={fundData}
+            hasRealAI={hasRealAI}
+            reasoning={reasoning}
+          />
         </div>
       </CardContent>
     </Card>
