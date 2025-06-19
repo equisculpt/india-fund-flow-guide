@@ -1,10 +1,14 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EnhancedFundSearch from "@/components/EnhancedFundSearch";
 import PublicFundsTabs from "@/components/public-funds/PublicFundsTabs";
 
 const PublicFundsPage = () => {
   const [selectedFund, setSelectedFund] = useState<any>(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleFundSearchSelect = (fund: any) => {
     console.log('PublicFundsPage: Fund selected from search:', fund);

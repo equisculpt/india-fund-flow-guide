@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import Header from '@/components/Header';
 import { FundComparisonLogic, FundWithDetails } from '@/components/comparison/FundComparisonLogic';
 import { MutualFundSearchService } from '@/services/mutualFundSearchService';
 import StabilityIndicator from '@/components/comparison/StabilityIndicator';
@@ -13,6 +12,7 @@ import InvestmentHorizonRecommendations from '@/components/comparison/Investment
 import DetailedFundAnalysis from '@/components/comparison/DetailedFundAnalysis';
 import MarketRecommendationCard from '@/components/comparison/MarketRecommendationCard';
 import ComparisonLoadingState from '@/components/comparison/ComparisonLoadingState';
+import TopLevelFundComparison from '@/components/TopLevelFundComparison';
 
 interface ComparisonPageState {
   funds: any[];
@@ -23,12 +23,16 @@ const FundComparisonPage = () => {
   const navigate = useNavigate();
   const [fundsWithDetails, setFundsWithDetails] = useState<FundWithDetails[]>([]);
   const [comparisonResult, setComparisonResult] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const state = location.state as ComparisonPageState;
     if (!state?.funds || state.funds.length < 2) {
-      navigate('/');
+      // If no funds are provided, show the fund selection interface
       return;
     }
 
@@ -72,7 +76,7 @@ const FundComparisonPage = () => {
     };
 
     loadFundDetails();
-  }, [location.state, navigate]);
+  }, [location.state]);
 
   const getInvestmentHorizonAdvice = () => {
     if (!comparisonResult?.categoryComparison) return null;
@@ -86,14 +90,38 @@ const FundComparisonPage = () => {
     };
   };
 
+  // If no funds selected or comparison is in progress, show the selection interface
+  const state = location.state as ComparisonPageState;
+  const showSelection = !state?.funds || state.funds.length < 2;
+
   if (loading) {
     return <ComparisonLoadingState />;
+  }
+
+  if (showSelection) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8 space-y-8">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <Button variant="outline" onClick={() => navigate('/')}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Home
+            </Button>
+            <h1 className="text-2xl font-bold">🤖 AI Fund Research & Comparison</h1>
+            <div></div>
+          </div>
+
+          {/* Fund Selection Interface */}
+          <TopLevelFundComparison />
+        </div>
+      </div>
+    );
   }
 
   if (!comparisonResult) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <p>No comparison data available</p>
@@ -110,15 +138,13 @@ const FundComparisonPage = () => {
   const advice = getInvestmentHorizonAdvice();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      
+    <div className="min-h-screen bg-gray-50">      
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Button variant="outline" onClick={() => navigate('/')}>
+          <Button variant="outline" onClick={() => navigate('/fund-comparison')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            New Comparison
           </Button>
           <h1 className="text-2xl font-bold">🤖 AI Fund Research & Comparison</h1>
           <div></div>

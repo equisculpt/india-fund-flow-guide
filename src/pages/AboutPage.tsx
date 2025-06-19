@@ -1,9 +1,16 @@
+
+import { useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Users, Award, TrendingUp } from "lucide-react";
 import { useBranding } from "@/contexts/BrandingContext";
+import Footer from "@/components/Footer";
 
 const AboutPage = () => {
   const { brandConfig } = useBranding();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const values = [
     {
@@ -103,6 +110,8 @@ const AboutPage = () => {
           </div>
         </section>
       </div>
+
+      <Footer />
     </div>
   );
 };

@@ -9,6 +9,13 @@ import ContactFormModal from './ContactFormModal';
 const Footer = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
+  const handleLinkClick = () => {
+    // Scroll to top when clicking footer links
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  };
+
   return (
     <footer className="bg-gray-900 text-white">
       {/* Main Footer Content */}
@@ -40,10 +47,10 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
-              <li><Link to="/public-funds" className="text-gray-300 hover:text-white transition-colors">Mutual Funds</Link></li>
-              <li><Link to="/community" className="text-gray-300 hover:text-white transition-colors">Community</Link></li>
-              <li><Link to="/fund-comparison" className="text-gray-300 hover:text-white transition-colors">Fund Comparison</Link></li>
+              <li><Link to="/about" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
+              <li><Link to="/public-funds" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Mutual Funds</Link></li>
+              <li><Link to="/community" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Community</Link></li>
+              <li><Link to="/fund-comparison" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Fund Comparison</Link></li>
             </ul>
           </div>
 
@@ -51,10 +58,10 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
-              <li><Link to="/terms" className="text-gray-300 hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/risk-disclosure" className="text-gray-300 hover:text-white transition-colors">Risk Disclosure</Link></li>
-              <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Grievance Redressal</Link></li>
+              <li><Link to="/terms" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Terms of Service</Link></li>
+              <li><Link to="/privacy" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/risk-disclosure" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Risk Disclosure</Link></li>
+              <li><Link to="/contact" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Grievance Redressal</Link></li>
             </ul>
           </div>
 
@@ -77,6 +84,7 @@ const Footer = () => {
             </div>
             <Link 
               to="/contact"
+              onClick={handleLinkClick}
               className="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
             >
               Contact Us

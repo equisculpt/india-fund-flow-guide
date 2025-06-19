@@ -23,7 +23,7 @@ const Header = () => {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      navigate('/#fund-comparison');
+      navigate('/fund-comparison');
     }
     setIsMenuOpen(false);
   };
@@ -35,7 +35,7 @@ const Header = () => {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      navigate('/#explore-funds');
+      navigate('/public-funds');
     }
     setIsMenuOpen(false);
   };
@@ -43,6 +43,10 @@ const Header = () => {
   const handleNavigation = (path: string) => {
     navigate(path);
     setIsMenuOpen(false);
+    // Ensure page scrolls to top after navigation
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
   };
 
   return (
@@ -51,7 +55,7 @@ const Header = () => {
         <div className="container mx-auto px-2 sm:px-4">
           <div className="flex justify-between items-center h-14 sm:h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
+            <Link to="/" className="flex items-center space-x-2 flex-shrink-0" onClick={() => window.scrollTo(0, 0)}>
               <BreweryLogo showText={true} />
             </Link>
 
