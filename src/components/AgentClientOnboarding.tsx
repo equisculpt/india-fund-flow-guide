@@ -208,10 +208,10 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
           {socialLoginUser ? "Complete Your Profile" : "Client Onboarding"}
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 text-center">
           {socialLoginUser 
             ? "Complete your onboarding with proper KYC verification and risk profiling"
             : "Secure client onboarding with regulatory compliant KYC verification"
@@ -221,19 +221,19 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
         {/* KYC Information Panel */}
         <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />
-            <div>
+            <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div className="flex-1 text-center">
               <h3 className="font-semibold text-amber-800 mb-2">KYC Verification Process</h3>
               <div className="text-sm text-amber-700 space-y-1">
-                <p><strong>Current Status:</strong> Demo Mode - For production, integrate with:</p>
-                <ul className="list-disc list-inside ml-4 space-y-1">
+                <p className="text-center"><strong>Current Status:</strong> Demo Mode - For production, integrate with:</p>
+                <ul className="list-disc list-inside space-y-1 text-center">
                   <li>Aadhaar verification APIs (UIDAI)</li>
                   <li>PAN verification services</li>
                   <li>Bank account verification</li>
                   <li>Document upload and OCR systems</li>
                   <li>Video KYC compliance</li>
                 </ul>
-                <p className="mt-2"><strong>Note:</strong> This demo uses simulated verification for testing purposes only.</p>
+                <p className="mt-2 text-center"><strong>Note:</strong> This demo uses simulated verification for testing purposes only.</p>
               </div>
             </div>
           </div>
@@ -250,7 +250,7 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
           <TabsContent value="self-onboard">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 justify-center">
                   <Send className="h-5 w-5" />
                   Send Onboarding Link
                 </CardTitle>
@@ -258,21 +258,23 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="client-name">Client Name</Label>
+                    <Label htmlFor="client-name" className="text-center block">Client Name</Label>
                     <Input
                       id="client-name"
                       placeholder="Enter client name"
                       value={clientData.fullName}
                       onChange={(e) => setClientData({...clientData, fullName: e.target.value})}
+                      className="text-center"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="client-phone">Client Phone</Label>
+                    <Label htmlFor="client-phone" className="text-center block">Client Phone</Label>
                     <Input
                       id="client-phone"
                       placeholder="Enter client phone"
                       value={clientData.phone}
                       onChange={(e) => setClientData({...clientData, phone: e.target.value})}
+                      className="text-center"
                     />
                   </div>
                 </div>
@@ -283,9 +285,9 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
 
                 {onboardingLink && (
                   <div className="p-4 bg-gray-50 rounded-lg">
-                    <Label>Onboarding Link</Label>
+                    <Label className="text-center block">Onboarding Link</Label>
                     <div className="flex items-center gap-2 mt-2">
-                      <Input value={onboardingLink} readOnly />
+                      <Input value={onboardingLink} readOnly className="text-center" />
                       <Button onClick={copyLink} size="sm">
                         <Copy className="h-4 w-4" />
                       </Button>
@@ -299,7 +301,7 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
           <TabsContent value="agent-assist">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 justify-center">
                   <UserPlus className="h-5 w-5" />
                   Agent Assisted Onboarding
                 </CardTitle>
@@ -329,43 +331,47 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
         <CardContent>
           {step === 1 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Step 1: Basic Information & Phone Verification</h3>
+              <h3 className="text-lg font-semibold text-center">Step 1: Basic Information & Phone Verification</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-center block">Full Name</Label>
                   <Input
                     id="fullName"
                     value={clientData.fullName}
                     onChange={(e) => setClientData({...clientData, fullName: e.target.value})}
                     placeholder="Enter your full name"
+                    className="text-center"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-center block">Email</Label>
                   <Input
                     id="email"
                     type="email"
                     value={clientData.email}
                     onChange={(e) => setClientData({...clientData, email: e.target.value})}
                     placeholder="Enter your email"
+                    className="text-center"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Label htmlFor="phone" className="text-center block">Phone Number *</Label>
                   <Input
                     id="phone"
                     value={clientData.phone}
                     onChange={(e) => setClientData({...clientData, phone: e.target.value})}
                     placeholder="Enter your phone number"
+                    className="text-center"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="dob">Date of Birth</Label>
+                  <Label htmlFor="dob" className="text-center block">Date of Birth</Label>
                   <Input
                     id="dob"
                     type="date"
                     value={clientData.dateOfBirth}
                     onChange={(e) => setClientData({...clientData, dateOfBirth: e.target.value})}
+                    className="text-center"
                   />
                 </div>
               </div>
@@ -377,7 +383,7 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
 
           {step === 2 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Step 2: Verify Phone Number</h3>
+              <h3 className="text-lg font-semibold text-center">Step 2: Verify Phone Number</h3>
               <div className="text-center">
                 <p className="text-gray-600 mb-4">Enter the 6-digit OTP sent to {clientData.phone}</p>
                 <div className="flex justify-center mb-4">
@@ -401,69 +407,76 @@ const AgentClientOnboarding = ({ isAgent = false, agentId, socialLoginUser }: Ag
 
           {step === 3 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Step 3: KYC Information</h3>
+              <h3 className="text-lg font-semibold text-center">Step 3: KYC Information</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="pan">PAN Number</Label>
+                  <Label htmlFor="pan" className="text-center block">PAN Number</Label>
                   <Input
                     id="pan"
                     value={clientData.panNumber}
                     onChange={(e) => setClientData({...clientData, panNumber: e.target.value.toUpperCase()})}
                     placeholder="Enter PAN number"
+                    className="text-center"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="aadhaar">Aadhaar Number</Label>
+                  <Label htmlFor="aadhaar" className="text-center block">Aadhaar Number</Label>
                   <Input
                     id="aadhaar"
                     value={clientData.aadhaarNumber}
                     onChange={(e) => setClientData({...clientData, aadhaarNumber: e.target.value})}
                     placeholder="Enter Aadhaar number"
+                    className="text-center"
                   />
                 </div>
                 <div className="col-span-2">
-                  <Label htmlFor="address">Address</Label>
+                  <Label htmlFor="address" className="text-center block">Address</Label>
                   <Input
                     id="address"
                     value={clientData.address}
                     onChange={(e) => setClientData({...clientData, address: e.target.value})}
                     placeholder="Enter your full address"
+                    className="text-center"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="nominee">Nominee Name</Label>
+                  <Label htmlFor="nominee" className="text-center block">Nominee Name</Label>
                   <Input
                     id="nominee"
                     value={clientData.nomineeName}
                     onChange={(e) => setClientData({...clientData, nomineeName: e.target.value})}
                     placeholder="Enter nominee name"
+                    className="text-center"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="relation">Nominee Relation</Label>
+                  <Label htmlFor="relation" className="text-center block">Nominee Relation</Label>
                   <Input
                     id="relation"
                     value={clientData.nomineeRelation}
                     onChange={(e) => setClientData({...clientData, nomineeRelation: e.target.value})}
                     placeholder="Enter relation"
+                    className="text-center"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="bank">Bank Account Number</Label>
+                  <Label htmlFor="bank" className="text-center block">Bank Account Number</Label>
                   <Input
                     id="bank"
                     value={clientData.bankAccount}
                     onChange={(e) => setClientData({...clientData, bankAccount: e.target.value})}
                     placeholder="Enter bank account number"
+                    className="text-center"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="ifsc">IFSC Code</Label>
+                  <Label htmlFor="ifsc" className="text-center block">IFSC Code</Label>
                   <Input
                     id="ifsc"
                     value={clientData.ifscCode}
                     onChange={(e) => setClientData({...clientData, ifscCode: e.target.value.toUpperCase()})}
                     placeholder="Enter IFSC code"
+                    className="text-center"
                   />
                 </div>
               </div>
