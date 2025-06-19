@@ -13,7 +13,6 @@ import Index from "./pages/Index";
 import FundDetailsPage from "./pages/FundDetailsPage";
 import FundComparisonPage from "./pages/FundComparisonPage";
 import SIPCalculatorPage from "./pages/SIPCalculatorPage";
-import BestSIPPlansPage from "./pages/BestSIPPlansPage";
 import SBISmallCapFundPage from "./pages/SBISmallCapFundPage";
 import UniversalFundSEOPage from "./components/UniversalFundSEOPage";
 import PublicFundsPage from "./pages/PublicFundsPage";
@@ -63,11 +62,12 @@ function App() {
                           <Routes>
                             <Route path="/" element={<Index />} />
                             <Route path="/fund/:schemeCode" element={<FundDetailsPage />} />
+                            <Route path="/fund-comparison" element={<FundComparisonPage />} />
                             <Route path="/compare" element={<FundComparisonPage />} />
                             <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-                            <Route path="/best-sip-plans" element={<BestSIPPlansPage />} />
                             <Route path="/sbi-small-cap-fund" element={<SBISmallCapFundPage />} />
                             <Route path="/fund-seo/:schemeCode" element={<UniversalFundSEOPage />} />
+                            <Route path="/public-funds" element={<PublicFundsPage />} />
                             <Route path="/explore" element={<PublicFundsPage />} />
                             <Route path="/dashboard" element={<UserDashboard />} />
                             <Route path="/user-dashboard" element={<ComprehensiveDashboard />} />

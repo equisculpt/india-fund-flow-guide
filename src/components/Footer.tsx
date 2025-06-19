@@ -43,9 +43,7 @@ const Footer = () => {
               <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
               <li><Link to="/public-funds" className="text-gray-300 hover:text-white transition-colors">Mutual Funds</Link></li>
               <li><Link to="/community" className="text-gray-300 hover:text-white transition-colors">Community</Link></li>
-              <li><Link to="/best-sip-plans" className="text-gray-300 hover:text-white transition-colors">Best SIP Plans</Link></li>
               <li><Link to="/fund-comparison" className="text-gray-300 hover:text-white transition-colors">Fund Comparison</Link></li>
-              <li><Link to="/advanced-features" className="text-gray-300 hover:text-white transition-colors">Advanced Features</Link></li>
             </ul>
           </div>
 

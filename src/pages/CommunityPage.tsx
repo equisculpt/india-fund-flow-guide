@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageSquare, BookOpen, Plus, Users } from 'lucide-react';
-import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import CommunityQuestions from '@/components/community/CommunityQuestions';
@@ -37,8 +36,6 @@ const CommunityPage = () => {
         keywords="mutual fund community, SIP questions, investment advice, mutual fund blog, expert answers, investment community India, mutual fund discussion, SIP advice, investment forum"
         isDynamic={true}
       />
-      
-      <Header />
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
