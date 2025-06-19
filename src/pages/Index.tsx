@@ -1,6 +1,5 @@
 
 import React from 'react';
-import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import FundCategories from '@/components/FundCategories';
 import IndexPageSections from '@/components/IndexPageSections';
@@ -89,8 +88,6 @@ const Index = () => {
         keywords="mutual fund distributor India, best SIP plans India 2025, invest in mutual funds online, SIP investment platform, start SIP online, best mutual fund platform India, SIP calculator India, SIP vs lump sum, regular mutual fund app, mutual funds India, SIP consistency rewards, AMFI registered distributor, SIP rewards India, mutual fund comparison tool"
         structuredData={structuredData}
       />
-      
-      <Header />
       
       {/* Hero Section */}
       <HeroSection />
