@@ -1,8 +1,6 @@
 
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import RealTimePortfolioTracker from '@/components/realtime/RealTimePortfolioTracker';
 import GoalBasedPlanning from '@/components/goals/GoalBasedPlanning';
 import SmartSIPManager from '@/components/sip/SmartSIPManager';
@@ -18,7 +16,6 @@ import AgentClientManager from '@/components/agent/AgentClientManager';
 const AdvancedFeaturesPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Advanced Investment Features</h1>
@@ -85,7 +82,6 @@ const AdvancedFeaturesPage = () => {
           </TabsContent>
         </Tabs>
       </div>
-      <Footer />
     </div>
   );
 };

@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
 import { Navigate } from 'react-router-dom';
-import Header from '@/components/Header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PortfolioAnalyticsDashboard from '@/components/dashboard/PortfolioAnalyticsDashboard';
 import IRRCalculator from '@/components/dashboard/IRRCalculator';
@@ -37,7 +36,6 @@ const UserDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Investment Dashboard</h1>

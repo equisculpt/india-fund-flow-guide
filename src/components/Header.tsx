@@ -21,8 +21,13 @@ const Header = () => {
   const location = useLocation();
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
+    try {
+      await signOut();
+      navigate('/');
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const handleFundComparisonClick = () => {
@@ -49,15 +54,36 @@ const Header = () => {
     setIsMenuOpen(false);
   };
 
-  const NavLink = ({ to, children, onClick }: { to?: string; children: React.ReactNode; onClick?: () => void }) => (
-    <Link
-      to={to || '#'}
-      onClick={onClick}
-      className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap"
-    >
-      {children}
-    </Link>
-  );
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setIsMenuOpen(false);
+  };
+
+  const NavLink = ({ to, children, onClick }: { 
+    to?: string; 
+    children: React.ReactNode; 
+    onClick?: () => void;
+  }) => {
+    if (onClick) {
+      return (
+        <button
+          onClick={onClick}
+          className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap bg-transparent border-none cursor-pointer"
+        >
+          {children}
+        </button>
+      );
+    }
+
+    return (
+      <Link
+        to={to || '#'}
+        className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap"
+      >
+        {children}
+      </Link>
+    );
+  };
 
   return (
     <>
@@ -72,18 +98,12 @@ const Header = () => {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
               <NavLink to="/">Home</NavLink>
-              <button
-                onClick={handleFundComparisonClick}
-                className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap"
-              >
+              <NavLink onClick={handleFundComparisonClick}>
                 Compare
-              </button>
-              <button
-                onClick={handleBrowseFundsClick}
-                className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap"
-              >
+              </NavLink>
+              <NavLink onClick={handleBrowseFundsClick}>
                 Browse
-              </button>
+              </NavLink>
               <NavLink to="/community">
                 <div className="flex items-center gap-1">
                   <MessageSquare className="h-4 w-4" />
@@ -132,23 +152,23 @@ const Header = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                    <DropdownMenuItem onClick={() => handleNavigation('/dashboard')}>
                       <BarChart3 className="mr-2 h-4 w-4" />
                       Dashboard
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/user-dashboard')}>
+                    <DropdownMenuItem onClick={() => handleNavigation('/user-dashboard')}>
                       <Settings className="mr-2 h-4 w-4" />
                       Analytics
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/advanced-features')}>
+                    <DropdownMenuItem onClick={() => handleNavigation('/advanced-features')}>
                       <Brain className="mr-2 h-4 w-4" />
                       AI Features
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/community')}>
+                    <DropdownMenuItem onClick={() => handleNavigation('/community')}>
                       <MessageSquare className="mr-2 h-4 w-4" />
                       Community
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/secure-admin')} className="text-gray-500">
+                    <DropdownMenuItem onClick={() => handleNavigation('/secure-admin')} className="text-gray-500">
                       <Shield className="mr-2 h-4 w-4" />
                       Admin Portal
                     </DropdownMenuItem>
@@ -159,7 +179,11 @@ const Header = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button onClick={() => setShowLoginModal(true)} size="sm" className="text-xs sm:text-sm">
+                <Button 
+                  onClick={() => setShowLoginModal(true)} 
+                  size="sm" 
+                  className="text-xs sm:text-sm"
+                >
                   Sign In
                 </Button>
               )}
@@ -179,35 +203,62 @@ const Header = () => {
           {isMenuOpen && (
             <div className="lg:hidden py-4 border-t bg-white">
               <div className="flex flex-col space-y-2">
-                <NavLink to="/" onClick={() => setIsMenuOpen(false)}>Home</NavLink>
+                <button
+                  onClick={() => handleNavigation('/')}
+                  className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
+                >
+                  Home
+                </button>
                 <button
                   onClick={handleFundComparisonClick}
-                  className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left"
+                  className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
                 >
                   Compare Funds
                 </button>
                 <button
                   onClick={handleBrowseFundsClick}
-                  className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left"
+                  className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
                 >
                   Browse Funds
                 </button>
-                <NavLink to="/community" onClick={() => setIsMenuOpen(false)}>Community</NavLink>
-                {user && (
-                  <NavLink to="/advanced-features" onClick={() => setIsMenuOpen(false)}>AI Features</NavLink>
-                )}
+                <button
+                  onClick={() => handleNavigation('/community')}
+                  className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
+                >
+                  Community
+                </button>
                 {user && (
                   <>
-                    <NavLink to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</NavLink>
-                    <NavLink to="/user-dashboard" onClick={() => setIsMenuOpen(false)}>Analytics</NavLink>
-                    <NavLink to="/ai-portfolio" onClick={() => setIsMenuOpen(false)}>AI Portfolio</NavLink>
-                    <Link 
-                      to="/secure-admin" 
-                      onClick={() => setIsMenuOpen(false)}
-                      className="text-gray-500 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors"
+                    <button
+                      onClick={() => handleNavigation('/advanced-features')}
+                      className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
+                    >
+                      AI Features
+                    </button>
+                    <button
+                      onClick={() => handleNavigation('/dashboard')}
+                      className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
+                    >
+                      Dashboard
+                    </button>
+                    <button
+                      onClick={() => handleNavigation('/user-dashboard')}
+                      className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
+                    >
+                      Analytics
+                    </button>
+                    <button
+                      onClick={() => handleNavigation('/ai-portfolio')}
+                      className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
+                    >
+                      AI Portfolio
+                    </button>
+                    <button
+                      onClick={() => handleNavigation('/secure-admin')}
+                      className="text-gray-500 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
                     >
                       Admin Portal
-                    </Link>
+                    </button>
                   </>
                 )}
               </div>

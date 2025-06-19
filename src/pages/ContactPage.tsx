@@ -1,7 +1,5 @@
 
 import React from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactInformation from '@/components/contact/ContactInformation';
 import GrievanceRedressal from '@/components/contact/GrievanceRedressal';
@@ -10,8 +8,6 @@ import RegulatoryInformation from '@/components/contact/RegulatoryInformation';
 const ContactPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -34,8 +30,6 @@ const ContactPage = () => {
           </div>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };

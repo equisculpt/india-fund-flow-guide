@@ -2,7 +2,6 @@
 import React from 'react';
 import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
 import { Navigate } from 'react-router-dom';
-import Header from '@/components/Header';
 import AIInsightsDashboard from '@/components/AIInsightsDashboard';
 
 const AIPortfolioDashboard = () => {
@@ -22,7 +21,6 @@ const AIPortfolioDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <AIInsightsDashboard />
       </div>

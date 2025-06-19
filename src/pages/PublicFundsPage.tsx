@@ -1,7 +1,5 @@
 
 import { useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import EnhancedFundSearch from "@/components/EnhancedFundSearch";
 import PublicFundsTabs from "@/components/public-funds/PublicFundsTabs";
 
@@ -25,8 +23,6 @@ const PublicFundsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      
       <div className="container mx-auto px-4 py-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -51,8 +47,6 @@ const PublicFundsPage = () => {
           onFundSelect={handleFundSearchSelect}
         />
       </div>
-
-      <Footer />
     </div>
   );
 };
