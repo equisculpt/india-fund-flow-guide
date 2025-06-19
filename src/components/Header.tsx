@@ -110,6 +110,16 @@ const Header = () => {
                   <NavLink to="/ai-portfolio">Portfolio</NavLink>
                 </>
               )}
+              
+              {/* Secure Admin Access - Hidden from normal navigation */}
+              {user && (
+                <NavLink to="/secure-admin">
+                  <div className="flex items-center gap-1 opacity-50 hover:opacity-100">
+                    <Shield className="h-4 w-4" />
+                    <span className="hidden xl:inline text-xs">Admin</span>
+                  </div>
+                </NavLink>
+              )}
             </nav>
 
             {/* User Menu */}
@@ -137,6 +147,10 @@ const Header = () => {
                     <DropdownMenuItem onClick={() => navigate('/community')}>
                       <MessageSquare className="mr-2 h-4 w-4" />
                       Community
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/secure-admin')} className="text-gray-500">
+                      <Shield className="mr-2 h-4 w-4" />
+                      Admin Portal
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="mr-2 h-4 w-4" />
@@ -187,6 +201,7 @@ const Header = () => {
                     <NavLink to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</NavLink>
                     <NavLink to="/user-dashboard" onClick={() => setIsMenuOpen(false)}>Analytics</NavLink>
                     <NavLink to="/ai-portfolio" onClick={() => setIsMenuOpen(false)}>AI Portfolio</NavLink>
+                    <NavLink to="/secure-admin" onClick={() => setIsMenuOpen(false)} className="text-gray-500">Admin Portal</NavLink>
                   </>
                 )}
               </div>

@@ -15,21 +15,27 @@ export type Database = {
           created_at: string | null
           expires_at: string
           id: string
+          ip_address: string | null
           session_token: string
+          user_agent: string | null
         }
         Insert: {
           admin_user_id?: string | null
           created_at?: string | null
           expires_at: string
           id?: string
+          ip_address?: string | null
           session_token: string
+          user_agent?: string | null
         }
         Update: {
           admin_user_id?: string | null
           created_at?: string | null
           expires_at?: string
           id?: string
+          ip_address?: string | null
           session_token?: string
+          user_agent?: string | null
         }
         Relationships: [
           {
@@ -103,6 +109,33 @@ export type Database = {
           is_active?: boolean | null
           password_hash?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      admin_whitelist: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string
+          id: string
+          is_active: boolean
+          last_login: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
         }
         Relationships: []
       }
@@ -1141,6 +1174,33 @@ export type Database = {
           },
         ]
       }
+      rate_limit_log: {
+        Row: {
+          attempt_count: number
+          endpoint: string
+          id: string
+          ip_address: string
+          is_blocked: boolean
+          window_start: string
+        }
+        Insert: {
+          attempt_count?: number
+          endpoint: string
+          id?: string
+          ip_address: string
+          is_blocked?: boolean
+          window_start?: string
+        }
+        Update: {
+          attempt_count?: number
+          endpoint?: string
+          id?: string
+          ip_address?: string
+          is_blocked?: boolean
+          window_start?: string
+        }
+        Relationships: []
+      }
       referral_commissions: {
         Row: {
           commission_amount: number
@@ -1201,6 +1261,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      security_audit_log: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          success: boolean
+          user_agent: string | null
+          user_email: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          success: boolean
+          user_agent?: string | null
+          user_email?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          success?: boolean
+          user_agent?: string | null
+          user_email?: string | null
+        }
+        Relationships: []
       }
       sip_transactions: {
         Row: {
@@ -1321,6 +1414,10 @@ export type Database = {
           xirr: number
         }[]
       }
+      cleanup_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       generate_ai_insights: {
         Args: { target_user_id: string }
         Returns: undefined
@@ -1328,6 +1425,21 @@ export type Database = {
       generate_referral_code: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      log_security_event: {
+        Args: {
+          event_type_param: string
+          user_email_param?: string
+          ip_address_param?: string
+          user_agent_param?: string
+          success_param?: boolean
+          details_param?: Json
+        }
+        Returns: undefined
+      }
+      validate_admin_access: {
+        Args: { admin_email: string }
+        Returns: boolean
       }
     }
     Enums: {
