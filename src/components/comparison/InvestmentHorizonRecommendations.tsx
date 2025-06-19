@@ -20,40 +20,46 @@ const InvestmentHorizonRecommendations = ({ advice }: InvestmentHorizonProps) =>
     <div className="grid md:grid-cols-3 gap-6">
       <Card className="border-blue-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-700">
+          <CardTitle className="flex items-center justify-center gap-2 text-blue-700">
             <TrendingUp className="h-5 w-5" />
             Short Term (6-12 months)
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-center">
           <p className="font-semibold mb-2">{advice.shortTerm}</p>
-          <Badge variant="outline" className="text-xs">Best for Quick Gains</Badge>
+          <div className="flex justify-center">
+            <Badge variant="outline" className="text-xs">Best for Quick Gains</Badge>
+          </div>
         </CardContent>
       </Card>
 
       <Card className="border-purple-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-purple-700">
+          <CardTitle className="flex items-center justify-center gap-2 text-purple-700">
             <Calendar className="h-5 w-5" />
             Medium Term (2-3 years)
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-center">
           <p className="font-semibold mb-2">{advice.mediumTerm}</p>
-          <Badge variant="outline" className="text-xs">Balanced Growth</Badge>
+          <div className="flex justify-center">
+            <Badge variant="outline" className="text-xs">Balanced Growth</Badge>
+          </div>
         </CardContent>
       </Card>
 
       <Card className="border-green-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-green-700">
+          <CardTitle className="flex items-center justify-center gap-2 text-green-700">
             <Target className="h-5 w-5" />
             Long Term (5+ years)
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-center">
           <p className="font-semibold mb-2">{advice.longTerm}</p>
-          <Badge variant="outline" className="text-xs">Wealth Creation</Badge>
+          <div className="flex justify-center">
+            <Badge variant="outline" className="text-xs">Wealth Creation</Badge>
+          </div>
         </CardContent>
       </Card>
     </div>

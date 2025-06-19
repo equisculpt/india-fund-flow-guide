@@ -22,13 +22,13 @@ const DetailedFundAnalysis = ({ analysis, bestFund }: DetailedFundAnalysisProps)
                   className="w-4 h-4 rounded-full" 
                   style={{ backgroundColor: fundColors[index] }}
                 />
-                <span className="text-sm">{fund.schemeName}</span>
+                <span className="text-sm text-center">{fund.schemeName}</span>
               </div>
               {fund.schemeName === bestFund && (
                 <Trophy className="h-5 w-5 text-green-600" />
               )}
             </CardTitle>
-            <p className="text-sm text-gray-600">{fund.fundHouse} • {fund.category}</p>
+            <p className="text-sm text-gray-600 text-center">{fund.fundHouse} • {fund.category}</p>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -41,10 +41,10 @@ const DetailedFundAnalysis = ({ analysis, bestFund }: DetailedFundAnalysisProps)
             {/* AI Analysis Sections */}
             {fund.strengths && (
               <div className="bg-green-50 p-3 rounded-lg">
-                <h5 className="font-semibold text-green-800 mb-2">✅ AI Identified Strengths:</h5>
+                <h5 className="font-semibold text-green-800 mb-2 text-center">✅ AI Identified Strengths:</h5>
                 <ul className="text-sm text-green-700 space-y-1">
                   {fund.strengths.map((strength: string, idx: number) => (
-                    <li key={idx}>• {strength}</li>
+                    <li key={idx} className="text-center">• {strength}</li>
                   ))}
                 </ul>
               </div>
@@ -52,10 +52,10 @@ const DetailedFundAnalysis = ({ analysis, bestFund }: DetailedFundAnalysisProps)
 
             {fund.concerns && (
               <div className="bg-red-50 p-3 rounded-lg">
-                <h5 className="font-semibold text-red-800 mb-2">⚠️ AI Identified Concerns:</h5>
+                <h5 className="font-semibold text-red-800 mb-2 text-center">⚠️ AI Identified Concerns:</h5>
                 <ul className="text-sm text-red-700 space-y-1">
                   {fund.concerns.map((concern: string, idx: number) => (
-                    <li key={idx}>• {concern}</li>
+                    <li key={idx} className="text-center">• {concern}</li>
                   ))}
                 </ul>
               </div>
@@ -63,15 +63,15 @@ const DetailedFundAnalysis = ({ analysis, bestFund }: DetailedFundAnalysisProps)
 
             {fund.reasoning && (
               <div className="bg-gray-50 p-3 rounded-lg">
-                <h5 className="font-semibold text-gray-800 mb-2">🧠 AI Performance Analysis:</h5>
-                <p className="text-sm text-gray-700">{fund.reasoning}</p>
+                <h5 className="font-semibold text-gray-800 mb-2 text-center">🧠 AI Performance Analysis:</h5>
+                <p className="text-sm text-gray-700 text-center">{fund.reasoning}</p>
               </div>
             )}
 
             {fund.investmentRecommendation && (
               <div className="bg-blue-50 p-3 rounded-lg">
-                <h5 className="font-semibold text-blue-800 mb-2">📊 AI Investment Recommendation:</h5>
-                <p className="text-sm text-blue-700">{fund.investmentRecommendation}</p>
+                <h5 className="font-semibold text-blue-800 mb-2 text-center">📊 AI Investment Recommendation:</h5>
+                <p className="text-sm text-blue-700 text-center">{fund.investmentRecommendation}</p>
               </div>
             )}
           </CardContent>

@@ -27,17 +27,19 @@ const AIScoreDisplay = ({ overallScore, hasRealAI, confidence }: AIScoreDisplayP
     <div className="text-center p-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
       <div className="flex items-center justify-center gap-2 mb-2">
         <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
-        <span className="text-2xl font-bold">
+        <span className="text-2xl font-bold text-center">
           {hasRealAI ? 'AI Score' : 'Analysis Score'}
         </span>
       </div>
-      <div className="text-5xl font-bold text-purple-600 mb-2">
+      <div className="text-5xl font-bold text-purple-600 mb-2 text-center">
         {overallScore}/10
       </div>
-      <Badge className={`${getRankingColor(overallScore)} border-0 px-4 py-1`}>
-        {getRankingLabel(overallScore)}
-      </Badge>
-      <p className="text-sm text-gray-600 mt-2">
+      <div className="flex justify-center">
+        <Badge className={`${getRankingColor(overallScore)} border-0 px-4 py-1`}>
+          {getRankingLabel(overallScore)}
+        </Badge>
+      </div>
+      <p className="text-sm text-gray-600 mt-2 text-center">
         {hasRealAI 
           ? `Based on comprehensive AI analysis with ${confidence}% confidence` 
           : 'Based on mathematical analysis and portfolio data'
