@@ -16,8 +16,8 @@ const ComparisonResult = ({ comparisonResult, selectedFunds }: ComparisonResultP
     return 'text-red-600';
   };
 
-  const getBadgeColor = (recommendation: string) => {
-    switch (recommendation) {
+  const getBadgeColor = (analysis: string) => {
+    switch (analysis) {
       case 'SUITABLE': return 'bg-green-600 text-white';
       case 'CONSIDER': return 'bg-green-500 text-white';
       case 'REVIEW': return 'bg-yellow-500 text-white';

@@ -20,10 +20,10 @@ const FundHeader = ({
   aiLoading, 
   aiError 
 }: FundHeaderProps) => {
-  const getRecommendationColor = (rec: string) => {
-    switch (rec) {
+  const getAnalysisColor = (analysis: string) => {
+    switch (analysis) {
       case 'SUITABLE': return 'bg-green-600 text-white';
-      case 'CONSIDER': return 'bg-green-500 text-white';
+      case 'CONSIDER': return 'bg-green-500 text-white';  
       case 'REVIEW': return 'bg-yellow-500 text-white';
       case 'CAUTION': return 'bg-red-500 text-white';
       case 'AVOID': return 'bg-red-600 text-white';
@@ -31,8 +31,8 @@ const FundHeader = ({
     }
   };
 
-  const getComplianceRecommendation = (originalRec: string) => {
-    switch (originalRec) {
+  const getComplianceAnalysis = (originalAnalysis: string) => {
+    switch (originalAnalysis) {
       case 'STRONG BUY': return 'SUITABLE';
       case 'BUY': return 'CONSIDER';
       case 'HOLD': return 'REVIEW';
@@ -92,8 +92,8 @@ const FundHeader = ({
                   <span className="font-bold text-lg">{aiAnalysis.aiScore}/10</span>
                   <span className="text-sm text-gray-600">AI Score</span>
                 </div>
-                <Badge className={getRecommendationColor(getComplianceRecommendation(aiAnalysis.recommendation))}>
-                  {getComplianceRecommendation(aiAnalysis.recommendation)}
+                <Badge className={getAnalysisColor(getComplianceAnalysis(aiAnalysis.recommendation))}>
+                  {getComplianceAnalysis(aiAnalysis.recommendation)}
                 </Badge>
                 <Badge variant="outline">
                   {aiAnalysis.confidence}% Confidence

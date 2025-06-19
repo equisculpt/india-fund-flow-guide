@@ -2,14 +2,14 @@
 import { Target } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface AIRecommendationCardProps {
+interface AIAnalysisCardProps {
   aiAnalysis: any;
   fundData: any;
 }
 
-const AIRecommendationCard = ({ aiAnalysis, fundData }: AIRecommendationCardProps) => {
-  const getRecommendationColor = (rec: string) => {
-    switch (rec) {
+const AIAnalysisCard = ({ aiAnalysis, fundData }: AIAnalysisCardProps) => {
+  const getAnalysisColor = (analysis: string) => {
+    switch (analysis) {
       case 'SUITABLE': return 'bg-green-600 text-white';
       case 'CONSIDER': return 'bg-green-500 text-white';
       case 'REVIEW': return 'bg-yellow-500 text-white';
@@ -19,8 +19,8 @@ const AIRecommendationCard = ({ aiAnalysis, fundData }: AIRecommendationCardProp
     }
   };
 
-  const getComplianceRecommendation = (originalRec: string) => {
-    switch (originalRec) {
+  const getComplianceAnalysis = (originalAnalysis: string) => {
+    switch (originalAnalysis) {
       case 'STRONG BUY': return 'SUITABLE';
       case 'BUY': return 'CONSIDER';
       case 'HOLD': return 'REVIEW';
@@ -32,7 +32,7 @@ const AIRecommendationCard = ({ aiAnalysis, fundData }: AIRecommendationCardProp
 
   if (!aiAnalysis) return null;
 
-  const complianceRecommendation = getComplianceRecommendation(aiAnalysis.recommendation);
+  const complianceAnalysis = getComplianceAnalysis(aiAnalysis.recommendation);
 
   return (
     <Card className="mt-4 border-l-4 border-l-blue-500">
@@ -45,8 +45,8 @@ const AIRecommendationCard = ({ aiAnalysis, fundData }: AIRecommendationCardProp
       <CardContent>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="text-center">
-            <div className={`inline-block px-4 py-2 rounded-lg font-bold text-lg ${getRecommendationColor(complianceRecommendation)}`}>
-              {complianceRecommendation}
+            <div className={`inline-block px-4 py-2 rounded-lg font-bold text-lg ${getAnalysisColor(complianceAnalysis)}`}>
+              {complianceAnalysis}
             </div>
             <p className="text-sm text-gray-600 mt-1">{aiAnalysis.confidence}% AI Confidence</p>
           </div>
@@ -80,4 +80,4 @@ const AIRecommendationCard = ({ aiAnalysis, fundData }: AIRecommendationCardProp
   );
 };
 
-export default AIRecommendationCard;
+export default AIAnalysisCard;

@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -32,13 +31,13 @@ serve(async (req) => {
       portfolioQualityScore * 0.15
     )
     
-    const recommendation = getComplianceCategory(overallScore)
+    const analysis = getComplianceCategory(overallScore)
     const confidence = calculateConfidence(fundData)
-    const reasoning = generateReasoning(fundData, overallScore, recommendation)
+    const reasoning = generateReasoning(fundData, overallScore, analysis)
     
-    const analysis = {
+    const analysisResult = {
       aiScore: Math.round(overallScore * 10) / 10,
-      recommendation: recommendation,
+      recommendation: analysis,
       confidence: confidence,
       reasoning: reasoning,
       riskLevel: determineRiskLevel(fundData),
@@ -54,10 +53,10 @@ serve(async (req) => {
       }
     }
     
-    console.log('AI Fund Analysis: Generated analysis:', analysis)
+    console.log('AI Fund Analysis: Generated analysis:', analysisResult)
     
     return new Response(
-      JSON.stringify({ success: true, analysis }),
+      JSON.stringify({ success: true, analysis: analysisResult }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
@@ -71,7 +70,7 @@ serve(async (req) => {
       aiScore: 6.5,
       recommendation: 'REVIEW',
       confidence: 60,
-      reasoning: 'AI research analysis temporarily unavailable. Manual review recommended for detailed assessment.',
+      reasoning: 'AI research analysis temporarily unavailable. Manual review suggested for detailed assessment.',
       riskLevel: 'Moderate',
       strengths: ['Available for investment'],
       concerns: ['Analysis service temporarily unavailable'],
