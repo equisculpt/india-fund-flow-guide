@@ -27,13 +27,11 @@ const Header = () => {
 
   const handleFundComparisonClick = () => {
     if (location.pathname === '/') {
-      // If already on home page, scroll to section
       const element = document.getElementById('fund-comparison');
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      // If on different page, navigate to home with anchor
       navigate('/#fund-comparison');
     }
     setIsMenuOpen(false);
@@ -41,13 +39,11 @@ const Header = () => {
 
   const handleBrowseFundsClick = () => {
     if (location.pathname === '/') {
-      // If already on home page, scroll to search section
       const element = document.getElementById('explore-funds');
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      // If on different page, navigate to home with anchor
       navigate('/#explore-funds');
     }
     setIsMenuOpen(false);
@@ -57,7 +53,7 @@ const Header = () => {
     <Link
       to={to || '#'}
       onClick={onClick}
-      className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+      className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap"
     >
       {children}
     </Link>
@@ -66,39 +62,39 @@ const Header = () => {
   return (
     <>
       <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center h-16">
+        <div className="container mx-auto px-2 sm:px-4">
+          <div className="flex justify-between items-center h-14 sm:h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
               <BreweryLogo showText={true} />
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
               <NavLink to="/">Home</NavLink>
               <button
                 onClick={handleFundComparisonClick}
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap"
               >
-                Compare Funds
+                Compare
               </button>
               <button
                 onClick={handleBrowseFundsClick}
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap"
               >
-                Browse Funds
+                Browse
               </button>
               <NavLink to="/community">
                 <div className="flex items-center gap-1">
                   <MessageSquare className="h-4 w-4" />
-                  Community
+                  <span className="hidden xl:inline">Community</span>
                 </div>
               </NavLink>
               {user && (
                 <NavLink to="/advanced-features">
                   <div className="flex items-center gap-1">
                     <Brain className="h-4 w-4" />
-                    AI Features
+                    <span className="hidden xl:inline">AI</span>
                   </div>
                 </NavLink>
               )}
@@ -107,17 +103,17 @@ const Header = () => {
                   <NavLink to="/dashboard">
                     <div className="flex items-center gap-1">
                       <BarChart3 className="h-4 w-4" />
-                      Dashboard
+                      <span className="hidden xl:inline">Dashboard</span>
                     </div>
                   </NavLink>
                   <NavLink to="/user-dashboard">Analytics</NavLink>
-                  <NavLink to="/ai-portfolio">AI Portfolio</NavLink>
+                  <NavLink to="/ai-portfolio">Portfolio</NavLink>
                 </>
               )}
             </nav>
 
             {/* User Menu */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -149,15 +145,16 @@ const Header = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button onClick={() => setShowLoginModal(true)}>
+                <Button onClick={() => setShowLoginModal(true)} size="sm" className="text-xs sm:text-sm">
                   Sign In
                 </Button>
               )}
 
               {/* Mobile menu button */}
               <button
-                className="md:hidden p-2"
+                className="lg:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle menu"
               >
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
@@ -166,18 +163,18 @@ const Header = () => {
 
           {/* Mobile Navigation */}
           {isMenuOpen && (
-            <div className="md:hidden py-4 border-t">
+            <div className="lg:hidden py-4 border-t bg-white">
               <div className="flex flex-col space-y-2">
                 <NavLink to="/" onClick={() => setIsMenuOpen(false)}>Home</NavLink>
                 <button
                   onClick={handleFundComparisonClick}
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left"
+                  className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left"
                 >
                   Compare Funds
                 </button>
                 <button
                   onClick={handleBrowseFundsClick}
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors text-left"
+                  className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left"
                 >
                   Browse Funds
                 </button>
