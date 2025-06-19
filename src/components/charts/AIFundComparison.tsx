@@ -117,7 +117,7 @@ const AIFundComparison = () => {
     <div className="space-y-6">
       {/* Header with Market Timing Toggle */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">AI Fund Analysis</h2>
+        <h2 className="text-2xl font-bold">🤖 AI Fund Research & Analysis</h2>
         <div className="flex items-center gap-4">
           <Button
             onClick={() => setShowMarketTiming(!showMarketTiming)}
@@ -168,6 +168,18 @@ const AIFundComparison = () => {
 
       {/* Market Timing Advice Card */}
       <MarketTimingCard comparisonResult={comparisonResult} />
+
+      {/* AI Research Disclaimer */}
+      {selectedFunds.length >= 2 && (
+        <div className="mt-4 p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+          <p className="text-xs text-yellow-800">
+            <strong>AI Research Disclaimer:</strong> This AI-powered fund research and comparison is for informational purposes only and should not be considered as investment advice. 
+            We are AMFI registered mutual fund distributors and may earn commission if you invest through our platform. 
+            Past performance is not indicative of future returns. Mutual fund investments are subject to market risks. 
+            Please read all scheme related documents carefully and consult with qualified financial advisors before making investment decisions.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

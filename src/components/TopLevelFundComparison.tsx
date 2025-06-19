@@ -51,11 +51,11 @@ const TopLevelFundComparison = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="h-5 w-5 text-blue-600" />
-            🤖 AI Fund Comparison Tool
+            🤖 AI Fund Research & Comparison Tool
           </CardTitle>
           <p className="text-muted-foreground">
-            Select 2-5 mutual funds for comprehensive AI-powered comparison. 
-            Our AI analyzes performance, risk metrics, fund manager profiles, and market conditions to provide intelligent recommendations.
+            Select 2-5 mutual funds for comprehensive AI-powered research and comparison. 
+            Our AI analyzes performance, risk metrics, fund manager profiles, and market conditions to provide intelligent research insights.
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -67,7 +67,7 @@ const TopLevelFundComparison = () => {
               maxFunds={5}
               placeholder={
                 selectedFunds.length === 0 
-                  ? "🔍 Search and add your first fund for AI analysis..." 
+                  ? "🔍 Search and add your first fund for AI research..." 
                   : selectedFunds.length >= 5 
                     ? "Maximum 5 funds selected for AI comparison" 
                     : "🔍 Search and add another fund for comparison..."
@@ -79,12 +79,12 @@ const TopLevelFundComparison = () => {
           {selectedFunds.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Selected Funds for AI Analysis</h3>
+                <h3 className="text-lg font-semibold">Selected Funds for AI Research</h3>
                 <div className="flex items-center gap-2">
                   <Badge variant="outline">{selectedFunds.length}/5 funds</Badge>
                   {selectedFunds.length >= 2 && (
                     <Badge variant="secondary" className="bg-green-100 text-green-800">
-                      🤖 Ready for AI Analysis
+                      🤖 Ready for AI Research
                     </Badge>
                   )}
                 </div>
@@ -130,16 +130,16 @@ const TopLevelFundComparison = () => {
                     size="lg"
                   >
                     <BarChart3 className="h-5 w-5" />
-                    🤖 Analyze {selectedFunds.length} Funds with AI
+                    🤖 Research {selectedFunds.length} Funds with AI
                   </Button>
                 ) : (
                   <div className="text-center">
                     <p className="text-sm text-gray-600 mb-3">
-                      Add {2 - selectedFunds.length} more fund{2 - selectedFunds.length !== 1 ? 's' : ''} to start AI analysis
+                      Add {2 - selectedFunds.length} more fund{2 - selectedFunds.length !== 1 ? 's' : ''} to start AI research
                     </p>
                     <Button disabled className="w-full" size="lg">
                       <BarChart3 className="h-5 w-5 mr-2" />
-                      🤖 AI Analysis (Need {2 - selectedFunds.length} more)
+                      🤖 AI Research (Need {2 - selectedFunds.length} more)
                     </Button>
                   </div>
                 )}
@@ -147,15 +147,22 @@ const TopLevelFundComparison = () => {
 
               {/* Enhanced Tips */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-200">
-                <h4 className="font-medium text-blue-900 mb-2">🤖 AI Comparison Features</h4>
+                <h4 className="font-medium text-blue-900 mb-2">🤖 AI Research Features</h4>
                 <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• Advanced AI analysis using sophisticated models</li>
+                  <li>• Advanced AI research using sophisticated analytical models</li>
                   <li>• Comprehensive evaluation of performance, risk metrics & fund managers</li>
                   <li>• Analysis of 1M, 2M, 3M, 6M, 1Y, 2Y, 3Y, 4Y, 5Y performance periods</li>
                   <li>• Sharpe ratio, Beta, Alpha, volatility and expense ratio analysis</li>
-                  <li>• Market timing and investment horizon recommendations</li>
-                  <li>• Personalized investment advice based on current market conditions</li>
+                  <li>• Market timing and investment horizon research insights</li>
+                  <li>• Data-driven research based on current market conditions</li>
                 </ul>
+              </div>
+
+              {/* AMFI Disclaimer */}
+              <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                <p className="text-xs text-yellow-800">
+                  <strong>Important:</strong> We are AMFI registered mutual fund distributors. This AI research is for informational purposes only and should not be considered as investment advice. We may earn commission if you invest through our platform. Please read all scheme documents carefully.
+                </p>
               </div>
             </div>
           )}

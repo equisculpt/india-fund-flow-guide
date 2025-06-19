@@ -98,7 +98,7 @@ serve(async (req) => {
 
     // Create detailed prompt for AI analysis
     const aiPrompt = `
-As an expert financial advisor and mutual fund analyst, please provide a comprehensive comparison of the following ${funds.length} mutual funds. Consider the current market environment and provide detailed insights:
+As an expert financial analyst providing research insights for mutual fund comparison, please provide a comprehensive comparison of the following ${funds.length} mutual funds. Consider the current market environment and provide detailed research insights:
 
 CURRENT MARKET CONTEXT:
 ${marketContext}
@@ -134,21 +134,28 @@ ${index + 1}. ${fund.name}
    - Experience: ${fund.fundManager.experience}
 `).join('\n')}
 
+IMPORTANT: As this analysis is being prepared for AMFI registered mutual fund distributors (not SEBI registered investment advisors), please ensure compliance with AMFI regulations:
+
+1. DO NOT use terms like "BUY", "SELL", "STRONG BUY", "STRONG SELL"
+2. Instead use: "SUITABLE", "CONSIDER", "REVIEW", "CAUTION", "AVOID"
+3. Emphasize that this is research for informational purposes only
+4. Include appropriate disclaimers about commission earning and need for professional advice
+
 Based on the current market context provided above, analyze the current market phase and provide your assessment. Consider factors like market volatility, sectoral trends, liquidity conditions, and economic indicators to determine the current phase (Recovery, Growth, Peak, Correction, etc.).
 
 Please provide your analysis in the following JSON format:
 
 {
   "overallWinner": {
-    "fundName": "Name of the best fund overall",
+    "fundName": "Name of the fund that appears most suitable overall",
     "aiScore": 8.5,
-    "reasoning": "Detailed explanation of why this fund is the winner"
+    "reasoning": "Detailed explanation of why this fund appears most suitable for research purposes"
   },
   "individualAnalysis": [
     {
       "fundName": "Fund Name",
       "aiScore": 8.5,
-      "rating": "STRONG BUY",
+      "rating": "SUITABLE",
       "confidence": 85,
       "strengths": ["List of key strengths"],
       "concerns": ["List of concerns"],
@@ -156,32 +163,33 @@ Please provide your analysis in the following JSON format:
       "riskAnalysis": "Risk assessment",
       "fundManagerAnalysis": "Fund manager evaluation",
       "expenseAnalysis": "Expense ratio evaluation",
-      "recommendation": "Investment recommendation with horizon"
+      "recommendation": "Research-based insights with investment horizon considerations"
     }
   ],
   "categoryComparison": {
-    "bestForShortTerm": "Fund name best for 6-12 months",
-    "bestForMediumTerm": "Fund name best for 2-3 years", 
-    "bestForLongTerm": "Fund name best for 5+ years",
-    "lowestRisk": "Safest fund option",
-    "highestPotential": "Highest growth potential fund"
+    "bestForShortTerm": "Fund name that may be suitable for 6-12 months",
+    "bestForMediumTerm": "Fund name that may be suitable for 2-3 years", 
+    "bestForLongTerm": "Fund name that may be suitable for 5+ years",
+    "lowestRisk": "Relatively safer fund option",
+    "highestPotential": "Fund with higher growth potential (with higher risk)"
   },
   "marketContext": {
     "currentMarketPhase": "Your assessment of current market phase based on the context provided",
-    "allocationAdvice": "Portfolio allocation recommendations based on current market conditions",
-    "timingAdvice": "Investment timing guidance considering current market phase"
+    "allocationAdvice": "Portfolio allocation research insights based on current market conditions",
+    "timingAdvice": "Investment timing research insights considering current market phase"
   },
   "keyInsights": [
-    "Important insight 1",
-    "Important insight 2", 
-    "Important insight 3"
+    "Important research insight 1",
+    "Important research insight 2", 
+    "Important research insight 3"
   ],
-  "conclusionAndRecommendation": "Final comprehensive recommendation"
+  "conclusionAndRecommendation": "Final comprehensive research conclusion for informational purposes"
 }
 
-Provide ratings as: STRONG BUY, BUY, HOLD, SELL, STRONG SELL
+Provide ratings as: SUITABLE, CONSIDER, REVIEW, CAUTION, AVOID
 Score funds on a scale of 1-10 where 10 is exceptional
-Be thorough, analytical, and provide actionable insights based on the comprehensive data and current market context provided.
+Be thorough, analytical, and provide actionable research insights based on the comprehensive data and current market context provided.
+Remember: This is research analysis for informational purposes only, not investment advice.
 `;
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`, {
@@ -231,12 +239,12 @@ Be thorough, analytical, and provide actionable insights based on the comprehens
         overallWinner: {
           fundName: funds[0].schemeName,
           aiScore: 7.5,
-          reasoning: "AI analysis completed. Detailed comparison shows this fund has the best balance of performance and risk metrics."
+          reasoning: "AI research analysis completed. Detailed comparison shows this fund has suitable balance of performance and risk metrics for research purposes."
         },
         individualAnalysis: funds.map((fund: FundData, index: number) => ({
           fundName: fund.schemeName,
           aiScore: 7.0 + Math.random() * 2,
-          rating: index === 0 ? "BUY" : "HOLD",
+          rating: index === 0 ? "CONSIDER" : "REVIEW",
           confidence: 75 + Math.floor(Math.random() * 20),
           strengths: ["Consistent performance", "Good fund management"],
           concerns: ["Market volatility risk"],
@@ -244,7 +252,7 @@ Be thorough, analytical, and provide actionable insights based on the comprehens
           riskAnalysis: "Risk metrics are within acceptable range for the category.",
           fundManagerAnalysis: "Fund manager has good track record.",
           expenseAnalysis: `Expense ratio of ${fund.expenseRatio}% is competitive.`,
-          recommendation: "Suitable for medium to long-term investment."
+          recommendation: "May be suitable for medium to long-term consideration based on research."
         })),
         categoryComparison: {
           bestForShortTerm: funds[0].schemeName,
@@ -255,15 +263,15 @@ Be thorough, analytical, and provide actionable insights based on the comprehens
         },
         marketContext: {
           currentMarketPhase: "Markets are in a consolidation phase with selective opportunities",
-          allocationAdvice: "Diversify across fund categories for optimal returns",
-          timingAdvice: "Current timing is favorable for systematic investment approach"
+          allocationAdvice: "Diversify across fund categories for optimal research-based allocation",
+          timingAdvice: "Current timing research suggests systematic investment approach may be favorable"
         },
         keyInsights: [
           "All funds show reasonable performance for their categories",
           "Expense ratios are competitive across the selection",
           "Consider your risk tolerance when making final selection"
         ],
-        conclusionAndRecommendation: "Based on comprehensive analysis, the recommended fund offers the best balance of risk and returns for most investors."
+        conclusionAndRecommendation: "Based on comprehensive research analysis, the highlighted fund offers suitable balance of risk and returns for research consideration. This is for informational purposes only."
       };
     }
 
@@ -274,7 +282,8 @@ Be thorough, analytical, and provide actionable insights based on the comprehens
       analysis: parsedAnalysis,
       rawResponse: aiResponse,
       fundsAnalyzed: funds.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      disclaimer: "This AI research is for informational purposes only. We are AMFI registered distributors and may earn commission on investments."
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -285,7 +294,8 @@ Be thorough, analytical, and provide actionable insights based on the comprehens
     return new Response(JSON.stringify({
       success: false,
       error: error.message,
-      fallbackMessage: 'AI comparison service temporarily unavailable. Please try again later.'
+      fallbackMessage: 'AI research service temporarily unavailable. Please try again later.',
+      disclaimer: "We are AMFI registered mutual fund distributors. This research is for informational purposes only."
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -18,10 +18,11 @@ const ComparisonResult = ({ comparisonResult, selectedFunds }: ComparisonResultP
 
   const getBadgeColor = (recommendation: string) => {
     switch (recommendation) {
-      case 'STRONG BUY': return 'bg-green-600 text-white';
-      case 'BUY': return 'bg-green-500 text-white';
-      case 'HOLD': return 'bg-yellow-500 text-white';
-      case 'SELL': return 'bg-red-500 text-white';
+      case 'SUITABLE': return 'bg-green-600 text-white';
+      case 'CONSIDER': return 'bg-green-500 text-white';
+      case 'REVIEW': return 'bg-yellow-500 text-white';
+      case 'CAUTION': return 'bg-red-500 text-white';
+      case 'AVOID': return 'bg-red-600 text-white';
       default: return 'bg-gray-500 text-white';
     }
   };
@@ -35,7 +36,7 @@ const ComparisonResult = ({ comparisonResult, selectedFunds }: ComparisonResultP
             <Star className="h-6 w-6 text-green-600" />
             <div>
               <h3 className="text-lg font-bold text-green-800">
-                AI Recommendation: {comparisonResult.bestFund}
+                🤖 AI Research Verdict: {comparisonResult.bestFund}
               </h3>
               <p className="text-green-700">
                 Score: {comparisonResult.bestScore}/10 • {comparisonResult.reasoning}
@@ -115,6 +116,16 @@ const ComparisonResult = ({ comparisonResult, selectedFunds }: ComparisonResultP
           <p className="text-blue-700 text-sm">{comparisonResult.marketRecommendation}</p>
         </CardContent>
       </Card>
+
+      {/* AI Comparison Disclaimer */}
+      <div className="mt-4 p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+        <p className="text-xs text-yellow-800">
+          <strong>AI Comparison Disclaimer:</strong> This AI-powered comparison and research analysis is for informational purposes only and should not be considered as investment advice. 
+          We are AMFI registered mutual fund distributors and may earn commission if you invest through our platform. 
+          Past performance is not indicative of future returns. Mutual fund investments are subject to market risks. 
+          Please read all scheme related documents carefully and consult with qualified financial advisors before making investment decisions.
+        </p>
+      </div>
     </div>
   );
 };

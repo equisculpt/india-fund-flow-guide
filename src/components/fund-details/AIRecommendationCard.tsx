@@ -39,7 +39,7 @@ const AIRecommendationCard = ({ aiAnalysis, fundData }: AIRecommendationCardProp
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2">
           <Target className="h-5 w-5 text-blue-600" />
-          AI Analysis (For Information Only)
+          🤖 AI Research Verdict (For Information Only)
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -70,7 +70,7 @@ const AIRecommendationCard = ({ aiAnalysis, fundData }: AIRecommendationCardProp
         </div>
         <div className="mt-4 p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
           <p className="text-xs text-yellow-800">
-            <strong>Disclaimer:</strong> This AI analysis is for informational purposes only and should not be considered as investment advice. 
+            <strong>AI Research Disclaimer:</strong> This AI-generated research and analysis is for informational purposes only and should not be considered as investment advice. 
             We are AMFI registered mutual fund distributors and may earn commission if you invest through our platform. 
             Please consult with qualified financial advisors and read all scheme documents before making investment decisions.
           </p>
