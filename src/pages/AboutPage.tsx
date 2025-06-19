@@ -1,5 +1,3 @@
-
-import Header from "@/components/Header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Users, Award, TrendingUp } from "lucide-react";
 import { useBranding } from "@/contexts/BrandingContext";
@@ -31,9 +29,7 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      
+    <div className="min-h-screen bg-white">      
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">About {brandConfig.companyName}</h1>
