@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { FileSpreadsheet, Play, RefreshCw, Eye } from 'lucide-react';
+import { FileSpreadsheet, RefreshCw, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import AdminPortfolioUploader from './AdminPortfolioUploader';
 import { AMCPortfolioParser } from '@/services/AMCPortfolioParser';
+import PortfolioFileUploader from './portfolio/PortfolioFileUploader';
+import PortfolioFileManager from './portfolio/PortfolioFileManager';
 
 interface UploadedFile {
   id: string;
@@ -20,8 +21,19 @@ interface UploadedFile {
   created_at: string;
 }
 
+interface PendingFile {
+  id: string;
+  file: File;
+  amc_name: string;
+  portfolio_date: string;
+  file_type: string;
+  upload_status: 'pending' | 'uploading' | 'success' | 'error';
+  error_message?: string;
+}
+
 const PortfolioManagementTab = () => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const { toast } = useToast();
@@ -47,9 +59,74 @@ const PortfolioManagementTab = () => {
     }
   };
 
-  const processAllFiles = async () => {
+  const handleFilesAdded = (files: PendingFile[]) => {
+    setPen
+
+dingFiles(prev => [...prev, ...files]);
+  };
+
+  const handleProcessFiles = async () => {
+    const validFiles = pendingFiles.filter(file => 
+      file.amc_name && file.portfolio_date && file.upload_status === 'pending'
+    );
+
+    if (validFiles.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please add files and fill in all required details",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setProcessing(true);
+
     try {
+      // Upload files to database
+      for (const file of validFiles) {
+        setPendingFiles(prev => prev.map(f => 
+          f.id === file.id ? { ...f, upload_status: 'uploading' } : f
+        ));
+
+        try {
+          const fileReader = new FileReader();
+          const fileData = await new Promise<string>((resolve, reject) => {
+            fileReader.onload = () => resolve(fileReader.result as string);
+            fileReader.onerror = reject;
+            fileReader.readAsDataURL(file.file);
+          });
+
+          const { error } = await supabase
+            .from('amc_portfolio_files')
+            .insert({
+              amc_name: file.amc_name,
+              portfolio_date: file.portfolio_date,
+              file_name: file.file.name,
+              file_type: file.file_type,
+              file_size: file.file.size,
+              file_data: fileData,
+              upload_status: 'uploaded'
+            });
+
+          if (error) throw error;
+
+          setPendingFiles(prev => prev.map(f => 
+            f.id === file.id ? { ...f, upload_status: 'success' } : f
+          ));
+
+        } catch (error) {
+          console.error('Error uploading file:', error);
+          setPendingFiles(prev => prev.map(f => 
+            f.id === file.id ? { 
+              ...f, 
+              upload_status: 'error',
+              error_message: error instanceof Error ? error.message : 'Upload failed'
+            } : f
+          ));
+        }
+      }
+
+      // Process uploaded files
       const results = await AMCPortfolioParser.processAllUploadedFiles();
       
       const successCount = results.filter(r => r.success).length;
@@ -62,6 +139,8 @@ const PortfolioManagementTab = () => {
       });
       
       await fetchUploadedFiles();
+      setPendingFiles([]);
+
     } catch (error) {
       console.error('Error processing files:', error);
       toast({
@@ -89,51 +168,43 @@ const PortfolioManagementTab = () => {
     }
   };
 
-  const viewFileDetails = (file: UploadedFile) => {
-    // Implementation for viewing file details
-    console.log('View file details:', file);
-  };
-
   if (loading) {
     return <div className="flex items-center justify-center h-64">Loading...</div>;
   }
 
   return (
     <div className="space-y-6">
-      <AdminPortfolioUploader />
+      <PortfolioFileUploader onFilesAdded={handleFilesAdded} />
+      
+      <PortfolioFileManager 
+        files={pendingFiles}
+        onFilesUpdate={setPendingFiles}
+        onProcessFiles={handleProcessFiles}
+        isProcessing={processing}
+      />
       
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <FileSpreadsheet className="h-5 w-5 text-green-600" />
-              Uploaded Portfolio Files
+              Processed Portfolio Files
             </CardTitle>
-            <div className="space-x-2">
-              <Button 
-                onClick={fetchUploadedFiles} 
-                variant="outline" 
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Refresh
-              </Button>
-              <Button 
-                onClick={processAllFiles} 
-                disabled={processing}
-                className="flex items-center gap-2"
-              >
-                <Play className="h-4 w-4" />
-                {processing ? "Processing..." : "Process All"}
-              </Button>
-            </div>
+            <Button 
+              onClick={fetchUploadedFiles} 
+              variant="outline" 
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
           {uploadedFiles.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              No files uploaded yet
+              No files processed yet
             </div>
           ) : (
             <div className="space-y-3">
@@ -160,11 +231,10 @@ const PortfolioManagementTab = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => viewFileDetails(file)}
                       className="flex items-center gap-2"
                     >
                       <Eye className="h-4 w-4" />
-                      View
+                      View Details
                     </Button>
                   </div>
                 </div>
