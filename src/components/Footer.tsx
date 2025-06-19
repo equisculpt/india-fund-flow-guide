@@ -18,7 +18,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">SIP Brewery</h3>
             <p className="text-gray-300 mb-4">
-              India's #1 SEBI registered mutual fund distributor offering regular mutual funds with professional advisory.
+              India's trusted AMFI registered mutual fund distributor offering regular mutual funds with professional advisory.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">

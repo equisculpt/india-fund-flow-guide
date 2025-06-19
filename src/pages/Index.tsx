@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
@@ -83,9 +84,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOHead
-        title="Best Mutual Fund Platform India 2025 | Start SIP ₹500 | SEBI Registered | SIP Brewery"
-        description="India's #1 SEBI registered mutual fund distributor & SIP investment platform. Start SIP online with ₹500, get consistency rewards. Professional advisory, regular mutual funds, best SIP plans 2025."
-        keywords="mutual fund distributor India, best SIP plans India 2025, invest in mutual funds online, SIP investment platform, start SIP online, best mutual fund platform India, SIP calculator India, SIP vs lump sum, regular mutual fund app, mutual funds India, SIP consistency rewards, SEBI registered distributor, SIP rewards India, mutual fund comparison tool"
+        title="Best Mutual Fund Platform India 2025 | Start SIP ₹500 | AMFI Registered | SIP Brewery"
+        description="India's trusted AMFI registered mutual fund distributor & SIP investment platform. Start SIP online with ₹500, get consistency rewards. Professional advisory, regular mutual funds, best SIP plans 2025."
+        keywords="mutual fund distributor India, best SIP plans India 2025, invest in mutual funds online, SIP investment platform, start SIP online, best mutual fund platform India, SIP calculator India, SIP vs lump sum, regular mutual fund app, mutual funds India, SIP consistency rewards, AMFI registered distributor, SIP rewards India, mutual fund comparison tool"
         structuredData={structuredData}
       />
       
@@ -98,7 +99,7 @@ const Index = () => {
       <section className="py-12 bg-gradient-to-r from-blue-50 to-indigo-50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6">India's Best SEBI Registered Mutual Fund Distributor & SIP Investment Platform</h2>
+            <h2 className="text-3xl font-bold mb-6">India's Trusted AMFI Registered Mutual Fund Distributor & SIP Investment Platform</h2>
             <div className="grid md:grid-cols-3 gap-8 mb-8">
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl font-semibold mb-3 text-blue-600">Start SIP Online - ₹500 Monthly</h3>
@@ -115,18 +116,18 @@ const Index = () => {
             </div>
             
             <div className="bg-white p-8 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold mb-4">Why Choose SIP Brewery - India's #1 SIP Investment Platform?</h3>
+              <h3 className="text-2xl font-bold mb-4">Why Choose SIP Brewery - India's Trusted SIP Investment Platform?</h3>
               <div className="grid md:grid-cols-2 gap-6 text-left">
                 <div>
-                  <h4 className="font-semibold text-lg mb-2">🏆 SEBI Registered & AMFI Compliant Mutual Fund Distributor</h4>
-                  <p className="text-gray-700 mb-4">Fully regulated and registered with SEBI & AMFI. Your investments are safe and secure with India's most trusted mutual fund platform.</p>
+                  <h4 className="font-semibold text-lg mb-2">🏆 AMFI Registered & Compliant Mutual Fund Distributor</h4>
+                  <p className="text-gray-700 mb-4">Fully regulated and registered with AMFI. Your investments are safe and secure with India's most trusted mutual fund platform.</p>
                   
                   <h4 className="font-semibold text-lg mb-2">💰 Regular Mutual Funds + SIP Consistency Rewards</h4>
                   <p className="text-gray-700 mb-4">Invest in regular mutual funds with professional advisory. Earn consistency rewards and gift cards for maintaining regular SIPs. Terms apply as per SEBI guidelines.</p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-lg mb-2">👨‍💼 Professional Fund Recommendations</h4>
-                  <p className="text-gray-700 mb-4">Get personalized mutual fund recommendations based on your risk profile, goals, and market conditions from SEBI registered investment advisors.</p>
+                  <p className="text-gray-700 mb-4">Get personalized mutual fund recommendations based on your risk profile, goals, and market conditions from experienced professionals.</p>
                   
                   <h4 className="font-semibold text-lg mb-2">📊 Advanced SIP Calculator & Performance Tracker</h4>
                   <p className="text-gray-700 mb-4">Calculate SIP returns, compare SIP vs lump sum, track portfolio performance, and get detailed fund analysis reports.</p>
