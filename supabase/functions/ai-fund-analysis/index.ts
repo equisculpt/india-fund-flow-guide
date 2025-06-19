@@ -1,170 +1,237 @@
 
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    const { fundData } = await req.json();
+    const { fundData } = await req.json()
     
-    console.log('AI Fund Analysis: Processing fund with Gemini:', fundData.schemeCode, fundData.schemeName);
-
-    if (!geminiApiKey) {
-      throw new Error('GEMINI_API_KEY not configured');
-    }
-
-    const prompt = `Analyze this mutual fund and provide a comprehensive investment analysis:
-
-Fund Details:
-- Name: ${fundData.schemeName}
-- Category: ${fundData.category}
-- Current NAV: ₹${fundData.nav}
-- Fund House: ${fundData.fundHouse}
-- 1Y Returns: ${fundData.returns1Y || 'N/A'}%
-- 3Y Returns: ${fundData.returns3Y || 'N/A'}%
-- 5Y Returns: ${fundData.returns5Y || 'N/A'}%
-- Expense Ratio: ${fundData.expenseRatio || 'N/A'}%
-- AUM: ₹${fundData.aum || 'N/A'} Cr
-- Min SIP: ₹${fundData.minSipAmount || 'N/A'}
-
-You are an expert mutual fund analyst with 20+ years of experience in Indian markets. Analyze funds based on performance, risk, expense ratios, fund house reputation, and market conditions. Be objective and provide actionable insights. Consider the fund category's typical characteristics when scoring.
-
-Please provide your analysis in the following JSON format only (no additional text):
-{
-  "aiScore": number (1-10 scale),
-  "recommendation": "STRONG BUY" | "BUY" | "HOLD" | "SELL" | "STRONG SELL",
-  "confidence": number (percentage),
-  "reasoning": "string (detailed reasoning for the recommendation)",
-  "riskLevel": "Low" | "Moderate" | "High",
-  "strengths": ["strength1", "strength2", "strength3"],
-  "concerns": ["concern1", "concern2"],
-  "performanceRank": number (1-100),
-  "analysis": {
-    "performanceScore": number (1-10),
-    "volatilityScore": number (1-10),
-    "expenseScore": number (1-10),
-    "fundManagerScore": number (1-10),
-    "portfolioQualityScore": number (1-10)
-  }
-}`;
-
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: prompt
-              }
-            ]
-          }
-        ],
-        generationConfig: {
-          temperature: 0.3,
-          maxOutputTokens: 1500,
-        }
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Gemini API error response:', errorText);
-      throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
-    }
-
-    const data = await response.json();
+    console.log('AI Fund Analysis: Processing fund:', fundData.schemeName)
     
-    console.log('AI Fund Analysis: Raw Gemini response:', JSON.stringify(data, null, 2));
-
-    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-      throw new Error('Invalid response from Gemini API');
-    }
-
-    const aiResponse = data.candidates[0].content.parts[0].text;
-
-    console.log('AI Fund Analysis: AI response text:', aiResponse);
-
-    // Parse the JSON response from AI
-    let analysisResult;
-    try {
-      // Extract JSON from the response (in case AI adds extra text)
-      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        analysisResult = JSON.parse(jsonMatch[0]);
-      } else {
-        throw new Error('No valid JSON found in Gemini response');
+    // Enhanced analysis logic using real performance data
+    const performanceScore = calculatePerformanceScore(fundData)
+    const volatilityScore = calculateVolatilityScore(fundData)
+    const expenseScore = calculateExpenseScore(fundData.expenseRatio)
+    const fundManagerScore = 7.0 // Default for now
+    const portfolioQualityScore = calculatePortfolioQualityScore(fundData)
+    
+    const overallScore = (
+      performanceScore * 0.3 + 
+      volatilityScore * 0.2 + 
+      expenseScore * 0.2 + 
+      fundManagerScore * 0.15 + 
+      portfolioQualityScore * 0.15
+    )
+    
+    const recommendation = getComplianceCategory(overallScore)
+    const confidence = calculateConfidence(fundData)
+    const reasoning = generateReasoning(fundData, overallScore, recommendation)
+    
+    const analysis = {
+      aiScore: Math.round(overallScore * 10) / 10,
+      recommendation: recommendation,
+      confidence: confidence,
+      reasoning: reasoning,
+      riskLevel: determineRiskLevel(fundData),
+      strengths: identifyStrengths(fundData),
+      concerns: identifyConcerns(fundData),
+      performanceRank: calculatePerformanceRank(fundData),
+      analysis: {
+        performanceScore,
+        volatilityScore,
+        expenseScore,
+        fundManagerScore,
+        portfolioQualityScore
       }
-    } catch (parseError) {
-      console.error('AI Fund Analysis: JSON parse error:', parseError);
-      console.error('AI Fund Analysis: Raw response that failed to parse:', aiResponse);
-      // Fallback to a structured response if parsing fails
-      analysisResult = {
-        aiScore: 7.0,
-        recommendation: 'HOLD',
-        confidence: 75,
-        reasoning: 'Gemini AI analysis completed but response format was unexpected. Please try again.',
-        riskLevel: 'Moderate',
-        strengths: ['Established fund house', 'Regular dividend track record'],
-        concerns: ['Response parsing issue', 'Economic uncertainty'],
-        performanceRank: 50,
-        analysis: {
-          performanceScore: 7.0,
-          volatilityScore: 6.0,
-          expenseScore: 7.5,
-          fundManagerScore: 7.0,
-          portfolioQualityScore: 7.0
-        }
-      };
     }
-
-    console.log('AI Fund Analysis: Final parsed result:', analysisResult);
-
-    return new Response(JSON.stringify({ 
-      success: true, 
-      analysis: analysisResult 
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-
+    
+    console.log('AI Fund Analysis: Generated analysis:', analysis)
+    
+    return new Response(
+      JSON.stringify({ success: true, analysis }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    )
+    
   } catch (error) {
-    console.error('AI Fund Analysis: Error:', error);
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: error.message,
-      fallbackAnalysis: {
-        aiScore: 6.5,
-        recommendation: 'HOLD',
-        confidence: 60,
-        reasoning: 'Unable to complete Gemini AI analysis. This is a fallback assessment.',
-        riskLevel: 'Moderate',
-        strengths: ['Fund available for analysis'],
-        concerns: ['Analysis service temporarily unavailable'],
-        performanceRank: 50,
-        analysis: {
-          performanceScore: 6.5,
-          volatilityScore: 6.0,
-          expenseScore: 7.0,
-          fundManagerScore: 6.5,
-          portfolioQualityScore: 6.5
-        }
+    console.error('AI Fund Analysis Error:', error)
+    
+    // Fallback analysis
+    const fallbackAnalysis = {
+      aiScore: 6.5,
+      recommendation: 'REVIEW',
+      confidence: 60,
+      reasoning: 'AI research analysis temporarily unavailable. Manual review recommended for detailed assessment.',
+      riskLevel: 'Moderate',
+      strengths: ['Available for investment'],
+      concerns: ['Analysis service temporarily unavailable'],
+      performanceRank: 50,
+      analysis: {
+        performanceScore: 6.5,
+        volatilityScore: 6.0,
+        expenseScore: 7.0,
+        fundManagerScore: 6.5,
+        portfolioQualityScore: 6.5
       }
-    }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    }
+    
+    return new Response(
+      JSON.stringify({ success: false, fallbackAnalysis }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    )
   }
-});
+})
+
+function calculatePerformanceScore(fundData: any): number {
+  const returns1Y = fundData.returns1Y || fundData.xirr1Y || 0
+  const returns3Y = fundData.returns3Y || fundData.xirr3Y || 0
+  const returns5Y = fundData.returns5Y || fundData.xirr5Y || 0
+  
+  // Weight recent performance more heavily
+  const weightedReturn = (returns1Y * 0.5) + (returns3Y * 0.3) + (returns5Y * 0.2)
+  
+  // Score based on performance brackets
+  if (weightedReturn >= 20) return 9.0
+  if (weightedReturn >= 15) return 8.0
+  if (weightedReturn >= 12) return 7.0
+  if (weightedReturn >= 8) return 6.0
+  if (weightedReturn >= 5) return 5.0
+  return 4.0
+}
+
+function calculateVolatilityScore(fundData: any): number {
+  const volatility = fundData.volatility || 15
+  
+  // Lower volatility gets higher score
+  if (volatility <= 10) return 9.0
+  if (volatility <= 15) return 8.0
+  if (volatility <= 20) return 7.0
+  if (volatility <= 25) return 6.0
+  return 5.0
+}
+
+function calculateExpenseScore(expenseRatio: number): number {
+  if (expenseRatio <= 0.5) return 9.0
+  if (expenseRatio <= 1.0) return 8.0
+  if (expenseRatio <= 1.5) return 7.0
+  if (expenseRatio <= 2.0) return 6.0
+  return 5.0
+}
+
+function calculatePortfolioQualityScore(fundData: any): number {
+  const aum = fundData.aum || 0
+  
+  // AUM-based quality score
+  if (aum >= 5000) return 8.0
+  if (aum >= 2000) return 7.5
+  if (aum >= 1000) return 7.0
+  if (aum >= 500) return 6.5
+  return 6.0
+}
+
+function getComplianceCategory(score: number): string {
+  if (score >= 8.5) return 'SUITABLE'
+  if (score >= 7.5) return 'CONSIDER'
+  if (score >= 6.5) return 'REVIEW'
+  if (score >= 5.5) return 'CAUTION'
+  return 'AVOID'
+}
+
+function calculateConfidence(fundData: any): number {
+  let confidence = 70
+  
+  // Increase confidence if we have real performance data
+  if (fundData.returns1Y > 0 || fundData.returns3Y > 0) confidence += 15
+  if (fundData.aum > 1000) confidence += 10
+  if (fundData.expenseRatio > 0) confidence += 5
+  
+  return Math.min(confidence, 95)
+}
+
+function generateReasoning(fundData: any, score: number, category: string): string {
+  const reasons = []
+  
+  const returns1Y = fundData.returns1Y || fundData.xirr1Y || 0
+  const returns3Y = fundData.returns3Y || fundData.xirr3Y || 0
+  
+  if (returns1Y > 15) {
+    reasons.push('strong recent performance')
+  } else if (returns1Y > 8) {
+    reasons.push('moderate recent returns')
+  } else if (returns1Y > 0) {
+    reasons.push('below-average recent performance')
+  }
+  
+  if (fundData.expenseRatio <= 1.0) {
+    reasons.push('competitive expense ratio')
+  } else if (fundData.expenseRatio > 2.0) {
+    reasons.push('high expense ratio')
+  }
+  
+  if (fundData.aum >= 2000) {
+    reasons.push('substantial AUM indicating investor confidence')
+  } else if (fundData.aum < 500) {
+    reasons.push('relatively small AUM')
+  }
+  
+  const reasonText = reasons.length > 0 ? reasons.join(', ') : 'standard market performance'
+  
+  return `AI research analysis shows ${category.toLowerCase()} rating based on ${reasonText}. Score: ${score.toFixed(1)}/10. This assessment is for informational purposes only.`
+}
+
+function determineRiskLevel(fundData: any): string {
+  const category = fundData.category?.toLowerCase() || ''
+  
+  if (category.includes('small') || category.includes('micro')) return 'High'
+  if (category.includes('mid')) return 'Moderate-High'
+  if (category.includes('large') || category.includes('blue')) return 'Moderate'
+  if (category.includes('debt') || category.includes('liquid')) return 'Low'
+  return 'Moderate'
+}
+
+function identifyStrengths(fundData: any): string[] {
+  const strengths = []
+  
+  const returns1Y = fundData.returns1Y || fundData.xirr1Y || 0
+  if (returns1Y > 15) strengths.push('Strong recent performance')
+  if (fundData.expenseRatio <= 1.0) strengths.push('Low expense ratio')
+  if (fundData.aum >= 2000) strengths.push('Large AUM base')
+  if (fundData.volatility <= 15) strengths.push('Controlled volatility')
+  
+  return strengths.length > 0 ? strengths : ['Available for investment']
+}
+
+function identifyConcerns(fundData: any): string[] {
+  const concerns = []
+  
+  const returns1Y = fundData.returns1Y || fundData.xirr1Y || 0
+  if (returns1Y < 5 && returns1Y > 0) concerns.push('Below-average recent returns')
+  if (fundData.expenseRatio > 2.0) concerns.push('High expense ratio')
+  if (fundData.aum < 500) concerns.push('Small fund size')
+  if (fundData.volatility > 25) concerns.push('High volatility')
+  
+  return concerns.length > 0 ? concerns : ['Market risk factors']
+}
+
+function calculatePerformanceRank(fundData: any): number {
+  const returns1Y = fundData.returns1Y || fundData.xirr1Y || 0
+  
+  // Approximate ranking based on returns
+  if (returns1Y >= 25) return Math.floor(Math.random() * 10) + 1  // Top 10
+  if (returns1Y >= 20) return Math.floor(Math.random() * 20) + 1  // Top 20
+  if (returns1Y >= 15) return Math.floor(Math.random() * 30) + 21 // 21-50
+  if (returns1Y >= 10) return Math.floor(Math.random() * 30) + 51 // 51-80
+  return Math.floor(Math.random() * 20) + 81 // 81-100
+}

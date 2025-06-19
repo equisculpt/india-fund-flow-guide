@@ -39,7 +39,7 @@ const AIRecommendationCard = ({ aiAnalysis, fundData }: AIRecommendationCardProp
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2">
           <Target className="h-5 w-5 text-blue-600" />
-          🤖 AI Research Verdict (For Information Only)
+          🤖 AI Research Analysis (For Information Only)
         </CardTitle>
       </CardHeader>
       <CardContent>
