@@ -1,5 +1,8 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { User, LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface MobileNavigationProps {
   isMenuOpen: boolean;
@@ -19,64 +22,54 @@ const MobileNavigation = ({
   if (!isMenuOpen) return null;
 
   return (
-    <div className="lg:hidden py-4 border-t bg-white">
-      <div className="flex flex-col space-y-2">
-        <button
-          onClick={() => handleNavigation('/')}
-          className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
-        >
-          Home
-        </button>
-        <button
-          onClick={handleFundComparisonClick}
-          className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
-        >
-          Compare Funds
-        </button>
+    <div className="lg:hidden border-t border-gray-200">
+      <div className="px-2 pt-2 pb-3 space-y-1 bg-white">
         <button
           onClick={handleBrowseFundsClick}
-          className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
+          className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md min-h-[48px] touch-manipulation"
         >
           Browse Funds
         </button>
+        
+        <button
+          onClick={handleFundComparisonClick}
+          className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md min-h-[48px] touch-manipulation"
+        >
+          Fund Comparison
+        </button>
+        
+        <button
+          onClick={() => handleNavigation('/sip-calculator')}
+          className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md min-h-[48px] touch-manipulation"
+        >
+          SIP Calculator
+        </button>
+        
         <button
           onClick={() => handleNavigation('/community')}
-          className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
+          className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md min-h-[48px] touch-manipulation"
         >
           Community
         </button>
+
         {user && (
           <>
             <button
-              onClick={() => handleNavigation('/advanced-features')}
-              className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
-            >
-              AI Features
-            </button>
-            <button
               onClick={() => handleNavigation('/dashboard')}
-              className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
+              className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md min-h-[48px] touch-manipulation"
             >
+              <User className="inline-block w-4 h-4 mr-2" />
               Dashboard
             </button>
-            <button
-              onClick={() => handleNavigation('/user-dashboard')}
-              className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
-            >
-              Analytics
-            </button>
-            <button
-              onClick={() => handleNavigation('/ai-portfolio')}
-              className="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
-            >
-              AI Portfolio
-            </button>
-            <button
-              onClick={() => handleNavigation('/secure-admin')}
-              className="text-gray-500 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors text-left bg-transparent border-none cursor-pointer"
-            >
-              Admin Portal
-            </button>
+            
+            {user.email === 'admin@sipbrewery.com' && (
+              <button
+                onClick={() => handleNavigation('/admin')}
+                className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md min-h-[48px] touch-manipulation"
+              >
+                Admin Portal
+              </button>
+            )}
           </>
         )}
       </div>

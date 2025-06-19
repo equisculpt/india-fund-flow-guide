@@ -1,86 +1,62 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings, BarChart3, Brain, MessageSquare, Shield } from 'lucide-react';
+import { User, LogOut } from 'lucide-react';
 
 interface UserMenuProps {
   user: any;
-  signOut: () => Promise<void>;
+  signOut: () => void;
   setShowLoginModal: (show: boolean) => void;
   setIsMenuOpen: (open: boolean) => void;
 }
 
 const UserMenu = ({ user, signOut, setShowLoginModal, setIsMenuOpen }: UserMenuProps) => {
-  const navigate = useNavigate();
-
   const handleSignOut = async () => {
-    try {
-      await signOut();
-      navigate('/');
-      setIsMenuOpen(false);
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
-
-  const handleNavigation = (path: string) => {
-    navigate(path);
+    await signOut();
     setIsMenuOpen(false);
   };
 
   if (user) {
     return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+      <div className="hidden lg:flex items-center space-x-4">
+        <Link to="/dashboard">
+          <Button variant="outline" size="sm" className="flex items-center space-x-2">
             <User className="h-4 w-4" />
+            <span>Dashboard</span>
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
-          <DropdownMenuItem onClick={() => handleNavigation('/dashboard')}>
-            <BarChart3 className="mr-2 h-4 w-4" />
-            Dashboard
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleNavigation('/user-dashboard')}>
-            <Settings className="mr-2 h-4 w-4" />
-            Analytics
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleNavigation('/advanced-features')}>
-            <Brain className="mr-2 h-4 w-4" />
-            AI Features
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleNavigation('/community')}>
-            <MessageSquare className="mr-2 h-4 w-4" />
-            Community
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleNavigation('/secure-admin')} className="text-gray-500">
-            <Shield className="mr-2 h-4 w-4" />
-            Admin Portal
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleSignOut}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </Link>
+        
+        {user.email === 'admin@sipbrewery.com' && (
+          <Link to="/admin">
+            <Button variant="outline" size="sm">
+              Admin Portal
+            </Button>
+          </Link>
+        )}
+        
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={handleSignOut}
+          className="flex items-center space-x-2"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Sign Out</span>
+        </Button>
+      </div>
     );
   }
 
   return (
-    <Button 
-      onClick={() => setShowLoginModal(true)} 
-      size="sm" 
-      className="text-xs sm:text-sm"
-    >
-      Sign In
-    </Button>
+    <div className="hidden lg:block">
+      <Button 
+        onClick={() => setShowLoginModal(true)}
+        className="min-h-[44px] min-w-[44px]"
+      >
+        Sign In
+      </Button>
+    </div>
   );
 };
 

@@ -32,7 +32,6 @@ const FundComparisonPage = () => {
   useEffect(() => {
     const state = location.state as ComparisonPageState;
     if (!state?.funds || state.funds.length < 2) {
-      // If no funds are provided, show the fund selection interface
       return;
     }
 
@@ -90,6 +89,20 @@ const FundComparisonPage = () => {
     };
   };
 
+  const handleBackToHome = () => {
+    navigate('/');
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  };
+
+  const handleNewComparison = () => {
+    navigate('/fund-comparison', { replace: true });
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  };
+
   // If no funds selected or comparison is in progress, show the selection interface
   const state = location.state as ComparisonPageState;
   const showSelection = !state?.funds || state.funds.length < 2;
@@ -102,9 +115,9 @@ const FundComparisonPage = () => {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8 space-y-8">
-          {/* Header */}
+          {/* Header with proper navigation */}
           <div className="flex items-center justify-between">
-            <Button variant="outline" onClick={() => navigate('/')}>
+            <Button variant="outline" onClick={handleBackToHome}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Home
             </Button>
@@ -125,7 +138,7 @@ const FundComparisonPage = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <p>No comparison data available</p>
-            <Button onClick={() => navigate('/')} className="mt-4">
+            <Button onClick={handleBackToHome} className="mt-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Home
             </Button>
@@ -140,39 +153,31 @@ const FundComparisonPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">      
       <div className="container mx-auto px-4 py-8 space-y-8">
-        {/* Header */}
+        {/* Header with improved navigation */}
         <div className="flex items-center justify-between">
-          <Button variant="outline" onClick={() => navigate('/fund-comparison')}>
+          <Button variant="outline" onClick={handleNewComparison}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             New Comparison
           </Button>
           <h1 className="text-2xl font-bold">🤖 AI Fund Research & Comparison</h1>
-          <div></div>
+          <Button variant="ghost" onClick={handleBackToHome}>
+            Home
+          </Button>
         </div>
 
         {/* Stability Indicator */}
         <StabilityIndicator isStableResult={comparisonResult.isStableResult} />
-
-        {/* AI Winner Announcement */}
         <WinnerAnnouncement 
           bestFund={comparisonResult.bestFund}
           bestScore={comparisonResult.bestScore}
           reasoning={comparisonResult.reasoning}
         />
-
-        {/* AI Key Insights */}
         <KeyInsights insights={comparisonResult.keyInsights} />
-
-        {/* Investment Horizon Recommendations */}
         <InvestmentHorizonRecommendations advice={advice} />
-
-        {/* Detailed AI Fund Analysis */}
         <DetailedFundAnalysis 
           analysis={comparisonResult.analysis}
           bestFund={comparisonResult.bestFund}
         />
-
-        {/* AI Market Recommendation */}
         <MarketRecommendationCard 
           marketRecommendation={comparisonResult.marketRecommendation}
           marketTiming={comparisonResult.marketTiming}

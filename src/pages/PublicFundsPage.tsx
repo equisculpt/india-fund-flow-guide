@@ -2,9 +2,11 @@
 import { useState, useEffect } from "react";
 import EnhancedFundSearch from "@/components/EnhancedFundSearch";
 import PublicFundsTabs from "@/components/public-funds/PublicFundsTabs";
+import { useNavigate } from "react-router-dom";
 
 const PublicFundsPage = () => {
   const [selectedFund, setSelectedFund] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -13,7 +15,13 @@ const PublicFundsPage = () => {
   const handleFundSearchSelect = (fund: any) => {
     console.log('PublicFundsPage: Fund selected from search:', fund);
     
-    // Convert search result to our fund format
+    // Navigate to fund details page if schemeCode exists
+    if (fund.schemeCode) {
+      navigate(`/fund/${fund.schemeCode}`);
+      return;
+    }
+    
+    // Convert search result to our fund format for comparison
     const fundForChart = {
       schemeCode: fund.schemeCode,
       schemeName: fund.schemeName,

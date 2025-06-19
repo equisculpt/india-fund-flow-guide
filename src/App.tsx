@@ -41,6 +41,7 @@ import Footer from "./components/Footer";
 import MobileLayout from "./components/MobileLayout";
 import SecurityHeaders from "./components/SecurityHeaders";
 import FinancialDataProtection from "./components/FinancialDataProtection";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -69,12 +70,28 @@ function App() {
                             <Route path="/fund-seo/:schemeCode" element={<UniversalFundSEOPage />} />
                             <Route path="/public-funds" element={<PublicFundsPage />} />
                             <Route path="/explore" element={<PublicFundsPage />} />
-                            <Route path="/dashboard" element={<UserDashboard />} />
-                            <Route path="/user-dashboard" element={<ComprehensiveDashboard />} />
-                            <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
+                            <Route path="/dashboard" element={
+                              <ProtectedRoute>
+                                <UserDashboard />
+                              </ProtectedRoute>
+                            } />
+                            <Route path="/user-dashboard" element={
+                              <ProtectedRoute>
+                                <ComprehensiveDashboard />
+                              </ProtectedRoute>
+                            } />
+                            <Route path="/ai-portfolio" element={
+                              <ProtectedRoute>
+                                <AIPortfolioDashboard />
+                              </ProtectedRoute>
+                            } />
                             <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
                             <Route path="/onboarding" element={<OnboardingPage />} />
-                            <Route path="/agent" element={<AgentHomePage />} />
+                            <Route path="/agent" element={
+                              <ProtectedRoute>
+                                <AgentHomePage />
+                              </ProtectedRoute>
+                            } />
                             <Route path="/distributor" element={<MutualFundDistributorPage />} />
                             <Route path="/about" element={<AboutPage />} />
                             <Route path="/contact" element={<ContactPage />} />
@@ -82,11 +99,27 @@ function App() {
                             <Route path="/terms" element={<TermsOfServicePage />} />
                             <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
                             <Route path="/community" element={<CommunityPage />} />
-                            <Route path="/referral" element={<ReferralPage />} />
+                            <Route path="/referral" element={
+                              <ProtectedRoute>
+                                <ReferralPage />
+                              </ProtectedRoute>
+                            } />
                             <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
-                            <Route path="/admin" element={<AdminPage />} />
-                            <Route path="/admin-portal" element={<AdminPortalPage />} />
-                            <Route path="/secure-admin" element={<SecureAdminPage />} />
+                            <Route path="/admin" element={
+                              <ProtectedRoute requireAdmin={true}>
+                                <AdminPage />
+                              </ProtectedRoute>
+                            } />
+                            <Route path="/admin-portal" element={
+                              <ProtectedRoute requireAdmin={true}>
+                                <AdminPortalPage />
+                              </ProtectedRoute>
+                            } />
+                            <Route path="/secure-admin" element={
+                              <ProtectedRoute requireAdmin={true}>
+                                <SecureAdminPage />
+                              </ProtectedRoute>
+                            } />
                             <Route path="*" element={<NotFound />} />
                           </Routes>
                         </main>

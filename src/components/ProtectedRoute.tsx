@@ -1,46 +1,40 @@
 
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredUserType?: 'customer' | 'agent';
+  requireAdmin?: boolean;
 }
 
-const ProtectedRoute = ({ children, requiredUserType }: ProtectedRouteProps) => {
-  const { isAuthenticated, user } = useEnhancedAuth();
+const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps) => {
+  const { user, loading } = useSupabaseAuthContext();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please login to access this page",
-        variant: "destructive",
-      });
-      navigate("/");
-      return;
+    if (!loading) {
+      if (!user) {
+        navigate('/', { replace: true });
+        return;
+      }
+      
+      if (requireAdmin && user.email !== 'admin@sipbrewery.com') {
+        navigate('/', { replace: true });
+        return;
+      }
     }
+  }, [user, loading, navigate, requireAdmin]);
 
-    if (requiredUserType && user?.type !== requiredUserType) {
-      toast({
-        title: "Access Denied",
-        description: `${requiredUserType} access required for this page`,
-        variant: "destructive",
-      });
-      navigate("/");
-      return;
-    }
-  }, [isAuthenticated, user, navigate, toast, requiredUserType]);
-
-  if (!isAuthenticated) {
-    return null;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
-  if (requiredUserType && user?.type !== requiredUserType) {
+  if (!user || (requireAdmin && user.email !== 'admin@sipbrewery.com')) {
     return null;
   }
 

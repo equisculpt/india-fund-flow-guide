@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageSquare, BookOpen, Plus, Users } from 'lucide-react';
-import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import CommunityQuestions from '@/components/community/CommunityQuestions';
 import CommunityBlogs from '@/components/community/CommunityBlogs';
@@ -129,8 +128,6 @@ const CommunityPage = () => {
         isOpen={showLoginModal} 
         onClose={() => setShowLoginModal(false)} 
       />
-
-      <Footer />
     </div>
   );
 };
