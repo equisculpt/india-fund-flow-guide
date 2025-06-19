@@ -4,139 +4,107 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
+import { HelmetProvider } from 'react-helmet-async';
 import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
-import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
 import { BrandingProvider } from "@/contexts/BrandingContext";
-
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import ComplianceFooter from "@/components/ComplianceFooter";
 import Index from "./pages/Index";
 import FundDetailsPage from "./pages/FundDetailsPage";
 import FundComparisonPage from "./pages/FundComparisonPage";
-import SIPCalculatorPage from "./pages/SIPCalculatorPage";
-import SBISmallCapFundPage from "./pages/SBISmallCapFundPage";
-import UniversalFundSEOPage from "./components/UniversalFundSEOPage";
 import PublicFundsPage from "./pages/PublicFundsPage";
 import UserDashboard from "./pages/UserDashboard";
-import ComprehensiveDashboard from "./pages/ComprehensiveDashboard";
 import AIPortfolioDashboard from "./pages/AIPortfolioDashboard";
-import AdvancedFeaturesPage from "./pages/AdvancedFeaturesPage";
+import ComprehensiveDashboard from "./pages/ComprehensiveDashboard";
 import OnboardingPage from "./pages/OnboardingPage";
 import AgentHomePage from "./pages/AgentHomePage";
-import MutualFundDistributorPage from "./pages/MutualFundDistributorPage";
-import AboutPage from "./pages/AboutPage";
-import ContactPage from "./pages/ContactPage";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
-import TermsOfServicePage from "./pages/TermsOfServicePage";
-import RiskDisclosurePage from "./pages/RiskDisclosurePage";
-import CommunityPage from "./pages/CommunityPage";
 import ReferralPage from "./pages/ReferralPage";
-import WhatsAppBotPage from "./pages/WhatsAppBotPage";
-import NotFound from "./pages/NotFound";
 import AdminPage from "./pages/AdminPage";
-import AdminPortalPage from "./pages/AdminPortalPage";
-import SecureAdminPage from "./pages/SecureAdminPage";
+import SecureAdminPage from "./pages/SecureAdmin
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import MobileLayout from "./components/MobileLayout";
-import SecurityHeaders from "./components/SecurityHeaders";
-import FinancialDataProtection from "./components/FinancialDataProtection";
-import ProtectedRoute from "./components/ProtectedRoute";
+Page";
+import AdminPortalPage from "./pages/AdminPortalPage";
+import ContactPage from "./pages/ContactPage";
+import AboutPage from "./pages/AboutPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import RiskDisclosurePage from "./pages/RiskDisclosurePage";
+import NotFound from "./pages/NotFound";
+import CommunityPage from "./pages/CommunityPage";
+import SIPCalculatorPage from "./pages/SIPCalculatorPage";
+import AdvancedFeaturesPage from "./pages/AdvancedFeaturesPage";
+import MutualFundDistributorPage from "./pages/MutualFundDistributorPage";
+import SBISmallCapFundPage from "./pages/SBISmallCapFundPage";
+import WhatsAppBotPage from "./pages/WhatsAppBotPage";
+import UniversalFundSEOPage from "./pages/UniversalFundSEOPage";
+
+// Blog pages
+import WhatAreMutualFundsBlog from "./pages/WhatAreMutualFundsBlog";
+import HowMutualFundsWorkBlog from "./pages/HowMutualFundsWorkBlog";
+import HowFundManagersMakeMoneyBlog from "./pages/HowFundManagersMakeMoneyBlog";
+import MutualFundBenefitsBlog from "./pages/MutualFundBenefitsBlog";
 
 const queryClient = new QueryClient();
 
-function App() {
-  return (
+const App = () => (
+  <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <SupabaseAuthProvider>
-            <EnhancedAuthProvider>
-              <BrandingProvider>
-                <SecurityHeaders />
-                <FinancialDataProtection>
-                  <BrowserRouter>
-                    <MobileLayout>
-                      <div className="min-h-screen flex flex-col">
-                        <Header />
-                        <main className="flex-1">
-                          <Routes>
-                            <Route path="/" element={<Index />} />
-                            <Route path="/fund/:schemeCode" element={<FundDetailsPage />} />
-                            <Route path="/fund-comparison" element={<FundComparisonPage />} />
-                            <Route path="/compare" element={<FundComparisonPage />} />
-                            <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-                            <Route path="/sbi-small-cap-fund" element={<SBISmallCapFundPage />} />
-                            <Route path="/fund-seo/:schemeCode" element={<UniversalFundSEOPage />} />
-                            <Route path="/public-funds" element={<PublicFundsPage />} />
-                            <Route path="/explore" element={<PublicFundsPage />} />
-                            <Route path="/dashboard" element={
-                              <ProtectedRoute>
-                                <UserDashboard />
-                              </ProtectedRoute>
-                            } />
-                            <Route path="/user-dashboard" element={
-                              <ProtectedRoute>
-                                <ComprehensiveDashboard />
-                              </ProtectedRoute>
-                            } />
-                            <Route path="/ai-portfolio" element={
-                              <ProtectedRoute>
-                                <AIPortfolioDashboard />
-                              </ProtectedRoute>
-                            } />
-                            <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
-                            <Route path="/onboarding" element={<OnboardingPage />} />
-                            <Route path="/agent" element={
-                              <ProtectedRoute>
-                                <AgentHomePage />
-                              </ProtectedRoute>
-                            } />
-                            <Route path="/distributor" element={<MutualFundDistributorPage />} />
-                            <Route path="/about" element={<AboutPage />} />
-                            <Route path="/contact" element={<ContactPage />} />
-                            <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                            <Route path="/terms" element={<TermsOfServicePage />} />
-                            <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
-                            <Route path="/community" element={<CommunityPage />} />
-                            <Route path="/referral" element={
-                              <ProtectedRoute>
-                                <ReferralPage />
-                              </ProtectedRoute>
-                            } />
-                            <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
-                            <Route path="/admin" element={
-                              <ProtectedRoute requireAdmin={true}>
-                                <AdminPage />
-                              </ProtectedRoute>
-                            } />
-                            <Route path="/admin-portal" element={
-                              <ProtectedRoute requireAdmin={true}>
-                                <AdminPortalPage />
-                              </ProtectedRoute>
-                            } />
-                            <Route path="/secure-admin" element={
-                              <ProtectedRoute requireAdmin={true}>
-                                <SecureAdminPage />
-                              </ProtectedRoute>
-                            } />
-                            <Route path="*" element={<NotFound />} />
-                          </Routes>
-                        </main>
-                        <Footer />
-                      </div>
-                    </MobileLayout>
-                  </BrowserRouter>
-                </FinancialDataProtection>
-                <Toaster />
-                <Sonner />
-              </BrandingProvider>
-            </EnhancedAuthProvider>
-          </SupabaseAuthProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
+      <BrandingProvider>
+        <SupabaseAuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <div className="min-h-screen flex flex-col">
+                <Header />
+                <main className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/fund/:fundName" element={<FundDetailsPage />} />
+                    <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                    <Route path="/public-funds" element={<PublicFundsPage />} />
+                    <Route path="/dashboard" element={<UserDashboard />} />
+                    <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
+                    <Route path="/comprehensive-dashboard" element={<ComprehensiveDashboard />} />
+                    <Route path="/onboarding" element={<OnboardingPage />} />
+                    <Route path="/agent" element={<AgentHomePage />} />
+                    <Route path="/referral" element={<ReferralPage />} />
+                    <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/secure-admin" element={<SecureAdminPage />} />
+                    <Route path="/admin-portal" element={<AdminPortalPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/terms" element={<TermsOfServicePage />} />
+                    <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                    <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
+                    <Route path="/community" element={<CommunityPage />} />
+                    <Route path="/community/*" element={<CommunityPage />} />
+                    <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+                    <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
+                    <Route path="/mutual-fund-distributor" element={<MutualFundDistributorPage />} />
+                    <Route path="/sbi-small-cap-fund" element={<SBISmallCapFundPage />} />
+                    <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
+                    <Route path="/:fundSlug" element={<UniversalFundSEOPage />} />
+
+                    {/* Blog Routes */}
+                    <Route path="/blog/what-are-mutual-funds-complete-guide" element={<WhatAreMutualFundsBlog />} />
+                    <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
+                    <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
+                    <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
+
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+                <Footer />
+                <ComplianceFooter />
+              </div>
+            </BrowserRouter>
+          </TooltipProvider>
+        </SupabaseAuthProvider>
+      </BrandingProvider>
     </HelmetProvider>
-  );
-}
+  </QueryClientProvider>
+);
 
 export default App;

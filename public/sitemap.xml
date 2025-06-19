@@ -1,59 +1,86 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Main Pages -->
   <url>
     <loc>https://sipbrewery.com/</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
+  <!-- NEW: Educational Blog Posts -->
+  <url>
+    <loc>https://sipbrewery.com/blog/what-are-mutual-funds-complete-guide</loc>
+    <lastmod>2025-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/how-mutual-funds-work-detailed-explanation</loc>
+    <lastmod>2025-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/how-fund-managers-make-money-mutual-funds</loc>
+    <lastmod>2025-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/mutual-funds-benefits-individual-investors</loc>
+    <lastmod>2025-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <!-- HIGH PRIORITY: Primary Keywords Landing Pages -->
   <url>
     <loc>https://sipbrewery.com/mutual-fund-distributor-india</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.98</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/best-sip-plans-india</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.98</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/sip-calculator-india</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.98</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/invest-in-mutual-funds-online</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.97</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/start-sip-online</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.97</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/sip-vs-lump-sum</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.96</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/zero-commission-mutual-fund</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.96</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/direct-mutual-funds-india</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.96</priority>
   </url>
@@ -61,13 +88,13 @@
   <!-- Core Platform Pages -->
   <url>
     <loc>https://sipbrewery.com/fund-comparison</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/public-funds</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
@@ -437,25 +464,25 @@
   <!-- Additional Information Pages -->
   <url>
     <loc>https://sipbrewery.com/about</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/contact</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/terms</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/privacy</loc>
-    <lastmod>2025-06-18</lastmod>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
