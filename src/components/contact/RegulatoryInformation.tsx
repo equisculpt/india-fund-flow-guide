@@ -10,8 +10,9 @@ const RegulatoryInformation = () => {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-gray-600 text-left">
-          SIP Brewery is operated by Equisculpt Ventures Pvt. Ltd., a SEBI registered mutual fund distributor. 
+          SIP Brewery is operated by Equisculpt Ventures Pvt. Ltd., an AMFI registered mutual fund distributor. 
           All investments are subject to market risks. Please read all scheme-related documents carefully before investing.
+          We may earn commission from mutual fund companies when you invest through our platform.
         </p>
       </CardContent>
     </Card>

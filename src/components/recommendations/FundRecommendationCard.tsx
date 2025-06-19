@@ -94,7 +94,7 @@ const FundRecommendationCard: React.FC<FundRecommendationCardProps> = ({ fund, i
         </div>
 
         <div className="mb-4">
-          <h5 className="font-medium mb-2">Why this fund is recommended for you:</h5>
+          <h5 className="font-medium mb-2">Why this fund may be suitable for you:</h5>
           <ul className="text-sm space-y-1">
             {fund.reasons.map((reason, idx) => (
               <li key={idx} className="flex items-start gap-2">
@@ -111,6 +111,11 @@ const FundRecommendationCard: React.FC<FundRecommendationCardProps> = ({ fund, i
           </Button>
           <Button variant="outline">View Details</Button>
           <Button variant="ghost">Compare</Button>
+        </div>
+        
+        {/* Commission Disclosure */}
+        <div className="mt-3 p-2 bg-blue-50 rounded text-xs text-blue-700">
+          We may earn commission if you invest through our platform. This analysis is for informational purposes only.
         </div>
       </CardContent>
     </Card>

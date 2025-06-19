@@ -59,10 +59,10 @@ const PersonalizedRecommendations = () => {
         matchScore: 95,
         investmentAmount: 8000,
         reasons: [
-          'Perfect tax-saving solution for your profile',
+          'Suitable tax-saving solution for your profile',
           'Consistent long-term performance',
           'Matches your risk tolerance',
-          'Suitable for 15-year investment horizon'
+          'Appropriate for 15-year investment horizon'
         ]
       },
       {
@@ -114,10 +114,10 @@ const PersonalizedRecommendations = () => {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-blue-600" />
-            <CardTitle>AI-Powered Fund Recommendations</CardTitle>
+            <CardTitle>AI-Powered Fund Analysis</CardTitle>
           </div>
           <p className="text-sm text-gray-600">
-            Personalized recommendations based on your risk profile, goals, and market conditions
+            Informational analysis based on your risk profile, goals, and market conditions
           </p>
         </CardHeader>
         <CardContent>
@@ -134,6 +134,16 @@ const PersonalizedRecommendations = () => {
           </div>
 
           <PortfolioSummaryCard recommendations={recommendations} />
+
+          {/* AI Disclaimer */}
+          <div className="mt-6 p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+            <p className="text-sm text-yellow-800">
+              <strong>Important Disclaimer:</strong> This AI analysis is for informational purposes only and should not be considered as investment advice. 
+              We are AMFI registered mutual fund distributors and may earn commission if you invest through our platform. 
+              Please read all scheme documents carefully and consult with qualified financial advisors before making investment decisions. 
+              Past performance is not indicative of future results.
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -112,10 +112,13 @@ const RiskDisclosurePage = () => {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Regulatory Information</h2>
             <div className="bg-white p-4 rounded-md">
               <p className="text-gray-700 leading-relaxed mb-4">
-                <strong>SEBI Registration:</strong> Equisculpt Ventures Pvt. Ltd. is registered with SEBI as a mutual fund distributor and investment advisor.
+                <strong>AMFI Registration:</strong> Equisculpt Ventures Pvt. Ltd. is registered with AMFI as a mutual fund distributor. We are not investment advisors.
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                <strong>Commission Disclosure:</strong> We may earn commission from mutual fund companies when you invest through our platform. This does not affect the NAV or returns you receive.
               </p>
               <p className="text-gray-700 leading-relaxed">
-                <strong>Disclaimer:</strong> The information provided is for educational purposes only and should not be considered as investment advice. Please consult with qualified financial advisors before making investment decisions.
+                <strong>Disclaimer:</strong> The information provided is for educational purposes only and should not be considered as investment advice. AI-generated analysis and research are for informational purposes only. Please consult with qualified financial advisors before making investment decisions.
               </p>
             </div>
           </section>

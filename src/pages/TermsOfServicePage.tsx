@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -22,20 +21,20 @@ const TermsOfServicePage = () => {
           <section className="bg-gray-50 p-6 rounded-lg">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Acceptance of Terms</h2>
             <p className="text-gray-700 leading-relaxed">
-              By accessing and using SIP Brewery (a trademark of Equisculpt Ventures Pvt. Ltd.) services, you accept and agree to be bound by the terms and provisions of this agreement. These terms are subject to applicable SEBI and AMFI regulations.
+              By accessing and using SIP Brewery (a trademark of Equisculpt Ventures Pvt. Ltd.) services, you accept and agree to be bound by the terms and provisions of this agreement. These terms are subject to applicable AMFI regulations for mutual fund distribution.
             </p>
           </section>
 
           <section className="bg-white p-6 border border-gray-200 rounded-lg">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">About Our Services</h2>
             <p className="text-gray-700 mb-4 leading-relaxed">
-              Equisculpt Ventures Pvt. Ltd. is a SEBI registered Investment Advisor and AMFI registered Mutual Fund Distributor providing:
+              Equisculpt Ventures Pvt. Ltd. is an AMFI registered Mutual Fund Distributor providing:
             </p>
             <ul className="list-disc pl-6 text-gray-700 space-y-2">
               <li>Mutual fund distribution services</li>
-              <li>Investment advisory services</li>
-              <li>Portfolio management guidance</li>
               <li>Educational content and market insights</li>
+              <li>AI-powered research and analysis (for informational purposes only)</li>
+              <li>Portfolio tracking and reporting tools</li>
             </ul>
           </section>
 
@@ -45,9 +44,9 @@ const TermsOfServicePage = () => {
               Our services are provided in accordance with:
             </p>
             <ul className="list-disc pl-6 text-gray-700 space-y-2">
-              <li>Securities and Exchange Board of India (SEBI) regulations</li>
-              <li>Association of Mutual Funds in India (AMFI) guidelines</li>
+              <li>Association of Mutual Funds in India (AMFI) guidelines for distributors</li>
               <li>All applicable laws and regulations governing mutual fund distribution in India</li>
+              <li>We are NOT investment advisors and do not provide investment advisory services</li>
             </ul>
           </section>
 
@@ -63,20 +62,20 @@ const TermsOfServicePage = () => {
               <li>The value of investments may go up or down based on market conditions</li>
               <li>You may receive back less than you invested</li>
               <li>There is no assurance that the investment objectives will be achieved</li>
-              <li>The NAV of mutual fund schemes may fluctuate based on market movements</li>
+              <li>AI-generated research and analysis are for informational purposes only and should not be considered as investment advice</li>
             </ul>
           </section>
 
           <section className="bg-green-50 p-6 rounded-lg">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Distribution and Advisory Fees</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Distribution Fees and Commission</h2>
             <p className="text-gray-700 mb-4 leading-relaxed">
-              As a SEBI registered distributor and advisor:
+              As an AMFI registered distributor:
             </p>
             <ul className="list-disc pl-6 text-gray-700 space-y-3">
-              <li>We may receive distribution commissions from mutual fund companies as per SEBI regulations</li>
-              <li>Advisory fees, if applicable, will be clearly disclosed</li>
+              <li>We may receive distribution commissions from mutual fund companies as per AMFI regulations</li>
+              <li>Commission payments do not affect the NAV or returns you receive from mutual funds</li>
               <li>All fees and charges will be communicated transparently before investment</li>
-              <li>We follow SEBI guidelines on commission disclosure and investor protection</li>
+              <li>We follow AMFI guidelines on commission disclosure and investor protection</li>
             </ul>
           </section>
 

@@ -22,12 +22,23 @@ const FundHeader = ({
 }: FundHeaderProps) => {
   const getRecommendationColor = (rec: string) => {
     switch (rec) {
-      case 'STRONG BUY': return 'bg-green-600 text-white';
-      case 'BUY': return 'bg-green-500 text-white';
-      case 'HOLD': return 'bg-yellow-500 text-white';
-      case 'SELL': return 'bg-red-500 text-white';
-      case 'STRONG SELL': return 'bg-red-600 text-white';
+      case 'SUITABLE': return 'bg-green-600 text-white';
+      case 'CONSIDER': return 'bg-green-500 text-white';
+      case 'REVIEW': return 'bg-yellow-500 text-white';
+      case 'CAUTION': return 'bg-red-500 text-white';
+      case 'AVOID': return 'bg-red-600 text-white';
       default: return 'bg-gray-500 text-white';
+    }
+  };
+
+  const getComplianceRecommendation = (originalRec: string) => {
+    switch (originalRec) {
+      case 'STRONG BUY': return 'SUITABLE';
+      case 'BUY': return 'CONSIDER';
+      case 'HOLD': return 'REVIEW';
+      case 'SELL': return 'CAUTION';
+      case 'STRONG SELL': return 'AVOID';
+      default: return 'REVIEW';
     }
   };
 
@@ -81,8 +92,8 @@ const FundHeader = ({
                   <span className="font-bold text-lg">{aiAnalysis.aiScore}/10</span>
                   <span className="text-sm text-gray-600">AI Score</span>
                 </div>
-                <Badge className={getRecommendationColor(aiAnalysis.recommendation)}>
-                  {aiAnalysis.recommendation}
+                <Badge className={getRecommendationColor(getComplianceRecommendation(aiAnalysis.recommendation))}>
+                  {getComplianceRecommendation(aiAnalysis.recommendation)}
                 </Badge>
                 <Badge variant="outline">
                   {aiAnalysis.confidence}% Confidence
@@ -97,6 +108,15 @@ const FundHeader = ({
             <p className="text-sm text-orange-600 mt-1">
               ⚠️ {aiError}
             </p>
+          )}
+
+          {/* AI Disclaimer */}
+          {aiAnalysis && (
+            <div className="mt-2 p-2 bg-yellow-50 rounded text-xs text-yellow-800">
+              <strong>AI Disclaimer:</strong> AI analysis is for informational purposes only. 
+              We are AMFI registered distributors and may earn commission on investments. 
+              Please read all scheme documents carefully.
+            </div>
           )}
         </div>
         

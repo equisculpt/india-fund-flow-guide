@@ -10,16 +10,16 @@ const ComplianceFooter = () => {
           <Card className="border-blue-200">
             <CardContent className="p-4 text-center">
               <Shield className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-              <h3 className="font-semibold text-blue-900 mb-1">SEBI Registered</h3>
-              <p className="text-sm text-blue-700">Investment Advisor regulated by Securities and Exchange Board of India</p>
+              <h3 className="font-semibold text-blue-900 mb-1">AMFI Registered</h3>
+              <p className="text-sm text-blue-700">Mutual Fund Distributor registered with Association of Mutual Funds in India</p>
             </CardContent>
           </Card>
           
           <Card className="border-blue-200">
             <CardContent className="p-4 text-center">
               <FileText className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-              <h3 className="font-semibold text-blue-900 mb-1">AMFI Compliant</h3>
-              <p className="text-sm text-blue-700">All practices comply with Association of Mutual Funds in India guidelines</p>
+              <h3 className="font-semibold text-blue-900 mb-1">Distribution Services</h3>
+              <p className="text-sm text-blue-700">We provide mutual fund distribution services and earn commission from fund houses</p>
             </CardContent>
           </Card>
           
@@ -38,7 +38,8 @@ const ComplianceFooter = () => {
             Mutual fund investments are subject to market risks, read all scheme related documents carefully. 
             The NAVs of the schemes may go up or down depending upon the factors and forces affecting the securities market including the fluctuations in the interest rates. 
             The past performance of the mutual funds is not necessarily indicative of future performance of the schemes. 
-            Rewards and wallet credits are promotional offers and do not guarantee investment returns.
+            We are AMFI registered mutual fund distributors and may earn commission when you invest through our platform.
+            AI-generated research and analysis are for informational purposes only and should not be considered as investment advice.
           </p>
         </div>
       </div>
