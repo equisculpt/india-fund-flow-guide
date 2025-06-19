@@ -170,9 +170,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };
