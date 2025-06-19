@@ -110,10 +110,10 @@ const FundHeader = ({
             </p>
           )}
 
-          {/* AI Disclaimer */}
+          {/* AI Research Disclaimer */}
           {aiAnalysis && (
             <div className="mt-2 p-2 bg-yellow-50 rounded text-xs text-yellow-800">
-              <strong>AI Disclaimer:</strong> AI analysis is for informational purposes only. 
+              <strong>AI Research Disclaimer:</strong> AI research analysis is for informational purposes only. 
               We are AMFI registered distributors and may earn commission on investments. 
               Please read all scheme documents carefully.
             </div>
