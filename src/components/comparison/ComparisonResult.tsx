@@ -106,21 +106,21 @@ const ComparisonResult = ({ comparisonResult, selectedFunds }: ComparisonResultP
         ))}
       </div>
 
-      {/* Market Recommendation */}
+      {/* Market Research Analysis */}
       <Card className="bg-blue-50 border-blue-200">
         <CardContent className="pt-4">
           <div className="flex items-center gap-2 mb-2">
             <BarChart3 className="h-5 w-5 text-blue-600" />
-            <h4 className="font-semibold text-blue-800">Current Market Insight</h4>
+            <h4 className="font-semibold text-blue-800">Current Market Research Analysis</h4>
           </div>
           <p className="text-blue-700 text-sm">{comparisonResult.marketRecommendation}</p>
         </CardContent>
       </Card>
 
-      {/* AI Comparison Disclaimer */}
+      {/* AI Research Disclaimer */}
       <div className="mt-4 p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
         <p className="text-xs text-yellow-800">
-          <strong>AI Comparison Disclaimer:</strong> This AI-powered comparison and research analysis is for informational purposes only and should not be considered as investment advice. 
+          <strong>AI Research Disclaimer:</strong> This AI-powered research and analysis is for informational purposes only and should not be considered as investment advice. 
           We are AMFI registered mutual fund distributors and may earn commission if you invest through our platform. 
           Past performance is not indicative of future returns. Mutual fund investments are subject to market risks. 
           Please read all scheme related documents carefully and consult with qualified financial advisors before making investment decisions.
