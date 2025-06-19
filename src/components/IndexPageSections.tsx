@@ -2,7 +2,6 @@
 import React from 'react';
 import InvestmentCalculator from '@/components/InvestmentCalculator';
 import GoalBasedInvesting from '@/components/GoalBasedInvesting';
-import ComplianceFooter from '@/components/ComplianceFooter';
 import TopLevelFundComparison from '@/components/TopLevelFundComparison';
 import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
@@ -67,13 +66,6 @@ const IndexPageSections = ({ onRiskProfilingComplete }: IndexPageSectionsProps) 
           </div>
         </section>
       )}
-
-      {/* Trading Disclaimer and Footer */}
-      <section className="bg-gray-100 py-8">
-        <div className="container mx-auto px-4">
-          <ComplianceFooter />
-        </div>
-      </section>
     </>
   );
 };

@@ -5,8 +5,7 @@ import { SupportedAMCsManager } from './portfolio/SupportedAMCs';
 import { ParsedPortfolioData, ProcessingResult } from './portfolio/types/PortfolioTypes';
 import { AMCPortfolioFile } from './portfolio/AMCParserFactory';
 
-export { ParsedPortfolioData, ProcessingResult };
-export type { AMCPortfolioFile };
+export type { ParsedPortfolioData, ProcessingResult, AMCPortfolioFile };
 
 export class AMCPortfolioParser {
   
