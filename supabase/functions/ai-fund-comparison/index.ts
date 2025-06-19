@@ -1,6 +1,10 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { FundData } from './types.ts';
+import { transformFundData } from './data-transformer.ts';
+import { callGeminiAPI, parseAIResponse } from './gemini-service.ts';
+import { generateFallbackAnalysis } from './fallback-analysis.ts';
 
 const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
 
@@ -8,32 +12,6 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-
-interface FundData {
-  schemeCode: string;
-  schemeName: string;
-  category: string;
-  fundHouse: string;
-  nav: number;
-  navDate: string;
-  returns1M?: number;
-  returns2M?: number;
-  returns3M?: number;
-  returns6M?: number;
-  returns1Y?: number;
-  returns2Y?: number;
-  returns3Y?: number;
-  returns4Y?: number;
-  returns5Y?: number;
-  expenseRatio?: number;
-  aum?: number;
-  sharpeRatio?: number;
-  beta?: number;
-  alpha?: number;
-  volatility?: number;
-  fundManagerTenure?: number;
-  fundManagerExperience?: string;
-}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -50,229 +28,22 @@ serve(async (req) => {
     console.log('AI Fund Comparison: Starting analysis for', funds.length, 'funds');
 
     // Prepare comprehensive fund data for AI analysis
-    const fundAnalysisData = funds.map((fund: FundData) => ({
-      name: fund.schemeName,
-      category: fund.category,
-      fundHouse: fund.fundHouse,
-      currentNAV: fund.nav,
-      navDate: fund.navDate,
-      performance: {
-        oneMonth: fund.returns1M || 0,
-        twoMonth: fund.returns2M || 0,
-        threeMonth: fund.returns3M || 0,
-        sixMonth: fund.returns6M || 0,
-        oneYear: fund.returns1Y || 0,
-        twoYear: fund.returns2Y || 0,
-        threeYear: fund.returns3Y || 0,
-        fourYear: fund.returns4Y || 0,
-        fiveYear: fund.returns5Y || 0
-      },
-      financialMetrics: {
-        expenseRatio: fund.expenseRatio || 0,
-        aum: fund.aum || 0,
-        sharpeRatio: fund.sharpeRatio || 0,
-        beta: fund.beta || 1,
-        alpha: fund.alpha || 0,
-        volatility: fund.volatility || 0
-      },
-      fundManager: {
-        tenure: fund.fundManagerTenure || 0,
-        experience: fund.fundManagerExperience || 'Not available'
-      }
-    }));
+    const fundAnalysisData = transformFundData(funds);
 
-    // Enhanced market context information
-    const marketContext = `
-    Current Market Environment Analysis:
-    - Indian equity markets are showing mixed signals with sectoral rotation ongoing
-    - Interest rate environment is stabilizing after recent monetary policy changes
-    - Global factors including US Fed policy and crude oil prices are impacting market sentiment
-    - FII/DII flows are showing cautious optimism with selective buying in quality stocks
-    - Market volatility has increased due to global uncertainties and domestic policy changes
-    - Small-cap and mid-cap segments are particularly sensitive to liquidity flows
-    - Large-cap stocks are showing relative stability compared to smaller segments
-    - Current market phase shows characteristics of a consolidation period with stock-specific opportunities
-    - Economic indicators suggest steady growth with inflation under control
-    - Corporate earnings are showing gradual improvement across sectors
-    `;
-
-    // Create detailed prompt for AI analysis
-    const aiPrompt = `
-As an expert financial analyst providing research insights for mutual fund comparison, please provide a comprehensive comparison of the following ${funds.length} mutual funds. Consider the current market environment and provide detailed research insights:
-
-CURRENT MARKET CONTEXT:
-${marketContext}
-
-FUNDS TO COMPARE:
-${fundAnalysisData.map((fund, index) => `
-${index + 1}. ${fund.name}
-   - Category: ${fund.category}
-   - Fund House: ${fund.fundHouse}
-   - Current NAV: ₹${fund.currentNAV}
-   - AUM: ₹${fund.financialMetrics.aum} Crores
-   - Expense Ratio: ${fund.financialMetrics.expenseRatio}%
-   
-   Performance Returns:
-   - 1 Month: ${fund.performance.oneMonth}%
-   - 2 Month: ${fund.performance.twoMonth}%
-   - 3 Month: ${fund.performance.threeMonth}%
-   - 6 Month: ${fund.performance.sixMonth}%
-   - 1 Year: ${fund.performance.oneYear}%
-   - 2 Year: ${fund.performance.twoYear}%
-   - 3 Year: ${fund.performance.threeYear}%
-   - 4 Year: ${fund.performance.fourYear}%
-   - 5 Year: ${fund.performance.fiveYear}%
-   
-   Risk Metrics:
-   - Sharpe Ratio: ${fund.financialMetrics.sharpeRatio}
-   - Beta: ${fund.financialMetrics.beta}
-   - Alpha: ${fund.financialMetrics.alpha}
-   - Volatility: ${fund.financialMetrics.volatility}%
-   
-   Fund Manager:
-   - Tenure: ${fund.fundManager.tenure} years
-   - Experience: ${fund.fundManager.experience}
-`).join('\n')}
-
-IMPORTANT: As this analysis is being prepared for AMFI registered mutual fund distributors (not SEBI registered investment advisors), please ensure compliance with AMFI regulations:
-
-1. DO NOT use terms like "BUY", "SELL", "STRONG BUY", "STRONG SELL"
-2. Instead use: "SUITABLE", "CONSIDER", "REVIEW", "CAUTION", "AVOID"
-3. Emphasize that this is research for informational purposes only
-4. Include appropriate disclaimers about commission earning and need for professional advice
-
-Based on the current market context provided above, analyze the current market phase and provide your assessment. Consider factors like market volatility, sectoral trends, liquidity conditions, and economic indicators to determine the current phase (Recovery, Growth, Peak, Correction, etc.).
-
-Please provide your analysis in the following JSON format:
-
-{
-  "overallWinner": {
-    "fundName": "Name of the fund that appears most suitable overall",
-    "aiScore": 8.5,
-    "reasoning": "Detailed explanation of why this fund appears most suitable for research purposes"
-  },
-  "individualAnalysis": [
-    {
-      "fundName": "Fund Name",
-      "aiScore": 8.5,
-      "rating": "SUITABLE",
-      "confidence": 85,
-      "strengths": ["List of key strengths"],
-      "concerns": ["List of concerns"],
-      "performanceAnalysis": "Detailed performance analysis",
-      "riskAnalysis": "Risk assessment",
-      "fundManagerAnalysis": "Fund manager evaluation",
-      "expenseAnalysis": "Expense ratio evaluation",
-      "recommendation": "Research-based insights with investment horizon considerations"
-    }
-  ],
-  "categoryComparison": {
-    "bestForShortTerm": "Fund name that may be suitable for 6-12 months",
-    "bestForMediumTerm": "Fund name that may be suitable for 2-3 years", 
-    "bestForLongTerm": "Fund name that may be suitable for 5+ years",
-    "lowestRisk": "Relatively safer fund option",
-    "highestPotential": "Fund with higher growth potential (with higher risk)"
-  },
-  "marketContext": {
-    "currentMarketPhase": "Your assessment of current market phase based on the context provided",
-    "allocationAdvice": "Portfolio allocation research insights based on current market conditions",
-    "timingAdvice": "Investment timing research insights considering current market phase"
-  },
-  "keyInsights": [
-    "Important research insight 1",
-    "Important research insight 2", 
-    "Important research insight 3"
-  ],
-  "conclusionAndRecommendation": "Final comprehensive research conclusion for informational purposes"
-}
-
-Provide ratings as: SUITABLE, CONSIDER, REVIEW, CAUTION, AVOID
-Score funds on a scale of 1-10 where 10 is exceptional
-Be thorough, analytical, and provide actionable research insights based on the comprehensive data and current market context provided.
-Remember: This is research analysis for informational purposes only, not investment advice.
-`;
-
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: aiPrompt
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.3,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 4096,
-        }
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`AI API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const aiResponse = data.candidates[0].content.parts[0].text;
-
-    console.log('Raw AI Response:', aiResponse);
-
-    // Parse JSON from AI response
     let parsedAnalysis;
+    
     try {
-      // Extract JSON from the response (remove any markdown formatting)
-      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        parsedAnalysis = JSON.parse(jsonMatch[0]);
-      } else {
-        throw new Error('No JSON found in AI response');
-      }
-    } catch (parseError) {
-      console.error('Failed to parse AI response as JSON:', parseError);
+      // Call Gemini API for analysis
+      const aiResponse = await callGeminiAPI(fundAnalysisData, geminiApiKey!);
+      console.log('Raw AI Response:', aiResponse);
       
-      // Fallback analysis if JSON parsing fails
-      parsedAnalysis = {
-        overallWinner: {
-          fundName: funds[0].schemeName,
-          aiScore: 7.5,
-          reasoning: "AI research analysis completed. Detailed comparison shows this fund has suitable balance of performance and risk metrics for research purposes."
-        },
-        individualAnalysis: funds.map((fund: FundData, index: number) => ({
-          fundName: fund.schemeName,
-          aiScore: 7.0 + Math.random() * 2,
-          rating: index === 0 ? "CONSIDER" : "REVIEW",
-          confidence: 75 + Math.floor(Math.random() * 20),
-          strengths: ["Consistent performance", "Good fund management"],
-          concerns: ["Market volatility risk"],
-          performanceAnalysis: `${fund.schemeName} shows decent performance across different time horizons.`,
-          riskAnalysis: "Risk metrics are within acceptable range for the category.",
-          fundManagerAnalysis: "Fund manager has good track record.",
-          expenseAnalysis: `Expense ratio of ${fund.expenseRatio}% is competitive.`,
-          recommendation: "May be suitable for medium to long-term consideration based on research."
-        })),
-        categoryComparison: {
-          bestForShortTerm: funds[0].schemeName,
-          bestForMediumTerm: funds[0].schemeName,
-          bestForLongTerm: funds[0].schemeName,
-          lowestRisk: funds[0].schemeName,
-          highestPotential: funds[0].schemeName
-        },
-        marketContext: {
-          currentMarketPhase: "Markets are in a consolidation phase with selective opportunities",
-          allocationAdvice: "Diversify across fund categories for optimal research-based allocation",
-          timingAdvice: "Current timing research suggests systematic investment approach may be favorable"
-        },
-        keyInsights: [
-          "All funds show reasonable performance for their categories",
-          "Expense ratios are competitive across the selection",
-          "Consider your risk tolerance when making final selection"
-        ],
-        conclusionAndRecommendation: "Based on comprehensive research analysis, the highlighted fund offers suitable balance of risk and returns for research consideration. This is for informational purposes only."
-      };
+      // Parse the AI response
+      parsedAnalysis = parseAIResponse(aiResponse);
+      
+    } catch (error) {
+      console.error('AI analysis failed, using fallback:', error);
+      // Use fallback analysis if AI fails
+      parsedAnalysis = generateFallbackAnalysis(funds);
     }
 
     console.log('AI Fund Comparison: Analysis completed successfully');
@@ -280,7 +51,6 @@ Remember: This is research analysis for informational purposes only, not investm
     return new Response(JSON.stringify({
       success: true,
       analysis: parsedAnalysis,
-      rawResponse: aiResponse,
       fundsAnalyzed: funds.length,
       timestamp: new Date().toISOString(),
       disclaimer: "This AI research is for informational purposes only. We are AMFI registered distributors and may earn commission on investments."
