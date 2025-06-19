@@ -36,10 +36,11 @@ const AdminPortfolioUploader = () => {
 
   const fetchAMCList = async () => {
     try {
-      const { data, error } = await supabase.rpc('execute_sql' as any, {
-        sql: 'SELECT * FROM amc_list WHERE is_active = true ORDER BY amc_name',
-        params: []
-      });
+      const { data, error } = await supabase
+        .from('amc_list')
+        .select('*')
+        .eq('is_active', true)
+        .order('amc_name');
 
       if (error) throw error;
       setAmcList(data || []);
@@ -107,22 +108,19 @@ const AdminPortfolioUploader = () => {
             fileReader.readAsDataURL(file.file);
           });
 
-          await supabase.rpc('execute_sql' as any, {
-            sql: `
-              INSERT INTO amc_portfolio_files (
-                amc_name, portfolio_date, file_name, file_type, file_size, file_data, upload_status
-              ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-            `,
-            params: [
-              file.amc_name,
-              file.portfolio_date,
-              file.file.name,
-              file.file.name.toLowerCase().endsWith('.pdf') ? 'PDF' : 'XLSX',
-              file.file.size,
-              fileData,
-              'uploaded'
-            ]
-          });
+          const { error } = await supabase
+            .from('amc_portfolio_files')
+            .insert({
+              amc_name: file.amc_name,
+              portfolio_date: file.portfolio_date,
+              file_name: file.file.name,
+              file_type: file.file.name.toLowerCase().endsWith('.pdf') ? 'PDF' : 'XLSX',
+              file_size: file.file.size,
+              file_data: fileData,
+              upload_status: 'uploaded'
+            });
+
+          if (error) throw error;
 
           setUploadedFiles(prev => prev.map(f => 
             f.id === file.id ? { ...f, status: 'success' } : f

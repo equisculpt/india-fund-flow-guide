@@ -32,13 +32,14 @@ interface AMCPortfolioFile {
 
 export class AMCPortfolioParser {
   
-  // Get uploaded files for processing using raw SQL
-  static async getUploadedFiles(status = 'uploaded'): Promise<any[]> {
+  // Get uploaded files for processing
+  static async getUploadedFiles(status = 'uploaded'): Promise<AMCPortfolioFile[]> {
     try {
-      const { data, error } = await supabase.rpc('execute_sql' as any, {
-        sql: 'SELECT * FROM amc_portfolio_files WHERE upload_status = $1 ORDER BY created_at DESC',
-        params: [status]
-      });
+      const { data, error } = await supabase
+        .from('amc_portfolio_files')
+        .select('*')
+        .eq('upload_status', status)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
@@ -51,28 +52,27 @@ export class AMCPortfolioParser {
   // Parse portfolio file based on AMC format
   static async parsePortfolioFile(fileId: string): Promise<ParsedPortfolioData[]> {
     try {
-      const { data: files, error } = await supabase.rpc('execute_sql' as any, {
-        sql: 'SELECT * FROM amc_portfolio_files WHERE id = $1',
-        params: [fileId]
-      });
+      const { data: files, error } = await supabase
+        .from('amc_portfolio_files')
+        .select('*')
+        .eq('id', fileId)
+        .single();
 
       if (error) throw error;
-      if (!files || files.length === 0) throw new Error('File not found');
-
-      const file = files[0];
+      if (!files) throw new Error('File not found');
 
       // Parse based on AMC name
-      switch (file.amc_name) {
+      switch (files.amc_name) {
         case 'HDFC Mutual Fund':
-          return this.parseHDFCFormat(file);
+          return this.parseHDFCFormat(files);
         case 'SBI Mutual Fund':
-          return this.parseSBIFormat(file);
+          return this.parseSBIFormat(files);
         case 'ICICI Prudential Mutual Fund':
-          return this.parseICICIFormat(file);
+          return this.parseICICIFormat(files);
         case 'Axis Mutual Fund':
-          return this.parseAxisFormat(file);
+          return this.parseAxisFormat(files);
         default:
-          return this.parseGenericFormat(file);
+          return this.parseGenericFormat(files);
       }
     } catch (error) {
       console.error('Error parsing portfolio file:', error);
@@ -81,7 +81,7 @@ export class AMCPortfolioParser {
   }
 
   // HDFC specific parsing logic
-  private static async parseHDFCFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseHDFCFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Parsing HDFC format for file:', file.file_name);
     
     // Mock implementation - in production, use a proper Excel parser
@@ -111,7 +111,7 @@ export class AMCPortfolioParser {
   }
 
   // SBI specific parsing logic
-  private static async parseSBIFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseSBIFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Parsing SBI format for file:', file.file_name);
     
     return [{
@@ -140,7 +140,7 @@ export class AMCPortfolioParser {
   }
 
   // ICICI specific parsing logic
-  private static async parseICICIFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseICICIFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Parsing ICICI format for file:', file.file_name);
     
     return [{
@@ -169,7 +169,7 @@ export class AMCPortfolioParser {
   }
 
   // Axis specific parsing logic
-  private static async parseAxisFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseAxisFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Parsing Axis format for file:', file.file_name);
     
     return [{
@@ -205,7 +205,7 @@ export class AMCPortfolioParser {
   }
 
   // Generic parser for unknown formats
-  private static async parseGenericFormat(file: any): Promise<ParsedPortfolioData[]> {
+  private static async parseGenericFormat(file: AMCPortfolioFile): Promise<ParsedPortfolioData[]> {
     console.log('Using generic parser for file:', file.file_name);
     
     return [{
@@ -262,22 +262,25 @@ export class AMCPortfolioParser {
             }
           }
 
-          // Update file status using raw SQL
-          await supabase.rpc('execute_sql' as any, {
-            sql: 'UPDATE amc_portfolio_files SET upload_status = $1 WHERE id = $2',
-            params: ['processed', file.id]
-          });
+          // Update file status
+          await supabase
+            .from('amc_portfolio_files')
+            .update({ upload_status: 'processed' })
+            .eq('id', file.id);
 
           results.push({ file: file.file_name, success: true, portfolios: portfolios.length });
 
         } catch (error) {
           console.error(`Error processing file ${file.file_name}:`, error);
           
-          // Update file status to error using raw SQL
-          await supabase.rpc('execute_sql' as any, {
-            sql: 'UPDATE amc_portfolio_files SET upload_status = $1, error_message = $2 WHERE id = $3',
-            params: ['error', error instanceof Error ? error.message : 'Processing failed', file.id]
-          });
+          // Update file status to error
+          await supabase
+            .from('amc_portfolio_files')
+            .update({ 
+              upload_status: 'error',
+              error_message: error instanceof Error ? error.message : 'Processing failed'
+            })
+            .eq('id', file.id);
 
           results.push({ file: file.file_name, success: false, error: error.message });
         }

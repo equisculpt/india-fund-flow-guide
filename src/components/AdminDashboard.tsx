@@ -14,6 +14,7 @@ import AgentManagementTab from './admin/AgentManagementTab';
 import CommissionManagementTab from './admin/CommissionManagementTab';
 import MutualFundManagementTab from './admin/MutualFundManagementTab';
 import FundAnalysisTab from './admin/FundAnalysisTab';
+import PortfolioManagementTab from './admin/PortfolioManagementTab';
 
 interface DashboardStats {
   totalUsers: number;
@@ -148,12 +149,13 @@ const AdminDashboard = () => {
 
       {/* Main Tabs */}
       <Tabs defaultValue="users" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="agents">Agents</TabsTrigger>
           <TabsTrigger value="investments">Investments</TabsTrigger>
           <TabsTrigger value="commissions">Commissions</TabsTrigger>
           <TabsTrigger value="funds">Mutual Funds</TabsTrigger>
+          <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
           <TabsTrigger value="analysis">Analysis</TabsTrigger>
         </TabsList>
 
@@ -175,6 +177,10 @@ const AdminDashboard = () => {
 
         <TabsContent value="funds">
           <MutualFundManagementTab />
+        </TabsContent>
+
+        <TabsContent value="portfolio">
+          <PortfolioManagementTab />
         </TabsContent>
 
         <TabsContent value="analysis">

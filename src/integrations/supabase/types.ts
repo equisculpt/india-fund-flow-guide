@@ -219,6 +219,48 @@ export type Database = {
         }
         Relationships: []
       }
+      amc_portfolio_files: {
+        Row: {
+          amc_name: string
+          created_at: string | null
+          error_message: string | null
+          file_data: string
+          file_name: string
+          file_size: number
+          file_type: string
+          id: string
+          portfolio_date: string
+          updated_at: string | null
+          upload_status: string | null
+        }
+        Insert: {
+          amc_name: string
+          created_at?: string | null
+          error_message?: string | null
+          file_data: string
+          file_name: string
+          file_size: number
+          file_type: string
+          id?: string
+          portfolio_date: string
+          updated_at?: string | null
+          upload_status?: string | null
+        }
+        Update: {
+          amc_name?: string
+          created_at?: string | null
+          error_message?: string | null
+          file_data?: string
+          file_name?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+          portfolio_date?: string
+          updated_at?: string | null
+          upload_status?: string | null
+        }
+        Relationships: []
+      }
       amfi_portfolio_data: {
         Row: {
           amc_name: string
@@ -1108,6 +1150,99 @@ export type Database = {
           },
         ]
       }
+      portfolio_changes: {
+        Row: {
+          amc_name: string
+          change_date: string
+          change_type: string
+          created_at: string | null
+          id: string
+          impact_analysis: Json | null
+          new_percentage: number | null
+          old_percentage: number | null
+          percentage_change: number | null
+          scheme_code: string
+          security_name: string
+        }
+        Insert: {
+          amc_name: string
+          change_date: string
+          change_type: string
+          created_at?: string | null
+          id?: string
+          impact_analysis?: Json | null
+          new_percentage?: number | null
+          old_percentage?: number | null
+          percentage_change?: number | null
+          scheme_code: string
+          security_name: string
+        }
+        Update: {
+          amc_name?: string
+          change_date?: string
+          change_type?: string
+          created_at?: string | null
+          id?: string
+          impact_analysis?: Json | null
+          new_percentage?: number | null
+          old_percentage?: number | null
+          percentage_change?: number | null
+          scheme_code?: string
+          security_name?: string
+        }
+        Relationships: []
+      }
+      portfolio_holdings: {
+        Row: {
+          amc_name: string
+          created_at: string | null
+          id: string
+          industry: string | null
+          isin_code: string | null
+          market_value: number | null
+          percentage_holding: number
+          portfolio_date: string
+          quantity: number | null
+          scheme_code: string
+          scheme_name: string
+          sector: string | null
+          security_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          amc_name: string
+          created_at?: string | null
+          id?: string
+          industry?: string | null
+          isin_code?: string | null
+          market_value?: number | null
+          percentage_holding: number
+          portfolio_date: string
+          quantity?: number | null
+          scheme_code: string
+          scheme_name: string
+          sector?: string | null
+          security_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          amc_name?: string
+          created_at?: string | null
+          id?: string
+          industry?: string | null
+          isin_code?: string | null
+          market_value?: number | null
+          percentage_holding?: number
+          portfolio_date?: string
+          quantity?: number | null
+          scheme_code?: string
+          scheme_name?: string
+          sector?: string | null
+          security_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           agent_id: string | null
@@ -1335,6 +1470,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_consolidated_holdings: {
+        Row: {
+          id: string
+          isin_code: string | null
+          last_updated: string | null
+          scheme_breakdown: Json
+          security_name: string
+          total_percentage: number
+          total_value: number
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          isin_code?: string | null
+          last_updated?: string | null
+          scheme_breakdown: Json
+          security_name: string
+          total_percentage: number
+          total_value: number
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          isin_code?: string | null
+          last_updated?: string | null
+          scheme_breakdown?: Json
+          security_name?: string
+          total_percentage?: number
+          total_value?: number
+          user_id?: string | null
+        }
+        Relationships: []
       }
       user_expert_status: {
         Row: {
