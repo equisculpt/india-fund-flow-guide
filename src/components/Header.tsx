@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Menu, X, Settings, BarChart3, Brain, MessageSquare } from 'lucide-react';
+import { User, LogOut, Menu, X, Settings, BarChart3, Brain, MessageSquare, Shield } from 'lucide-react';
 import BreweryLogo from './BreweryLogo';
 import EnhancedLoginModal from './EnhancedLoginModal';
 
@@ -201,7 +201,13 @@ const Header = () => {
                     <NavLink to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</NavLink>
                     <NavLink to="/user-dashboard" onClick={() => setIsMenuOpen(false)}>Analytics</NavLink>
                     <NavLink to="/ai-portfolio" onClick={() => setIsMenuOpen(false)}>AI Portfolio</NavLink>
-                    <NavLink to="/secure-admin" onClick={() => setIsMenuOpen(false)} className="text-gray-500">Admin Portal</NavLink>
+                    <Link 
+                      to="/secure-admin" 
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-gray-500 hover:text-blue-600 px-2 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                      Admin Portal
+                    </Link>
                   </>
                 )}
               </div>

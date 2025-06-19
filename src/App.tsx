@@ -46,14 +46,14 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <SupabaseAuthProvider>
-            <EnhancedAuthProvider>
-              <BrandingProvider>
-                <SecurityHeaders />
-                <FinancialDataProtection>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <SupabaseAuthProvider>
+          <EnhancedAuthProvider>
+            <BrandingProvider>
+              <SecurityHeaders />
+              <FinancialDataProtection>
+                <BrowserRouter>
                   <MobileLayout>
                     <div className="min-h-screen flex flex-col">
                       <Header />
@@ -91,15 +91,15 @@ function App() {
                       <Footer />
                     </div>
                   </MobileLayout>
-                </FinancialDataProtection>
-                <Toaster />
-                <Sonner />
-              </BrandingProvider>
-            </EnhancedAuthProvider>
-          </SupabaseAuthProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+                </BrowserRouter>
+              </FinancialDataProtection>
+              <Toaster />
+              <Sonner />
+            </BrandingProvider>
+          </EnhancedAuthProvider>
+        </SupabaseAuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 
