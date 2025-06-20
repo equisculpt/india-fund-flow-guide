@@ -480,8 +480,8 @@ const MutualFundBenefitsBlog = () => {
                     <h6 className="font-semibold mb-3">General Tax Advantages:</h6>
                     <ul className="text-sm space-y-1">
                       <li>• Equity funds: No tax on gains up to ₹1 lakh/year</li>
-                      <li>• Long-term gains (>1 year): Only 10% tax</li>
-                      <li>• Debt funds: Indexation benefit for >3 years</li>
+                      <li>• Long-term gains ({'>'}1 year): Only 10% tax</li>
+                      <li>• Debt funds: Indexation benefit for {'>'}3 years</li>
                       <li>• STP/SWP: Tax-efficient withdrawals</li>
                       <li>• No TDS on mutual fund returns</li>
                     </ul>
