@@ -9,8 +9,6 @@ import DesktopNavigation from './header/DesktopNavigation';
 import MobileNavigation from './header/MobileNavigation';
 import UserMenu from './header/UserMenu';
 import EnhancedFundSearch from './EnhancedFundSearch';
-import LanguageSelector from './LanguageSelector';
-import TranslatedText from './TranslatedText';
 
 const Header = () => {
   const { user, signOut } = useSupabaseAuthContext();
@@ -46,7 +44,7 @@ const Header = () => {
   const handleNavigation = (path: string) => {
     navigate(path);
     setIsMenuOpen(false);
-    // Ensure page scrolls to top after navigation
+    //Ensure page scrolls to top after navigation
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 100);
@@ -74,10 +72,8 @@ const Header = () => {
               handleBrowseFundsClick={handleBrowseFundsClick}
             />
 
-            {/* Language Selector and User Menu */}
+            {/* User Menu */}
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <LanguageSelector />
-              
               <UserMenu 
                 user={user}
                 signOut={signOut}

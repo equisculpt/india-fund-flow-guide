@@ -10,7 +10,6 @@ import NAVHistoryChart from '@/components/NAVHistoryChart';
 import FundHeader from '@/components/fund-details/FundHeader';
 import AIRecommendationCard from '@/components/fund-details/AIRecommendationCard';
 import InvestmentActionCard from '@/components/fund-details/InvestmentActionCard';
-import TranslatedText from '@/components/TranslatedText';
 import { useFundDetails } from '@/hooks/useFundDetails';
 
 interface FundDetailsPageProps {
@@ -68,10 +67,10 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <TranslatedText text="Loading fund details..." />
+            <span>Loading fund details...</span>
             <div className="text-sm text-gray-500 mt-2">Fund ID: {fundId}</div>
             <div className="text-sm text-gray-500 mt-1">
-              <TranslatedText text="Please wait while we fetch the latest information" />
+              Please wait while we fetch the latest information
             </div>
           </div>
         </div>
@@ -86,7 +85,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <div className="text-red-600 mb-4">
-              <TranslatedText text={navError || 'Failed to load fund details'} />
+              {navError || 'Failed to load fund details'}
             </div>
             <div className="text-sm text-gray-500 mb-4">
               Fund ID: {fundId}
@@ -96,7 +95,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             </div>
             <Button onClick={handleBackClick} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              <TranslatedText text="Back to Search" />
+              Back to Search
             </Button>
           </div>
         </div>
@@ -110,11 +109,11 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <TranslatedText text="Unexpected state - no fund data available" className="text-gray-600 mb-4" />
+            <span className="text-gray-600 mb-4">Unexpected state - no fund data available</span>
             <div className="text-sm text-gray-500 mb-4">Fund ID: {fundId}</div>
             <Button onClick={handleBackClick} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              <TranslatedText text="Back to Search" />
+              Back to Search
             </Button>
           </div>
         </div>
@@ -139,7 +138,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           className="mb-4"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          <TranslatedText text="Back to Funds" />
+          Back to Funds
         </Button>
         
         {/* Fund Header with Enhanced Data */}
@@ -160,10 +159,10 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
 
         <Tabs defaultValue="ai-analysis" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="ai-analysis"><TranslatedText text="AI Analysis" /></TabsTrigger>
-            <TabsTrigger value="portfolio"><TranslatedText text="Portfolio" /></TabsTrigger>
-            <TabsTrigger value="performance"><TranslatedText text="Performance" /></TabsTrigger>
-            <TabsTrigger value="analytics"><TranslatedText text="Advanced Analytics" /></TabsTrigger>
+            <TabsTrigger value="ai-analysis">AI Analysis</TabsTrigger>
+            <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+            <TabsTrigger value="performance">Performance</TabsTrigger>
+            <TabsTrigger value="analytics">Advanced Analytics</TabsTrigger>
           </TabsList>
 
           <TabsContent value="ai-analysis">

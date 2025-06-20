@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, Calendar, User, ArrowRight, Edit, BookOpen } from 'lucide-react';
 import { CombinedBlog } from '../types/blogTypes';
-import TranslatedText from '@/components/TranslatedText';
 
 interface BlogCardProps {
   blog: CombinedBlog;
@@ -70,11 +69,11 @@ const BlogCard = ({ blog, onBlogClick }: BlogCardProps) => {
       <CardHeader>
         <div className="flex justify-between items-start mb-2">
           <div className="flex items-center gap-2">
-            <Badge variant="outline"><TranslatedText text={blog.category} /></Badge>
+            <Badge variant="outline">{blog.category}</Badge>
             {blog.type === 'static' && (
               <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
                 <BookOpen className="h-3 w-3 mr-1" />
-                <TranslatedText text="Editorial" />
+                Editorial
               </Badge>
             )}
           </div>
@@ -84,7 +83,7 @@ const BlogCard = ({ blog, onBlogClick }: BlogCardProps) => {
           </span>
         </div>
         <CardTitle className="text-lg line-clamp-2">
-          <TranslatedText text={getDisplayTitle()} />
+          {getDisplayTitle()}
           {blog.type === 'dynamic' && (blog as any).edited_by_admin && (
             <span className="ml-2 inline-flex items-center">
               <Edit className="h-3 w-3 text-blue-500" />
@@ -95,14 +94,14 @@ const BlogCard = ({ blog, onBlogClick }: BlogCardProps) => {
       
       <CardContent>
         <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-          <TranslatedText text={getDisplayExcerpt()} />
+          {getDisplayExcerpt()}
         </p>
         
         {blog.tags && blog.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-4">
             {blog.tags.slice(0, 3).map((tag, index) => (
               <Badge key={index} variant="secondary" className="text-xs">
-                <TranslatedText text={tag} />
+                {tag}
               </Badge>
             ))}
           </div>
@@ -111,10 +110,10 @@ const BlogCard = ({ blog, onBlogClick }: BlogCardProps) => {
         <div className="flex justify-between items-center text-xs text-gray-500">
           <div className="flex items-center gap-2">
             <User className="h-3 w-3" />
-            <span><TranslatedText text={getDisplayAuthor()} /></span>
+            <span>{getDisplayAuthor()}</span>
             {blog.type === 'dynamic' && (blog as any).edited_by_admin && (
               <Badge variant="outline" className="text-xs bg-blue-50">
-                <TranslatedText text="Edited by SIPBrewery" />
+                Edited by SIPBrewery
               </Badge>
             )}
           </div>
@@ -129,7 +128,7 @@ const BlogCard = ({ blog, onBlogClick }: BlogCardProps) => {
           size="sm" 
           className="w-full mt-3 flex items-center gap-2"
         >
-          <TranslatedText text="Read More" /> <ArrowRight className="h-3 w-3" />
+          Read More <ArrowRight className="h-3 w-3" />
         </Button>
       </CardContent>
     </Card>

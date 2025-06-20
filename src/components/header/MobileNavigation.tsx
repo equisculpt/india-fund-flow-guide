@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { User } from '@supabase/supabase-js';
-import TranslatedText from '../TranslatedText';
 
 interface MobileNavigationProps {
   isMenuOpen: boolean;
@@ -30,7 +29,7 @@ const MobileNavigation = ({
           onClick={handleBrowseFundsClick}
           className="w-full justify-start text-gray-700 hover:text-blue-600"
         >
-          <TranslatedText text="Browse Funds" />
+          Browse Funds
         </Button>
         
         <Button 
@@ -38,7 +37,7 @@ const MobileNavigation = ({
           onClick={handleFundComparisonClick}
           className="w-full justify-start text-gray-700 hover:text-blue-600"
         >
-          <TranslatedText text="Compare Funds" />
+          Compare Funds
         </Button>
         
         <Button 
@@ -46,7 +45,7 @@ const MobileNavigation = ({
           onClick={() => handleNavigation('/sip-calculator')}
           className="w-full justify-start text-gray-700 hover:text-blue-600"
         >
-          <TranslatedText text="SIP Calculator" />
+          SIP Calculator
         </Button>
         
         {user && (
@@ -56,7 +55,7 @@ const MobileNavigation = ({
               onClick={() => handleNavigation('/dashboard')}
               className="w-full justify-start text-gray-700 hover:text-blue-600"
             >
-              <TranslatedText text="Dashboard" />
+              Dashboard
             </Button>
             
             <Button 
@@ -64,7 +63,7 @@ const MobileNavigation = ({
               onClick={() => handleNavigation('/ai-portfolio')}
               className="w-full justify-start text-gray-700 hover:text-blue-600"
             >
-              <TranslatedText text="AI Portfolio" />
+              AI Portfolio
             </Button>
           </>
         )}

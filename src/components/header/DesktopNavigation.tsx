@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { User } from '@supabase/supabase-js';
-import TranslatedText from '../TranslatedText';
 
 interface DesktopNavigationProps {
   user: User | null;
@@ -19,7 +18,7 @@ const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsC
         onClick={handleBrowseFundsClick}
         className="text-gray-700 hover:text-blue-600"
       >
-        <TranslatedText text="Browse Funds" />
+        Browse Funds
       </Button>
       
       <Button 
@@ -27,12 +26,12 @@ const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsC
         onClick={handleFundComparisonClick}
         className="text-gray-700 hover:text-blue-600"
       >
-        <TranslatedText text="Compare Funds" />
+        Compare Funds
       </Button>
       
       <Link to="/sip-calculator">
         <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
-          <TranslatedText text="SIP Calculator" />
+          SIP Calculator
         </Button>
       </Link>
       
@@ -40,13 +39,13 @@ const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsC
         <>
           <Link to="/dashboard">
             <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
-              <TranslatedText text="Dashboard" />
+              Dashboard
             </Button>
           </Link>
           
           <Link to="/ai-portfolio">
             <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
-              <TranslatedText text="AI Portfolio" />
+              AI Portfolio
             </Button>
           </Link>
         </>

@@ -2,7 +2,6 @@
 import { Star, Loader2 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import FundMetrics from './FundMetrics';
-import TranslatedText from '@/components/TranslatedText';
 
 interface FundHeaderProps {
   fundData: any;
@@ -57,19 +56,19 @@ const FundHeader = ({
           {/* Enhanced Fund Metrics */}
           <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
-              <TranslatedText text="Expense Ratio:" className="text-gray-600" />
+              <span className="text-gray-600">Expense Ratio:</span>
               <span className="font-semibold ml-1">{fundData.expenseRatio}%</span>
             </div>
             <div>
-              <TranslatedText text="AUM:" className="text-gray-600" />
+              <span className="text-gray-600">AUM:</span>
               <span className="font-semibold ml-1">₹{fundData.aum} Cr</span>
             </div>
             <div>
-              <TranslatedText text="Volatility:" className="text-gray-600" />
+              <span className="text-gray-600">Volatility:</span>
               <span className="font-semibold ml-1">{fundData.volatility}%</span>
             </div>
             <div>
-              <TranslatedText text="Min SIP:" className="text-gray-600" />
+              <span className="text-gray-600">Min SIP:</span>
               <span className="font-semibold ml-1">₹{fundData.minSipAmount}</span>
             </div>
           </div>
@@ -84,24 +83,24 @@ const FundHeader = ({
             {aiLoading ? (
               <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin text-purple-600" />
-                <TranslatedText text="AI analyzing with real performance data..." className="text-sm text-gray-600" />
+                <span className="text-sm text-gray-600">AI analyzing with real performance data...</span>
               </div>
             ) : aiAnalysis ? (
               <>
                 <div className="flex items-center gap-1">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   <span className="font-bold text-lg">{aiAnalysis.aiScore}/10</span>
-                  <TranslatedText text="AI Score" className="text-sm text-gray-600" />
+                  <span className="text-sm text-gray-600">AI Score</span>
                 </div>
                 <Badge className={getAnalysisColor(getComplianceAnalysis(aiAnalysis.recommendation))}>
                   {getComplianceAnalysis(aiAnalysis.recommendation)}
                 </Badge>
                 <Badge variant="outline">
-                  {aiAnalysis.confidence}% <TranslatedText text="Confidence" />
+                  {aiAnalysis.confidence}% Confidence
                 </Badge>
               </>
             ) : (
-              <TranslatedText text="AI analysis unavailable" className="text-sm text-gray-500" />
+              <span className="text-sm text-gray-500">AI analysis unavailable</span>
             )}
           </div>
           
@@ -114,7 +113,7 @@ const FundHeader = ({
           {/* AI Research Disclaimer */}
           {aiAnalysis && (
             <div className="mt-2 p-2 bg-yellow-50 rounded text-xs text-yellow-800">
-              <strong><TranslatedText text="AI Research Disclaimer:" /></strong> <TranslatedText text="AI research analysis is for informational purposes only. We are AMFI registered distributors and may earn commission on investments. Please read all scheme documents carefully." />
+              <strong>AI Research Disclaimer:</strong> AI research analysis is for informational purposes only. We are AMFI registered distributors and may earn commission on investments. Please read all scheme documents carefully.
             </div>
           )}
         </div>
