@@ -83,7 +83,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
       <SEOHead
         title="Best Mutual Fund Platform India 2025 | Start SIP ₹500 | AMFI Registered | SIP Brewery"
         description="India's trusted AMFI registered mutual fund distributor & SIP investment platform. Start SIP online with ₹500, get consistency rewards. Professional advisory, regular mutual funds, best SIP plans 2025."
@@ -195,7 +195,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 };
 
