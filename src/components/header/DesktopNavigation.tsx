@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { User } from '@supabase/supabase-js';
 
-interface Deskt
-
 interface DesktopNavigationProps {
   user: User | null;
   handleFundComparisonClick: () => void;

@@ -23,7 +23,6 @@ import AIPortfolioDashboard from "./pages/AIPortfolioDashboard";
 import HowMutualFundsWorkBlog from "./pages/HowMutualFundsWorkBlog";
 import HowFundManagersMakeMoneyBlog from "./pages/HowFundManagersMakeMoneyBlog";
 import AdminPortalPage from "./pages/AdminPortalPage";
-import MutualFundsStarterGuideBlog from "./pages/MutualFundsStarterGuideBlog";
 import AgentHomePage from "./pages/AgentHomePage";
 import WhatsAppBotPage from "./pages/WhatsAppBotPage";
 import ChatPage from "./pages/ChatPage";
@@ -57,7 +56,6 @@ function App() {
                 <Route path="/blog/how-mutual-funds-work" element={<HowMutualFundsWorkBlog />} />
                 <Route path="/blog/how-fund-managers-make-money" element={<HowFundManagersMakeMoneyBlog />} />
                 <Route path="/admin-portal" element={<AdminPortalPage />} />
-                <Route path="/blog/mutual-funds-starter-guide" element={<MutualFundsStarterGuideBlog />} />
                 <Route path="/agent" element={<AgentHomePage />} />
                 <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                 <Route path="/chat" element={<ChatPage />} />
