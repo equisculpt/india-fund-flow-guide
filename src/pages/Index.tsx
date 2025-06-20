@@ -3,6 +3,7 @@ import React from 'react';
 import HeroSection from '@/components/HeroSection';
 import FundCategories from '@/components/FundCategories';
 import IndexPageSections from '@/components/IndexPageSections';
+import PlatformComparisonTable from '@/components/PlatformComparisonTable';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import { useFundData } from '@/components/FundData';
@@ -134,6 +135,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Platform Comparison Table */}
+      <PlatformComparisonTable />
 
       {/* Explore Mutual Funds - Restored Original with Categories */}
       <FundCategories allFunds={allFunds} />
