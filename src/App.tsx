@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -89,7 +90,7 @@ const App = () => (
                       {/* Blog Routes */}
                       <Route path="/blog/what-are-mutual-funds-complete-guide" element={<WhatAreMutualFundsBlog />} />
                       <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
-                      <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
+                      <Route path="/blog/why-regular-mutual-funds-make-sense" element={<HowFundManagersMakeMoneyBlog />} />
                       <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
 
                       <Route path="*" element={<NotFound />} />
