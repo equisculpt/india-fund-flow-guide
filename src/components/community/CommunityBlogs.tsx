@@ -162,7 +162,11 @@ const CommunityBlogs = () => {
   const allBlogs = [
     ...filteredStaticBlogs.map(blog => ({ ...blog, type: 'static' as const })),
     ...blogs.map(blog => ({ ...blog, type: 'dynamic' as const }))
-  ].sort((a, b) => new Date(b.published_at || b.created_at).getTime() - new Date(a.published_at || a.created_at).getTime());
+  ].sort((a, b) => {
+    const dateA = new Date(a.published_at || (a.type === 'dynamic' ? a.created_at : a.published_at));
+    const dateB = new Date(b.published_at || (b.type === 'dynamic' ? b.created_at : b.published_at));
+    return dateB.getTime() - dateA.getTime();
+  });
 
   if (loading) {
     return (
@@ -271,7 +275,7 @@ const CommunityBlogs = () => {
                   <div className="flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
                     <span>
-                      {new Date(blog.published_at || (blog as any).created_at).toLocaleDateString()}
+                      {new Date(blog.published_at || (blog.type === 'dynamic' ? (blog as any).created_at : blog.published_at)).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
