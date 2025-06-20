@@ -35,7 +35,7 @@ import AdvancedFeaturesPage from "./pages/AdvancedFeaturesPage";
 import MutualFundDistributorPage from "./pages/MutualFundDistributorPage";
 import SBISmallCapFundPage from "./pages/SBISmallCapFundPage";
 import WhatsAppBotPage from "./pages/WhatsAppBotPage";
-import UniversalFundSEOPage from "./pages/UniversalFundSEOPage";
+import UniversalFundSEOPage from "@/components/UniversalFundSEOPage";
 
 // Blog pages
 import WhatAreMutualFundsBlog from "./pages/WhatAreMutualFundsBlog";
