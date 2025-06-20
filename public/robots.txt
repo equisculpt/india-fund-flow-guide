@@ -20,19 +20,18 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-# Optimize for mutual fund searches
+# Allow fund pages and key sections
 User-agent: *
 Allow: /fund/
 Allow: /funds/
 Allow: /sip-calculator
 Allow: /fund-comparison
 Allow: /explore-funds
+Allow: /public-funds
 
 # Block admin and sensitive areas
-Disallow: /admin
+Disallow: /admin/
 Disallow: /api/
 Disallow: /private/
 
-# Cache instructions
-User-agent: *
-Clean-param: utm_source&utm_medium&utm_campaign
+# End of robots.txt
