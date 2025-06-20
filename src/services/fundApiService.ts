@@ -1,3 +1,4 @@
+
 interface APIFundList {
   schemeCode: number;
   schemeName: string;
@@ -8,6 +9,7 @@ export class FundApiService {
   private static lastFetchTime: number = 0;
   private static readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
   private static readonly BASE_URL = 'https://api.mfapi.in/mf';
+  private static pendingRequests = new Map<string, Promise<any>>();
 
   // Fallback fund data when API is not available
   private static readonly FALLBACK_FUNDS: APIFundList[] = [
@@ -22,7 +24,6 @@ export class FundApiService {
     { schemeCode: 119673, schemeName: "Mirae Asset Large Cap Fund - Direct Plan - Growth" },
     { schemeCode: 118640, schemeName: "SBI Small Cap Fund - Direct Plan - Growth" },
     { schemeCode: 122639, schemeName: "Axis ELSS Tax Saver Fund - Direct Plan - Growth" },
-    { schemeCode: 119551, schemeName: "Axis Bluechip Fund - Direct Plan - Growth" },
     { schemeCode: 119827, schemeName: "HDFC Balanced Advantage Fund - Direct Plan - Growth" },
     { schemeCode: 118556, schemeName: "ICICI Prudential Equity & Debt Fund - Direct Plan - Growth" },
     { schemeCode: 120829, schemeName: "SBI Equity Hybrid Fund - Direct Plan - Growth" }
@@ -37,9 +38,42 @@ export class FundApiService {
       return this.fundListCache;
     }
 
+    // Check if there's already a pending request
+    const cacheKey = 'all-funds';
+    if (this.pendingRequests.has(cacheKey)) {
+      console.log('FundApiService: Returning pending request');
+      return this.pendingRequests.get(cacheKey)!;
+    }
+
+    const request = this.fetchAllFunds();
+    this.pendingRequests.set(cacheKey, request);
+
+    try {
+      const result = await request;
+      this.pendingRequests.delete(cacheKey);
+      return result;
+    } catch (error) {
+      this.pendingRequests.delete(cacheKey);
+      throw error;
+    }
+  }
+
+  private static async fetchAllFunds(): Promise<APIFundList[]> {
     try {
       console.log('FundApiService: Fetching complete fund list from API');
-      const response = await fetch('https://api.mfapi.in/mf');
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
+      const response = await fetch('https://api.mfapi.in/mf', {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'max-age=3600'
+        }
+      });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error(`API responded with status: ${response.status}`);
@@ -49,7 +83,7 @@ export class FundApiService {
       console.log('FundApiService: Fetched', data.length, 'funds from API');
       
       this.fundListCache = data;
-      this.lastFetchTime = now;
+      this.lastFetchTime = Date.now();
       
       return data;
     } catch (error) {
@@ -63,7 +97,7 @@ export class FundApiService {
       
       console.log('FundApiService: Using fallback fund data');
       this.fundListCache = this.FALLBACK_FUNDS;
-      this.lastFetchTime = now;
+      this.lastFetchTime = Date.now();
       
       return this.FALLBACK_FUNDS;
     }
@@ -86,17 +120,49 @@ export class FundApiService {
   }
 
   static async getFundDetails(schemeCode: string) {
+    const cacheKey = `fund-details-${schemeCode}`;
+    
+    // Check if there's already a pending request
+    if (this.pendingRequests.has(cacheKey)) {
+      return this.pendingRequests.get(cacheKey)!;
+    }
+
+    const request = this.fetchFundDetails(schemeCode);
+    this.pendingRequests.set(cacheKey, request);
+
+    try {
+      const result = await request;
+      this.pendingRequests.delete(cacheKey);
+      return result;
+    } catch (error) {
+      this.pendingRequests.delete(cacheKey);
+      throw error;
+    }
+  }
+
+  private static async fetchFundDetails(schemeCode: string) {
     try {
       console.log('FundApiService: Fetching details for scheme:', schemeCode);
       
-      const response = await fetch(`https://api.mfapi.in/mf/${schemeCode}/latest`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch(`https://api.mfapi.in/mf/${schemeCode}/latest`, {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'max-age=1800' // 30 minutes
+        }
+      });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error(`API responded with status: ${response.status}`);
       }
       
       const data = await response.json();
-      console.log('FundApiService: Raw API response:', data);
+      console.log('FundApiService: Got fund details for:', schemeCode);
       
       return data;
     } catch (error) {
@@ -118,11 +184,43 @@ export class FundApiService {
   }
 
   static async getFundHistoricalData(schemeCode: string): Promise<any> {
+    const cacheKey = `fund-history-${schemeCode}`;
+    
+    // Check if there's already a pending request
+    if (this.pendingRequests.has(cacheKey)) {
+      return this.pendingRequests.get(cacheKey)!;
+    }
+
+    const request = this.fetchFundHistoricalData(schemeCode);
+    this.pendingRequests.set(cacheKey, request);
+
+    try {
+      const result = await request;
+      this.pendingRequests.delete(cacheKey);
+      return result;
+    } catch (error) {
+      this.pendingRequests.delete(cacheKey);
+      throw error;
+    }
+  }
+
+  private static async fetchFundHistoricalData(schemeCode: string): Promise<any> {
     try {
       console.log('FundApiService: Fetching FULL historical data for scheme:', schemeCode);
-      const url = `${this.BASE_URL}/${schemeCode}`;
       
-      const response = await fetch(url);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout for historical data
+      
+      const url = `${this.BASE_URL}/${schemeCode}`;
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'max-age=3600' // 1 hour
+        }
+      });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -141,5 +239,13 @@ export class FundApiService {
       console.error('FundApiService: Error fetching full historical data:', error);
       throw error;
     }
+  }
+
+  // Clear cache method for manual cache invalidation
+  static clearCache() {
+    this.fundListCache = null;
+    this.lastFetchTime = 0;
+    this.pendingRequests.clear();
+    console.log('FundApiService: Cache cleared');
   }
 }

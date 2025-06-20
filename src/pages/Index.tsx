@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import HeroSection from '@/components/HeroSection';
 import FundCategories from '@/components/FundCategories';
 import IndexPageSections from '@/components/IndexPageSections';
@@ -90,10 +89,25 @@ const Index = () => {
         structuredData={structuredData}
       />
       
-      {/* Hero Section */}
-      <HeroSection />
+      {/* Hero Section - Priority Load */}
+      <Suspense fallback={
+        <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20">
+          <div className="container mx-auto px-4 text-center">
+            <div className="animate-pulse">
+              <div className="h-16 bg-gray-200 rounded mb-6 mx-auto max-w-4xl"></div>
+              <div className="h-32 bg-gray-200 rounded mb-8 mx-auto max-w-6xl"></div>
+              <div className="flex justify-center gap-4">
+                <div className="h-12 w-48 bg-gray-200 rounded"></div>
+                <div className="h-12 w-48 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }>
+        <HeroSection />
+      </Suspense>
 
-      {/* SEO Content Section for Keywords */}
+      {/* SEO Content Section - Static for fast load */}
       <section className="py-12 bg-gradient-to-r from-blue-50 to-indigo-50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto text-center">
@@ -136,16 +150,20 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Platform Comparison Table */}
-      <PlatformComparisonTable />
+      {/* Lazy load remaining sections */}
+      <Suspense fallback={<div className="h-96 bg-white flex items-center justify-center"><div className="animate-pulse text-gray-400">Loading comparison...</div></div>}>
+        <PlatformComparisonTable />
+      </Suspense>
 
-      {/* Explore Mutual Funds - Restored Original with Categories */}
-      <FundCategories allFunds={allFunds} />
+      <Suspense fallback={<div className="h-96 bg-gray-50 flex items-center justify-center"><div className="animate-pulse text-gray-400">Loading fund categories...</div></div>}>
+        <FundCategories allFunds={allFunds} />
+      </Suspense>
 
-      {/* All Other Page Sections */}
-      <IndexPageSections onRiskProfilingComplete={handleRiskProfilingComplete} />
+      <Suspense fallback={<div className="h-96 bg-white flex items-center justify-center"><div className="animate-pulse text-gray-400">Loading tools...</div></div>}>
+        <IndexPageSections onRiskProfilingComplete={handleRiskProfilingComplete} />
+      </Suspense>
       
-      {/* Additional SEO Content */}
+      {/* FAQ Section - Static for SEO */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">

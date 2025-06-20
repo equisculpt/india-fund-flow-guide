@@ -1,11 +1,15 @@
 
-import { Button } from "@/components/ui/button";
-import { TrendingUp, Shield, Award, Sparkles, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import React, { useState, lazy, Suspense } from 'react';
+import { Shield } from "lucide-react";
 import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 import { useNavigate } from "react-router-dom";
 import { useInvestorStats } from "@/hooks/useInvestorData";
-import BlogSlider from "./BlogSlider";
+import HeroContent from "./hero/HeroContent";
+import HeroFeatures from "./hero/HeroFeatures";
+import HeroStats from "./hero/HeroStats";
+
+// Lazy load heavy components
+const BlogSlider = lazy(() => import("./BlogSlider"));
 
 const HeroSection = () => {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
@@ -32,14 +36,14 @@ const HeroSection = () => {
   };
 
   const handleCalculateReturns = () => {
-    const element = document.getElementById('calculator');
+    const element = document.getElementById('sip-calculator');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // Format stats with real data or show meaningful defaults
-  const formatStats = () => {
+  // Optimized stats formatting with memoization
+  const stats = React.useMemo(() => {
     if (investorStats) {
       const formatAmount = (amount: number) => {
         if (amount >= 10000000) {
@@ -62,13 +66,11 @@ const HeroSection = () => {
       amount: "₹1Cr+ AUM",
       rating: "4.8★ Rated"
     };
-  };
-
-  const stats = formatStats();
+  }, [investorStats]);
 
   return (
     <section className="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 overflow-hidden">
-      {/* Background Decorations */}
+      {/* Simplified Background Decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-10 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse"></div>
         <div className="absolute top-32 right-20 w-16 h-16 bg-purple-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
@@ -77,108 +79,39 @@ const HeroSection = () => {
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="mb-6">
-            <span className="inline-flex items-center bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-6 py-3 rounded-full text-sm font-semibold mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <Sparkles className="h-4 w-4 mr-2" />
-              🎉 AMFI Registered: Earn consistency rewards + gift cards for regular SIPs + referral rewards!
-            </span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            Start Your{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 animate-pulse">
-              Mutual Fund
-            </span>{" "}
-            Journey Today
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
-            Invest in top-performing regular mutual funds with professional AMFI registered advisory. 
-            Earn consistency rewards and gift cards for maintaining <span className="font-bold text-green-600">12 uninterrupted SIPs</span> 
-            AND portfolio transfer incentives up to <span className="font-bold text-blue-600">₹50,000</span>!
-            <br />
-            <span className="text-lg text-purple-600 font-semibold">
-              PLUS: Refer friends and earn rewards per successful referral! (T&C Apply)
-            </span>
-          </p>
-          
-          <div className="flex flex-col sm:flex-row justify-center gap-6 mb-12">
-            <Button 
-              size="lg" 
-              onClick={handleStartInvesting}
-              className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-6 text-lg font-semibold shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 hover:-translate-y-1"
-            >
-              Start Investing with ₹500
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              onClick={handleCalculateReturns}
-              className="group border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-10 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:-translate-y-1"
-            >
-              Calculate Returns
-              <TrendingUp className="ml-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-            </Button>
-          </div>
+        <HeroContent 
+          onStartInvesting={handleStartInvesting}
+          onCalculateReturns={handleCalculateReturns}
+        />
 
-          {/* Blog Slider Section - Replaced Demo Video */}
-          <div className="mb-12">
+        {/* Blog Slider with Loading Fallback */}
+        <div className="mb-12">
+          <Suspense fallback={
+            <div className="bg-white bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 shadow-lg max-w-4xl mx-auto h-48 flex items-center justify-center">
+              <div className="text-gray-500">Loading blog highlights...</div>
+            </div>
+          }>
             <BlogSlider />
-          </div>
+          </Suspense>
+        </div>
 
-          {/* Key Features - Enhanced */}
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-8">
-            <div className="group text-center bg-white bg-opacity-60 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-2">
-              <div className="bg-gradient-to-br from-green-400 to-green-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
-                <TrendingUp className="h-10 w-10 text-white" />
-              </div>
-              <h3 className="font-bold text-xl text-gray-900 mb-2">Higher Returns</h3>
-              <p className="text-gray-600 font-medium">Professional fund management with proven track record</p>
-            </div>
-            
-            <div className="group text-center bg-white bg-opacity-60 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-2">
-              <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
-                <Shield className="h-10 w-10 text-white" />
-              </div>
-              <h3 className="font-bold text-xl text-gray-900 mb-2">AMFI Registered</h3>
-              <p className="text-gray-600 font-medium">100% safe & transparent investing platform</p>
-            </div>
-            
-            <div className="group text-center bg-white bg-opacity-60 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-2">
-              <div className="bg-gradient-to-br from-purple-400 to-purple-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
-                <Award className="h-10 w-10 text-white" />
-              </div>
-              <h3 className="font-bold text-xl text-gray-900 mb-2">Consistency Rewards</h3>
-              <p className="text-gray-600 font-medium">SIP consistency rewards + Transfer incentives + Referral earnings</p>
-            </div>
-          </div>
+        <HeroFeatures />
+        <HeroStats stats={stats} />
 
-          {/* Trust Indicators - Updated with real stats */}
-          <div className="flex flex-wrap justify-center items-center gap-8 mb-8 opacity-70">
-            <div className="text-sm font-medium text-gray-600">{stats.investors} investors</div>
-            <div className="w-px h-6 bg-gray-300"></div>
-            <div className="text-sm font-medium text-gray-600">{stats.amount} invested</div>
-            <div className="w-px h-6 bg-gray-300"></div>
-            <div className="text-sm font-medium text-gray-600">{stats.rating} User Rating</div>
-          </div>
-
-          {/* Enhanced Compliance Notice */}
-          <div id="why-choose-sipbrewery" className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 border-2 border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="flex items-start space-x-3">
-              <Shield className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
-              <div className="text-left">
-                <h4 className="font-semibold text-gray-900 mb-2">Regulatory Compliance & Risk Disclosure</h4>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  <strong>Risk Disclosure:</strong> Mutual funds are subject to market risks. 
-                  Please read all scheme related documents carefully before investing. 
-                  Past performance is not indicative of future returns. All investments are regulated by SEBI and compliant with AMFI guidelines.
-                  <br /><br />
-                  <strong>Registration Details:</strong> AMFI Registered Mutual Fund Distributor | 
-                  All consistency rewards, gift cards and referral incentives are promotional benefits subject to terms and conditions as per SEBI guidelines and do not guarantee investment returns.
-                </p>
-              </div>
+        {/* Compliance Notice */}
+        <div id="why-choose-sipbrewery" className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 border-2 border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="flex items-start space-x-3">
+            <Shield className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
+            <div className="text-left">
+              <h4 className="font-semibold text-gray-900 mb-2">Regulatory Compliance & Risk Disclosure</h4>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                <strong>Risk Disclosure:</strong> Mutual funds are subject to market risks. 
+                Please read all scheme related documents carefully before investing. 
+                Past performance is not indicative of future returns. All investments are regulated by SEBI and compliant with AMFI guidelines.
+                <br /><br />
+                <strong>Registration Details:</strong> AMFI Registered Mutual Fund Distributor | 
+                All consistency rewards, gift cards and referral incentives are promotional benefits subject to terms and conditions as per SEBI guidelines and do not guarantee investment returns.
+              </p>
             </div>
           </div>
         </div>
@@ -193,18 +126,18 @@ const HeroSection = () => {
               <p className="text-gray-600">Please select your account type to continue</p>
             </div>
             <div className="space-y-4">
-              <Button 
+              <button 
                 onClick={() => handleUserTypeSelection('client')}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg rounded-lg transition-colors"
               >
                 I'm an Investor (Client)
-              </Button>
-              <Button 
+              </button>
+              <button 
                 onClick={() => handleUserTypeSelection('agent')}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg"
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg rounded-lg transition-colors"
               >
                 I'm a Financial Advisor (Agent)
-              </Button>
+              </button>
             </div>
             <button 
               onClick={() => setShowUserTypeModal(false)}

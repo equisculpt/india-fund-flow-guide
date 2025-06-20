@@ -123,18 +123,15 @@
       min-width: 44px;
     }
     
-    /* Reduce font sizes on mobile for better fitting */
     .container {
       padding-left: 1rem;
       padding-right: 1rem;
     }
     
-    /* Optimize chart rendering */
     .recharts-wrapper {
       font-size: 12px;
     }
     
-    /* Reduce spacing on mobile */
     .space-y-6 > * + * {
       margin-top: 1rem;
     }
@@ -170,20 +167,20 @@
     will-change: transform;
   }
 
-  /* Reduce layout shifts */
-  .aspect-ratio-container {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  /* Content visibility for better performance */
+  .content-visibility-auto {
+    content-visibility: auto;
   }
 
-  .aspect-ratio-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  /* Optimize images */
+  img {
+    loading: lazy;
+    decoding: async;
+  }
+
+  /* Optimize fonts */
+  @font-face {
+    font-display: swap;
   }
 }
 
@@ -205,5 +202,16 @@
   
   .contain-size {
     contain: size;
+  }
+
+  /* Optimize for performance */
+  .optimize-performance {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .low-performance * {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
   }
 }
