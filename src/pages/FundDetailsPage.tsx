@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -20,6 +19,8 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   const navigate = useNavigate();
   const { fundId } = useParams();
   
+  console.log('FundDetailsPage: Rendering with fundId:', fundId);
+  
   const {
     fundData,
     latestNAV,
@@ -30,6 +31,13 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     aiError,
     isLoading
   } = useFundDetails(fundId);
+
+  console.log('FundDetailsPage: Hook state:', { 
+    fundData: !!fundData, 
+    isLoading, 
+    navError,
+    fundName: fundData?.schemeName 
+  });
 
   const handleBackClick = () => {
     console.log('Back button clicked, navigating to funds section');
@@ -46,7 +54,8 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     }, 100);
   };
 
-  if (isLoading) {
+  // Show loading only when actually loading and no fund data is available
+  if (isLoading && !fundData) {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8">
@@ -60,12 +69,35 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     );
   }
 
+  // Show error only if loading is complete and no fund data is available
+  if (!isLoading && !fundData) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-red-600 mb-4">
+              {navError || 'Failed to load fund details'}
+            </div>
+            <div className="text-sm text-gray-500 mb-4">
+              Fund ID: {fundId}
+            </div>
+            <Button onClick={handleBackClick} variant="outline">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Search
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If we have fund data, show the page even if some background loading is still happening
   if (!fundData) {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <div className="text-red-600 mb-4">Failed to load fund details</div>
+            <div className="text-gray-600 mb-4">Unexpected state - no fund data available</div>
             <Button onClick={handleBackClick} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Search
@@ -82,7 +114,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     ...(aiAnalysis || {})
   };
 
-  console.log('FundDetailsPage: Combined data for components:', combinedFundDataForComponents);
+  console.log('FundDetailsPage: Rendering fund details for:', fundData.schemeName);
 
   return (
     <div className="min-h-screen bg-gray-50">

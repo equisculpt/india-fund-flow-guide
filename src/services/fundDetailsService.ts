@@ -12,19 +12,8 @@ export class FundDetailsService {
     try {
       console.log('FundDetailsService: Fetching basic details for fundId:', fundId);
       
-      // Try to get basic fund details with timeout
-      const basicDetailsPromise = MutualFundSearchService.getFundDetails(fundId);
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Basic details timeout')), 5000);
-      });
-
-      let basicDetails;
-      try {
-        basicDetails = await Promise.race([basicDetailsPromise, timeoutPromise]);
-      } catch (error) {
-        console.warn('FundDetailsService: Basic details failed:', error);
-        basicDetails = null;
-      }
+      // Get basic fund details with longer timeout for better reliability
+      const basicDetails = await MutualFundSearchService.getFundDetails(fundId);
 
       if (basicDetails) {
         console.log('FundDetailsService: Basic details loaded:', basicDetails.schemeName);
@@ -55,7 +44,7 @@ export class FundDetailsService {
           navError: '⚠️ Using basic fund data with estimated performance'
         };
       } else {
-        console.log('FundDetailsService: Creating fallback fund data');
+        console.log('FundDetailsService: Creating fallback fund data for:', fundId);
         
         const fallbackFundData: FundData = {
           schemeCode: fundId,
@@ -86,6 +75,7 @@ export class FundDetailsService {
     } catch (error) {
       console.error('FundDetailsService: Error loading basic fund data:', error);
       
+      // Always return fallback data instead of throwing
       const finalFallback: FundData = {
         schemeCode: fundId,
         schemeName: `Fund ${fundId}`,
@@ -109,16 +99,22 @@ export class FundDetailsService {
       return {
         fundData: finalFallback,
         latestNAV: null,
-        navError: 'Failed to load fund data'
+        navError: 'Using fallback data due to loading error'
       };
     }
   }
 
   static async loadEnhancedFundDetails(fundId: string, baseFundData: FundData): Promise<FundData> {
     try {
-      console.log('FundDetailsService: Trying to get enhanced details');
+      console.log('FundDetailsService: Trying to get enhanced details for:', fundId);
       
-      const enhancedDetails = await MutualFundSearchService.getEnhancedFundDetails(fundId);
+      // Add timeout promise to prevent hanging
+      const enhancedPromise = MutualFundSearchService.getEnhancedFundDetails(fundId);
+      const timeoutPromise = new Promise<null>((_, reject) => {
+        setTimeout(() => reject(new Error('Enhanced details timeout')), 10000);
+      });
+
+      const enhancedDetails = await Promise.race([enhancedPromise, timeoutPromise]);
       
       if (enhancedDetails && (enhancedDetails.returns1Y !== 0 || enhancedDetails.returns3Y !== 0)) {
         console.log('FundDetailsService: Enhanced details loaded, updating fund data');
@@ -146,6 +142,7 @@ export class FundDetailsService {
 
   static async loadHistoricalData(fundId: string): Promise<any[]> {
     try {
+      console.log('FundDetailsService: Loading historical data for:', fundId);
       const historical = await FundDataService.fetchHistoricalNAV(fundId, 365);
       console.log('FundDetailsService: Historical data loaded:', historical.length, 'records');
       return historical;

@@ -29,27 +29,36 @@ export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn
 
     try {
       setIsLoading(true);
+      console.log('useFundDetails: Loading basic fund details...');
       
-      // Load basic fund details
+      // Load basic fund details - this should always return something
       const { fundData: basicFundData, latestNAV: nav, navError: error } = 
         await FundDetailsService.loadBasicFundDetails(fundId);
+      
+      console.log('useFundDetails: Basic fund data loaded:', basicFundData);
       
       if (basicFundData) {
         setFundData(basicFundData);
         setLatestNAV(nav);
         setNavError(error);
+        setIsLoading(false); // Set loading to false immediately after basic data is loaded
         
-        // Load enhanced details and AI analysis in background
+        // Load enhanced details and AI analysis in background (non-blocking)
         loadEnhancedDataInBackground(basicFundData);
         
         // Load historical data (non-blocking)
-        FundDetailsService.loadHistoricalData(fundId).then(setHistoricalData);
+        FundDetailsService.loadHistoricalData(fundId)
+          .then(setHistoricalData)
+          .catch(err => console.error('Historical data failed:', err));
+      } else {
+        console.error('useFundDetails: No basic fund data available');
+        setIsLoading(false);
+        setNavError('Failed to load fund data');
       }
     } catch (error) {
       console.error('useFundDetails: Error in loadFundData:', error);
-      setNavError('Failed to load fund data');
-    } finally {
       setIsLoading(false);
+      setNavError('Failed to load fund data');
     }
   };
 
@@ -57,10 +66,13 @@ export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn
     if (!fundId) return;
 
     try {
+      console.log('useFundDetails: Loading enhanced details in background...');
+      
       // Try to get enhanced fund details
       const enhancedFundData = await FundDetailsService.loadEnhancedFundDetails(fundId, basicFundData);
       
       if (enhancedFundData !== basicFundData) {
+        console.log('useFundDetails: Enhanced data loaded, updating state');
         setFundData(enhancedFundData);
         setNavError('✓ Performance calculated from actual NAV history data');
       }
@@ -76,13 +88,22 @@ export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn
   };
 
   const performAIAnalysis = async (fundDataForAnalysis: FundData) => {
-    setAiLoading(true);
-    
-    const { analysis, loading, error } = await AIAnalysisService.performFundAnalysis(fundDataForAnalysis);
-    
-    setAiAnalysis(analysis);
-    setAiLoading(loading);
-    setAiError(error);
+    try {
+      setAiLoading(true);
+      console.log('useFundDetails: Starting AI analysis...');
+      
+      const { analysis, loading, error } = await AIAnalysisService.performFundAnalysis(fundDataForAnalysis);
+      
+      setAiAnalysis(analysis);
+      setAiLoading(loading);
+      setAiError(error);
+      
+      console.log('useFundDetails: AI analysis completed');
+    } catch (error) {
+      console.error('useFundDetails: AI analysis error:', error);
+      setAiLoading(false);
+      setAiError('AI analysis failed');
+    }
   };
 
   return {
