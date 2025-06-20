@@ -74,15 +74,8 @@ const EnhancedFundSearch = ({
     handleInputFocus();
   };
 
-  // Clear search when clicking outside
-  const handleOutsideClick = () => {
-    setTimeout(() => {
-      clearSearch();
-    }, 200); // Small delay to allow selection to complete
-  };
-
   return (
-    <div className={`relative w-full ${className}`} onBlur={handleOutsideClick}>
+    <div className={`relative w-full ${className}`}>
       <SearchInput
         value={searchQuery}
         onChange={handleInputChange}

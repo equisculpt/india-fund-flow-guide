@@ -65,7 +65,7 @@ export const useFundSearch = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, []); // Remove all dependencies to prevent circular dependency
 
   useEffect(() => {
     // Clear previous timeout
@@ -83,7 +83,7 @@ export const useFundSearch = () => {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [searchQuery, searchFunds]);
+  }, [searchQuery]); // Only depend on searchQuery, not searchFunds
 
   const handleInputChange = (value: string) => {
     setSearchQuery(value);
