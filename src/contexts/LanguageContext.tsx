@@ -14,8 +14,8 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'bn', name: 'Bengali', nativeName: 'বাংলা' },
   { code: 'te', name: 'Telugu', nativeName: 'తెలుగు' },
   { code: 'mr', name: 'Marathi', nativeName: 'मराठी' },
-  { code: 'ta', name: 'Tamil', nativeName: 'தমিழ்' },
-  { code: 'gu', name: 'Gujarati', nativeName: 'ગुજરাતી' },
+  { code: 'ta', name: 'Tamil', nativeName: 'தমிழ்' },
+  { code: 'gu', name: 'Gujarati', nativeName: 'ગुજરાતી' },
   { code: 'ur', name: 'Urdu', nativeName: 'اردو' },
   { code: 'kn', name: 'Kannada', nativeName: 'ಕನ್ನಡ' },
   { code: 'ml', name: 'Malayalam', nativeName: 'മലയാളം' },
@@ -78,7 +78,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const translate = async (key: string, fallback?: string): Promise<string> {
+  const translate = async (key: string, fallback?: string): Promise<string> => {
     if (currentLanguage.code === 'en') {
       return fallback || key;
     }
