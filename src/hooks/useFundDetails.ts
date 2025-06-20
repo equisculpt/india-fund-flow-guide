@@ -15,8 +15,12 @@ export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!fundId) {
+    console.log('useFundDetails: Effect triggered with fundId:', fundId);
+    
+    if (!fundId || fundId === 'undefined') {
+      console.log('useFundDetails: Invalid fundId, stopping loading');
       setIsLoading(false);
+      setNavError('Invalid fund ID');
       return;
     }
 
@@ -25,11 +29,15 @@ export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn
   }, [fundId]);
 
   const loadFundData = async () => {
-    if (!fundId) return;
+    if (!fundId || fundId === 'undefined') {
+      console.log('useFundDetails: Invalid fundId in loadFundData');
+      return;
+    }
 
     try {
       setIsLoading(true);
-      console.log('useFundDetails: Loading basic fund details...');
+      setNavError('');
+      console.log('useFundDetails: Loading basic fund details for:', fundId);
       
       // Load basic fund details - this should always return something
       const { fundData: basicFundData, latestNAV: nav, navError: error } = 
@@ -63,7 +71,7 @@ export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn
   };
 
   const loadEnhancedDataInBackground = async (basicFundData: FundData) => {
-    if (!fundId) return;
+    if (!fundId || fundId === 'undefined') return;
 
     try {
       console.log('useFundDetails: Loading enhanced details in background...');

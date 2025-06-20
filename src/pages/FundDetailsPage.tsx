@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -17,9 +18,12 @@ interface FundDetailsPageProps {
 
 const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   const navigate = useNavigate();
-  const { fundId } = useParams();
+  const params = useParams();
+  const fundId = params.fundId || params.id; // Try both possible parameter names
   
-  console.log('FundDetailsPage: Rendering with fundId:', fundId);
+  console.log('FundDetailsPage: URL params:', params);
+  console.log('FundDetailsPage: Extracted fundId:', fundId);
+  console.log('FundDetailsPage: Current URL:', window.location.pathname);
   
   const {
     fundData,
@@ -62,7 +66,8 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
             <div>Loading fund details...</div>
-            <div className="text-sm text-gray-500 mt-2">Please wait while we fetch the latest information</div>
+            <div className="text-sm text-gray-500 mt-2">Fund ID: {fundId}</div>
+            <div className="text-sm text-gray-500 mt-1">Please wait while we fetch the latest information</div>
           </div>
         </div>
       </div>
@@ -81,6 +86,9 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             <div className="text-sm text-gray-500 mb-4">
               Fund ID: {fundId}
             </div>
+            <div className="text-sm text-gray-500 mb-4">
+              URL: {window.location.pathname}
+            </div>
             <Button onClick={handleBackClick} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Search
@@ -98,6 +106,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <div className="text-gray-600 mb-4">Unexpected state - no fund data available</div>
+            <div className="text-sm text-gray-500 mb-4">Fund ID: {fundId}</div>
             <Button onClick={handleBackClick} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Search
