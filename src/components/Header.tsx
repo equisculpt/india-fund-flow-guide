@@ -10,6 +10,7 @@ import MobileNavigation from './header/MobileNavigation';
 import UserMenu from './header/UserMenu';
 import EnhancedFundSearch from './EnhancedFundSearch';
 import LanguageSelector from './LanguageSelector';
+import TranslatedText from './TranslatedText';
 
 const Header = () => {
   const { user, signOut } = useSupabaseAuthContext();

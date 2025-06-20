@@ -1,4 +1,6 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { TranslationService } from '@/services/translationService';
 
 export interface Language {
   code: string;
@@ -12,7 +14,7 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'bn', name: 'Bengali', nativeName: 'বাংলা' },
   { code: 'te', name: 'Telugu', nativeName: 'తెలుగు' },
   { code: 'mr', name: 'Marathi', nativeName: 'मराठी' },
-  { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்' },
+  { code: 'ta', name: 'Tamil', nativeName: 'தமিழ்' },
   { code: 'gu', name: 'Gujarati', nativeName: 'ગુજરાતી' },
   { code: 'ur', name: 'Urdu', nativeName: 'اردو' },
   { code: 'kn', name: 'Kannada', nativeName: 'ಕನ್ನಡ' },
@@ -34,7 +36,8 @@ export const SUPPORTED_LANGUAGES: Language[] = [
 interface LanguageContextType {
   currentLanguage: Language;
   setLanguage: (language: Language) => void;
-  translate: (key: string, fallback?: string) => string;
+  translate: (key: string, fallback?: string) => Promise<string>;
+  translateSync: (key: string, fallback?: string) => string;
   isLoading: boolean;
 }
 
@@ -42,7 +45,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(SUPPORTED_LANGUAGES[0]);
-  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [translationCache, setTranslationCache] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
   // Load saved language preference
@@ -62,12 +65,12 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setCurrentLanguage(language);
       localStorage.setItem('preferred-language', language.code);
       
-      // Load translations for the selected language
-      if (language.code !== 'en') {
-        await loadTranslations(language.code);
-      } else {
-        setTranslations({});
+      // Clear cache when language changes
+      if (language.code === 'en') {
+        setTranslationCache({});
       }
+      
+      console.log('Language changed to:', language.nativeName);
     } catch (error) {
       console.error('Error setting language:', error);
     } finally {
@@ -75,21 +78,58 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const loadTranslations = async (languageCode: string) => {
-    try {
-      // In a real implementation, this would fetch from a translation service
-      // For now, we'll use a placeholder
-      setTranslations({});
-    } catch (error) {
-      console.error('Error loading translations:', error);
-    }
-  };
-
-  const translate = (key: string, fallback?: string) => {
+  const translate = async (key: string, fallback?: string): Promise<string> => {
     if (currentLanguage.code === 'en') {
       return fallback || key;
     }
-    return translations[key] || fallback || key;
+
+    // Check cache first
+    const cacheKey = `${currentLanguage.code}:${key}`;
+    if (translationCache[cacheKey]) {
+      return translationCache[cacheKey];
+    }
+
+    try {
+      const translated = await TranslationService.translateContent(fallback || key, currentLanguage.code);
+      
+      // Cache the result
+      setTranslationCache(prev => ({
+        ...prev,
+        [cacheKey]: translated
+      }));
+      
+      return translated;
+    } catch (error) {
+      console.error('Translation error:', error);
+      return fallback || key;
+    }
+  };
+
+  const translateSync = (key: string, fallback?: string): string => {
+    if (currentLanguage.code === 'en') {
+      return fallback || key;
+    }
+
+    // Check cache for immediate return
+    const cacheKey = `${currentLanguage.code}:${key}`;
+    if (translationCache[cacheKey]) {
+      return translationCache[cacheKey];
+    }
+
+    // Return original while translation loads in background
+    if (fallback || key) {
+      translate(key, fallback).then(translated => {
+        if (translated !== (fallback || key)) {
+          // Force re-render by updating cache
+          setTranslationCache(prev => ({
+            ...prev,
+            [cacheKey]: translated
+          }));
+        }
+      });
+    }
+
+    return fallback || key;
   };
 
   return (
@@ -97,6 +137,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       currentLanguage,
       setLanguage,
       translate,
+      translateSync,
       isLoading
     }}>
       {children}
