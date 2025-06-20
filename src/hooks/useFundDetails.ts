@@ -17,7 +17,7 @@ export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn
   useEffect(() => {
     console.log('useFundDetails: Effect triggered with fundId:', fundId);
     
-    if (!fundId || fundId === 'undefined') {
+    if (!fundId || fundId === 'undefined' || typeof fundId !== 'string') {
       console.log('useFundDetails: Invalid fundId, stopping loading');
       setIsLoading(false);
       setNavError('Invalid fund ID');
@@ -29,7 +29,7 @@ export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn
   }, [fundId]);
 
   const loadFundData = async () => {
-    if (!fundId || fundId === 'undefined') {
+    if (!fundId || fundId === 'undefined' || typeof fundId !== 'string') {
       console.log('useFundDetails: Invalid fundId in loadFundData');
       return;
     }
@@ -71,7 +71,7 @@ export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn
   };
 
   const loadEnhancedDataInBackground = async (basicFundData: FundData) => {
-    if (!fundId || fundId === 'undefined') return;
+    if (!fundId || fundId === 'undefined' || typeof fundId !== 'string') return;
 
     try {
       console.log('useFundDetails: Loading enhanced details in background...');

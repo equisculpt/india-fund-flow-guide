@@ -19,7 +19,9 @@ interface FundDetailsPageProps {
 const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const fundId = params.fundId || params.id; // Try both possible parameter names
+  
+  // Extract fundId from various possible parameter names
+  const fundId = params.fundId || params.id || params.fundName;
   
   console.log('FundDetailsPage: URL params:', params);
   console.log('FundDetailsPage: Extracted fundId:', fundId);
