@@ -28,7 +28,7 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'sat', name: 'Santali', nativeName: 'ᱥᱟᱱᱛᱟᱲᱤ' },
   { code: 'doi', name: 'Dogri', nativeName: 'डोगरी' },
   { code: 'mni', name: 'Manipuri', nativeName: 'মৈতৈলোন্' },
-  { code: 'brx', name: 'Bodo', nativeName: 'बर\'' }
+  { code: 'brx', name: 'Bodo', nativeName: 'बर' }
 ];
 
 interface LanguageContextType {
