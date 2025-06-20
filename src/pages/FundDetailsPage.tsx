@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Header from '@/components/Header';
 import AIFundRanking from '@/components/charts/AIFundRanking';
 import PortfolioHoldings from '@/components/charts/PortfolioHoldings';
 import AdvancedFundChart from '@/components/AdvancedFundChart';
@@ -49,7 +48,6 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
   if (!fundData) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
@@ -70,7 +68,6 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <Button 
           variant="ghost" 

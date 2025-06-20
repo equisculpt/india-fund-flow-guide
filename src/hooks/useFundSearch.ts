@@ -1,5 +1,5 @@
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { MutualFundSearchService } from "@/services/mutualFundSearchService";
 
 interface FundSearchResult {
@@ -16,11 +16,13 @@ export const useFundSearch = () => {
   const [searchResults, setSearchResults] = useState<FundSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const searchFunds = useCallback(async (query: string) => {
     if (!query || query.length < 3) {
       setSearchResults([]);
       setShowResults(false);
+      setLoading(false);
       return;
     }
 
@@ -66,11 +68,21 @@ export const useFundSearch = () => {
   }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Set new timeout for search
+    searchTimeoutRef.current = setTimeout(() => {
       searchFunds(searchQuery);
     }, 300);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
   }, [searchQuery, searchFunds]);
 
   const handleInputChange = (value: string) => {
@@ -79,6 +91,7 @@ export const useFundSearch = () => {
     if (value.length === 0) {
       setShowResults(false);
       setSearchResults([]);
+      setLoading(false);
     }
   };
 
@@ -89,10 +102,11 @@ export const useFundSearch = () => {
   };
 
   const handleResultSelect = (fund: FundSearchResult) => {
-    console.log('useFundSearch: Fund selected, hiding results:', fund.schemeName);
+    console.log('useFundSearch: Fund selected, clearing search:', fund.schemeName);
     setShowResults(false);
     setSearchResults([]);
-    setSearchQuery(fund.schemeName);
+    setSearchQuery(""); // Clear the search query completely
+    setLoading(false);
     return fund;
   };
 
@@ -100,6 +114,12 @@ export const useFundSearch = () => {
     setSearchQuery("");
     setSearchResults([]);
     setShowResults(false);
+    setLoading(false);
+    
+    // Clear any pending search timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
   };
 
   return {

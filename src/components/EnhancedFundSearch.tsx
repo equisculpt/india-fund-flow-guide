@@ -45,9 +45,17 @@ const EnhancedFundSearch = ({
     const selectedFund = handleResultSelect(fund);
     
     try {
+      // Clear search results immediately
+      clearSearch();
+      
       // Always navigate to fund details page when a fund is selected
-      navigate(`/fund/${selectedFund.schemeCode}`, { replace: true });
+      navigate(`/fund/${selectedFund.schemeCode}`);
       console.log('EnhancedFundSearch: Navigation called successfully');
+      
+      // Scroll to top after navigation
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
     } catch (error) {
       console.error('EnhancedFundSearch: Navigation error:', error);
     }
@@ -66,8 +74,15 @@ const EnhancedFundSearch = ({
     handleInputFocus();
   };
 
+  // Clear search when clicking outside
+  const handleOutsideClick = () => {
+    setTimeout(() => {
+      clearSearch();
+    }, 200); // Small delay to allow selection to complete
+  };
+
   return (
-    <div className={`relative w-full ${className}`}>
+    <div className={`relative w-full ${className}`} onBlur={handleOutsideClick}>
       <SearchInput
         value={searchQuery}
         onChange={handleInputChange}
