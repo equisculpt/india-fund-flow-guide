@@ -118,20 +118,28 @@ const Index = () => {
             
             <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg">
               <h3 className="text-xl md:text-2xl font-bold mb-4">Why Choose SIP Brewery - India's Trusted SIP Investment Platform?</h3>
-              <div className="grid md:grid-cols-2 gap-4 md:gap-6 text-left">
-                <div>
-                  <h4 className="font-semibold text-base md:text-lg mb-2">🏆 AMFI Registered & Compliant Mutual Fund Distributor</h4>
-                  <p className="text-gray-700 mb-4 text-sm md:text-base">Fully regulated and registered with AMFI. Your investments are safe and secure with India's most trusted mutual fund platform.</p>
+              <div className="grid md:grid-cols-2 gap-6 text-left">
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">🏆 AMFI Registered & Compliant Mutual Fund Distributor</h4>
+                    <p className="text-gray-700 text-sm md:text-base">Fully regulated and registered with AMFI. Your investments are safe and secure with India's most trusted mutual fund platform.</p>
+                  </div>
                   
-                  <h4 className="font-semibold text-base md:text-lg mb-2">💰 Regular Mutual Funds + SIP Consistency Rewards</h4>
-                  <p className="text-gray-700 mb-4 text-sm md:text-base">Invest in regular mutual funds with professional advisory. Earn consistency rewards and gift cards for maintaining regular SIPs. Terms apply as per SEBI guidelines.</p>
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">💰 Regular Mutual Funds + SIP Consistency Rewards</h4>
+                    <p className="text-gray-700 text-sm md:text-base">Invest in regular mutual funds with professional advisory. Earn consistency rewards and gift cards for maintaining regular SIPs. Terms apply as per SEBI guidelines.</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-base md:text-lg mb-2">👨‍💼 Professional Fund Recommendations</h4>
-                  <p className="text-gray-700 mb-4 text-sm md:text-base">Get personalized mutual fund recommendations based on your risk profile, goals, and market conditions from experienced professionals.</p>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">👨‍💼 Professional Fund Recommendations</h4>
+                    <p className="text-gray-700 text-sm md:text-base">Get personalized mutual fund recommendations based on your risk profile, goals, and market conditions from experienced professionals.</p>
+                  </div>
                   
-                  <h4 className="font-semibold text-base md:text-lg mb-2">📊 Advanced SIP Calculator & Performance Tracker</h4>
-                  <p className="text-gray-700 mb-4 text-sm md:text-base">Calculate SIP returns, compare SIP vs lump sum, track portfolio performance, and get detailed fund analysis reports.</p>
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">📊 Advanced SIP Calculator & Performance Tracker</h4>
+                    <p className="text-gray-700 text-sm md:text-base">Calculate SIP returns, compare SIP vs lump sum, track portfolio performance, and get detailed fund analysis reports.</p>
+                  </div>
                 </div>
               </div>
             </div>

@@ -93,7 +93,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Compliance Footer */}
+      {/* Compliance Footer - Only appears once */}
       <ComplianceFooter />
 
       {/* Trademark Notice */}

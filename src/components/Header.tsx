@@ -8,6 +8,7 @@ import EnhancedLoginModal from './EnhancedLoginModal';
 import DesktopNavigation from './header/DesktopNavigation';
 import MobileNavigation from './header/MobileNavigation';
 import UserMenu from './header/UserMenu';
+import EnhancedFundSearch from './EnhancedFundSearch';
 
 const Header = () => {
   const { user, signOut } = useSupabaseAuthContext();
@@ -59,6 +60,11 @@ const Header = () => {
               <BreweryLogo showText={true} />
             </Link>
 
+            {/* Search Bar - Desktop */}
+            <div className="hidden lg:flex flex-1 max-w-md mx-6">
+              <EnhancedFundSearch placeholder="Search mutual funds..." />
+            </div>
+
             {/* Desktop Navigation */}
             <DesktopNavigation 
               user={user}
@@ -84,6 +90,11 @@ const Header = () => {
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </div>
+          </div>
+
+          {/* Mobile Search Bar */}
+          <div className="lg:hidden px-2 pb-2">
+            <EnhancedFundSearch placeholder="Search mutual funds..." />
           </div>
 
           {/* Mobile Navigation */}

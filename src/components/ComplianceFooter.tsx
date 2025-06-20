@@ -6,7 +6,7 @@ const ComplianceFooter = () => {
   return (
     <div className="bg-blue-50 border-t border-blue-200 py-8">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 mb-6">
           <Card className="border-blue-200">
             <CardContent className="p-4 text-center">
               <Shield className="h-8 w-8 text-blue-600 mx-auto mb-2" />
@@ -32,7 +32,7 @@ const ComplianceFooter = () => {
           </Card>
         </div>
         
-        <div className="mt-6 text-center">
+        <div className="text-center">
           <p className="text-xs text-blue-600 max-w-4xl mx-auto">
             <strong>Important:</strong> Past performance is not indicative of future returns. 
             Mutual fund investments are subject to market risks, read all scheme related documents carefully. 

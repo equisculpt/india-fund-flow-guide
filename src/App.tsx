@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -146,7 +145,6 @@ const App = () => (
                       
                       <Suspense fallback={<div className="h-12 bg-gray-50"></div>}>
                         <Footer />
-                        <ComplianceFooter />
                       </Suspense>
                     </div>
                   </MobileLayout>
