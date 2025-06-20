@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
+import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
 import { BrandingProvider } from "@/contexts/BrandingContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -50,55 +50,57 @@ const App = () => (
     <HelmetProvider>
       <BrandingProvider>
         <SupabaseAuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <div className="min-h-screen flex flex-col">
-                <Header />
-                <main className="flex-1">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/fund/:fundName" element={<FundDetailsPage />} />
-                    <Route path="/fund-comparison" element={<FundComparisonPage />} />
-                    <Route path="/public-funds" element={<PublicFundsPage />} />
-                    <Route path="/dashboard" element={<UserDashboard />} />
-                    <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
-                    <Route path="/comprehensive-dashboard" element={<ComprehensiveDashboard />} />
-                    <Route path="/onboarding" element={<OnboardingPage />} />
-                    <Route path="/agent" element={<AgentHomePage />} />
-                    <Route path="/referral" element={<ReferralPage />} />
-                    <Route path="/admin" element={<AdminPage />} />
-                    <Route path="/secure-admin" element={<SecureAdminPage />} />
-                    <Route path="/admin-portal" element={<AdminPortalPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/terms" element={<TermsOfServicePage />} />
-                    <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                    <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
-                    <Route path="/community" element={<CommunityPage />} />
-                    <Route path="/community/*" element={<CommunityPage />} />
-                    <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-                    <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
-                    <Route path="/mutual-fund-distributor" element={<MutualFundDistributorPage />} />
-                    <Route path="/sbi-small-cap-fund" element={<SBISmallCapFundPage />} />
-                    <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
-                    <Route path="/:fundSlug" element={<UniversalFundSEOPage />} />
+          <EnhancedAuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <div className="min-h-screen flex flex-col">
+                  <Header />
+                  <main className="flex-1">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/fund/:fundName" element={<FundDetailsPage />} />
+                      <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                      <Route path="/public-funds" element={<PublicFundsPage />} />
+                      <Route path="/dashboard" element={<UserDashboard />} />
+                      <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
+                      <Route path="/comprehensive-dashboard" element={<ComprehensiveDashboard />} />
+                      <Route path="/onboarding" element={<OnboardingPage />} />
+                      <Route path="/agent" element={<AgentHomePage />} />
+                      <Route path="/referral" element={<ReferralPage />} />
+                      <Route path="/admin" element={<AdminPage />} />
+                      <Route path="/secure-admin" element={<SecureAdminPage />} />
+                      <Route path="/admin-portal" element={<AdminPortalPage />} />
+                      <Route path="/contact" element={<ContactPage />} />
+                      <Route path="/about" element={<AboutPage />} />
+                      <Route path="/terms" element={<TermsOfServicePage />} />
+                      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                      <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
+                      <Route path="/community" element={<CommunityPage />} />
+                      <Route path="/community/*" element={<CommunityPage />} />
+                      <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+                      <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
+                      <Route path="/mutual-fund-distributor" element={<MutualFundDistributorPage />} />
+                      <Route path="/sbi-small-cap-fund" element={<SBISmallCapFundPage />} />
+                      <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
+                      <Route path="/:fundSlug" element={<UniversalFundSEOPage />} />
 
-                    {/* Blog Routes */}
-                    <Route path="/blog/what-are-mutual-funds-complete-guide" element={<WhatAreMutualFundsBlog />} />
-                    <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
-                    <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
-                    <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
+                      {/* Blog Routes */}
+                      <Route path="/blog/what-are-mutual-funds-complete-guide" element={<WhatAreMutualFundsBlog />} />
+                      <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
+                      <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
+                      <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
 
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </main>
-                <Footer />
-                <ComplianceFooter />
-              </div>
-            </BrowserRouter>
-          </TooltipProvider>
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </main>
+                  <Footer />
+                  <ComplianceFooter />
+                </div>
+              </BrowserRouter>
+            </TooltipProvider>
+          </EnhancedAuthProvider>
         </SupabaseAuthProvider>
       </BrandingProvider>
     </HelmetProvider>
