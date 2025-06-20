@@ -63,8 +63,9 @@ const MobilePerformanceOptimizer = () => {
     const deferNonCriticalScripts = () => {
       const scripts = document.querySelectorAll('script:not([async]):not([defer])');
       scripts.forEach(script => {
-        if (!script.src.includes('main') && !script.src.includes('vendor')) {
-          script.defer = true;
+        const scriptElement = script as HTMLScriptElement;
+        if (!scriptElement.src.includes('main') && !scriptElement.src.includes('vendor')) {
+          scriptElement.defer = true;
         }
       });
     };
@@ -73,14 +74,15 @@ const MobilePerformanceOptimizer = () => {
     const optimizeImages = () => {
       const images = document.querySelectorAll('img');
       images.forEach(img => {
+        const imgElement = img as HTMLImageElement;
         // Add loading="lazy" to non-critical images
-        if (!img.hasAttribute('loading') && !img.closest('[data-critical]')) {
-          img.loading = 'lazy';
+        if (!imgElement.hasAttribute('loading') && !imgElement.closest('[data-critical]')) {
+          imgElement.loading = 'lazy';
         }
         
         // Add decoding="async"
-        if (!img.hasAttribute('decoding')) {
-          img.decoding = 'async';
+        if (!imgElement.hasAttribute('decoding')) {
+          imgElement.decoding = 'async';
         }
       });
     };
