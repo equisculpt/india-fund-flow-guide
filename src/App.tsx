@@ -9,6 +9,7 @@ import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
 import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
 import { BrandingProvider } from "@/contexts/BrandingContext";
 import MobileLayout from "@/components/MobileLayout";
+import MobilePerformanceOptimizer from "@/components/MobilePerformanceOptimizer";
 import { lazy, Suspense } from "react";
 
 // Lazy load components for better performance
@@ -48,102 +49,115 @@ const HowMutualFundsWorkBlog = lazy(() => import("./pages/HowMutualFundsWorkBlog
 const HowFundManagersMakeMoneyBlog = lazy(() => import("./pages/HowFundManagersMakeMoneyBlog"));
 const MutualFundBenefitsBlog = lazy(() => import("./pages/MutualFundBenefitsBlog"));
 
-// Optimized QueryClient configuration
+// Optimized QueryClient configuration for performance
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      gcTime: 1000 * 60 * 10, // 10 minutes
+      staleTime: 1000 * 60 * 10, // 10 minutes
+      gcTime: 1000 * 60 * 15, // 15 minutes
       refetchOnWindowFocus: false,
-      retry: 1, // Reduce retries
+      refetchOnMount: false,
+      retry: 1,
+      // Enable background refetch for better UX
+      refetchOnReconnect: 'always',
     },
   },
 });
 
-// Loading component
+// Optimized Loading component
 const LoadingFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
     <div className="text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-      <p className="text-gray-600">Loading...</p>
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+      <p className="text-sm text-gray-600">Loading...</p>
     </div>
   </div>
 );
 
+// Minimal header loading
+const HeaderFallback = () => (
+  <div className="h-16 bg-white shadow-sm border-b flex items-center justify-between px-4">
+    <div className="flex items-center">
+      <div className="w-8 h-8 bg-blue-600 rounded"></div>
+      <div className="ml-2 w-24 h-4 bg-gray-200 rounded animate-pulse"></div>
+    </div>
+    <div className="w-20 h-8 bg-gray-200 rounded animate-pulse"></div>
+  </div>
+);
+
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <HelmetProvider>
-      <BrandingProvider>
-        <SupabaseAuthProvider>
-          <EnhancedAuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <MobileLayout>
-                  <div className="min-h-screen flex flex-col">
-                    <Suspense fallback={
-                      <div className="h-16 bg-white shadow-sm flex items-center justify-center">
-                        <div className="animate-pulse text-gray-400">Loading header...</div>
-                      </div>
-                    }>
-                      <Header />
-                    </Suspense>
-                    
-                    <main className="flex-1">
-                      <Suspense fallback={<LoadingFallback />}>
-                        <Routes>
-                          <Route path="/" element={<Index />} />
-                          <Route path="/fund/:fundName" element={<FundDetailsPage />} />
-                          <Route path="/fund-comparison" element={<FundComparisonPage />} />
-                          <Route path="/public-funds" element={<PublicFundsPage />} />
-                          <Route path="/dashboard" element={<UserDashboard />} />
-                          <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
-                          <Route path="/comprehensive-dashboard" element={<ComprehensiveDashboard />} />
-                          <Route path="/onboarding" element={<OnboardingPage />} />
-                          <Route path="/agent" element={<AgentHomePage />} />
-                          <Route path="/referral" element={<ReferralPage />} />
-                          <Route path="/admin" element={<AdminPage />} />
-                          <Route path="/secure-admin" element={<SecureAdminPage />} />
-                          <Route path="/admin-portal" element={<AdminPortalPage />} />
-                          <Route path="/contact" element={<ContactPage />} />
-                          <Route path="/about" element={<AboutPage />} />
-                          <Route path="/terms" element={<TermsOfServicePage />} />
-                          <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                          <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
-                          <Route path="/community" element={<CommunityPage />} />
-                          <Route path="/community/*" element={<CommunityPage />} />
-                          <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-                          <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
-                          <Route path="/mutual-fund-distributor" element={<MutualFundDistributorPage />} />
-                          <Route path="/sbi-small-cap-fund" element={<SBISmallCapFundPage />} />
-                          <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
-                          <Route path="/:fundSlug" element={<UniversalFundSEOPage />} />
-
-                          {/* Blog Routes */}
-                          <Route path="/blog/what-are-mutual-funds-complete-guide" element={<WhatAreMutualFundsBlog />} />
-                          <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
-                          <Route path="/blog/why-regular-mutual-funds-make-sense" element={<HowFundManagersMakeMoneyBlog />} />
-                          <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
-
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
+  <>
+    <MobilePerformanceOptimizer />
+    <QueryClientProvider client={queryClient}>
+      <HelmetProvider>
+        <BrandingProvider>
+          <SupabaseAuthProvider>
+            <EnhancedAuthProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <MobileLayout>
+                    <div className="min-h-screen flex flex-col">
+                      <Suspense fallback={<HeaderFallback />}>
+                        <Header />
                       </Suspense>
-                    </main>
-                    
-                    <Suspense fallback={<div className="h-16 bg-gray-50"></div>}>
-                      <Footer />
-                      <ComplianceFooter />
-                    </Suspense>
-                  </div>
-                </MobileLayout>
-              </BrowserRouter>
-            </TooltipProvider>
-          </EnhancedAuthProvider>
-        </SupabaseAuthProvider>
-      </BrandingProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
+                      
+                      <main className="flex-1">
+                        <Suspense fallback={<LoadingFallback />}>
+                          <Routes>
+                            <Route path="/" element={<Index />} />
+                            <Route path="/fund/:fundName" element={<FundDetailsPage />} />
+                            <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                            <Route path="/public-funds" element={<PublicFundsPage />} />
+                            <Route path="/dashboard" element={<UserDashboard />} />
+                            <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
+                            <Route path="/comprehensive-dashboard" element={<ComprehensiveDashboard />} />
+                            <Route path="/onboarding" element={<OnboardingPage />} />
+                            <Route path="/agent" element={<AgentHomePage />} />
+                            <Route path="/referral" element={<ReferralPage />} />
+                            <Route path="/admin" element={<AdminPage />} />
+                            <Route path="/secure-admin" element={<SecureAdminPage />} />
+                            <Route path="/admin-portal" element={<AdminPortalPage />} />
+                            <Route path="/contact" element={<ContactPage />} />
+                            <Route path="/about" element={<AboutPage />} />
+                            <Route path="/terms" element={<TermsOfServicePage />} />
+                            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                            <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
+                            <Route path="/community" element={<CommunityPage />} />
+                            <Route path="/community/*" element={<CommunityPage />} />
+                            <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+                            <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
+                            <Route path="/mutual-fund-distributor" element={<MutualFundDistributorPage />} />
+                            <Route path="/sbi-small-cap-fund" element={<SBISmallCapFundPage />} />
+                            <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
+                            <Route path="/:fundSlug" element={<UniversalFundSEOPage />} />
+
+                            {/* Blog Routes */}
+                            <Route path="/blog/what-are-mutual-funds-complete-guide" element={<WhatAreMutualFundsBlog />} />
+                            <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
+                            <Route path="/blog/why-regular-mutual-funds-make-sense" element={<HowFundManagersMakeMoneyBlog />} />
+                            <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
+
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </Suspense>
+                      </main>
+                      
+                      <Suspense fallback={<div className="h-12 bg-gray-50"></div>}>
+                        <Footer />
+                        <ComplianceFooter />
+                      </Suspense>
+                    </div>
+                  </MobileLayout>
+                </BrowserRouter>
+              </TooltipProvider>
+            </EnhancedAuthProvider>
+          </SupabaseAuthProvider>
+        </BrandingProvider>
+      </HelmetProvider>
+    </QueryClientProvider>
+  </>
 );
 
 export default App;

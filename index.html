@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover" />
     <title>SIP Brewery - India's #1 Mutual Fund Investment Platform | Best SIP Plans 2024</title>
     <meta name="description" content="India's leading mutual fund platform. Compare 1000+ funds with AI analysis. Best SIP plans, ELSS funds, large cap, small cap funds. Start investing with ₹500. SEBI registered advisor." />
     <meta name="keywords" content="mutual funds india, best SIP plans 2024, mutual fund investment, SIP calculator, ELSS funds, large cap funds, small cap funds, mutual fund comparison, investment advisor india, best mutual funds 2024" />
@@ -38,19 +38,65 @@
     <meta name="revisit-after" content="1 day" />
     <meta name="theme-color" content="#2563eb" />
 
+    <!-- Performance optimization meta tags -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
     <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="32x32" href="/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png">
     <link rel="shortcut icon" href="/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png">
     <link rel="apple-touch-icon" href="/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png">
 
+    <!-- Critical CSS inline (for above-the-fold content) -->
+    <style>
+      /* Critical styles for initial render */
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #f8fafc;
+      }
+      
+      /* Loading spinner */
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #f3f3f3;
+        border-radius: 50%;
+        border-top-color: #2563eb;
+        animation: spin 1s ease-in-out infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      /* Critical header styles */
+      .header-fallback {
+        height: 64px;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1rem;
+      }
+    </style>
+
     <!-- Preconnect to external domains for performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://api.mfapi.in">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- DNS prefetch for common mutual fund data sources -->
-    <link rel="dns-prefetch" href="//mfapi.in">
-    <link rel="dns-prefetch" href="//amfiindia.com">
+    <link rel="dns-prefetch" href="//api.mfapi.in">
+    <link rel="dns-prefetch" href="//pvtrwvvcgkppjlbyvflv.supabase.co">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png" as="image" type="image/png">
 
     <!-- Structured Data for Financial Service -->
     <script type="application/ld+json">
@@ -106,7 +152,16 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Initial loading state for better perceived performance -->
+      <div class="header-fallback">
+        <div style="display: flex; align-items: center;">
+          <div style="width: 32px; height: 32px; background-color: #2563eb; border-radius: 4px;"></div>
+          <span style="margin-left: 8px; font-weight: 600; color: #1f2937;">SIP Brewery</span>
+        </div>
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
