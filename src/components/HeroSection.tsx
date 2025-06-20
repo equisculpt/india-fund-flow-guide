@@ -1,13 +1,13 @@
+
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Shield, Award, Sparkles, ArrowRight, Play, X, DollarSign, Users, Target } from "lucide-react";
+import { TrendingUp, Shield, Award, Sparkles, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 import { useNavigate } from "react-router-dom";
 import { useInvestorStats } from "@/hooks/useInvestorData";
-import DemoSlideshow from "./DemoSlideshow";
+import BlogSlider from "./BlogSlider";
 
 const HeroSection = () => {
-  const [showDemo, setShowDemo] = useState(false);
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
   const { isAuthenticated } = useEnhancedAuth();
   const navigate = useNavigate();
@@ -123,20 +123,9 @@ const HeroSection = () => {
             </Button>
           </div>
 
-          {/* Video Demo Section - Updated */}
+          {/* Blog Slider Section - Replaced Demo Video */}
           <div className="mb-12">
-            <button
-              onClick={() => setShowDemo(true)}
-              className="group inline-flex items-center bg-white bg-opacity-80 backdrop-blur-sm px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-gray-700 hover:text-blue-600"
-            >
-              <div className="bg-blue-600 rounded-full p-2 mr-3 group-hover:bg-blue-700 transition-colors">
-                <Play className="h-5 w-5 text-white group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="text-left">
-                <div className="font-semibold">Watch Platform Demo</div>
-                <div className="text-sm text-gray-500">See how SIP Brewery works (2 mins)</div>
-              </div>
-            </button>
+            <BlogSlider />
           </div>
 
           {/* Key Features - Enhanced */}
@@ -176,7 +165,7 @@ const HeroSection = () => {
           </div>
 
           {/* Enhanced Compliance Notice */}
-          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 border-2 border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div id="why-choose-sipbrewery" className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 border-2 border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="flex items-start space-x-3">
               <Shield className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
               <div className="text-left">
@@ -226,9 +215,6 @@ const HeroSection = () => {
           </div>
         </div>
       )}
-
-      {/* Updated Demo Component */}
-      <DemoSlideshow isOpen={showDemo} onClose={() => setShowDemo(false)} />
     </section>
   );
 };

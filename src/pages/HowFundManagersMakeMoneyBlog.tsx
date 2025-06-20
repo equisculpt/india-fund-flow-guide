@@ -15,11 +15,11 @@ const HowFundManagersMakeMoneyBlog = () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "How Do Fund Managers Make Money? Why Regular Plans Offer Better Value 2025",
-    "description": "Detailed explanation of how mutual fund companies make money and why regular plans with professional guidance often deliver better outcomes than direct plans despite higher fees.",
+    "headline": "Why Regular Mutual Fund Plans Can Outperform Direct – SIP Brewery Research",
+    "description": "Understand how professional guidance in regular mutual funds can generate higher returns despite a slightly higher cost. Evidence-based analysis showing why regular plans often deliver better outcomes.",
     "author": {
       "@type": "Organization",
-      "name": "SIP Brewery"
+      "name": "SIP Brewery Research Team"
     },
     "publisher": {
       "@type": "Organization",
@@ -29,16 +29,21 @@ const HowFundManagersMakeMoneyBlog = () => {
         "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
       }
     },
-    "datePublished": "2025-06-19",
-    "dateModified": "2025-06-19"
+    "datePublished": "2025-06-20",
+    "dateModified": "2025-06-20",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://sipbrewery.com/blog/why-regular-mutual-funds-make-sense"
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOHead
-        title="How Fund Managers Make Money & Why Regular Plans Offer Better Value 2025 | SIP Brewery"
-        description="Understand how mutual fund companies earn revenue and discover why regular plans with professional guidance often deliver superior long-term outcomes despite higher fees compared to direct plans."
-        keywords="how fund managers make money, regular vs direct plans, mutual fund advisory, investment guidance, professional fund advice, mutual fund distributor benefits"
+        title="Why Regular Mutual Fund Plans Can Outperform Direct – SIP Brewery Research"
+        description="Understand how professional guidance in regular mutual funds can generate higher returns despite a slightly higher cost. Evidence-based analysis showing why regular plans often deliver better outcomes."
+        keywords="regular mutual funds vs direct, professional fund guidance, mutual fund advisory benefits, regular plan advantages, SIP investment guidance, mutual fund distributor value"
+        canonicalUrl="https://sipbrewery.com/blog/why-regular-mutual-funds-make-sense"
         structuredData={structuredData}
         isDynamic={true}
       />
@@ -47,15 +52,15 @@ const HowFundManagersMakeMoneyBlog = () => {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4">Professional Investment Guidance</Badge>
-            <h1 className="text-4xl font-bold mb-4">How Fund Managers Make Money & Why Regular Plans Offer Better Value</h1>
-            <p className="text-xl text-gray-600 mb-6">Understanding the mutual fund business model and why professional guidance through regular plans often leads to better investment outcomes</p>
+            <Badge variant="outline" className="mb-4">Professional Investment Research</Badge>
+            <h1 className="text-4xl font-bold mb-4">Why Regular Mutual Fund Plans Can Outperform Direct Plans</h1>
+            <p className="text-xl text-gray-600 mb-6">Evidence-based research showing how professional guidance in regular mutual funds can generate higher returns despite slightly higher costs</p>
             <div className="flex justify-center items-center gap-4 text-sm text-gray-500">
-              <span>Published: June 19, 2025</span>
+              <span>Published: June 20, 2025</span>
               <span>•</span>
               <span>18 min read</span>
               <span>•</span>
-              <span>By SIP Brewery Team</span>
+              <span>By SIP Brewery Research Team</span>
             </div>
           </div>
 
