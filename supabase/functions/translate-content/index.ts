@@ -2,7 +2,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -54,41 +54,49 @@ serve(async (req) => {
 
     const languageName = LANGUAGE_NAMES[targetLanguage] || targetLanguage;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const prompt = `You are a professional translator specializing in Indian languages. Translate the following content to ${languageName} while:
+1. Maintaining the original meaning and context
+2. Using appropriate financial and investment terminology
+3. Keeping technical terms (like SIP, NAV, etc.) in English where commonly used
+4. Ensuring cultural appropriateness for Indian audience
+5. Maintaining the same formatting and structure
+
+Please translate this content to ${languageName}:
+
+${content}`;
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `You are a professional translator specializing in Indian languages. Translate the following content to ${languageName} while:
-            1. Maintaining the original meaning and context
-            2. Using appropriate financial and investment terminology
-            3. Keeping technical terms (like SIP, NAV, etc.) in English where commonly used
-            4. Ensuring cultural appropriateness for Indian audience
-            5. Maintaining the same formatting and structure`
-          },
-          {
-            role: 'user',
-            content: `Please translate this content to ${languageName}:\n\n${content}`
-          }
-        ],
-        temperature: 0.3,
-        max_tokens: 2000,
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.3,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 2000,
+        }
       }),
     });
 
-    const aiData = await response.json();
+    const geminiData = await response.json();
     
-    if (aiData.error) {
-      throw new Error(aiData.error.message);
+    if (geminiData.error) {
+      console.error('Gemini API error:', geminiData.error);
+      throw new Error(geminiData.error.message);
     }
 
-    const translatedContent = aiData.choices[0].message.content;
+    const translatedContent = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!translatedContent) {
+      throw new Error('No translation received from Gemini');
+    }
 
     return new Response(
       JSON.stringify({ 
