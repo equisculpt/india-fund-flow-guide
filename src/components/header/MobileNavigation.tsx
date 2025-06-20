@@ -47,6 +47,14 @@ const MobileNavigation = ({
         >
           SIP Calculator
         </Button>
+
+        <Button 
+          variant="ghost" 
+          onClick={() => handleNavigation('/chat')}
+          className="w-full justify-start text-gray-700 hover:text-blue-600"
+        >
+          Ask AI Assistant
+        </Button>
         
         {user && (
           <>

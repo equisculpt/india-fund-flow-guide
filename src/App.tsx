@@ -1,164 +1,73 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from 'react-helmet-async';
 import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
-import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
 import { BrandingProvider } from "@/contexts/BrandingContext";
-import { LanguageProvider } from "@/contexts/LanguageContext";
-import MobileLayout from "@/components/MobileLayout";
-import MobilePerformanceOptimizer from "@/components/MobilePerformanceOptimizer";
-import { lazy, Suspense } from "react";
+import Index from "./pages/Index";
+import FundDetailsPage from "./pages/FundDetailsPage";
+import SIPCalculatorPage from "./pages/SIPCalculatorPage";
+import UniversalFundSEOPage from "./components/UniversalFundSEOPage";
+import AdvancedFeaturesPage from "./pages/AdvancedFeaturesPage";
+import ComprehensiveDashboard from "./pages/ComprehensiveDashboard";
+import AdminPage from "./pages/AdminPage";
+import FundComparisonPage from "./pages/FundComparisonPage";
+import PublicFundsPage from "./pages/PublicFundsPage";
+import PortfolioDashboard from "./components/PortfolioDashboard";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import CommunityPage from "./pages/CommunityPage";
+import AIPortfolioDashboard from "./pages/AIPortfolioDashboard";
+import HowMutualFundsWorkBlog from "./pages/HowMutualFundsWorkBlog";
+import HowFundManagersMakeMoneyBlog from "./pages/HowFundManagersMakeMoneyBlog";
+import AdminPortalPage from "./pages/AdminPortalPage";
+import MutualFundsStarterGuideBlog from "./pages/MutualFundsStarterGuideBlog";
+import AgentHomePage from "./pages/AgentHomePage";
+import WhatsAppBotPage from "./pages/WhatsAppBotPage";
+import ChatPage from "./pages/ChatPage";
 
-// Lazy load components for better performance
-const Header = lazy(() => import("@/components/Header"));
-const Footer = lazy(() => import("@/components/Footer"));
-const ComplianceFooter = lazy(() => import("@/components/ComplianceFooter"));
-const Index = lazy(() => import("./pages/Index"));
-const FundDetailsPage = lazy(() => import("./pages/FundDetailsPage"));
-const FundComparisonPage = lazy(() => import("./pages/FundComparisonPage"));
-const PublicFundsPage = lazy(() => import("./pages/PublicFundsPage"));
-const UserDashboard = lazy(() => import("./pages/UserDashboard"));
-const AIPortfolioDashboard = lazy(() => import("./pages/AIPortfolioDashboard"));
-const ComprehensiveDashboard = lazy(() => import("./pages/ComprehensiveDashboard"));
-const OnboardingPage = lazy(() => import("./pages/OnboardingPage"));
-const AgentHomePage = lazy(() => import("./pages/AgentHomePage"));
-const ReferralPage = lazy(() => import("./pages/ReferralPage"));
-const AdminPage = lazy(() => import("./pages/AdminPage"));
-const SecureAdminPage = lazy(() => import("./pages/SecureAdminPage"));
-const AdminPortalPage = lazy(() => import("./pages/AdminPortalPage"));
-const ContactPage = lazy(() => import("./pages/ContactPage"));
-const AboutPage = lazy(() => import("./pages/AboutPage"));
-const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
-const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
-const RiskDisclosurePage = lazy(() => import("./pages/RiskDisclosurePage"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const CommunityPage = lazy(() => import("./pages/CommunityPage"));
-const SIPCalculatorPage = lazy(() => import("./pages/SIPCalculatorPage"));
-const AdvancedFeaturesPage = lazy(() => import("./pages/AdvancedFeaturesPage"));
-const MutualFundDistributorPage = lazy(() => import("./pages/MutualFundDistributorPage"));
-const SBISmallCapFundPage = lazy(() => import("./pages/SBISmallCapFundPage"));
-const WhatsAppBotPage = lazy(() => import("./pages/WhatsAppBotPage"));
-const UniversalFundSEOPage = lazy(() => import("@/components/UniversalFundSEOPage"));
+const queryClient = new QueryClient();
 
-// Blog pages
-const WhatAreMutualFundsBlog = lazy(() => import("./pages/WhatAreMutualFundsBlog"));
-const HowMutualFundsWorkBlog = lazy(() => import("./pages/HowMutualFundsWorkBlog"));
-const HowFundManagersMakeMoneyBlog = lazy(() => import("./pages/HowFundManagersMakeMoneyBlog"));
-const MutualFundBenefitsBlog = lazy(() => import("./pages/MutualFundBenefitsBlog"));
-
-// Optimized QueryClient configuration for performance
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 10, // 10 minutes
-      gcTime: 1000 * 60 * 15, // 15 minutes
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      retry: 1,
-      // Enable background refetch for better UX
-      refetchOnReconnect: 'always',
-    },
-  },
-});
-
-// Optimized Loading component
-const LoadingFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
-    <div className="text-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-      <p className="text-sm text-gray-600">Loading...</p>
-    </div>
-  </div>
-);
-
-// Minimal header loading
-const HeaderFallback = () => (
-  <div className="h-16 bg-white shadow-sm border-b flex items-center justify-between px-4">
-    <div className="flex items-center">
-      <div className="w-8 h-8 bg-blue-600 rounded"></div>
-      <div className="ml-2 w-24 h-4 bg-gray-200 rounded animate-pulse"></div>
-    </div>
-    <div className="w-20 h-8 bg-gray-200 rounded animate-pulse"></div>
-  </div>
-);
-
-const App = () => (
-  <>
-    <MobilePerformanceOptimizer />
+function App() {
+  return (
     <QueryClientProvider client={queryClient}>
-      <HelmetProvider>
+      <SupabaseAuthProvider>
         <BrandingProvider>
-          <LanguageProvider>
-            <SupabaseAuthProvider>
-              <EnhancedAuthProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <BrowserRouter>
-                    <MobileLayout>
-                      <div className="min-h-screen flex flex-col">
-                        <Suspense fallback={<HeaderFallback />}>
-                          <Header />
-                        </Suspense>
-                        
-                        <main className="flex-1">
-                          <Suspense fallback={<LoadingFallback />}>
-                            <Routes>
-                              <Route path="/" element={<Index />} />
-                              <Route path="/fund/:fundName" element={<FundDetailsPage />} />
-                              <Route path="/fund-comparison" element={<FundComparisonPage />} />
-                              <Route path="/public-funds" element={<PublicFundsPage />} />
-                              <Route path="/dashboard" element={<UserDashboard />} />
-                              <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
-                              <Route path="/comprehensive-dashboard" element={<ComprehensiveDashboard />} />
-                              <Route path="/onboarding" element={<OnboardingPage />} />
-                              <Route path="/agent" element={<AgentHomePage />} />
-                              <Route path="/referral" element={<ReferralPage />} />
-                              <Route path="/admin" element={<AdminPage />} />
-                              <Route path="/secure-admin" element={<SecureAdminPage />} />
-                              <Route path="/admin-portal" element={<AdminPortalPage />} />
-                              <Route path="/contact" element={<ContactPage />} />
-                              <Route path="/about" element={<AboutPage />} />
-                              <Route path="/terms" element={<TermsOfServicePage />} />
-                              <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                              <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
-                              <Route path="/community" element={<CommunityPage />} />
-                              <Route path="/community/*" element={<CommunityPage />} />
-                              <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-                              <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
-                              <Route path="/mutual-fund-distributor" element={<MutualFundDistributorPage />} />
-                              <Route path="/sbi-small-cap-fund" element={<SBISmallCapFundPage />} />
-                              <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
-                              <Route path="/:fundSlug" element={<UniversalFundSEOPage />} />
-
-                              {/* Blog Routes */}
-                              <Route path="/blog/what-are-mutual-funds-complete-guide" element={<WhatAreMutualFundsBlog />} />
-                              <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
-                              <Route path="/blog/why-regular-mutual-funds-make-sense" element={<HowFundManagersMakeMoneyBlog />} />
-                              <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
-
-                              <Route path="*" element={<NotFound />} />
-                            </Routes>
-                          </Suspense>
-                        </main>
-                        
-                        <Suspense fallback={<div className="h-12 bg-gray-50"></div>}>
-                          <Footer />
-                        </Suspense>
-                      </div>
-                    </MobileLayout>
-                  </BrowserRouter>
-                </TooltipProvider>
-              </EnhancedAuthProvider>
-            </SupabaseAuthProvider>
-          </LanguageProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/fund/:schemeCode" element={<FundDetailsPage />} />
+                <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+                <Route path="/fund-seo/:schemeCode" element={<UniversalFundSEOPage />} />
+                <Route path="/advanced-features" element={<AdvancedFeaturesPage />} />
+                <Route path="/dashboard" element={<ComprehensiveDashboard />} />
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                <Route path="/public-funds" element={<PublicFundsPage />} />
+                <Route path="/portfolio" element={<PortfolioDashboard />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/community" element={<CommunityPage />} />
+                <Route path="/ai-portfolio" element={<AIPortfolioDashboard />} />
+                <Route path="/blog/how-mutual-funds-work" element={<HowMutualFundsWorkBlog />} />
+                <Route path="/blog/how-fund-managers-make-money" element={<HowFundManagersMakeMoneyBlog />} />
+                <Route path="/admin-portal" element={<AdminPortalPage />} />
+                <Route path="/blog/mutual-funds-starter-guide" element={<MutualFundsStarterGuideBlog />} />
+                <Route path="/agent" element={<AgentHomePage />} />
+                <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
+                <Route path="/chat" element={<ChatPage />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
         </BrandingProvider>
-      </HelmetProvider>
+      </SupabaseAuthProvider>
     </QueryClientProvider>
-  </>
-);
+  );
+}
 
 export default App;

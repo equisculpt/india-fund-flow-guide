@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { User } from '@supabase/supabase-js';
 
+interface Deskt
+
 interface DesktopNavigationProps {
   user: User | null;
   handleFundComparisonClick: () => void;
@@ -32,6 +34,12 @@ const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsC
       <Link to="/sip-calculator">
         <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
           SIP Calculator
+        </Button>
+      </Link>
+
+      <Link to="/chat">
+        <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+          Ask AI Assistant
         </Button>
       </Link>
       
