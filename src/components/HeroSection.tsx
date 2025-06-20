@@ -1,7 +1,7 @@
 
 import React, { useState, lazy, Suspense } from 'react';
 import { Shield } from "lucide-react";
-import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
+import { useSupabaseAuthContext } from "@/contexts/SupabaseAuthContext";
 import { useNavigate } from "react-router-dom";
 import { useInvestorStats } from "@/hooks/useInvestorData";
 import HeroContent from "./hero/HeroContent";
@@ -13,12 +13,12 @@ const BlogSlider = lazy(() => import("./BlogSlider"));
 
 const HeroSection = () => {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
-  const { isAuthenticated } = useEnhancedAuth();
+  const { user } = useSupabaseAuthContext();
   const navigate = useNavigate();
   const { data: investorStats } = useInvestorStats();
 
   const handleStartInvesting = () => {
-    if (isAuthenticated) {
+    if (user) {
       navigate('/dashboard');
     } else {
       setShowUserTypeModal(true);

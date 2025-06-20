@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useFundSearch } from '@/hooks/useFundSearch';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 interface EnhancedFundSearchProps {
   placeholder?: string;
@@ -13,7 +12,7 @@ interface EnhancedFundSearchProps {
   onFundSelect?: (fund: any) => void;
 }
 
-const EnhancedFundSearch = ({ placeholder, className = "", onFundSelect }: EnhancedFundSearchProps) => {
+const EnhancedFundSearch = ({ placeholder = "Search mutual funds...", className = "", onFundSelect }: EnhancedFundSearchProps) => {
   const { 
     searchQuery, 
     searchResults, 
@@ -25,9 +24,6 @@ const EnhancedFundSearch = ({ placeholder, className = "", onFundSelect }: Enhan
   } = useFundSearch();
   
   const navigate = useNavigate();
-  const { translateSync } = useLanguage();
-
-  const translatedPlaceholder = translateSync(placeholder || "Search mutual funds...", placeholder);
 
   const handleFundSelect = (fund: any) => {
     const selectedFund = handleResultSelect(fund);
@@ -46,7 +42,7 @@ const EnhancedFundSearch = ({ placeholder, className = "", onFundSelect }: Enhan
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
         <Input
           type="text"
-          placeholder={translatedPlaceholder}
+          placeholder={placeholder}
           value={searchQuery}
           onChange={(e) => handleInputChange(e.target.value)}
           onFocus={handleInputFocus}
@@ -58,7 +54,7 @@ const EnhancedFundSearch = ({ placeholder, className = "", onFundSelect }: Enhan
         <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto z-50">
           {loading ? (
             <div className="p-4 text-center text-gray-500">
-              {translateSync("Searching...", "Searching...")}
+              Searching...
             </div>
           ) : searchResults && searchResults.length > 0 ? (
             searchResults.map((fund, index) => (
@@ -76,7 +72,7 @@ const EnhancedFundSearch = ({ placeholder, className = "", onFundSelect }: Enhan
             ))
           ) : (
             <div className="p-4 text-center text-gray-500">
-              {translateSync("No funds found", "No funds found")}
+              No funds found
             </div>
           )}
         </div>
