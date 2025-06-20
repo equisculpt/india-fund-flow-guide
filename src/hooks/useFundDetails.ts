@@ -20,97 +20,89 @@ export const useFundDetails = (fundId: string | undefined) => {
       return;
     }
 
-    console.log('useFundDetails: Starting enhanced data fetch for fundId:', fundId);
-    loadEnhancedFundData();
+    console.log('useFundDetails: Starting fund data fetch for fundId:', fundId);
+    loadFundData();
   }, [fundId]);
 
-  const loadEnhancedFundData = async () => {
+  const loadFundData = async () => {
     try {
       setIsLoading(true);
-      console.log('useFundDetails: Fetching enhanced fund details for fundId:', fundId);
+      console.log('useFundDetails: Fetching fund details for fundId:', fundId);
       
-      // Set a timeout for the entire operation
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout: Fund details loading took too long')), 10000);
+      // Try to get basic fund details first with a shorter timeout
+      const basicDetailsPromise = MutualFundSearchService.getFundDetails(fundId);
+      const basicTimeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Basic details timeout')), 5000);
       });
 
-      // Try to get enhanced details with timeout
-      const enhancedDetailsPromise = MutualFundSearchService.getEnhancedFundDetails(fundId);
-      
-      let enhancedDetails;
+      let basicDetails;
       try {
-        enhancedDetails = await Promise.race([enhancedDetailsPromise, timeoutPromise]);
+        basicDetails = await Promise.race([basicDetailsPromise, basicTimeoutPromise]);
       } catch (error) {
-        console.warn('useFundDetails: Enhanced details failed or timed out, falling back to basic details:', error);
-        enhancedDetails = null;
+        console.warn('useFundDetails: Basic details failed:', error);
+        basicDetails = null;
       }
-      
-      if (enhancedDetails && (enhancedDetails.returns1Y !== 0 || enhancedDetails.returns3Y !== 0 || enhancedDetails.returns5Y !== 0)) {
-        console.log('useFundDetails: REAL Enhanced details loaded with CALCULATED performance:', enhancedDetails);
+
+      if (basicDetails) {
+        console.log('useFundDetails: Basic details loaded:', basicDetails.schemeName);
         
-        const combinedFundData = {
+        // Create fund data from basic details
+        const fundDataFromBasic = {
           schemeCode: fundId,
-          schemeName: enhancedDetails.schemeName,
-          category: enhancedDetails.category || 'Unknown',
-          fundHouse: enhancedDetails.fundHouse || 'Unknown',
-          nav: enhancedDetails.nav || 0,
-          navDate: enhancedDetails.navDate,
-          returns1Y: enhancedDetails.returns1Y,
-          returns3Y: enhancedDetails.returns3Y,
-          returns5Y: enhancedDetails.returns5Y,
-          xirr1Y: enhancedDetails.xirr1Y || enhancedDetails.returns1Y,
-          xirr3Y: enhancedDetails.xirr3Y || enhancedDetails.returns3Y,
-          xirr5Y: enhancedDetails.xirr5Y || enhancedDetails.returns5Y,
-          expenseRatio: enhancedDetails.expenseRatio,
-          aum: enhancedDetails.aum,
+          schemeName: basicDetails.schemeName,
+          category: basicDetails.category || 'Unknown',
+          fundHouse: basicDetails.fundHouse || 'Unknown',
+          nav: basicDetails.nav || 0,
+          navDate: basicDetails.navDate,
+          returns1Y: 12.5, // Default values
+          returns3Y: 10.8,
+          returns5Y: 9.2,
+          xirr1Y: 12.5,
+          xirr3Y: 10.8,
+          xirr5Y: 9.2,
+          expenseRatio: 1.0,
+          aum: 1000,
           minSipAmount: 500,
-          volatility: enhancedDetails.volatility,
-          amc: enhancedDetails.fundHouse || 'Unknown'
+          volatility: 5.0,
+          amc: basicDetails.fundHouse || 'Unknown'
         };
 
-        setFundData(combinedFundData);
-        setLatestNAV(enhancedDetails);
-        setNavError('✓ Performance calculated from actual NAV history data');
-
-        // Trigger AI analysis with the REAL enhanced data
-        await performAIAnalysis(combinedFundData);
-      } else {
-        console.log('useFundDetails: Enhanced details not available, trying basic API details');
+        setFundData(fundDataFromBasic);
+        setLatestNAV(basicDetails);
+        setNavError('⚠️ Using basic fund data with estimated performance');
         
-        // Fallback to basic API details
-        const apiDetails = await MutualFundSearchService.getFundDetails(fundId);
-        if (apiDetails) {
-          const baseFundData = {
-            schemeCode: fundId,
-            schemeName: apiDetails.schemeName,
-            category: apiDetails.category || 'Unknown',
-            fundHouse: apiDetails.fundHouse || 'Unknown',
-            nav: apiDetails.nav || 0,
-            navDate: apiDetails.navDate,
-            returns1Y: 12.5,
-            returns3Y: 10.8,
-            returns5Y: 9.2,
-            xirr1Y: 12.5,
-            xirr3Y: 10.8,
-            xirr5Y: 9.2,
-            expenseRatio: 1.0,
-            aum: 1000,
-            minSipAmount: 500,
-            volatility: 5.0,
-            amc: apiDetails.fundHouse || 'Unknown'
-          };
-          
-          console.log('useFundDetails: Using basic fund data with mock performance:', baseFundData);
-          setFundData(baseFundData);
-          setLatestNAV(apiDetails);
-          setNavError('⚠️ Using estimated performance data');
-          await performAIAnalysis(baseFundData);
-        } else {
-          throw new Error('Failed to load even basic fund details');
-        }
+        // Try to get enhanced details in background
+        tryEnhancedDetails(fundDataFromBasic);
+        
+      } else {
+        console.log('useFundDetails: No basic details, creating fallback');
+        
+        // Create fallback fund data
+        const fallbackFundData = {
+          schemeCode: fundId,
+          schemeName: `Fund ${fundId}`,
+          category: 'Unknown',
+          fundHouse: 'Unknown',
+          nav: 100,
+          navDate: new Date().toISOString().split('T')[0],
+          returns1Y: 0,
+          returns3Y: 0,
+          returns5Y: 0,
+          xirr1Y: 0,
+          xirr3Y: 0,
+          xirr5Y: 0,
+          expenseRatio: 1.0,
+          aum: 1000,
+          minSipAmount: 500,
+          volatility: 5.0,
+          amc: 'Unknown'
+        };
+        
+        setFundData(fallbackFundData);
+        setNavError('⚠️ Using fallback data - fund details unavailable');
       }
 
-      // Fetch historical data for charts (non-blocking)
+      // Fetch historical data (non-blocking)
       FundDataService.fetchHistoricalNAV(fundId, 365).then(historical => {
         setHistoricalData(historical);
         console.log('useFundDetails: Historical data loaded:', historical.length, 'records');
@@ -122,13 +114,13 @@ export const useFundDetails = (fundId: string | undefined) => {
       console.error('useFundDetails: Error loading fund data:', error);
       setNavError('Failed to load fund data');
       
-      // Create a fallback fund data to prevent complete failure
-      const fallbackFundData = {
+      // Create final fallback
+      const finalFallback = {
         schemeCode: fundId,
         schemeName: `Fund ${fundId}`,
         category: 'Unknown',
         fundHouse: 'Unknown',
-        nav: 0,
+        nav: 100,
         navDate: new Date().toISOString().split('T')[0],
         returns1Y: 0,
         returns3Y: 0,
@@ -143,9 +135,46 @@ export const useFundDetails = (fundId: string | undefined) => {
         amc: 'Unknown'
       };
       
-      setFundData(fallbackFundData);
+      setFundData(finalFallback);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const tryEnhancedDetails = async (baseFundData: any) => {
+    try {
+      console.log('useFundDetails: Trying to get enhanced details in background');
+      
+      const enhancedDetails = await MutualFundSearchService.getEnhancedFundDetails(fundId);
+      
+      if (enhancedDetails && (enhancedDetails.returns1Y !== 0 || enhancedDetails.returns3Y !== 0)) {
+        console.log('useFundDetails: Enhanced details loaded, updating fund data');
+        
+        const enhancedFundData = {
+          ...baseFundData,
+          returns1Y: enhancedDetails.returns1Y,
+          returns3Y: enhancedDetails.returns3Y, 
+          returns5Y: enhancedDetails.returns5Y,
+          xirr1Y: enhancedDetails.xirr1Y || enhancedDetails.returns1Y,
+          xirr3Y: enhancedDetails.xirr3Y || enhancedDetails.returns3Y,
+          xirr5Y: enhancedDetails.xirr5Y || enhancedDetails.returns5Y,
+          expenseRatio: enhancedDetails.expenseRatio,
+          aum: enhancedDetails.aum,
+          volatility: enhancedDetails.volatility
+        };
+
+        setFundData(enhancedFundData);
+        setNavError('✓ Performance calculated from actual NAV history data');
+        
+        // Trigger AI analysis with enhanced data
+        await performAIAnalysis(enhancedFundData);
+      } else {
+        console.log('useFundDetails: Enhanced details not available, using basic data');
+        await performAIAnalysis(baseFundData);
+      }
+    } catch (error) {
+      console.error('useFundDetails: Enhanced details failed:', error);
+      await performAIAnalysis(baseFundData);
     }
   };
 
