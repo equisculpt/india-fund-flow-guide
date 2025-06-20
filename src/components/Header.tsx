@@ -44,7 +44,7 @@ const Header = () => {
   const handleNavigation = (path: string) => {
     navigate(path);
     setIsMenuOpen(false);
-    //Ensure page scrolls to top after navigation
+    // Ensure page scrolls to top after navigation
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 100);

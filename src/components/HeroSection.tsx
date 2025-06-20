@@ -15,7 +15,14 @@ const HeroSection = () => {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
   const { user } = useSupabaseAuthContext();
   const navigate = useNavigate();
-  const { data: investorStats } = useInvestorStats();
+  
+  // Handle the database error gracefully
+  const { data: investorStats, error } = useInvestorStats();
+  
+  // Log the error but don't crash the app
+  if (error) {
+    console.warn('Failed to fetch investor stats:', error);
+  }
 
   const handleStartInvesting = () => {
     if (user) {
@@ -28,7 +35,7 @@ const HeroSection = () => {
   const handleUserTypeSelection = (userType: 'client' | 'agent') => {
     setShowUserTypeModal(false);
     if (userType === 'agent') {
-      navigate('/agent-home');
+      navigate('/agent');
     } else {
       const event = new CustomEvent('openLogin');
       window.dispatchEvent(event);
@@ -42,9 +49,9 @@ const HeroSection = () => {
     }
   };
 
-  // Optimized stats formatting with memoization
+  // Optimized stats formatting with memoization and fallback
   const stats = React.useMemo(() => {
-    if (investorStats) {
+    if (investorStats && !error) {
       const formatAmount = (amount: number) => {
         if (amount >= 10000000) {
           return `₹${(amount / 10000000).toFixed(1)}Cr`;
@@ -61,12 +68,13 @@ const HeroSection = () => {
       };
     }
     
+    // Fallback stats when database is unavailable
     return {
       investors: "Growing Community",
       amount: "₹1Cr+ AUM",
       rating: "4.8★ Rated"
     };
-  }, [investorStats]);
+  }, [investorStats, error]);
 
   return (
     <section className="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 overflow-hidden">
