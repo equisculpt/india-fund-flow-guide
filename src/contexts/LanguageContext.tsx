@@ -14,8 +14,8 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'bn', name: 'Bengali', nativeName: 'বাংলা' },
   { code: 'te', name: 'Telugu', nativeName: 'తెలుగు' },
   { code: 'mr', name: 'Marathi', nativeName: 'मराठी' },
-  { code: 'ta', name: 'Tamil', nativeName: 'தমிழ்' },
-  { code: 'gu', name: 'Gujarati', nativeName: 'ગुજરાતી' },
+  { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்' },
+  { code: 'gu', name: 'Gujarati', nativeName: 'ગુજરાતી' },
   { code: 'ur', name: 'Urdu', nativeName: 'اردو' },
   { code: 'kn', name: 'Kannada', nativeName: 'ಕನ್ನಡ' },
   { code: 'ml', name: 'Malayalam', nativeName: 'മലയാളം' },
@@ -47,6 +47,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [currentLanguage, setCurrentLanguage] = useState<Language>(SUPPORTED_LANGUAGES[0]);
   const [translationCache, setTranslationCache] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0);
 
   // Load saved language preference
   useEffect(() => {
@@ -65,10 +66,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setCurrentLanguage(language);
       localStorage.setItem('preferred-language', language.code);
       
-      // Clear cache when language changes
+      // Clear cache when language changes and force re-render
       if (language.code === 'en') {
         setTranslationCache({});
       }
+      
+      // Force all TranslatedText components to re-render
+      setForceUpdate(prev => prev + 1);
       
       console.log('Language changed to:', language.nativeName);
     } catch (error) {
@@ -98,6 +102,9 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           ...prev,
           [cacheKey]: translated
         }));
+        
+        // Force re-render when new translation is cached
+        setForceUpdate(prev => prev + 1);
       }
       
       return translated;
@@ -122,11 +129,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (fallback || key) {
       translate(key, fallback).then(translated => {
         if (translated !== (fallback || key)) {
-          // Force re-render by updating cache
-          setTranslationCache(prev => ({
-            ...prev,
-            [cacheKey]: translated
-          }));
+          // Translation will be cached and force re-render via translate()
         }
       }).catch(() => {
         // Silently handle translation errors

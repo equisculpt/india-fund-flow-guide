@@ -15,36 +15,27 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   className = '', 
   as: Component = 'span' 
 }) => {
-  const { translate, currentLanguage } = useLanguage();
+  const { translateSync, currentLanguage } = useLanguage();
   const [translatedText, setTranslatedText] = useState(fallback || text);
-  const [isTranslating, setIsTranslating] = useState(false);
 
   useEffect(() => {
-    const loadTranslation = async () => {
-      if (currentLanguage.code === 'en') {
-        setTranslatedText(fallback || text);
-        return;
-      }
+    console.log(`TranslatedText: Translating "${text}" to ${currentLanguage.nativeName}`);
+    
+    if (currentLanguage.code === 'en') {
+      setTranslatedText(fallback || text);
+      return;
+    }
 
-      setIsTranslating(true);
-      try {
-        const translated = await translate(text, fallback);
-        setTranslatedText(translated);
-        console.log(`Translated "${text}" to "${translated}" for ${currentLanguage.nativeName}`);
-      } catch (error) {
-        console.warn('Translation failed, using original text:', error);
-        setTranslatedText(fallback || text);
-      } finally {
-        setIsTranslating(false);
-      }
-    };
-
-    loadTranslation();
-  }, [text, fallback, currentLanguage.code, translate]);
+    // Use translateSync which handles caching and background translation
+    const translated = translateSync(text, fallback);
+    setTranslatedText(translated);
+    
+    console.log(`TranslatedText: Result "${translated}" for ${currentLanguage.nativeName}`);
+  }, [text, fallback, currentLanguage.code, translateSync]);
 
   return (
     <Component className={className}>
-      {isTranslating ? `${translatedText}...` : translatedText}
+      {translatedText}
     </Component>
   );
 };
