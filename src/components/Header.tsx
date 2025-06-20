@@ -9,6 +9,7 @@ import DesktopNavigation from './header/DesktopNavigation';
 import MobileNavigation from './header/MobileNavigation';
 import UserMenu from './header/UserMenu';
 import EnhancedFundSearch from './EnhancedFundSearch';
+import LanguageSelector from './LanguageSelector';
 
 const Header = () => {
   const { user, signOut } = useSupabaseAuthContext();
@@ -72,8 +73,10 @@ const Header = () => {
               handleBrowseFundsClick={handleBrowseFundsClick}
             />
 
-            {/* User Menu and Mobile Toggle */}
+            {/* Language Selector and User Menu */}
             <div className="flex items-center space-x-2 sm:space-x-4">
+              <LanguageSelector />
+              
               <UserMenu 
                 user={user}
                 signOut={signOut}
