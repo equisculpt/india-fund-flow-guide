@@ -27,7 +27,8 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     navError,
     aiAnalysis,
     aiLoading,
-    aiError
+    aiError,
+    isLoading
   } = useFundDetails(fundId);
 
   const handleBackClick = () => {
@@ -45,13 +46,30 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     }, 100);
   };
 
-  if (!fundData) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <div>Loading enhanced fund details...</div>
+            <div>Loading fund details...</div>
+            <div className="text-sm text-gray-500 mt-2">Please wait while we fetch the latest information</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!fundData) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-red-600 mb-4">Failed to load fund details</div>
+            <Button onClick={handleBackClick} variant="outline">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Search
+            </Button>
           </div>
         </div>
       </div>
