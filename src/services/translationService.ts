@@ -16,14 +16,14 @@ export class TranslationService {
       });
 
       if (error) {
-        console.error('Translation error:', error);
+        console.warn('Translation API error:', error);
         return content; // Return original content if translation fails
       }
 
-      return data.translatedContent || content;
+      return data?.translatedContent || content;
     } catch (error) {
-      console.error('Translation service error:', error);
-      return content;
+      console.warn('Translation service error - returning original content:', error);
+      return content; // Always return original content as fallback
     }
   }
 
@@ -46,7 +46,7 @@ export class TranslationService {
 
       return translated;
     } catch (error) {
-      console.error('Blog translation error:', error);
+      console.warn('Blog translation error - returning original:', error);
       return blogContent;
     }
   }

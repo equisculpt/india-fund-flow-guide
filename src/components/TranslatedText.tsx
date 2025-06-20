@@ -17,6 +17,7 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
 }) => {
   const { translate, currentLanguage } = useLanguage();
   const [translatedText, setTranslatedText] = useState(fallback || text);
+  const [isTranslating, setIsTranslating] = useState(false);
 
   useEffect(() => {
     const loadTranslation = async () => {
@@ -25,19 +26,27 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
         return;
       }
 
+      setIsTranslating(true);
       try {
         const translated = await translate(text, fallback);
         setTranslatedText(translated);
+        console.log(`Translated "${text}" to "${translated}" for ${currentLanguage.nativeName}`);
       } catch (error) {
-        console.error('Translation failed:', error);
+        console.warn('Translation failed, using original text:', error);
         setTranslatedText(fallback || text);
+      } finally {
+        setIsTranslating(false);
       }
     };
 
     loadTranslation();
   }, [text, fallback, currentLanguage.code, translate]);
 
-  return <Component className={className}>{translatedText}</Component>;
+  return (
+    <Component className={className}>
+      {isTranslating ? `${translatedText}...` : translatedText}
+    </Component>
+  );
 };
 
 export default TranslatedText;

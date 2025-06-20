@@ -14,8 +14,8 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'bn', name: 'Bengali', nativeName: 'বাংলা' },
   { code: 'te', name: 'Telugu', nativeName: 'తెలుగు' },
   { code: 'mr', name: 'Marathi', nativeName: 'मराठी' },
-  { code: 'ta', name: 'Tamil', nativeName: 'தமিழ்' },
-  { code: 'gu', name: 'Gujarati', nativeName: 'ગુજરાતી' },
+  { code: 'ta', name: 'Tamil', nativeName: 'தমিழ்' },
+  { code: 'gu', name: 'Gujarati', nativeName: 'ગुજરাતી' },
   { code: 'ur', name: 'Urdu', nativeName: 'اردو' },
   { code: 'kn', name: 'Kannada', nativeName: 'ಕನ್ನಡ' },
   { code: 'ml', name: 'Malayalam', nativeName: 'മലയാളം' },
@@ -78,7 +78,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const translate = async (key: string, fallback?: string): Promise<string> => {
+  const translate = async (key: string, fallback?: string): Promise<string> {
     if (currentLanguage.code === 'en') {
       return fallback || key;
     }
@@ -92,15 +92,17 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       const translated = await TranslationService.translateContent(fallback || key, currentLanguage.code);
       
-      // Cache the result
-      setTranslationCache(prev => ({
-        ...prev,
-        [cacheKey]: translated
-      }));
+      // Only cache if translation was successful and different from original
+      if (translated && translated !== (fallback || key)) {
+        setTranslationCache(prev => ({
+          ...prev,
+          [cacheKey]: translated
+        }));
+      }
       
       return translated;
     } catch (error) {
-      console.error('Translation error:', error);
+      console.warn('Translation error, using original text:', error);
       return fallback || key;
     }
   };
@@ -126,6 +128,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             [cacheKey]: translated
           }));
         }
+      }).catch(() => {
+        // Silently handle translation errors
       });
     }
 
