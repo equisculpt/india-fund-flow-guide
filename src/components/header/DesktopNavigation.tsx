@@ -1,59 +1,55 @@
 
 import React from 'react';
-import { BarChart3, Brain, MessageSquare, Shield } from 'lucide-react';
-import NavLink from './NavLink';
+import { Link } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { User } from '@supabase/supabase-js';
+import TranslatedText from '../TranslatedText';
 
 interface DesktopNavigationProps {
-  user: any;
+  user: User | null;
   handleFundComparisonClick: () => void;
   handleBrowseFundsClick: () => void;
 }
 
 const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsClick }: DesktopNavigationProps) => {
   return (
-    <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-      <NavLink to="/">Home</NavLink>
-      <NavLink onClick={handleFundComparisonClick}>
-        Compare
-      </NavLink>
-      <NavLink onClick={handleBrowseFundsClick}>
-        Browse
-      </NavLink>
-      <NavLink to="/community">
-        <div className="flex items-center gap-1">
-          <MessageSquare className="h-4 w-4" />
-          <span className="hidden xl:inline">Community</span>
-        </div>
-      </NavLink>
-      {user && (
-        <NavLink to="/advanced-features">
-          <div className="flex items-center gap-1">
-            <Brain className="h-4 w-4" />
-            <span className="hidden xl:inline">AI</span>
-          </div>
-        </NavLink>
-      )}
+    <nav className="hidden lg:flex items-center space-x-6">
+      <Button 
+        variant="ghost" 
+        onClick={handleBrowseFundsClick}
+        className="text-gray-700 hover:text-blue-600"
+      >
+        <TranslatedText text="Browse Funds" />
+      </Button>
+      
+      <Button 
+        variant="ghost" 
+        onClick={handleFundComparisonClick}
+        className="text-gray-700 hover:text-blue-600"
+      >
+        <TranslatedText text="Compare Funds" />
+      </Button>
+      
+      <Link to="/sip-calculator">
+        <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+          <TranslatedText text="SIP Calculator" />
+        </Button>
+      </Link>
+      
       {user && (
         <>
-          <NavLink to="/dashboard">
-            <div className="flex items-center gap-1">
-              <BarChart3 className="h-4 w-4" />
-              <span className="hidden xl:inline">Dashboard</span>
-            </div>
-          </NavLink>
-          <NavLink to="/user-dashboard">Analytics</NavLink>
-          <NavLink to="/ai-portfolio">Portfolio</NavLink>
+          <Link to="/dashboard">
+            <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+              <TranslatedText text="Dashboard" />
+            </Button>
+          </Link>
+          
+          <Link to="/ai-portfolio">
+            <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+              <TranslatedText text="AI Portfolio" />
+            </Button>
+          </Link>
         </>
-      )}
-      
-      {/* Secure Admin Access - Hidden from normal navigation */}
-      {user && (
-        <NavLink to="/secure-admin">
-          <div className="flex items-center gap-1 opacity-50 hover:opacity-100">
-            <Shield className="h-4 w-4" />
-            <span className="hidden xl:inline text-xs">Admin</span>
-          </div>
-        </NavLink>
       )}
     </nav>
   );
