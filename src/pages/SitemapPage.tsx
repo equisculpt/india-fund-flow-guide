@@ -12,9 +12,6 @@ const SitemapPage = () => {
     document.write(xmlContent);
     document.close();
     
-    // Set proper content type for XML
-    document.contentType = 'application/xml';
-    
     console.log('📄 Sitemap XML served as raw XML');
   }, []);
 
