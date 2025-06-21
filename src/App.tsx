@@ -32,6 +32,7 @@ import SEBIGuidelinesBlog from './pages/SEBIGuidelinesBlog';
 import HowFundManagersMakeMoneyBlog from './pages/HowFundManagersMakeMoneyBlog';
 import HowMutualFundsWorkBlog from './pages/HowMutualFundsWorkBlog';
 import MutualFundBenefitsBlog from './pages/MutualFundBenefitsBlog';
+import HDBFinancialServicesIPOBlog from './pages/HDBFinancialServicesIPOBlog';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -75,6 +76,7 @@ function App() {
                       <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
                       <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
                       <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
+                      <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
                       
                       <Route path="*" element={<NotFound />} />
                     </Routes>

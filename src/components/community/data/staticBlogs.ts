@@ -1,93 +1,93 @@
 
-import type { StaticBlog } from '../types/blogTypes';
+import { StaticBlog } from '../types/blogTypes';
 
 export const staticBlogs: StaticBlog[] = [
   {
-    id: 'static-what-are-mutual-funds',
-    title: '🔍 What Are Mutual Funds: Complete Guide for Beginners',
-    excerpt: 'A comprehensive guide to understanding mutual funds, how they work, and why they are perfect for beginner investors in India.',
-    category: 'beginner-guide',
-    tags: ['mutual funds', 'beginner guide', 'investing basics'],
-    route: '/blog/what-are-mutual-funds-complete-guide',
-    published_at: '2025-06-19',
-    author: 'SIP Brewery Team',
-    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png'
+    id: 'veeda-clinical-research-ipo',
+    title: 'Veeda Clinical Research IPO Analysis 2025: Complete CRO Industry Review',
+    excerpt: 'Deep dive into Veeda Clinical Research IPO with comprehensive analysis of the CRO industry, financial performance, and investment prospects.',
+    category: 'IPO Tracker',
+    author: 'SIP Brewery Editorial',
+    published_at: '2025-01-15',
+    route: '/blog/veeda-clinical-research-ipo-analysis',
+    featured_image_url: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=400&fit=crop',
+    tags: ['IPO', 'Healthcare', 'CRO', 'Investment Analysis']
   },
   {
-    id: 'static-how-mutual-funds-work',
-    title: '⚙️ How Mutual Funds Work: Detailed Explanation with Examples',
-    excerpt: 'Learn the complete working mechanism of mutual funds with real-world examples, NAV calculation, and investment process.',
-    category: 'investment-tips',
-    tags: ['mutual funds', 'NAV', 'investment process'],
-    route: '/blog/how-mutual-funds-work-detailed-explanation',
-    published_at: '2025-06-19',
-    author: 'SIP Brewery Team',
-    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png'
-  },
-  {
-    id: 'static-fund-managers-money',
-    title: '💰 Why Regular Mutual Fund Plans Can Outperform Direct Plans',
-    excerpt: 'Understand how professional guidance in regular mutual funds can generate higher returns despite a slightly higher cost.',
-    category: 'fund-reviews',
-    tags: ['fund managers', 'regular vs direct', 'advisory benefits'],
-    route: '/blog/how-fund-managers-make-money-mutual-funds',
-    published_at: '2025-06-19',
-    author: 'SIP Brewery Team',
-    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png'
-  },
-  {
-    id: 'static-mutual-fund-benefits',
-    title: '🎯 Benefits of Mutual Funds for Individual Investors: Complete Guide',
-    excerpt: 'Discover why mutual funds are the preferred investment choice for millions of Indian investors with detailed benefits analysis.',
-    category: 'investment-tips',
-    tags: ['benefits', 'advantages', 'individual investors'],
-    route: '/blog/mutual-funds-benefits-individual-investors',
-    published_at: '2025-06-19',
-    author: 'SIP Brewery Team',
-    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png'
-  },
-  {
-    id: 'veeda-clinical-research-ipo-analysis',
-    title: '🧪 Veeda Clinical Research IPO: Complete SWOT & Financial Analysis',
-    excerpt: 'In-depth analysis of Veeda Clinical Research IPO with financial charts, SWOT analysis, and key insights for healthcare sector investors.',
-    author: 'SIP Brewery Research Team',
-    published_at: new Date().toISOString(),
-    category: 'market-analysis',
-    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
-    tags: ['IPO Analysis', 'Healthcare', 'CRO Sector', 'Financial Review'],
-    route: '/blog/veeda-clinical-research-ipo-analysis'
+    id: 'hdb-financial-services-ipo',
+    title: 'HDB Financial Services IPO Analysis 2025: Complete NBFC Review & Investment Guide',
+    excerpt: 'Comprehensive analysis of HDB Financial Services IPO - India\'s largest NBFC subsidiary of HDFC Bank. Complete financial review, SWOT analysis, and investment insights.',
+    category: 'IPO Tracker',
+    author: 'SIP Brewery Editorial',
+    published_at: '2025-01-21',
+    route: '/blog/hdb-financial-services-ipo-analysis',
+    featured_image_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=400&fit=crop',
+    tags: ['IPO', 'NBFC', 'Financial Services', 'HDFC Bank', 'Investment Analysis']
   },
   {
     id: 'ipo-analysis-guide',
-    title: '📊 IPO Analysis Guide: Understanding Key Metrics for Evaluation',
-    excerpt: 'Complete guide to analyzing IPOs with key metrics, financial ratios, and evaluation criteria. Learn professional IPO analysis techniques.',
-    author: 'SIP Brewery Research Team',
-    published_at: new Date().toISOString(),
-    category: 'investment-education',
-    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
-    tags: ['IPO Analysis', 'Investment Guide', 'Financial Metrics', 'Due Diligence'],
-    route: '/blog/ipo-analysis-guide'
+    title: 'IPO Analysis Guide: How to Evaluate Initial Public Offerings Like a Pro',
+    excerpt: 'Master the art of IPO evaluation with our comprehensive guide covering financial analysis, industry assessment, and risk evaluation techniques.',
+    category: 'Educational',
+    author: 'SIP Brewery Editorial',
+    published_at: '2024-12-15',
+    route: '/blog/ipo-analysis-guide',
+    featured_image_url: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop',
+    tags: ['IPO', 'Investment Guide', 'Analysis', 'Education']
   },
   {
     id: 'healthcare-sector-outlook',
-    title: '🏥 Healthcare Sector Outlook: India\'s Investment Themes 2025',
-    excerpt: 'Comprehensive analysis of India\'s healthcare and biotech sector investment opportunities, growth drivers, and key themes.',
-    author: 'SIP Brewery Research Team',
-    published_at: new Date().toISOString(),
-    category: 'sector-analysis',
-    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
-    tags: ['Healthcare Sector', 'Biotech', 'Investment Themes', 'Sector Analysis'],
-    route: '/blog/healthcare-sector-outlook'
+    title: 'Healthcare Sector Outlook 2025: Investment Opportunities and Challenges',
+    excerpt: 'Comprehensive analysis of India\'s healthcare sector prospects, key growth drivers, and investment opportunities for 2025.',
+    category: 'Sector Analysis',
+    author: 'SIP Brewery Editorial',
+    published_at: '2024-12-10',
+    route: '/blog/healthcare-sector-outlook',
+    featured_image_url: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=800&h=400&fit=crop',
+    tags: ['Healthcare', 'Sector Analysis', 'Investment Opportunities', '2025 Outlook']
   },
   {
     id: 'sebi-guidelines',
-    title: '⚖️ SEBI Guidelines: Understanding IPO Eligibility Norms',
-    excerpt: 'Complete guide to SEBI IPO eligibility norms, regulations, and guidelines for retail investors with investor protection measures.',
-    author: 'SIP Brewery Research Team',
-    published_at: new Date().toISOString(),
-    category: 'regulatory-guide',
-    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
-    tags: ['SEBI Guidelines', 'IPO Regulations', 'Investor Protection', 'Compliance'],
-    route: '/blog/sebi-guidelines'
+    title: 'SEBI Guidelines for Mutual Fund Investors: Complete Compliance Guide 2024',
+    excerpt: 'Understanding SEBI regulations, investor rights, and compliance requirements for safe mutual fund investing in India.',
+    category: 'Regulatory',
+    author: 'SIP Brewery Editorial',
+    published_at: '2024-11-20',
+    route: '/blog/sebi-guidelines',
+    featured_image_url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&h=400&fit=crop',
+    tags: ['SEBI', 'Regulations', 'Compliance', 'Investor Rights']
+  },
+  {
+    id: 'how-fund-managers-make-money',
+    title: 'How Fund Managers Make Money from Your Mutual Fund Investments',
+    excerpt: 'Understand mutual fund expense ratios, management fees, and how fund houses generate revenue from your investments.',
+    category: 'Educational',
+    author: 'SIP Brewery Editorial',
+    published_at: '2024-11-15',
+    route: '/blog/how-fund-managers-make-money-mutual-funds',
+    featured_image_url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&h=400&fit=crop',
+    tags: ['Mutual Funds', 'Expense Ratio', 'Fund Management', 'Fees']
+  },
+  {
+    id: 'how-mutual-funds-work',
+    title: 'How Mutual Funds Work: Complete Guide to Fund Operations & NAV Calculation',
+    excerpt: 'Detailed explanation of mutual fund operations, NAV calculation, portfolio management, and fund structure in India.',
+    category: 'Educational',
+    author: 'SIP Brewery Editorial',
+    published_at: '2024-11-10',
+    route: '/blog/how-mutual-funds-work-detailed-explanation',
+    featured_image_url: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&h=400&fit=crop',
+    tags: ['Mutual Funds', 'NAV', 'Portfolio Management', 'Fund Operations']
+  },
+  {
+    id: 'mutual-fund-benefits',
+    title: 'Top 10 Benefits of Mutual Fund Investment for Individual Investors',
+    excerpt: 'Discover the key advantages of mutual fund investing including diversification, professional management, and tax benefits.',
+    category: 'Educational',
+    author: 'SIP Brewery Editorial',
+    published_at: '2024-11-05',
+    route: '/blog/mutual-funds-benefits-individual-investors',
+    featured_image_url: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&h=400&fit=crop',
+    tags: ['Mutual Funds', 'Investment Benefits', 'Diversification', 'Tax Benefits']
   }
 ];
