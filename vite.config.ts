@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -41,7 +42,7 @@ export default defineConfig(({ mode }) => ({
     },
     copyPublicDir: true,
   },
-  // Add middleware to serve XML files with proper content-type
+  // Ensure XML files are served with correct MIME type
   define: {
     'process.env.NODE_ENV': JSON.stringify(mode),
   },

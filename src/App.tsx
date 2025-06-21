@@ -39,6 +39,7 @@ const App = () => (
               <Route path="/privacy" element={<PrivacyPolicyPage />} />
               <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
               <Route path="/admin/*" element={<AdminPage />} />
+              {/* Ensure sitemap.xml and news-sitemap.xml are not handled by React Router */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
