@@ -39,25 +39,25 @@ const SEOHead = ({
 }: SEOHeadProps) => {
   const location = useLocation();
   
-  // Generate dynamic content based on current route
-  const dynamicContent = generateDynamicSEOContent(location.pathname);
+  // Generate dynamic content based on current route only if needed
+  const dynamicContent = isDynamic ? generateDynamicSEOContent(location.pathname) : null;
   
   // Use provided props or fall back to dynamic generation
-  const finalTitle = title || dynamicContent.title;
-  const finalDescription = description || dynamicContent.description;
-  const finalKeywords = keywords || dynamicContent.keywords;
-  const finalCanonicalUrl = canonicalUrl || dynamicContent.canonicalUrl;
-  const finalOgType = ogType || dynamicContent.ogType;
+  const finalTitle = title || (dynamicContent?.title) || "SIP Brewery - Best Mutual Fund Investment Platform India";
+  const finalDescription = description || (dynamicContent?.description) || "India's #1 SEBI registered mutual fund investment platform";
+  const finalKeywords = keywords || (dynamicContent?.keywords) || "mutual funds india, SIP investment";
+  const finalCanonicalUrl = canonicalUrl || (dynamicContent?.canonicalUrl) || `https://sipbrewery.com${location.pathname}`;
+  const finalOgType = ogType || (dynamicContent?.ogType) || 'website';
   
-  // Enhanced debugging for canonical URL specifically
-  console.log('SEOHead Canonical URL Debug:', {
+  // Clear debugging for canonical URL
+  console.log('SEOHead Final Values:', {
     currentPath: location.pathname,
-    providedCanonicalUrl: canonicalUrl,
-    dynamicCanonicalUrl: dynamicContent.canonicalUrl,
+    isDynamic,
+    providedCanonicalUrl: canonicalUrl || 'Not provided',
+    dynamicCanonicalUrl: dynamicContent?.canonicalUrl || 'Not generated',
     finalCanonicalUrl,
-    isProvidedOrGenerated: canonicalUrl ? 'Provided' : 'Generated',
-    ogType: finalOgType,
-    title: finalTitle.substring(0, 60) + '...'
+    finalTitle: finalTitle.substring(0, 60) + '...',
+    finalOgType
   });
   
   // Use a properly sized default image - Facebook requires minimum 200x200
