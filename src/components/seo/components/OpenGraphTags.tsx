@@ -25,26 +25,34 @@ const OpenGraphTags = ({
   publishedTime,
   modifiedTime
 }: OpenGraphTagsProps) => {
-  console.log('🔧 OpenGraph Tags Debug:', {
-    title: title.substring(0, 50) + '...',
-    description: description.substring(0, 50) + '...',
-    ogImage,
-    ogType
+  console.log('🔧 OpenGraph Tags Debug (FIXED):', {
+    title: title ? title.substring(0, 50) + '...' : 'MISSING TITLE',
+    description: description ? description.substring(0, 50) + '...' : 'MISSING DESC',
+    ogImage: ogImage || 'MISSING IMAGE',
+    ogType: ogType || 'MISSING TYPE',
+    titleLength: title?.length || 0,
+    descLength: description?.length || 0
   });
+
+  // Ensure we have valid strings to prevent empty meta tags
+  const safeTitle = title || "SIP Brewery - Mutual Fund Investment Platform";
+  const safeDescription = description || "India's leading mutual fund investment platform";
+  const safeOgImage = ogImage || "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format&q=80";
 
   return (
     <Helmet>
+      {/* Clear any existing og tags first */}
+      <meta property="og:title" content={safeTitle} />
+      <meta property="og:description" content={safeDescription} />
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:type" content={ogType} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
       <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:image" content={ogImage} />
-      <meta property="og:image:secure_url" content={ogImage} />
+      <meta property="og:image" content={safeOgImage} />
+      <meta property="og:image:secure_url" content={safeOgImage} />
       <meta property="og:image:type" content="image/jpeg" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content={`${title} - SIP Brewery`} />
+      <meta property="og:image:alt" content={`${safeTitle} - SIP Brewery`} />
       <meta property="og:locale" content="en_IN" />
       
       {ogType === 'article' && (

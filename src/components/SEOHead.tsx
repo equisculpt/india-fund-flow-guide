@@ -49,19 +49,28 @@ const SEOHead = ({
   const finalCanonicalUrl = canonicalUrl || (dynamicContent?.canonicalUrl) || `https://sipbrewery.com${location.pathname}`;
   const finalOgType = ogType || (dynamicContent?.ogType) || 'website';
   
-  // Enhanced debugging for SEO values
-  console.log('🎯 SEOHead Final Values (Enhanced):', {
+  // FORENSIC debugging for SEO values
+  console.log('🕵️ SEOHead FORENSIC Debug:', {
     currentPath: location.pathname,
     isDynamic,
-    providedTitle: title || 'Not provided',
-    providedDescription: description || 'Not provided',
-    providedCanonicalUrl: canonicalUrl || 'Not provided',
-    finalTitle: finalTitle.substring(0, 60) + '...',
-    finalDescription: finalDescription.substring(0, 60) + '...',
-    finalCanonicalUrl,
-    finalOgType,
-    articleAuthor,
-    articlePublisher
+    'INPUT PROPS': {
+      title: title || 'NOT PROVIDED',
+      description: description || 'NOT PROVIDED',
+      canonicalUrl: canonicalUrl || 'NOT PROVIDED',
+      ogType: ogType || 'NOT PROVIDED'
+    },
+    'FINAL VALUES': {
+      finalTitle: finalTitle ? finalTitle.substring(0, 60) + '...' : 'MISSING',
+      finalDescription: finalDescription ? finalDescription.substring(0, 60) + '...' : 'MISSING',
+      finalCanonicalUrl,
+      finalOgType,
+      articleAuthor,
+      articlePublisher
+    },
+    'STRING LENGTHS': {
+      titleLength: finalTitle?.length || 0,
+      descLength: finalDescription?.length || 0
+    }
   });
   
   // Use a properly sized default image - Facebook requires minimum 200x200
