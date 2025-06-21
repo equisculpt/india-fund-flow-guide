@@ -69,14 +69,24 @@ const FileUploadComponent = ({
 
       const fileName = `${user.id}/${Date.now()}_${file.name}`;
       
+      // Simulate progress for better UX
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
       // Upload to Supabase Storage
       const { data: storageData, error: storageError } = await supabase.storage
         .from('chat-uploads')
-        .upload(fileName, file, {
-          onUploadProgress: (progress) => {
-            setUploadProgress((progress.loaded / progress.total) * 100);
-          }
-        });
+        .upload(fileName, file);
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
 
       if (storageError) throw storageError;
 
