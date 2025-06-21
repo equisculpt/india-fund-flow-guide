@@ -1,18 +1,22 @@
 
 import { useEffect } from 'react';
-import { generateNewsSitemap } from '@/utils/newsSitemapGenerator';
 
 const NewsSitemapPage = () => {
   useEffect(() => {
-    // Generate XML content
-    const xmlContent = generateNewsSitemap();
-    
-    // Clear the document and write raw XML
-    document.open();
-    document.write(xmlContent);
-    document.close();
-    
-    console.log('📰 News Sitemap XML served as raw XML');
+    // Fetch and serve the static news-sitemap.xml file
+    fetch('/news-sitemap.xml')
+      .then(response => response.text())
+      .then(xmlContent => {
+        // Clear the document and write raw XML
+        document.open();
+        document.write(xmlContent);
+        document.close();
+        
+        console.log('📰 News Sitemap XML served as raw XML');
+      })
+      .catch(error => {
+        console.error('Error loading news sitemap:', error);
+      });
   }, []);
 
   // This component won't render since we replace the document
