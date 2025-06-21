@@ -21,6 +21,12 @@ import CommunityBlogs from '@/components/community/CommunityBlogs';
 import CreateBlogModal from '@/components/community/CreateBlogModal';
 import ChatPage from '@/pages/ChatPage';
 import VeedaClinicalResearchIPOBlog from './pages/VeedaClinicalResearchIPOBlog';
+import IPOAnalysisGuideBlog from './pages/IPOAnalysisGuideBlog';
+import HealthcareSectorOutlookBlog from './pages/HealthcareSectorOutlookBlog';
+import SEBIGuidelinesBlog from './pages/SEBIGuidelinesBlog';
+import HowFundManagersMakeMoneyBlog from './pages/HowFundManagersMakeMoneyBlog';
+import HowMutualFundsWorkBlog from './pages/HowMutualFundsWorkBlog';
+import MutualFundBenefitsBlog from './pages/MutualFundBenefitsBlog';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -53,6 +59,12 @@ function App() {
                       <Route path="/privacy" element={<PrivacyPolicyPage />} />
                       <Route path="/chat" element={<ChatPage />} />
                       <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
+                      <Route path="/blog/ipo-analysis-guide" element={<IPOAnalysisGuideBlog />} />
+                      <Route path="/blog/healthcare-sector-outlook" element={<HealthcareSectorOutlookBlog />} />
+                      <Route path="/blog/sebi-guidelines" element={<SEBIGuidelinesBlog />} />
+                      <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
+                      <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
+                      <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>

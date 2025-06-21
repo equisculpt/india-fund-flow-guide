@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { TrendingUp, TrendingDown, AlertTriangle, Target, Shield, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import SEOHead from '@/components/SEOHead';
 
 const VeedaClinicalResearchIPOBlog = () => {
@@ -339,34 +340,46 @@ const VeedaClinicalResearchIPOBlog = () => {
         </Card>
 
         {/* Footer Section */}
-        <div className="text-center bg-gray-50 p-8 rounded-lg">
+        <div className="text-center bg-gray-50 p-8 rounded-lg mb-8">
           <h3 className="text-xl font-semibold mb-4">💬 Join the Discussion</h3>
           <p className="text-gray-600 mb-4">
             What do you think about India's role in the global clinical trial ecosystem? 
             Have questions about IPO analysis or other healthcare investments?
           </p>
-          <p className="text-sm text-gray-500">
-            Remember: Always consult with SEBI-registered financial advisors before making investment decisions.
-          </p>
+          <Alert className="border-red-200 bg-red-50">
+            <AlertTriangle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800 font-medium">
+              <strong>Important Reminder:</strong> Always consult with SEBI-registered financial advisors before making investment decisions. 
+              This content is for educational purposes only and not personalized investment advice.
+            </AlertDescription>
+          </Alert>
         </div>
 
         {/* Related Articles */}
         <div className="mt-12 p-6 bg-blue-50 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">🧠 Suggested Reading</h3>
           <div className="grid md:grid-cols-3 gap-4 text-sm">
-            <div className="bg-white p-4 rounded border">
-              <h4 className="font-semibold text-blue-600 mb-2">IPO Analysis Guide</h4>
-              <p className="text-gray-600">Understanding key metrics for IPO evaluation</p>
-            </div>
-            <div className="bg-white p-4 rounded border">
-              <h4 className="font-semibold text-blue-600 mb-2">Healthcare Sector Outlook</h4>
-              <p className="text-gray-600">India's healthcare & biotech investment themes</p>
-            </div>
-            <div className="bg-white p-4 rounded border">
-              <h4 className="font-semibold text-blue-600 mb-2">SEBI Guidelines</h4>
-              <p className="text-gray-600">Understanding IPO eligibility norms</p>
-            </div>
+            <Link to="/blog/ipo-analysis-guide" className="bg-white p-4 rounded border hover:shadow-md transition-shadow">
+              <h4 className="font-semibold text-blue-600 mb-2 hover:text-blue-800">📊 IPO Analysis Guide</h4>
+              <p className="text-gray-600">Understanding key metrics for IPO evaluation with professional techniques</p>
+            </Link>
+            <Link to="/blog/healthcare-sector-outlook" className="bg-white p-4 rounded border hover:shadow-md transition-shadow">
+              <h4 className="font-semibold text-blue-600 mb-2 hover:text-blue-800">🏥 Healthcare Sector Outlook</h4>
+              <p className="text-gray-600">India's healthcare & biotech investment themes and growth opportunities</p>
+            </Link>
+            <Link to="/blog/sebi-guidelines" className="bg-white p-4 rounded border hover:shadow-md transition-shadow">
+              <h4 className="font-semibold text-blue-600 mb-2 hover:text-blue-800">⚖️ SEBI Guidelines</h4>
+              <p className="text-gray-600">Understanding IPO eligibility norms and investor protection measures</p>
+            </Link>
           </div>
+          
+          <Alert className="mt-4 border-yellow-200 bg-yellow-50">
+            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+            <AlertDescription className="text-yellow-800">
+              <strong>Educational Content Notice:</strong> All linked articles are for educational purposes only. 
+              They do not constitute investment recommendations. Always seek professional advice for investment decisions.
+            </AlertDescription>
+          </Alert>
         </div>
       </div>
     </div>
