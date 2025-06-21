@@ -1,3 +1,4 @@
+
 import type { StaticBlog } from '../types/blogTypes';
 
 export const staticBlogs: StaticBlog[] = [
@@ -54,7 +55,6 @@ export const staticBlogs: StaticBlog[] = [
     category: 'market-analysis',
     featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
     tags: ['IPO Analysis', 'Healthcare', 'CRO Sector', 'Financial Review'],
-    reading_time: 15,
     route: '/blog/veeda-clinical-research-ipo-analysis'
   }
 ];
