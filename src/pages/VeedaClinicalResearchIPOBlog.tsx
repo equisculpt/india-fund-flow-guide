@@ -17,41 +17,51 @@ const VeedaClinicalResearchIPOBlog = () => {
   const keywords = "Veeda Clinical Research IPO, CRO IPO India, clinical research IPO analysis, healthcare IPO 2024, biotech IPO review, SEBI compliant IPO analysis, contract research organization stocks";
   const ogImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
 
-  // Force immediate SEO rendering and scroll to top
+  // Aggressive SEO takeover - completely override any existing meta tags
   useEffect(() => {
-    window.scrollTo(0, 0);
-    
-    // Force immediate meta tag update
-    document.title = title;
-    
-    // Update canonical link immediately
-    const existingCanonical = document.querySelector('link[rel="canonical"]');
-    if (existingCanonical) {
-      existingCanonical.setAttribute('href', canonicalUrl);
-    } else {
-      const canonicalLink = document.createElement('link');
-      canonicalLink.rel = 'canonical';
-      canonicalLink.href = canonicalUrl;
-      document.head.appendChild(canonicalLink);
-    }
-    
-    console.log('IMMEDIATE SEO UPDATE:', {
-      documentTitle: document.title,
-      canonicalInDOM: document.querySelector('link[rel="canonical"]')?.getAttribute('href'),
+    console.log('FORENSIC AUDIT - Starting complete SEO takeover:', {
+      targetCanonicalUrl: canonicalUrl,
+      targetTitle: title,
+      currentLocation: window.location.pathname,
       timestamp: new Date().toISOString()
     });
-  }, [title, canonicalUrl]);
 
-  console.log('Veeda Blog Page - PRIORITY SEO Implementation:', {
-    canonicalUrl,
-    title: title.substring(0, 50) + '...',
-    currentPath: window.location.pathname,
-    timestamp: new Date().toISOString()
-  });
+    // Force scroll to top
+    window.scrollTo(0, 0);
+    
+    // Aggressively clear and set document title
+    document.title = title;
+    
+    // Remove ALL existing canonical links and create fresh one
+    const existingCanonicals = document.querySelectorAll('link[rel="canonical"]');
+    existingCanonicals.forEach(link => link.remove());
+    
+    const canonicalLink = document.createElement('link');
+    canonicalLink.rel = 'canonical';
+    canonicalLink.href = canonicalUrl;
+    document.head.appendChild(canonicalLink);
+    
+    // Remove existing description meta tags and create fresh one
+    const existingDescriptions = document.querySelectorAll('meta[name="description"]');
+    existingDescriptions.forEach(meta => meta.remove());
+    
+    const descriptionMeta = document.createElement('meta');
+    descriptionMeta.name = 'description';
+    descriptionMeta.content = description;
+    document.head.appendChild(descriptionMeta);
+    
+    console.log('FORENSIC AUDIT - SEO Takeover Complete:', {
+      documentTitle: document.title,
+      canonicalInDOM: document.querySelector('link[rel="canonical"]')?.getAttribute('href'),
+      descriptionInDOM: document.querySelector('meta[name="description"]')?.getAttribute('content'),
+      allCanonicalLinks: Array.from(document.querySelectorAll('link[rel="canonical"]')).map(link => link.getAttribute('href')),
+      timestamp: new Date().toISOString()
+    });
+  }, [title, canonicalUrl, description]);
 
   return (
     <>
-      {/* IMMEDIATE PRIORITY - This Helmet should override ANY other SEO */}
+      {/* ABSOLUTE PRIORITY - Nuclear option for SEO override */}
       <Helmet prioritizeSeoTags defer={false}>
         <title>{title}</title>
         <meta name="description" content={description} />
