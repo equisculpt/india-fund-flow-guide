@@ -8,9 +8,6 @@ const NewsSitemapPage = () => {
     const articles = getNewsArticles();
     const xmlContent = generateNewsSitemap(articles);
     
-    // Set proper XML content type
-    document.contentType = 'application/xml';
-    
     // Clear the body and set XML content
     document.body.innerHTML = '';
     document.body.style.fontFamily = 'monospace';
