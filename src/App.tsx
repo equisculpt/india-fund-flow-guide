@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -9,6 +10,52 @@ import { EnhancedAuthProvider } from '@/contexts/EnhancedAuthContext';
 import { SupabaseAuthProvider } from '@/contexts/SupabaseAuthContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { BrandingProvider } from '@/contexts/BrandingContext';
+
+// Page imports
+import Index from '@/pages/Index';
+import FundComparisonPage from '@/pages/FundComparisonPage';
+import PublicFundsPage from '@/pages/PublicFundsPage';
+import FundDetailsPage from '@/pages/FundDetailsPage';
+import UserDashboard from '@/pages/UserDashboard';
+import ContactPage from '@/pages/ContactPage';
+import AboutPage from '@/pages/AboutPage';
+import TermsOfServicePage from '@/pages/TermsOfServicePage';
+import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
+import RiskDisclosurePage from '@/pages/RiskDisclosurePage';
+import AdminPage from '@/pages/AdminPage';
+import SecureAdminPage from '@/pages/SecureAdminPage';
+import AdminPortalPage from '@/pages/AdminPortalPage';
+import MutualFundDistributorPage from '@/pages/MutualFundDistributorPage';
+import OnboardingPage from '@/pages/OnboardingPage';
+import AgentHomePage from '@/pages/AgentHomePage';
+import ReferralPage from '@/pages/ReferralPage';
+import SIPCalculatorPage from '@/pages/SIPCalculatorPage';
+import ComprehensiveDashboard from '@/pages/ComprehensiveDashboard';
+import AIPortfolioDashboard from '@/pages/AIPortfolioDashboard';
+import AdvancedFeaturesPage from '@/pages/AdvancedFeaturesPage';
+import ChatPage from '@/pages/ChatPage';
+import CommunityPage from '@/pages/CommunityPage';
+import WhatsAppBotPage from '@/pages/WhatsAppBotPage';
+import SBISmallCapFundPage from '@/pages/SBISmallCapFundPage';
+
+// Blog page imports
+import WhatAreMutualFundsBlog from '@/pages/WhatAreMutualFundsBlog';
+import HowMutualFundsWorkBlog from '@/pages/HowMutualFundsWorkBlog';
+import MutualFundBenefitsBlog from '@/pages/MutualFundBenefitsBlog';
+import HowFundManagersMakeMoneyBlog from '@/pages/HowFundManagersMakeMoneyBlog';
+import HDBFinancialServicesIPOBlog from '@/pages/HDBFinancialServicesIPOBlog';
+import VeedaClinicalResearchIPOBlog from '@/pages/VeedaClinicalResearchIPOBlog';
+import NBFCSectorDeepDiveBlog from '@/pages/NBFCSectorDeepDiveBlog';
+import IPOAnalysisGuideBlog from '@/pages/IPOAnalysisGuideBlog';
+import HealthcareSectorOutlookBlog from '@/pages/HealthcareSectorOutlookBlog';
+import SEBIGuidelinesBlog from '@/pages/SEBIGuidelinesBlog';
+
+// SEO and Sitemap imports
+import SitemapPage from '@/pages/SitemapPage';
+import NewsSitemapPage from '@/pages/NewsSitemapPage';
+
+// 404 page import
+import NotFound from '@/pages/NotFound';
 
 const queryClient = new QueryClient();
 
