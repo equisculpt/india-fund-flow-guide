@@ -114,19 +114,36 @@ const SEOHead = ({
         </>
       )}
       
-      {/* Open Graph */}
+      {/* Open Graph - These need to be specific and override defaults */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={title} />
       <meta property="og:url" content={currentUrl} />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content="article" />
       <meta property="og:site_name" content="SIP Brewery" />
+      <meta property="og:locale" content="en_IN" />
       
-      {/* Twitter */}
+      {/* Twitter Card - Enhanced for better sharing */}
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@sipbrewery" />
+      <meta name="twitter:creator" content="@sipbrewery" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image:alt" content={title} />
+      
+      {/* WhatsApp specific meta tags */}
+      <meta property="whatsapp:title" content={title} />
+      <meta property="whatsapp:description" content={description} />
+      <meta property="whatsapp:image" content={ogImage} />
+      
+      {/* Additional social media meta tags */}
+      <meta property="article:author" content="SIP Brewery Research Team" />
+      <meta property="article:publisher" content="https://sipbrewery.com" />
+      <meta property="article:section" content="Investment Analysis" />
       
       {/* Additional SEO */}
       <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
