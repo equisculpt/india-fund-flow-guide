@@ -1,25 +1,19 @@
 
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Loader2 } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import AIFundRanking from '@/components/charts/AIFundRanking';
-import PortfolioHoldings from '@/components/charts/PortfolioHoldings';
-import AdvancedFundChart from '@/components/AdvancedFundChart';
-import NAVHistoryChart from '@/components/NAVHistoryChart';
+import FundDetailsLoader from '@/components/fund-details/FundDetailsLoader';
+import FundDetailsError from '@/components/fund-details/FundDetailsError';
+import FundDetailsTabs from '@/components/fund-details/FundDetailsTabs';
+import BackButton from '@/components/fund-details/BackButton';
 import FundHeader from '@/components/fund-details/FundHeader';
 import AIRecommendationCard from '@/components/fund-details/AIRecommendationCard';
 import InvestmentActionCard from '@/components/fund-details/InvestmentActionCard';
 import { useFundDetails } from '@/hooks/useFundDetails';
+import { useFundDetailsNavigation } from '@/hooks/useFundDetailsNavigation';
 
-interface FundDetailsPageProps {
-  // Add any props you need here
-}
-
-const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
-  const navigate = useNavigate();
+const FundDetailsPage: React.FC = () => {
   const params = useParams();
+  const { handleBackClick } = useFundDetailsNavigation();
   
   // Extract fundId from various possible parameter names
   const fundId = params.fundId || params.id || params.fundName;
@@ -46,85 +40,30 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     fundName: fundData?.schemeName 
   });
 
-  const handleBackClick = () => {
-    console.log('Back button clicked, navigating to funds section');
-    
-    // Navigate to home page and scroll to funds section
-    navigate('/', { replace: true });
-    
-    // Use setTimeout to ensure navigation completes before scrolling
-    setTimeout(() => {
-      const fundsSection = document.getElementById('funds');
-      if (fundsSection) {
-        fundsSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
-  };
-
   // Show loading only when actually loading and no fund data is available
   if (isLoading && !fundData) {
-    return (
-      <Layout>
-        <div className="min-h-screen bg-gray-50">
-          <div className="container mx-auto px-4 py-8">
-            <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-              <span>Loading fund details...</span>
-              <div className="text-sm text-gray-500 mt-2">Fund ID: {fundId}</div>
-              <div className="text-sm text-gray-500 mt-1">
-                Please wait while we fetch the latest information
-              </div>
-            </div>
-          </div>
-        </div>
-      </Layout>
-    );
+    return <FundDetailsLoader fundId={fundId} />;
   }
 
   // Show error only if loading is complete and no fund data is available
   if (!isLoading && !fundData) {
     return (
-      <Layout>
-        <div className="min-h-screen bg-gray-50">
-          <div className="container mx-auto px-4 py-8">
-            <div className="text-center">
-              <div className="text-red-600 mb-4">
-                {navError || 'Failed to load fund details'}
-              </div>
-              <div className="text-sm text-gray-500 mb-4">
-                Fund ID: {fundId}
-              </div>
-              <div className="text-sm text-gray-500 mb-4">
-                URL: {window.location.pathname}
-              </div>
-              <Button onClick={handleBackClick} variant="outline">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Search
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Layout>
+      <FundDetailsError 
+        fundId={fundId} 
+        navError={navError} 
+        onBackClick={handleBackClick} 
+      />
     );
   }
 
   // If we have fund data, show the page even if some background loading is still happening
   if (!fundData) {
     return (
-      <Layout>
-        <div className="min-h-screen bg-gray-50">
-          <div className="container mx-auto px-4 py-8">
-            <div className="text-center">
-              <span className="text-gray-600 mb-4">Unexpected state - no fund data available</span>
-              <div className="text-sm text-gray-500 mb-4">Fund ID: {fundId}</div>
-              <Button onClick={handleBackClick} variant="outline">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Search
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Layout>
+      <FundDetailsError 
+        fundId={fundId} 
+        navError="Unexpected state - no fund data available" 
+        onBackClick={handleBackClick} 
+      />
     );
   }
 
@@ -140,14 +79,7 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
     <Layout>
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8">
-          <Button 
-            variant="ghost" 
-            onClick={handleBackClick} 
-            className="mb-4"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Funds
-          </Button>
+          <BackButton onBackClick={handleBackClick} />
           
           {/* Fund Header with Enhanced Data */}
           <FundHeader
@@ -165,35 +97,10 @@ const FundDetailsPage: React.FC<FundDetailsPageProps> = () => {
             fundData={fundData}
           />
 
-          <Tabs defaultValue="ai-analysis" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="ai-analysis">AI Analysis</TabsTrigger>
-              <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-              <TabsTrigger value="performance">Performance</TabsTrigger>
-              <TabsTrigger value="analytics">Advanced Analytics</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="ai-analysis">
-              <AIFundRanking fundData={combinedFundDataForComponents} />
-            </TabsContent>
-
-            <TabsContent value="portfolio">
-              <PortfolioHoldings fundData={combinedFundDataForComponents} />
-            </TabsContent>
-
-            <TabsContent value="performance">
-              <NAVHistoryChart 
-                fundId={fundData.schemeCode} 
-                fundName={fundData.schemeName}
-              />
-            </TabsContent>
-
-            <TabsContent value="analytics">
-              <AdvancedFundChart 
-                primaryFund={combinedFundDataForComponents}
-              />
-            </TabsContent>
-          </Tabs>
+          <FundDetailsTabs 
+            fundData={fundData}
+            combinedFundDataForComponents={combinedFundDataForComponents}
+          />
 
           {/* Investment Action Card */}
           <InvestmentActionCard
