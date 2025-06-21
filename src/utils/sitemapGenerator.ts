@@ -1,4 +1,6 @@
 
+import { generateNewsSitemap, getNewsArticles } from './newsSitemapGenerator';
+
 export const generateXMLSitemap = () => {
   const baseUrl = 'https://sipbrewery.com';
   const currentDate = new Date().toISOString().split('T')[0];
@@ -11,6 +13,14 @@ export const generateXMLSitemap = () => {
     { url: '/contact', priority: '0.6', changefreq: 'monthly' },
     { url: '/terms', priority: '0.5', changefreq: 'yearly' },
     { url: '/privacy', priority: '0.5', changefreq: 'yearly' },
+    
+    // Blog articles with higher priority
+    { url: '/blog/hdb-financial-services-ipo-analysis', priority: '0.9', changefreq: 'weekly' },
+    { url: '/blog/veeda-clinical-research-ipo-analysis', priority: '0.9', changefreq: 'weekly' },
+    { url: '/blog/nbfc-sector-analysis-india-2025', priority: '0.9', changefreq: 'weekly' },
+    { url: '/blog/how-fund-managers-make-money-mutual-funds', priority: '0.9', changefreq: 'weekly' },
+    { url: '/blog/ipo-analysis-guide', priority: '0.9', changefreq: 'weekly' },
+    { url: '/blog/healthcare-sector-outlook', priority: '0.9', changefreq: 'weekly' },
     
     // Popular mutual fund pages
     { url: '/fund/hdfc-top-100-fund', priority: '0.8', changefreq: 'daily' },
@@ -49,4 +59,25 @@ export const downloadSitemap = () => {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+};
+
+// Function to download both regular and news sitemaps
+export const downloadAllSitemaps = () => {
+  // Download regular sitemap
+  downloadSitemap();
+  
+  // Download news sitemap
+  const articles = getNewsArticles();
+  const newsXmlContent = generateNewsSitemap(articles);
+  const newsBlob = new Blob([newsXmlContent], { type: 'application/xml' });
+  const newsUrl = URL.createObjectURL(newsBlob);
+  const newsLink = document.createElement('a');
+  newsLink.href = newsUrl;
+  newsLink.download = 'news-sitemap.xml';
+  document.body.appendChild(newsLink);
+  newsLink.click();
+  document.body.removeChild(newsLink);
+  URL.revokeObjectURL(newsUrl);
+  
+  console.log('📄 Both sitemaps downloaded successfully');
 };

@@ -15,6 +15,7 @@ interface ConsolidatedSEOHeadProps {
   articlePublisher?: string;
   publishedTime?: string;
   modifiedTime?: string;
+  isNewsArticle?: boolean;
 }
 
 const ConsolidatedSEOHead = ({ 
@@ -28,7 +29,8 @@ const ConsolidatedSEOHead = ({
   articleAuthor,
   articlePublisher,
   publishedTime,
-  modifiedTime
+  modifiedTime,
+  isNewsArticle = false
 }: ConsolidatedSEOHeadProps) => {
   const location = useLocation();
   
@@ -44,6 +46,38 @@ const ConsolidatedSEOHead = ({
   if (!finalOgImage.startsWith('http')) {
     finalOgImage = `https://sipbrewery.com${finalOgImage}`;
   }
+
+  // Generate NewsArticle schema if this is a news article
+  const newsArticleSchema = isNewsArticle ? {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": finalTitle,
+    "datePublished": publishedTime || new Date().toISOString(),
+    "dateModified": modifiedTime || publishedTime || new Date().toISOString(),
+    "author": {
+      "@type": "Organization",
+      "name": articleAuthor || "SIP Brewery Research Team"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "SIP Brewery",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+      }
+    },
+    "description": finalDescription,
+    "image": finalOgImage,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": finalCanonicalUrl
+    },
+    "articleSection": "Investment Analysis",
+    "inLanguage": "en-IN"
+  } : null;
+
+  // Use NewsArticle schema if available, otherwise use provided structured data
+  const finalStructuredData = newsArticleSchema || structuredData;
 
   // FORENSIC DEBUGGING - Enhanced logging
   console.log('🔬 FORENSIC AUDIT - ConsolidatedSEOHead:', {
@@ -72,6 +106,10 @@ const ConsolidatedSEOHead = ({
       'og:image': finalOgImage,
       'og:url': finalCanonicalUrl,
       'og:type': ogType
+    },
+    'NEWS_ARTICLE': {
+      isNewsArticle,
+      hasNewsSchema: !!newsArticleSchema
     }
   });
 
@@ -144,9 +182,9 @@ const ConsolidatedSEOHead = ({
       <meta httpEquiv="Cache-Control" content="public, max-age=3600" />
 
       {/* Structured Data */}
-      {structuredData && (
+      {finalStructuredData && (
         <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
+          {JSON.stringify(finalStructuredData)}
         </script>
       )}
     </Helmet>
