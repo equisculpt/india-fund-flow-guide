@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import ContactSubmissionsTab from './ContactSubmissionsTab';
+import ChatSupportTab from './ChatSupportTab';
 
 const AdminPanel = () => {
   const [profiles, setProfiles] = useState([]);
@@ -66,7 +67,7 @@ const AdminPanel = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-10">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="funds">Funds</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
@@ -76,6 +77,7 @@ const AdminPanel = () => {
           <TabsTrigger value="blogs">Blogs</TabsTrigger>
           <TabsTrigger value="analysis">Analysis</TabsTrigger>
           <TabsTrigger value="contact">Contact</TabsTrigger>
+          <TabsTrigger value="chat">Chat Support</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -190,6 +192,10 @@ const AdminPanel = () => {
 
         <TabsContent value="contact">
           <ContactSubmissionsTab />
+        </TabsContent>
+
+        <TabsContent value="chat">
+          <ChatSupportTab />
         </TabsContent>
       </Tabs>
     </div>
