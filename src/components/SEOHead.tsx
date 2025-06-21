@@ -1,5 +1,6 @@
 
 import { Helmet } from 'react-helmet-async';
+import { useLocation } from 'react-router-dom';
 
 interface SEOHeadProps {
   title?: string;
@@ -30,16 +31,29 @@ const SEOHead = ({
   publishedTime,
   modifiedTime
 }: SEOHeadProps) => {
-  // CRITICAL: Always prioritize the provided canonicalUrl - no fallback to window location
-  const finalUrl = canonicalUrl || 'https://sipbrewery.com';
+  const location = useLocation();
   
-  // Add debugging to track which SEOHead is rendering
+  // Generate dynamic canonical URL if not provided
+  const generateCanonicalUrl = () => {
+    if (canonicalUrl) return canonicalUrl;
+    
+    // For React Router, build the URL from current location
+    const baseUrl = 'https://sipbrewery.com';
+    const currentPath = location.pathname;
+    
+    return `${baseUrl}${currentPath}`;
+  };
+  
+  const finalUrl = generateCanonicalUrl();
+  
+  // Enhanced debugging
   console.log('SEOHead RENDER DEBUG:', {
     title: title.substring(0, 50) + '...',
     providedCanonicalUrl: canonicalUrl,
+    currentPath: location.pathname,
     finalUrlUsed: finalUrl,
     isFromBlogPage: title.includes('Veeda'),
-    renderSource: canonicalUrl ? 'Blog Page' : 'Layout Default'
+    renderSource: canonicalUrl ? 'Explicit URL' : 'Generated from Router'
   });
   
   // Use a properly sized default image - Facebook requires minimum 200x200
