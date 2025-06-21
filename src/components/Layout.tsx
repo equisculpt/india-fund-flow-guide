@@ -12,8 +12,15 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
-  // Don't render default SEO for blog pages as they have their own SEOHead
-  const shouldRenderDefaultSEO = !location.pathname.startsWith('/blog/');
+  // More specific check - don't render default SEO for any blog routes or pages with their own SEO
+  const shouldRenderDefaultSEO = !location.pathname.startsWith('/blog/') && 
+                                  !location.pathname.includes('ipo-analysis');
+  
+  console.log('Layout SEO Decision:', {
+    currentPath: location.pathname,
+    shouldRenderDefaultSEO,
+    reason: location.pathname.startsWith('/blog/') ? 'Blog route detected' : 'Other route'
+  });
 
   return (
     <div className="min-h-screen flex flex-col">
