@@ -23,7 +23,8 @@ const queryClient = new QueryClient();
 // Custom component to handle route exclusions
 const AppRoutes = () => {
   // Don't render React routes for static files
-  if (window.location.pathname.endsWith('.xml') || window.location.pathname.endsWith('.txt')) {
+  const pathname = window.location.pathname;
+  if (pathname.endsWith('.xml') || pathname.endsWith('.txt') || pathname === '/sitemap.xml' || pathname === '/news-sitemap.xml' || pathname === '/robots.txt') {
     return null;
   }
 
