@@ -1,6 +1,6 @@
 
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -28,6 +28,9 @@ import AdminPortalPage from "./pages/AdminPortalPage";
 import AgentHomePage from "./pages/AgentHomePage";
 import WhatsAppBotPage from "./pages/WhatsAppBotPage";
 import ChatPage from "./pages/ChatPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import RiskDisclosurePage from "./pages/RiskDisclosurePage";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +66,9 @@ function App() {
                     <Route path="/agent" element={<AgentHomePage />} />
                     <Route path="/whatsapp-bot" element={<WhatsAppBotPage />} />
                     <Route path="/chat" element={<ChatPage />} />
+                    <Route path="/terms" element={<TermsOfServicePage />} />
+                    <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                    <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
                   </Routes>
                 </Layout>
               </BrowserRouter>
