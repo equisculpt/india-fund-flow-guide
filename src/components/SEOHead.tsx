@@ -1,3 +1,4 @@
+
 import { Helmet } from 'react-helmet-async';
 
 interface SEOHeadProps {
@@ -29,7 +30,7 @@ const SEOHead = ({
   publishedTime,
   modifiedTime
 }: SEOHeadProps) => {
-  // Build the correct URL - prioritize canonicalUrl, then construct from current location
+  // Force the correct URL - always use current page URL if canonicalUrl is not provided
   const getCurrentUrl = () => {
     // If canonicalUrl is explicitly provided, use it
     if (canonicalUrl) {
@@ -37,12 +38,14 @@ const SEOHead = ({
       return canonicalUrl;
     }
     
+    // Always construct from current location if no canonicalUrl provided
     if (typeof window !== 'undefined') {
-      const cleanUrl = `${window.location.origin}${window.location.pathname}`;
-      console.log('SEOHead constructed URL from window location:', cleanUrl);
-      return cleanUrl;
+      const fullUrl = `${window.location.origin}${window.location.pathname}`;
+      console.log('SEOHead constructing URL from current location:', fullUrl);
+      return fullUrl;
     }
     
+    // Fallback
     return 'https://sipbrewery.com';
   };
 
@@ -60,7 +63,12 @@ const SEOHead = ({
     absoluteOgImage, 
     ogType,
     providedCanonicalUrl: canonicalUrl,
-    finalCanonicalUrl: currentUrl
+    finalCanonicalUrl: currentUrl,
+    windowLocation: typeof window !== 'undefined' ? {
+      href: window.location.href,
+      pathname: window.location.pathname,
+      origin: window.location.origin
+    } : 'not available'
   });
 
   const defaultStructuredData = {
@@ -104,9 +112,9 @@ const SEOHead = ({
 
   return (
     <Helmet>
-      {/* Force clear any existing meta tags first */}
-      <meta property="og:url" content="" />
-      <link rel="canonical" href="" />
+      {/* Force clear existing meta tags */}
+      <meta property="og:url" />
+      <link rel="canonical" />
       
       {/* Basic meta tags */}
       <title>{title}</title>
@@ -116,10 +124,10 @@ const SEOHead = ({
       <meta name="robots" content="index, follow" />
       <meta name="author" content={articleAuthor} />
       
-      {/* Canonical URL */}
+      {/* Canonical URL - Force current page URL */}
       <link rel="canonical" href={currentUrl} />
       
-      {/* Open Graph tags */}
+      {/* Open Graph tags - Force current page URL */}
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
