@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEOHead from '@/components/SEOHead';
 
 const NBFCSectorBlogSEO = () => {
   const canonicalUrl = "https://sipbrewery.com/blog/nbfc-sector-analysis-india-2025";
@@ -9,35 +9,53 @@ const NBFCSectorBlogSEO = () => {
   const keywords = "NBFC sector India, non-banking financial companies, NBFC analysis 2025, NBFC investment guide, RBI NBFC regulations, NBFC vs banks, NBFC stocks India, financial services sector";
   const ogImage = "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=630&fit=crop&crop=center&auto=format&q=80";
 
+  console.log('🎯 NBFC Blog SEO Setup:', {
+    title,
+    canonicalUrl,
+    description: description.substring(0, 100) + '...',
+    ogImage
+  });
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "description": description,
+    "author": {
+      "@type": "Organization",
+      "name": "SIP Brewery"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "SIP Brewery",
+      "logo": {
+        "@type": "ImageObject",
+        "url": ogImage
+      }
+    },
+    "datePublished": new Date().toISOString(),
+    "dateModified": new Date().toISOString(),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": canonicalUrl
+    },
+    "image": ogImage
+  };
+
   return (
-    <Helmet>
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={keywords} />
-      <link rel="canonical" href={canonicalUrl} />
-      
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content="article" />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:image" content={ogImage} />
-      <meta property="og:site_name" content="SIP Brewery" />
-      
-      {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
-      
-      {/* Additional SEO */}
-      <meta name="robots" content="index, follow" />
-      <meta name="author" content="SIP Brewery Research Team" />
-      <meta property="article:author" content="SIP Brewery Research Team" />
-      <meta property="article:publisher" content="SIP Brewery" />
-      <meta property="article:section" content="Sector Analysis" />
-      <meta property="article:tag" content="NBFC, Financial Services, Investment Analysis, India" />
-    </Helmet>
+    <SEOHead
+      title={title}
+      description={description}
+      keywords={keywords}
+      canonicalUrl={canonicalUrl}
+      ogImage={ogImage}
+      ogType="article"
+      articleAuthor="SIP Brewery Research Team"
+      articlePublisher="SIP Brewery"
+      publishedTime={new Date().toISOString()}
+      modifiedTime={new Date().toISOString()}
+      structuredData={structuredData}
+    />
   );
 };
 
