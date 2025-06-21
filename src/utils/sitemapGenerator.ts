@@ -6,42 +6,40 @@ export const generateXMLSitemap = () => {
   const currentDate = new Date().toISOString().split('T')[0];
   
   const urls = [
-    { url: '/', priority: '1.0', changefreq: 'daily' },
-    { url: '/fund-comparison', priority: '0.9', changefreq: 'daily' },
-    { url: '/public-funds', priority: '0.9', changefreq: 'daily' },
-    { url: '/about', priority: '0.7', changefreq: 'monthly' },
-    { url: '/contact', priority: '0.6', changefreq: 'monthly' },
-    { url: '/terms', priority: '0.5', changefreq: 'yearly' },
-    { url: '/privacy', priority: '0.5', changefreq: 'yearly' },
+    { url: '/', lastmod: '2025-06-21' },
+    { url: '/fund-comparison', lastmod: '2025-06-21' },
+    { url: '/public-funds', lastmod: '2025-06-21' },
+    { url: '/about', lastmod: '2025-06-19' },
+    { url: '/contact', lastmod: '2025-06-19' },
+    { url: '/terms', lastmod: '2025-06-19' },
+    { url: '/privacy', lastmod: '2025-06-19' },
     
-    // Blog articles with higher priority
-    { url: '/blog/hdb-financial-services-ipo-analysis', priority: '0.9', changefreq: 'weekly' },
-    { url: '/blog/veeda-clinical-research-ipo-analysis', priority: '0.9', changefreq: 'weekly' },
-    { url: '/blog/nbfc-sector-analysis-india-2025', priority: '0.9', changefreq: 'weekly' },
-    { url: '/blog/how-fund-managers-make-money-mutual-funds', priority: '0.9', changefreq: 'weekly' },
-    { url: '/blog/ipo-analysis-guide', priority: '0.9', changefreq: 'weekly' },
-    { url: '/blog/healthcare-sector-outlook', priority: '0.9', changefreq: 'weekly' },
+    // Blog articles with actual publication dates
+    { url: '/blog/hdb-financial-services-ipo-analysis', lastmod: '2025-06-21' },
+    { url: '/blog/veeda-clinical-research-ipo-analysis', lastmod: '2025-06-21' },
+    { url: '/blog/nbfc-sector-analysis-india-2025', lastmod: '2025-06-21' },
+    { url: '/blog/how-fund-managers-make-money-mutual-funds', lastmod: '2025-06-20' },
+    { url: '/blog/ipo-analysis-guide', lastmod: '2025-06-21' },
+    { url: '/blog/healthcare-sector-outlook', lastmod: '2025-06-21' },
     
     // Popular mutual fund pages
-    { url: '/fund/hdfc-top-100-fund', priority: '0.8', changefreq: 'daily' },
-    { url: '/fund/sbi-small-cap-fund', priority: '0.8', changefreq: 'daily' },
-    { url: '/fund/icici-prudential-bluechip-fund', priority: '0.8', changefreq: 'daily' },
-    { url: '/fund/axis-long-term-equity-fund', priority: '0.8', changefreq: 'daily' },
-    { url: '/fund/mirae-asset-large-cap-fund', priority: '0.8', changefreq: 'daily' },
-    { url: '/fund/parag-parikh-flexi-cap-fund', priority: '0.8', changefreq: 'daily' },
-    { url: '/fund/motilal-oswal-nasdaq-100-fund', priority: '0.8', changefreq: 'daily' },
-    { url: '/fund/kotak-emerging-equity-fund', priority: '0.8', changefreq: 'daily' },
+    { url: '/fund/hdfc-top-100-fund', lastmod: '2025-06-20' },
+    { url: '/fund/sbi-small-cap-fund', lastmod: '2025-06-20' },
+    { url: '/fund/icici-prudential-bluechip-fund', lastmod: '2025-06-20' },
+    { url: '/fund/axis-long-term-equity-fund', lastmod: '2025-06-20' },
+    { url: '/fund/mirae-asset-large-cap-fund', lastmod: '2025-06-20' },
+    { url: '/fund/parag-parikh-flexi-cap-fund', lastmod: '2025-06-20' },
+    { url: '/fund/motilal-oswal-nasdaq-100-fund', lastmod: '2025-06-20' },
+    { url: '/fund/kotak-emerging-equity-fund', lastmod: '2025-06-20' },
   ];
 
   const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
   const xmlFooter = '</urlset>';
   
-  const urlEntries = urls.map(({ url, priority, changefreq }) => `
+  const urlEntries = urls.map(({ url, lastmod }) => `
   <url>
     <loc>${baseUrl}${url}</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
+    <lastmod>${lastmod}</lastmod>
   </url>`).join('');
 
   return `${xmlHeader}${urlEntries}\n${xmlFooter}`;
@@ -59,6 +57,8 @@ export const downloadSitemap = () => {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+  
+  console.log('📄 Updated sitemap downloaded (Google compliant)');
 };
 
 // Function to download both regular and news sitemaps
@@ -79,5 +79,5 @@ export const downloadAllSitemaps = () => {
   document.body.removeChild(newsLink);
   URL.revokeObjectURL(newsUrl);
   
-  console.log('📄 Both sitemaps downloaded successfully');
+  console.log('📄 Both sitemaps downloaded successfully (Google compliant)');
 };

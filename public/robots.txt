@@ -31,6 +31,6 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-# Sitemap locations
+# Sitemap locations (Google's new requirement)
 Sitemap: https://sipbrewery.com/sitemap.xml
 Sitemap: https://sipbrewery.com/news-sitemap.xml
