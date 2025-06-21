@@ -12,14 +12,13 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
-  // Always render SEO component - it will handle dynamic content generation
-  // Blog pages can override with their own SEOHead if needed
-  const shouldRenderSEO = true;
+  // Skip SEO rendering for blog pages - they handle their own SEO
+  const shouldRenderSEO = !location.pathname.startsWith('/blog/');
   
   console.log('Layout SEO Decision:', {
     currentPath: location.pathname,
     shouldRenderSEO,
-    reason: 'Dynamic SEO component handles all routes'
+    reason: shouldRenderSEO ? 'Default SEO for non-blog pages' : 'Blog page handles own SEO'
   });
 
   return (
