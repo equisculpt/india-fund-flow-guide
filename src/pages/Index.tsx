@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import SEOContentSection from '@/components/index/SEOContentSection';
 import LazyLoadedSections from '@/components/index/LazyLoadedSections';
@@ -14,7 +15,7 @@ const Index = () => {
   };
 
   return (
-    <>
+    <Layout>
       {/* Hero Section - Critical above-the-fold content */}
       <div className="critical-content">
         <HeroSection />
@@ -31,7 +32,7 @@ const Index = () => {
       
       {/* FAQ Section - Optimized for mobile */}
       <FAQSection />
-    </>
+    </Layout>
   );
 };
 
