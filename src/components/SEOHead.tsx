@@ -29,28 +29,37 @@ const SEOHead = ({
   publishedTime,
   modifiedTime
 }: SEOHeadProps) => {
-  // Get current URL properly - use provided canonicalUrl or construct from window.location
+  // Get current URL properly - ALWAYS use current page URL, never fallback to homepage
   const getCurrentUrl = () => {
     if (canonicalUrl) return canonicalUrl;
     
     if (typeof window !== 'undefined') {
-      // Use the full current URL including path - this ensures blog posts get their correct URL
-      const currentUrl = window.location.origin + window.location.pathname;
+      // Always use the current page's full URL
+      const currentUrl = window.location.href;
+      console.log('SEOHead getCurrentUrl:', currentUrl);
       return currentUrl;
     }
     
-    // Fallback only for homepage
+    // This should never happen in practice
     return 'https://sipbrewery.com';
   };
 
   const currentUrl = getCurrentUrl();
   
-  // Use a much larger image that meets Facebook's requirements (minimum 1200x630 recommended)
+  // ALWAYS use the large image - never use the small logo
   const defaultOgImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format";
   const finalOgImage = ogImage || defaultOgImage;
   const absoluteOgImage = finalOgImage.startsWith('http') ? finalOgImage : `https://sipbrewery.com${finalOgImage}`;
 
-  console.log('SEOHead - Dynamic meta tags loaded:', { title, description, currentUrl, absoluteOgImage, ogType });
+  console.log('SEOHead - Meta tags:', { 
+    title, 
+    description, 
+    currentUrl, 
+    absoluteOgImage, 
+    ogType,
+    canonicalUrl,
+    windowLocation: typeof window !== 'undefined' ? window.location.href : 'undefined'
+  });
 
   const defaultStructuredData = {
     "@context": "https://schema.org",
@@ -101,10 +110,10 @@ const SEOHead = ({
       <meta name="robots" content="index, follow" />
       <meta name="author" content={articleAuthor} />
       
-      {/* Canonical URL - now uses current URL instead of hardcoded homepage */}
+      {/* Canonical URL - ALWAYS uses current page URL */}
       <link rel="canonical" href={currentUrl} />
       
-      {/* Open Graph tags - Essential for WhatsApp */}
+      {/* Open Graph tags - Essential for WhatsApp and Facebook */}
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
