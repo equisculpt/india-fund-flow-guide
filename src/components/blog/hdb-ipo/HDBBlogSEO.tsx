@@ -1,6 +1,6 @@
 
 import React from 'react';
-import SEOHead from '@/components/SEOHead';
+import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
 
 const HDBBlogSEO = () => {
   const canonicalUrl = "https://sipbrewery.com/blog/hdb-financial-services-ipo-analysis";
@@ -9,10 +9,12 @@ const HDBBlogSEO = () => {
   const keywords = "HDB Financial Services IPO, NBFC IPO India, HDB IPO analysis, HDFC Bank subsidiary IPO, financial services IPO 2025, SEBI compliant IPO analysis, retail lending IPO review";
   const ogImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
 
-  console.log('🎯 HDB Blog SEO Setup:', {
-    title,
+  console.log('🎯 HDB Blog SEO Setup - FIXED VERSION:', {
+    title: title.substring(0, 60) + '...',
+    titleLength: title.length,
     canonicalUrl,
     description: description.substring(0, 100) + '...',
+    descLength: description.length,
     ogImage
   });
 
@@ -43,7 +45,7 @@ const HDBBlogSEO = () => {
   };
 
   return (
-    <SEOHead
+    <ConsolidatedSEOHead
       title={title}
       description={description}
       keywords={keywords}

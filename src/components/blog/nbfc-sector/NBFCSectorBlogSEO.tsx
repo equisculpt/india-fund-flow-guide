@@ -1,6 +1,6 @@
 
 import React from 'react';
-import SEOHead from '@/components/SEOHead';
+import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
 
 const NBFCSectorBlogSEO = () => {
   const canonicalUrl = "https://sipbrewery.com/blog/nbfc-sector-analysis-india-2025";
@@ -9,10 +9,12 @@ const NBFCSectorBlogSEO = () => {
   const keywords = "NBFC sector India, non-banking financial companies, NBFC analysis 2025, NBFC investment guide, RBI NBFC regulations, NBFC vs banks, NBFC stocks India, financial services sector";
   const ogImage = "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=630&fit=crop&crop=center&auto=format&q=80";
 
-  console.log('🎯 NBFC Blog SEO Setup:', {
-    title,
+  console.log('🎯 NBFC Blog SEO Setup - FIXED VERSION:', {
+    title: title.substring(0, 60) + '...',
+    titleLength: title.length,
     canonicalUrl,
     description: description.substring(0, 100) + '...',
+    descLength: description.length,
     ogImage
   });
 
@@ -43,7 +45,7 @@ const NBFCSectorBlogSEO = () => {
   };
 
   return (
-    <SEOHead
+    <ConsolidatedSEOHead
       title={title}
       description={description}
       keywords={keywords}

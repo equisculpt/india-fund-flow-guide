@@ -1,6 +1,6 @@
 
 import React from 'react';
-import SEOHead from '@/components/SEOHead';
+import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
 
 const VeedaBlogSEO = () => {
   const canonicalUrl = "https://sipbrewery.com/blog/veeda-clinical-research-ipo-analysis";
@@ -9,10 +9,12 @@ const VeedaBlogSEO = () => {
   const keywords = "Veeda Clinical Research IPO, CRO IPO India, clinical research IPO analysis, healthcare IPO 2024, biotech IPO review, SEBI compliant IPO analysis, contract research organization stocks";
   const ogImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
 
-  console.log('🎯 Veeda Blog SEO Setup:', {
-    title,
+  console.log('🎯 Veeda Blog SEO Setup - FIXED VERSION:', {
+    title: title.substring(0, 60) + '...',
+    titleLength: title.length,
     canonicalUrl,
     description: description.substring(0, 100) + '...',
+    descLength: description.length,
     ogImage
   });
 
@@ -43,7 +45,7 @@ const VeedaBlogSEO = () => {
   };
 
   return (
-    <SEOHead
+    <ConsolidatedSEOHead
       title={title}
       description={description}
       keywords={keywords}
