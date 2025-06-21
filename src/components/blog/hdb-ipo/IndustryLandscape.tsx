@@ -10,6 +10,7 @@ const IndustryLandscape = () => {
     { company: 'Mahindra Finance', aum: 110000, marketShare: 3.4, segment: 'Rural Finance' },
     { company: 'Cholamandalam', aum: 100000, marketShare: 3.1, segment: 'Vehicle Finance' },
     { company: 'Tata Capital', aum: 80000, marketShare: 2.4, segment: 'Diversified' },
+    { company: 'L&T Finance', aum: 75000, marketShare: 2.3, segment: 'Infrastructure' },
     { company: 'HDB Financial', aum: 70037, marketShare: 2.1, segment: 'Bank Subsidiary' }
   ];
 
@@ -73,7 +74,7 @@ const IndustryLandscape = () => {
           <div className="grid md:grid-cols-4 gap-4">
             <div className="p-4 bg-purple-50 rounded-lg text-center">
               <h4 className="font-semibold text-purple-800 mb-2">Market Ranking</h4>
-              <div className="text-2xl font-bold text-purple-600 mb-1">#6</div>
+              <div className="text-2xl font-bold text-purple-600 mb-1">#7</div>
               <div className="text-sm text-purple-700">By AUM Size</div>
               <div className="text-xs text-purple-600 mt-1">Among top NBFCs</div>
             </div>
@@ -116,7 +117,7 @@ const IndustryLandscape = () => {
               <div>
                 <div className="font-semibold text-yellow-900 mb-2">Competitive Challenges:</div>
                 <ul className="text-yellow-800 space-y-1">
-                  <li>• Smaller scale vs Bajaj Finance, Shriram</li>
+                  <li>• Smaller scale vs top 6 NBFCs (Bajaj, Shriram, etc.)</li>
                   <li>• Higher operational costs due to branch model</li>
                   <li>• Intense competition in core segments</li>
                   <li>• Need for digital transformation acceleration</li>
