@@ -31,5 +31,6 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-# Sitemap location
+# Sitemap locations
 Sitemap: https://sipbrewery.com/sitemap.xml
+Sitemap: https://sipbrewery.com/news-sitemap.xml

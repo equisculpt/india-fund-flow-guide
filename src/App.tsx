@@ -1,96 +1,68 @@
-
-import React, { Suspense } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { Toaster } from 'sonner';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-import Layout from '@/components/Layout';
-import { SupabaseAuthProvider } from '@/contexts/SupabaseAuthContext';
-import { EnhancedAuthProvider } from '@/contexts/EnhancedAuthContext';
-import { LanguageProvider } from '@/contexts/LanguageContext';
-import { BrandingProvider } from '@/contexts/BrandingContext';
-import Index from '@/pages/Index';
-import ContactPage from '@/pages/ContactPage';
-import UserDashboard from '@/pages/UserDashboard';
-import CommunityPage from '@/pages/CommunityPage';
-import NotFound from '@/pages/NotFound';
-import TermsOfServicePage from '@/pages/TermsOfServicePage';
-import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
-import CommunityBlogs from '@/components/community/CommunityBlogs';
-import CreateBlogModal from '@/components/community/CreateBlogModal';
-import ChatPage from '@/pages/ChatPage';
-import PublicFundsPage from '@/pages/PublicFundsPage';
-import FundComparisonPage from '@/pages/FundComparisonPage';
-import SIPCalculatorPage from '@/pages/SIPCalculatorPage';
-
-// Blog imports
-import VeedaClinicalResearchIPOBlog from './pages/VeedaClinicalResearchIPOBlog';
-import IPOAnalysisGuideBlog from './pages/IPOAnalysisGuideBlog';
-import HealthcareSectorOutlookBlog from './pages/HealthcareSectorOutlookBlog';
-import SEBIGuidelinesBlog from './pages/SEBIGuidelinesBlog';
-import HowFundManagersMakeMoneyBlog from './pages/HowFundManagersMakeMoneyBlog';
-import HowMutualFundsWorkBlog from './pages/HowMutualFundsWorkBlog';
-import MutualFundBenefitsBlog from './pages/MutualFundBenefitsBlog';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { LanguageProvider } from './contexts/LanguageContext';
+import { BrandingProvider } from './contexts/BrandingContext';
+import { SupabaseAuthProvider } from './contexts/SupabaseAuthContext';
+import PublicFundsPage from './pages/PublicFundsPage';
+import FundComparisonPage from './pages/FundComparisonPage';
+import FundDetailsPage from './pages/FundDetailsPage';
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import NotFoundPage from './pages/NotFoundPage';
+import BlogPage from './pages/BlogPage';
 import HDBFinancialServicesIPOBlog from './pages/HDBFinancialServicesIPOBlog';
-import NBFCSectorDeepDiveBlog from './pages/NBFCSectorDeepDiveBlog';
+import NBFCSectorBlog from './pages/NBFCSectorBlog';
+import VeedaClinicalResearchIPOBlog from './pages/VeedaClinicalResearchIPOBlog';
+import FundManagersBlog from './pages/FundManagersBlog';
+import IPOAnalysisGuideBlog from './pages/IPOAnalysisGuideBlog';
+import HealthcareSectorBlog from './pages/HealthcareSectorBlog';
+import NewsSitemapPage from './pages/NewsSitemapPage';
 
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      gcTime: 1000 * 60 * 10, // 10 minutes
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <SupabaseAuthProvider>
-            <EnhancedAuthProvider>
-              <LanguageProvider>
-                <BrandingProvider>
-                  <Layout>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/contact" element={<ContactPage />} />
-                      <Route path="/dashboard" element={<UserDashboard />} />
-                      <Route path="/community" element={<CommunityPage />} />
-                      <Route path="/community/blogs" element={<CommunityBlogs />} />
-                      <Route path="/community/create" element={<CreateBlogModal isOpen={true} onClose={() => {}} />} />
-                      <Route path="/terms" element={<TermsOfServicePage />} />
-                      <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                      <Route path="/chat" element={<ChatPage />} />
-                      <Route path="/public-funds" element={<PublicFundsPage />} />
-                      <Route path="/fund-comparison" element={<FundComparisonPage />} />
-                      <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-                      
-                      {/* Blog Routes */}
-                      <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
-                      <Route path="/blog/ipo-analysis-guide" element={<IPOAnalysisGuideBlog />} />
-                      <Route path="/blog/healthcare-sector-outlook" element={<HealthcareSectorOutlookBlog />} />
-                      <Route path="/blog/sebi-guidelines" element={<SEBIGuidelinesBlog />} />
-                      <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
-                      <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
-                      <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
-                      <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
-                      <Route path="/blog/nbfc-sector-analysis-india-2025" element={<NBFCSectorDeepDiveBlog />} />
-                      <Route path="/blog/nbfc-sector-outlook" element={<NBFCSectorDeepDiveBlog />} />
-                      
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Layout>
-                  <Toaster />
-                </BrandingProvider>
-              </LanguageProvider>
-            </EnhancedAuthProvider>
-          </SupabaseAuthProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
+      <BrowserRouter>
+        <LanguageProvider>
+          <BrandingProvider>
+            <SupabaseAuthProvider>
+              <QueryClientProvider client={queryClient}>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                  <Route path="/public-funds" element={<PublicFundsPage />} />
+                  <Route path="/fund/:fundId" element={<FundDetailsPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  
+                  {/* Blog Routes */}
+                  <Route path="/blog" element={<BlogPage />} />
+                  <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
+                  <Route path="/blog/nbfc-sector-analysis-india-2025" element={<NBFCSectorBlog />} />
+                  <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
+                  <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<FundManagersBlog />} />
+                  <Route path="/blog/ipo-analysis-guide" element={<IPOAnalysisGuideBlog />} />
+                  <Route path="/blog/healthcare-sector-outlook" element={<HealthcareSectorBlog />} />
+                  
+                  {/* Dynamic News Sitemap Route */}
+                  <Route path="/news-sitemap.xml" element={<NewsSitemapPage />} />
+                  
+                  {/* 404 Route */}
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </QueryClientProvider>
+            </SupabaseAuthProvider>
+          </BrandingProvider>
+        </LanguageProvider>
+      </BrowserRouter>
     </HelmetProvider>
   );
 }
