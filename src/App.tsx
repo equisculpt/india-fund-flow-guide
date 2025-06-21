@@ -23,6 +23,8 @@ import ChatPage from '@/pages/ChatPage';
 import PublicFundsPage from '@/pages/PublicFundsPage';
 import FundComparisonPage from '@/pages/FundComparisonPage';
 import SIPCalculatorPage from '@/pages/SIPCalculatorPage';
+
+// Blog imports
 import VeedaClinicalResearchIPOBlog from './pages/VeedaClinicalResearchIPOBlog';
 import IPOAnalysisGuideBlog from './pages/IPOAnalysisGuideBlog';
 import HealthcareSectorOutlookBlog from './pages/HealthcareSectorOutlookBlog';
@@ -64,6 +66,8 @@ function App() {
                       <Route path="/public-funds" element={<PublicFundsPage />} />
                       <Route path="/fund-comparison" element={<FundComparisonPage />} />
                       <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+                      
+                      {/* Blog Routes */}
                       <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
                       <Route path="/blog/ipo-analysis-guide" element={<IPOAnalysisGuideBlog />} />
                       <Route path="/blog/healthcare-sector-outlook" element={<HealthcareSectorOutlookBlog />} />
@@ -71,6 +75,7 @@ function App() {
                       <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
                       <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
                       <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
+                      
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
