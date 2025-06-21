@@ -24,11 +24,12 @@ const SEOHead = ({
   const currentUrl = canonicalUrl || (typeof window !== 'undefined' ? window.location.href : 'https://sipbrewery.com');
   const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://sipbrewery.com${ogImage}`;
   
-  // Force cache busting for dynamic content
-  const cacheBuster = isDynamic ? `?v=${Date.now()}` : '';
+  // Force unique cache busting for dynamic content
+  const timestamp = Date.now();
+  const cacheBuster = isDynamic ? `?v=${timestamp}&t=${Math.random()}` : '';
   const finalImageUrl = `${absoluteOgImage}${cacheBuster}`;
 
-  console.log('SEOHead props received:', { title, description, isDynamic, currentUrl });
+  console.log('SEOHead props received:', { title, description, isDynamic, currentUrl, finalImageUrl });
 
   const defaultStructuredData = {
     "@context": "https://schema.org",
@@ -77,92 +78,85 @@ const SEOHead = ({
   } : null;
 
   return (
-    <Helmet>
-      {/* Clear any existing meta tags first */}
-      <meta name="title" content="" />
-      <meta property="og:title" content="" />
-      <meta property="og:description" content="" />
-      <meta name="twitter:title" content="" />
-      <meta name="twitter:description" content="" />
+    <>
+      <Helmet key={`seo-${timestamp}`}>
+        {/* Primary Meta Tags - MUST come first */}
+        <title key="title">{title}</title>
+        <meta key="description" name="description" content={description} />
+        <meta key="keywords" name="keywords" content={keywords} />
+        <link key="canonical" rel="canonical" href={currentUrl} />
+        
+        {/* Open Graph Meta Tags - Critical for WhatsApp, EXACT order matters */}
+        <meta key="og:type" property="og:type" content={isDynamic ? "article" : "website"} />
+        <meta key="og:site_name" property="og:site_name" content="SIP Brewery" />
+        <meta key="og:title" property="og:title" content={title} />
+        <meta key="og:description" property="og:description" content={description} />
+        <meta key="og:url" property="og:url" content={currentUrl} />
+        <meta key="og:image" property="og:image" content={finalImageUrl} />
+        <meta key="og:image:secure_url" property="og:image:secure_url" content={finalImageUrl} />
+        <meta key="og:image:type" property="og:image:type" content="image/png" />
+        <meta key="og:image:width" property="og:image:width" content="1200" />
+        <meta key="og:image:height" property="og:image:height" content="630" />
+        <meta key="og:image:alt" property="og:image:alt" content={title} />
+        <meta key="og:locale" property="og:locale" content="en_IN" />
+        
+        {/* Twitter Card Meta Tags */}
+        <meta key="twitter:card" name="twitter:card" content="summary_large_image" />
+        <meta key="twitter:site" name="twitter:site" content="@sipbrewery" />
+        <meta key="twitter:creator" name="twitter:creator" content="@sipbrewery" />
+        <meta key="twitter:title" name="twitter:title" content={title} />
+        <meta key="twitter:description" name="twitter:description" content={description} />
+        <meta key="twitter:url" name="twitter:url" content={currentUrl} />
+        <meta key="twitter:image" name="twitter:image" content={finalImageUrl} />
+        <meta key="twitter:image:alt" name="twitter:image:alt" content={title} />
+        
+        {/* Force refresh for dynamic content - Aggressive cache busting */}
+        {isDynamic && (
+          <>
+            <meta key="og:updated_time" property="og:updated_time" content={new Date().toISOString()} />
+            <meta key="cache-control" httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+            <meta key="pragma" httpEquiv="Pragma" content="no-cache" />
+            <meta key="expires" httpEquiv="Expires" content="0" />
+            <meta key="last-modified" httpEquiv="Last-Modified" content={new Date().toUTCString()} />
+            {/* Force WhatsApp to refresh */}
+            <meta key="whatsapp:refresh" property="whatsapp:refresh" content={timestamp.toString()} />
+          </>
+        )}
+        
+        {/* Additional WhatsApp specific optimizations */}
+        <meta key="robots" name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta key="format-detection" name="format-detection" content="telephone=no" />
+        <meta key="viewport" name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        {/* Article specific meta tags for dynamic content */}
+        {isDynamic && (
+          <>
+            <meta key="article:author" property="article:author" content="SIP Brewery Research Team" />
+            <meta key="article:publisher" property="article:publisher" content="https://sipbrewery.com" />
+            <meta key="article:section" property="article:section" content="Investment Analysis" />
+            <meta key="article:published_time" property="article:published_time" content={new Date().toISOString()} />
+            <meta key="article:modified_time" property="article:modified_time" content={new Date().toISOString()} />
+          </>
+        )}
+        
+        {/* Additional meta tags */}
+        <meta key="geo.region" name="geo.region" content="IN" />
+        <meta key="geo.country" name="geo.country" content="India" />
+        <meta key="language" name="language" content="en-IN" />
+        <meta key="author" name="author" content="SIP Brewery" />
+        <meta key="publisher" name="publisher" content="SIP Brewery" />
+        <meta key="googlebot" name="googlebot" content="index, follow" />
+        <meta key="bingbot" name="bingbot" content="index, follow" />
+        <meta key="x-ua-compatible" httpEquiv="X-UA-Compatible" content="IE=edge" />
+      </Helmet>
       
-      {/* Primary Meta Tags - Always set these first */}
-      <title>{title}</title>
-      <meta name="title" content={title} />
-      <meta name="description" content={description} />
-      <meta name="keywords" content={keywords} />
-      <link rel="canonical" href={currentUrl} />
-      
-      {/* Open Graph Meta Tags - Critical for WhatsApp */}
-      <meta property="og:type" content={isDynamic ? "article" : "website"} />
-      <meta property="og:site_name" content="SIP Brewery" />
-      <meta property="og:url" content={currentUrl} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={finalImageUrl} />
-      <meta property="og:image:secure_url" content={finalImageUrl} />
-      <meta property="og:image:type" content="image/png" />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content={title} />
-      <meta property="og:locale" content="en_IN" />
-      
-      {/* Twitter Card Meta Tags */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@sipbrewery" />
-      <meta name="twitter:creator" content="@sipbrewery" />
-      <meta name="twitter:url" content={currentUrl} />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={finalImageUrl} />
-      <meta name="twitter:image:alt" content={title} />
-      
-      {/* WhatsApp specific meta tags */}
-      <meta property="whatsapp:title" content={title} />
-      <meta property="whatsapp:description" content={description} />
-      <meta property="whatsapp:image" content={finalImageUrl} />
-      
-      {/* Force refresh for dynamic content */}
-      {isDynamic && (
-        <>
-          <meta property="og:updated_time" content={new Date().toISOString()} />
-          <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-          <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-          <meta httpEquiv="Pragma" content="no-cache" />
-          <meta httpEquiv="Expires" content="0" />
-        </>
-      )}
-      
-      {/* Additional meta tags */}
-      <meta name="format-detection" content="telephone=no" />
-      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-      <meta name="googlebot" content="index, follow" />
-      <meta name="bingbot" content="index, follow" />
-      
-      {/* Article specific meta tags for dynamic content */}
-      {isDynamic && (
-        <>
-          <meta property="article:author" content="SIP Brewery Research Team" />
-          <meta property="article:publisher" content="https://sipbrewery.com" />
-          <meta property="article:section" content="Investment Analysis" />
-          <meta property="article:published_time" content={new Date().toISOString()} />
-          <meta property="article:modified_time" content={new Date().toISOString()} />
-        </>
-      )}
-      
-      {/* Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify(dynamicStructuredData || structuredData || defaultStructuredData)}
-      </script>
-      
-      {/* Additional meta tags for financial services */}
-      <meta name="geo.region" content="IN" />
-      <meta name="geo.country" content="India" />
-      <meta name="language" content="en-IN" />
-      <meta name="author" content="SIP Brewery" />
-      <meta name="publisher" content="SIP Brewery" />
-    </Helmet>
+      {/* Separate script tag for structured data to avoid conflicts */}
+      <Helmet>
+        <script key="structured-data" type="application/ld+json">
+          {JSON.stringify(dynamicStructuredData || structuredData || defaultStructuredData)}
+        </script>
+      </Helmet>
+    </>
   );
 };
 
