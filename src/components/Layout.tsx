@@ -12,7 +12,7 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
-  // Don't render SEO in Layout for pages that have their own SEO implementation
+  // Pages that have their own SEO implementation - Layout should NOT render SEO for these
   const pagesWithOwnSEO = [
     '/blog/veeda-clinical-research-ipo-analysis',
     '/blog/ipo-analysis-guide',
@@ -27,13 +27,19 @@ const Layout = ({ children }: LayoutProps) => {
   console.log('Layout SEO Decision:', {
     currentPath: location.pathname,
     shouldRenderSEO,
+    pagesWithOwnSEO,
+    isExcluded: pagesWithOwnSEO.includes(location.pathname),
     reason: shouldRenderSEO ? 'No page-specific SEO found' : 'Page has its own SEO - SKIPPED'
   });
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Only render SEO if page doesn't have its own - Blog pages handle their own SEO */}
-      {shouldRenderSEO && <SEOHead isDynamic={true} />}
+      {/* CRITICAL: Only render SEO if page doesn't have its own SEO implementation */}
+      {shouldRenderSEO ? (
+        <SEOHead isDynamic={true} />
+      ) : (
+        <></>
+      )}
       <Header />
       <main className="flex-1">
         {children}

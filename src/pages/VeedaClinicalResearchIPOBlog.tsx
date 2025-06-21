@@ -22,16 +22,17 @@ const VeedaClinicalResearchIPOBlog = () => {
   const keywords = "Veeda Clinical Research IPO, CRO IPO India, clinical research IPO analysis, healthcare IPO 2024, biotech IPO review, SEBI compliant IPO analysis, contract research organization stocks";
   const ogImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
 
-  console.log('Veeda Blog Page - Direct SEO Implementation:', {
+  console.log('Veeda Blog Page - PRIORITY SEO Implementation:', {
     canonicalUrl,
     title: title.substring(0, 50) + '...',
-    currentPath: window.location.pathname
+    currentPath: window.location.pathname,
+    timestamp: new Date().toISOString()
   });
 
   return (
     <>
-      {/* Direct Helmet implementation to override any other SEO */}
-      <Helmet prioritizeSeoTags>
+      {/* HIGHEST PRIORITY - This Helmet should override ANY other SEO */}
+      <Helmet prioritizeSeoTags defer={false}>
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
