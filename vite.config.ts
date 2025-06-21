@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -19,7 +18,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   publicDir: 'public',
-  assetsInclude: ['**/*.txt'],
+  assetsInclude: ['**/*.txt', '**/*.xml'],
   build: {
     assetsDir: 'assets',
     rollupOptions: {
@@ -28,6 +27,13 @@ export default defineConfig(({ mode }) => ({
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+        },
+        assetFileNames: (assetInfo) => {
+          // Keep robots.txt and sitemap.xml in root
+          if (assetInfo.name === 'robots.txt' || assetInfo.name === 'sitemap.xml') {
+            return '[name][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
         },
       },
     },
