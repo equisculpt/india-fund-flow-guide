@@ -9,6 +9,11 @@ interface SEOHeadProps {
   ogImage?: string;
   structuredData?: object;
   isDynamic?: boolean;
+  ogType?: 'website' | 'article';
+  articleAuthor?: string;
+  articlePublisher?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
 }
 
 const SEOHead = ({ 
@@ -18,30 +23,55 @@ const SEOHead = ({
   canonicalUrl,
   ogImage = "/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
   structuredData,
-  isDynamic = false
+  isDynamic = false,
+  ogType = 'website',
+  articleAuthor = "SIP Brewery Research Team",
+  articlePublisher = "SIP Brewery",
+  publishedTime,
+  modifiedTime
 }: SEOHeadProps) => {
   const currentUrl = canonicalUrl || (typeof window !== 'undefined' ? window.location.href : 'https://sipbrewery.com');
   const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://sipbrewery.com${ogImage}`;
 
-  console.log('SEOHead - Meta tags loaded:', { title, description, currentUrl, absoluteOgImage });
+  console.log('SEOHead - Dynamic meta tags loaded:', { title, description, currentUrl, absoluteOgImage, ogType });
 
   const defaultStructuredData = {
     "@context": "https://schema.org",
-    "@type": "FinancialService",
-    "name": "SIP Brewery",
-    "description": "India's leading SEBI registered mutual fund investment platform with professional fund analysis and recommendations",
-    "url": "https://sipbrewery.com",
+    "@type": ogType === 'article' ? "Article" : "FinancialService",
+    "name": title,
+    "headline": title,
+    "description": description,
+    "url": currentUrl,
     "logo": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
-    "sameAs": [
-      "https://twitter.com/sipbrewery",
-      "https://linkedin.com/company/sipbrewery"
-    ],
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "IN"
-    },
-    "serviceType": "Mutual Fund Investment Advisory",
-    "areaServed": "India"
+    "image": absoluteOgImage,
+    ...(ogType === 'article' && {
+      "author": {
+        "@type": "Organization",
+        "name": articleAuthor
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": articlePublisher,
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+        }
+      },
+      "datePublished": publishedTime,
+      "dateModified": modifiedTime || publishedTime
+    }),
+    ...(ogType === 'website' && {
+      "sameAs": [
+        "https://twitter.com/sipbrewery",
+        "https://linkedin.com/company/sipbrewery"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN"
+      },
+      "serviceType": "Mutual Fund Investment Advisory",
+      "areaServed": "India"
+    })
   };
 
   return (
@@ -52,14 +82,14 @@ const SEOHead = ({
       <meta name="keywords" content={keywords} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="robots" content="index, follow" />
-      <meta name="author" content="SIP Brewery" />
+      <meta name="author" content={articleAuthor} />
       
       {/* Canonical URL */}
       <link rel="canonical" href={currentUrl} />
       
-      {/* Open Graph tags - WhatsApp uses these */}
+      {/* Open Graph tags - Essential for WhatsApp */}
       <meta property="og:site_name" content="SIP Brewery" />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={currentUrl} />
@@ -68,8 +98,19 @@ const SEOHead = ({
       <meta property="og:image:type" content="image/png" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content="SIP Brewery - Mutual Fund Investment Platform" />
+      <meta property="og:image:alt" content={`${title} - SIP Brewery`} />
       <meta property="og:locale" content="en_IN" />
+      
+      {/* Article specific Open Graph tags */}
+      {ogType === 'article' && (
+        <>
+          <meta property="article:author" content={articleAuthor} />
+          <meta property="article:publisher" content={articlePublisher} />
+          {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+          {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+          <meta property="article:section" content="Investment Analysis" />
+        </>
+      )}
       
       {/* Twitter Card tags */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -78,11 +119,7 @@ const SEOHead = ({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={absoluteOgImage} />
-      <meta name="twitter:image:alt" content="SIP Brewery - Mutual Fund Investment Platform" />
-      
-      {/* Additional WhatsApp specific meta tags */}
-      <meta property="article:author" content="SIP Brewery" />
-      <meta property="article:publisher" content="https://sipbrewery.com" />
+      <meta name="twitter:image:alt" content={`${title} - SIP Brewery`} />
       
       {/* Cache control for dynamic content */}
       {isDynamic && (

@@ -12,6 +12,9 @@ import DistributorSelectionSection from '@/components/blog/fund-managers-money/D
 import ConclusionSection from '@/components/blog/fund-managers-money/ConclusionSection';
 
 const HowFundManagersMakeMoneyBlog = () => {
+  const publishedTime = "2025-06-20T00:00:00.000Z";
+  const modifiedTime = "2025-06-20T00:00:00.000Z";
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -29,11 +32,17 @@ const HowFundManagersMakeMoneyBlog = () => {
         "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
       }
     },
-    "datePublished": "2025-06-20",
-    "dateModified": "2025-06-20",
+    "datePublished": publishedTime,
+    "dateModified": modifiedTime,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://sipbrewery.com/blog/why-regular-mutual-funds-make-sense"
+      "@id": "https://sipbrewery.com/blog/how-fund-managers-make-money-mutual-funds"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+      "width": 1200,
+      "height": 630
     }
   };
 
@@ -43,9 +52,15 @@ const HowFundManagersMakeMoneyBlog = () => {
         title="Why Regular Mutual Fund Plans Can Outperform Direct – SIP Brewery Research"
         description="Understand how professional guidance in regular mutual funds can generate higher returns despite a slightly higher cost. Evidence-based analysis showing why regular plans often deliver better outcomes."
         keywords="regular mutual funds vs direct, professional fund guidance, mutual fund advisory benefits, regular plan advantages, SIP investment guidance, mutual fund distributor value"
-        canonicalUrl="https://sipbrewery.com/blog/why-regular-mutual-funds-make-sense"
+        canonicalUrl="https://sipbrewery.com/blog/how-fund-managers-make-money-mutual-funds"
+        ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
         structuredData={structuredData}
         isDynamic={true}
+        ogType="article"
+        articleAuthor="SIP Brewery Research Team"
+        articlePublisher="SIP Brewery"
+        publishedTime={publishedTime}
+        modifiedTime={modifiedTime}
       />
 
       <div className="container mx-auto px-4 py-8">

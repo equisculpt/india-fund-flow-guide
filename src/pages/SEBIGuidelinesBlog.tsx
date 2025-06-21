@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,9 @@ const SEBIGuidelinesBlog = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const publishedTime = new Date().toISOString();
+  const modifiedTime = new Date().toISOString();
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -31,8 +35,18 @@ const SEBIGuidelinesBlog = () => {
         "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
       }
     },
-    "datePublished": new Date().toISOString(),
-    "dateModified": new Date().toISOString()
+    "datePublished": publishedTime,
+    "dateModified": modifiedTime,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://sipbrewery.com/blog/sebi-guidelines"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+      "width": 1200,
+      "height": 630
+    }
   };
 
   return (
@@ -42,8 +56,14 @@ const SEBIGuidelinesBlog = () => {
         description="Complete guide to SEBI IPO eligibility norms, regulations, and guidelines for retail investors. Understand IPO process and investor protection measures. Educational content only."
         keywords="SEBI IPO guidelines, IPO eligibility norms, SEBI regulations, IPO process India, investor protection SEBI, IPO listing requirements, SEBI compliance"
         canonicalUrl="https://sipbrewery.com/blog/sebi-guidelines"
+        ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
         structuredData={structuredData}
         isDynamic={true}
+        ogType="article"
+        articleAuthor="SIP Brewery Research Team"
+        articlePublisher="SIP Brewery"
+        publishedTime={publishedTime}
+        modifiedTime={modifiedTime}
       />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">

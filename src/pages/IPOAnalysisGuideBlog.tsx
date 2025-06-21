@@ -14,6 +14,9 @@ const IPOAnalysisGuideBlog = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const publishedTime = new Date().toISOString();
+  const modifiedTime = new Date().toISOString();
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -31,8 +34,18 @@ const IPOAnalysisGuideBlog = () => {
         "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
       }
     },
-    "datePublished": new Date().toISOString(),
-    "dateModified": new Date().toISOString()
+    "datePublished": publishedTime,
+    "dateModified": modifiedTime,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://sipbrewery.com/blog/ipo-analysis-guide"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+      "width": 1200,
+      "height": 630
+    }
   };
 
   return (
@@ -42,8 +55,14 @@ const IPOAnalysisGuideBlog = () => {
         description="Complete guide to analyzing IPOs with key metrics, financial ratios, and evaluation criteria. Learn how to assess IPO investments with professional techniques. Educational content only."
         keywords="IPO analysis guide, IPO evaluation metrics, how to analyze IPO, IPO investment guide, IPO key ratios, IPO valuation methods, SEBI IPO guidelines"
         canonicalUrl="https://sipbrewery.com/blog/ipo-analysis-guide"
+        ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
         structuredData={structuredData}
         isDynamic={true}
+        ogType="article"
+        articleAuthor="SIP Brewery Research Team"
+        articlePublisher="SIP Brewery"
+        publishedTime={publishedTime}
+        modifiedTime={modifiedTime}
       />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">

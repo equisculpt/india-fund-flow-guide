@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,9 @@ const HealthcareSectorOutlookBlog = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const publishedTime = new Date().toISOString();
+  const modifiedTime = new Date().toISOString();
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -31,8 +35,18 @@ const HealthcareSectorOutlookBlog = () => {
         "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
       }
     },
-    "datePublished": new Date().toISOString(),
-    "dateModified": new Date().toISOString()
+    "datePublished": publishedTime,
+    "dateModified": modifiedTime,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://sipbrewery.com/blog/healthcare-sector-outlook"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+      "width": 1200,
+      "height": 630
+    }
   };
 
   return (
@@ -42,8 +56,14 @@ const HealthcareSectorOutlookBlog = () => {
         description="Comprehensive analysis of India's healthcare and biotech sector investment opportunities, growth drivers, and key themes for 2025. Educational investment research only."
         keywords="healthcare sector outlook India, biotech investment themes, pharmaceutical sector analysis, healthcare stocks India, medical device sector, telemedicine trends"
         canonicalUrl="https://sipbrewery.com/blog/healthcare-sector-outlook"
+        ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
         structuredData={structuredData}
         isDynamic={true}
+        ogType="article"
+        articleAuthor="SIP Brewery Research Team"
+        articlePublisher="SIP Brewery"
+        publishedTime={publishedTime}
+        modifiedTime={modifiedTime}
       />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">
