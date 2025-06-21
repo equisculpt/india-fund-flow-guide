@@ -12,25 +12,24 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
-  // Pages that completely handle their own SEO - Layout must NEVER interfere
-  const pagesWithOwnSEO = [
+  // Pages that have COMPLETE SEO control - Layout must NEVER render ANY SEO
+  const pagesWithNuclearSEO = [
     '/blog/veeda-clinical-research-ipo-analysis'
   ];
   
-  const shouldRenderSEO = !pagesWithOwnSEO.includes(location.pathname);
+  const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout SEO Guard - ABSOLUTE PROTECTION:', {
+  console.log('🛡️ Layout NUCLEAR SEO Guard:', {
     currentPath: location.pathname,
-    shouldRenderSEO,
-    isVeedaPage: location.pathname === '/blog/veeda-clinical-research-ipo-analysis',
-    willSkipLayoutSEO: pagesWithOwnSEO.includes(location.pathname),
-    reason: shouldRenderSEO ? 'Will render Layout SEO' : '🚫 COMPLETELY BLOCKED - Page has nuclear SEO'
+    isNuclearSEOPage,
+    willCompletelySkipSEO: isNuclearSEOPage,
+    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO INTERFERENCE' : 'Normal page - will render SEO'
   });
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* ABSOLUTE PROTECTION: Zero SEO interference for nuclear SEO pages */}
-      {shouldRenderSEO && (
+      {/* ABSOLUTE ZERO SEO interference for nuclear pages */}
+      {!isNuclearSEOPage && (
         <SEOHead isDynamic={true} />
       )}
       <Header />
