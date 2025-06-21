@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,10 @@ const IPOAnalysisGuideBlog = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleBackClick = () => {
+    navigate('/community');
+  };
 
   const publishedTime = new Date().toISOString();
   const modifiedTime = new Date().toISOString();
@@ -55,11 +60,11 @@ const IPOAnalysisGuideBlog = () => {
           {/* Back Button */}
           <div className="mb-6">
             <button
-              onClick={() => navigate(-1)}
+              onClick={handleBackClick}
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back
+              Back to Blogs
             </button>
           </div>
 
