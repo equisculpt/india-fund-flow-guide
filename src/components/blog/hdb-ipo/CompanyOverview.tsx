@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -14,8 +13,8 @@ const CompanyOverview = () => {
         <p className="text-gray-700 leading-relaxed">
           <strong>HDB Financial Services Limited (HDBFS)</strong> is a wholly owned subsidiary of HDFC Bank, 
           incorporated in March 2007 and headquartered in Mumbai. As one of India's largest NBFCs, HDBFS 
-          operates through a comprehensive network of <strong>1,686 branches</strong> across <strong>1,029 cities</strong> 
-          as of December 31, 2023, with a workforce of <strong>22,511 personnel</strong> (including contractual staff).
+          operates through a comprehensive network of <strong>1,686+ branches</strong> across <strong>1,029+ cities</strong> 
+          as of June 2025, with a workforce of approximately <strong>56,000 personnel</strong> (including contractual staff).
         </p>
         
         <div className="grid md:grid-cols-2 gap-6 mt-6">
@@ -36,15 +35,15 @@ const CompanyOverview = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Total Employees</span>
-                <span className="font-semibold">22,511</span>
+                <span className="font-semibold">~56,000</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Branch Network</span>
-                <span className="font-semibold">1,686 branches</span>
+                <span className="font-semibold">1,686+ branches</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Geographic Reach</span>
-                <span className="font-semibold">1,029 cities</span>
+                <span className="font-semibold">1,029+ cities</span>
               </div>
             </div>
           </div>

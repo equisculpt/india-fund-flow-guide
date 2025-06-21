@@ -49,22 +49,22 @@ const BusinessModel = () => {
           </div>
           
           <div className="space-y-4">
-            <h3 className="font-semibold text-lg">Key Performance Metrics (Dec 2023)</h3>
+            <h3 className="font-semibold text-lg">Key Performance Metrics (June 2025)</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 bg-red-50 rounded-lg">
-                <div className="text-2xl font-bold text-red-600">₹70,037 Cr</div>
+                <div className="text-2xl font-bold text-red-600">₹70,000+ Cr</div>
                 <div className="text-sm text-red-700">Gross Loan Book</div>
               </div>
               <div className="text-center p-4 bg-orange-50 rounded-lg">
-                <div className="text-2xl font-bold text-orange-600">1,686</div>
+                <div className="text-2xl font-bold text-orange-600">1,686+</div>
                 <div className="text-sm text-orange-700">Branch Network</div>
               </div>
               <div className="text-center p-4 bg-teal-50 rounded-lg">
-                <div className="text-2xl font-bold text-teal-600">1,029</div>
+                <div className="text-2xl font-bold text-teal-600">1,029+</div>
                 <div className="text-sm text-teal-700">Cities Covered</div>
               </div>
               <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                <div className="text-2xl font-bold text-indigo-600">22,511</div>
+                <div className="text-2xl font-bold text-indigo-600">~56,000</div>
                 <div className="text-sm text-indigo-700">Total Employees</div>
               </div>
             </div>

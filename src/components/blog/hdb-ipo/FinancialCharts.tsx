@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
@@ -9,7 +8,7 @@ const FinancialCharts = () => {
     { year: 'FY21', revenue: 10140, pat: 391, aum: 56287, branches: 1319, employees: 20661 },
     { year: 'FY22', revenue: 10351, pat: 1011, aum: 58259, branches: 1472, employees: 20975 },
     { year: 'FY23', revenue: 11306, pat: 1959, aum: 65088, branches: 1649, employees: 22347 },
-    { year: 'Dec 2023', revenue: null, pat: null, aum: 70037, branches: 1686, employees: 22511 }
+    { year: 'Jun 2025', revenue: null, pat: null, aum: 70000, branches: 1686, employees: 56000 }
   ];
 
   const assetQualityData = [
@@ -19,11 +18,11 @@ const FinancialCharts = () => {
   ];
 
   const keyMetrics = [
-    { metric: "Gross Loan Book (Dec 2023)", current: "₹70,037 Cr", fy23: "₹65,088 Cr", fy22: "₹58,259 Cr", growth: "20.5%" },
+    { metric: "Gross Loan Book (Jun 2025)", current: "₹70,000+ Cr", fy23: "₹65,088 Cr", fy22: "₹58,259 Cr", growth: "22.5%" },
     { metric: "Revenue from Operations", current: "₹11,306 Cr", fy23: "₹11,306 Cr", fy22: "₹10,351 Cr", growth: "9.2%" },
     { metric: "Profit After Tax", current: "₹1,959 Cr", fy23: "₹1,959 Cr", fy22: "₹1,011 Cr", growth: "93.8%" },
-    { metric: "Branch Network", current: "1,686", fy23: "1,649", fy22: "1,472", growth: "14.5%" },
-    { metric: "Total Employees", current: "22,511", fy23: "22,347", fy22: "20,975", growth: "7.3%" },
+    { metric: "Branch Network", current: "1,686+", fy23: "1,649", fy22: "1,472", growth: "14.5%" },
+    { metric: "Total Employees", current: "~56,000", fy23: "22,347", fy22: "20,975", growth: "150%+" },
     { metric: "Gross NPA (%)", current: "2.44%", fy23: "2.44%", fy22: "4.99%", growth: "-51%" },
     { metric: "Net NPA (%)", current: "1.69%", fy23: "1.69%", fy22: "3.83%", growth: "-56%" }
   ];
@@ -32,7 +31,7 @@ const FinancialCharts = () => {
     <Card className="mb-8">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-2xl">
-          📊 Financial Performance Analysis (FY21-Dec 2023)
+          📊 Financial Performance Analysis (FY21-Jun 2025)
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -44,7 +43,7 @@ const FinancialCharts = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Metric</TableHead>
-                  <TableHead>Latest (Dec 2023/FY23)</TableHead>
+                  <TableHead>Latest (Jun 2025/FY23)</TableHead>
                   <TableHead>FY23</TableHead>
                   <TableHead>FY22</TableHead>
                   <TableHead>Growth Trend</TableHead>
@@ -108,12 +107,12 @@ const FinancialCharts = () => {
           {/* Key Insights */}
           <div className="grid md:grid-cols-3 gap-4">
             <div className="p-4 bg-green-50 rounded-lg">
-              <h4 className="font-semibold text-green-800 mb-2">📈 Remarkable Recovery</h4>
+              <h4 className="font-semibold text-green-800 mb-2">📈 Remarkable Growth</h4>
               <ul className="text-sm text-green-700 space-y-1">
                 <li>• PAT grew 401% (FY21 to FY23)</li>
-                <li>• AUM expansion: 24.5 CAGR</li>
+                <li>• AUM expansion: 24.5% CAGR</li>
                 <li>• Branch network: +367 locations</li>
-                <li>• Employee base: +1,850 personnel</li>
+                <li>• Employee base: 150%+ growth to 56K</li>
               </ul>
             </div>
             
