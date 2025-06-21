@@ -33,11 +33,13 @@ const SEOHead = ({
   // CRITICAL: Always prioritize the provided canonicalUrl - no fallback to window location
   const finalUrl = canonicalUrl || 'https://sipbrewery.com';
   
-  console.log('SEOHead URL Resolution DEBUG:', {
+  // Add debugging to track which SEOHead is rendering
+  console.log('SEOHead RENDER DEBUG:', {
+    title: title.substring(0, 50) + '...',
     providedCanonicalUrl: canonicalUrl,
     finalUrlUsed: finalUrl,
-    isCanonicalProvided: !!canonicalUrl,
-    windowLocation: typeof window !== 'undefined' ? window.location.href : 'not available'
+    isFromBlogPage: title.includes('Veeda'),
+    renderSource: canonicalUrl ? 'Blog Page' : 'Layout Default'
   });
   
   // Use a properly sized default image - Facebook requires minimum 200x200
