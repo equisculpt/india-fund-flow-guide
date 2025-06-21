@@ -1,3 +1,4 @@
+
 import { StaticBlog } from '../types/blogTypes';
 
 export const staticBlogs: StaticBlog[] = [
@@ -46,7 +47,8 @@ export const staticBlogs: StaticBlog[] = [
     published_at: '2025-01-22',
     route: '/blog/nbfc-sector-analysis-india-2025',
     featured_image_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=400&fit=crop',
-    tags: ['NBFC', 'Sector Analysis', 'Financial Services', 'Investment Guide', 'RBI Regulations']
+    tags: ['NBFC', 'Sector Analysis', 'Financial Services', 'Investment Guide', 'RBI Regulations'],
+    slug: 'nbfc-sector-deep-dive'
   },
   {
     id: 'ipo-analysis-guide',
@@ -57,7 +59,8 @@ export const staticBlogs: StaticBlog[] = [
     published_at: '2024-12-15',
     route: '/blog/ipo-analysis-guide',
     featured_image_url: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop',
-    tags: ['IPO', 'Investment Guide', 'Analysis', 'Education']
+    tags: ['IPO', 'Investment Guide', 'Analysis', 'Education'],
+    slug: 'ipo-analysis-guide'
   },
   {
     id: 'healthcare-sector-outlook',
@@ -68,7 +71,8 @@ export const staticBlogs: StaticBlog[] = [
     published_at: '2024-12-10',
     route: '/blog/healthcare-sector-outlook',
     featured_image_url: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=800&h=400&fit=crop',
-    tags: ['Healthcare', 'Sector Analysis', 'Investment Opportunities', '2025 Outlook']
+    tags: ['Healthcare', 'Sector Analysis', 'Investment Opportunities', '2025 Outlook'],
+    slug: 'healthcare-sector-outlook'
   },
   {
     id: 'sebi-guidelines',
@@ -79,7 +83,8 @@ export const staticBlogs: StaticBlog[] = [
     published_at: '2024-11-20',
     route: '/blog/sebi-guidelines',
     featured_image_url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&h=400&fit=crop',
-    tags: ['SEBI', 'Regulations', 'Compliance', 'Investor Rights']
+    tags: ['SEBI', 'Regulations', 'Compliance', 'Investor Rights'],
+    slug: 'sebi-guidelines'
   },
   {
     id: 'how-fund-managers-make-money',
@@ -90,7 +95,8 @@ export const staticBlogs: StaticBlog[] = [
     published_at: '2024-11-15',
     route: '/blog/how-fund-managers-make-money-mutual-funds',
     featured_image_url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&h=400&fit=crop',
-    tags: ['Mutual Funds', 'Expense Ratio', 'Fund Management', 'Fees']
+    tags: ['Mutual Funds', 'Expense Ratio', 'Fund Management', 'Fees'],
+    slug: 'how-fund-managers-make-money'
   },
   {
     id: 'how-mutual-funds-work',
@@ -101,7 +107,8 @@ export const staticBlogs: StaticBlog[] = [
     published_at: '2024-11-10',
     route: '/blog/how-mutual-funds-work-detailed-explanation',
     featured_image_url: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&h=400&fit=crop',
-    tags: ['Mutual Funds', 'NAV', 'Portfolio Management', 'Fund Operations']
+    tags: ['Mutual Funds', 'NAV', 'Portfolio Management', 'Fund Operations'],
+    slug: 'how-mutual-funds-work'
   },
   {
     id: 'mutual-fund-benefits',
@@ -112,6 +119,7 @@ export const staticBlogs: StaticBlog[] = [
     published_at: '2024-11-05',
     route: '/blog/mutual-funds-benefits-individual-investors',
     featured_image_url: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&h=400&fit=crop',
-    tags: ['Mutual Funds', 'Investment Benefits', 'Diversification', 'Tax Benefits']
+    tags: ['Mutual Funds', 'Investment Benefits', 'Diversification', 'Tax Benefits'],
+    slug: 'mutual-fund-benefits'
   }
 ];
