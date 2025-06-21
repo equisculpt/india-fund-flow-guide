@@ -78,7 +78,10 @@ const CommunityPage = () => {
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-center mb-6">Community Sections</h2>
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                <div 
+                  className="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500 cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => setActiveTab('questions')}
+                >
                   <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
                     <MessageSquare className="h-6 w-6 text-blue-600" />
                     Discussion
@@ -88,7 +91,10 @@ const CommunityPage = () => {
                   </p>
                 </div>
                 
-                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+                <div 
+                  className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500 cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => setActiveTab('blogs')}
+                >
                   <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
                     <BookOpen className="h-6 w-6 text-purple-600" />
                     Blogs
