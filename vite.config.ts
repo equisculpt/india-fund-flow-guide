@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   publicDir: 'public',
+  assetsInclude: ['**/*.txt'],
   build: {
     assetsDir: 'assets',
     rollupOptions: {
@@ -30,5 +31,6 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
+    copyPublicDir: true,
   },
 }));

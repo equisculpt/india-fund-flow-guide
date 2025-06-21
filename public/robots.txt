@@ -14,7 +14,7 @@ Allow: /blog/
 Disallow: /admin/
 Disallow: /api/
 Disallow: /private/
-Disallow: /dashboard
+Disallow: /dashboard/
 
 # Crawl delays for different bots
 User-agent: Googlebot
@@ -33,4 +33,3 @@ Allow: /
 
 # Sitemap location
 Sitemap: https://sipbrewery.com/sitemap.xml
-
