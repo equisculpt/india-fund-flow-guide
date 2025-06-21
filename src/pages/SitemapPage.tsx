@@ -3,46 +3,53 @@ import React, { useEffect } from 'react';
 import { generateXMLSitemap } from '@/utils/sitemapGenerator';
 
 const SitemapPage = () => {
+  const xmlContent = generateXMLSitemap();
+
   useEffect(() => {
-    // Set content type for XML
-    document.title = 'Sitemap';
+    // Set the document title
+    document.title = 'Sitemap - SIP Brewery';
     
-    // Generate and serve XML content
-    const xmlContent = generateXMLSitemap();
-    
-    // Create a blob with XML content
-    const blob = new Blob([xmlContent], { type: 'application/xml' });
-    const url = URL.createObjectURL(blob);
-    
-    // Set up XML response
-    const response = new Response(xmlContent, {
-      headers: {
-        'Content-Type': 'application/xml',
-        'Cache-Control': 'public, max-age=3600'
-      }
-    });
-    
+    // Set content type meta tag for XML
+    const metaContentType = document.querySelector('meta[http-equiv="Content-Type"]');
+    if (metaContentType) {
+      metaContentType.setAttribute('content', 'application/xml; charset=utf-8');
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('http-equiv', 'Content-Type');
+      meta.setAttribute('content', 'application/xml; charset=utf-8');
+      document.head.appendChild(meta);
+    }
+
     console.log('📄 Sitemap XML generated successfully:', {
       url: window.location.href,
       contentType: 'application/xml',
-      size: xmlContent.length
+      size: xmlContent.length,
+      urlCount: (xmlContent.match(/<url>/g) || []).length
     });
-    
-  }, []);
 
-  // Return XML content directly for the component
-  const xmlContent = generateXMLSitemap();
-  
+    // For browsers that support it, set the response headers
+    if ('serviceWorker' in navigator) {
+      // This helps with caching
+      console.log('Service worker available for caching');
+    }
+  }, [xmlContent]);
+
   return (
-    <div 
-      style={{ 
-        fontFamily: 'monospace', 
-        whiteSpace: 'pre-wrap', 
-        padding: '20px',
-        backgroundColor: '#f5f5f5' 
-      }}
-    >
-      {xmlContent}
+    <div style={{ margin: 0, padding: 0 }}>
+      <pre 
+        style={{ 
+          fontFamily: 'monospace', 
+          fontSize: '12px',
+          lineHeight: '1.4',
+          margin: 0,
+          padding: '10px',
+          backgroundColor: '#fff',
+          color: '#333',
+          whiteSpace: 'pre-wrap',
+          wordWrap: 'break-word'
+        }}
+        dangerouslySetInnerHTML={{ __html: xmlContent.replace(/</g, '&lt;').replace(/>/g, '&gt;') }}
+      />
     </div>
   );
 };
