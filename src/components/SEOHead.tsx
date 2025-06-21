@@ -30,12 +30,13 @@ const SEOHead = ({
   publishedTime,
   modifiedTime
 }: SEOHeadProps) => {
-  // CRITICAL: Always prioritize the provided canonicalUrl
-  const finalUrl = canonicalUrl || (typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : 'https://sipbrewery.com');
+  // CRITICAL: Always prioritize the provided canonicalUrl - no fallback to window location
+  const finalUrl = canonicalUrl || 'https://sipbrewery.com';
   
-  console.log('SEOHead URL Resolution:', {
+  console.log('SEOHead URL Resolution DEBUG:', {
     providedCanonicalUrl: canonicalUrl,
     finalUrlUsed: finalUrl,
+    isCanonicalProvided: !!canonicalUrl,
     windowLocation: typeof window !== 'undefined' ? window.location.href : 'not available'
   });
   
@@ -93,10 +94,10 @@ const SEOHead = ({
       <meta name="robots" content="index, follow" />
       <meta name="author" content={articleAuthor} />
       
-      {/* CRITICAL: Canonical URL */}
+      {/* CRITICAL: Canonical URL - Must match og:url exactly */}
       <link rel="canonical" href={finalUrl} />
       
-      {/* CRITICAL: Open Graph tags */}
+      {/* CRITICAL: Open Graph tags - Must use same URL as canonical */}
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
