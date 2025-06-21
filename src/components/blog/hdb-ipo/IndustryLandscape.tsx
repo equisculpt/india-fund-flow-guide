@@ -59,12 +59,24 @@ const IndustryLandscape = () => {
             
             <div>
               <h3 className="font-semibold text-lg mb-4">Leading NBFCs by AUM (₹ Crores)</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={nbfcMarketData} layout="horizontal">
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={nbfcMarketData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="company" type="category" width={80} />
-                  <Tooltip formatter={(value, name) => [`₹${value} Cr`, 'AUM']} />
+                  <XAxis 
+                    dataKey="company" 
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                    fontSize={11}
+                  />
+                  <YAxis 
+                    tickFormatter={(value) => `₹${(value/1000).toFixed(0)}K Cr`}
+                    fontSize={11}
+                  />
+                  <Tooltip 
+                    formatter={(value, name) => [`₹${(value/1000).toFixed(0)}K Cr`, 'AUM']}
+                    labelFormatter={(label) => `${label}`}
+                  />
                   <Bar dataKey="aum" fill="#3b82f6" />
                 </BarChart>
               </ResponsiveContainer>
