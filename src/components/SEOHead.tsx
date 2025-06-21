@@ -35,7 +35,9 @@ const SEOHead = ({
     if (canonicalUrl) return canonicalUrl;
     
     if (typeof window !== 'undefined') {
-      return window.location.href;
+      // Use the full current URL including path and query parameters
+      const currentUrl = window.location.origin + window.location.pathname;
+      return currentUrl;
     }
     
     // Fallback only for homepage
