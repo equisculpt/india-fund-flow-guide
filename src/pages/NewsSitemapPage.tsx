@@ -8,31 +8,30 @@ const NewsSitemapPage = () => {
     const articles = getNewsArticles();
     const xmlContent = generateNewsSitemap(articles);
     
-    // Set response headers for XML content type
-    const setXMLHeaders = () => {
-      // We can't modify document.contentType directly, but we can set meta tags
-      const meta = document.createElement('meta');
-      meta.httpEquiv = 'Content-Type';
-      meta.content = 'application/xml; charset=utf-8';
-      document.head.appendChild(meta);
-    };
+    // Set proper XML content type
+    document.contentType = 'application/xml';
     
-    setXMLHeaders();
+    // Clear the body and set XML content
+    document.body.innerHTML = '';
+    document.body.style.fontFamily = 'monospace';
+    document.body.style.whiteSpace = 'pre-wrap';
+    document.body.style.fontSize = '12px';
+    document.body.style.padding = '10px';
+    document.body.style.backgroundColor = '#f5f5f5';
     
-    // Replace the entire page content with XML
-    document.open();
-    document.write(xmlContent);
-    document.close();
+    // Create a text node with the XML content
+    const xmlTextNode = document.createTextNode(xmlContent);
+    document.body.appendChild(xmlTextNode);
     
-    console.log('📰 News Sitemap served dynamically:', {
+    console.log('📰 News Sitemap served successfully:', {
       totalArticles: articles.length,
       url: window.location.href,
-      xmlPreview: xmlContent.substring(0, 200) + '...'
+      contentType: 'application/xml',
+      xmlPreview: xmlContent.substring(0, 300) + '...'
     });
   }, []);
 
-  // This component won't actually render anything visible
-  // because we replace the document content with XML
+  // This component won't render React content since we replace it with XML
   return null;
 };
 

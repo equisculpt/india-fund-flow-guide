@@ -8,7 +8,6 @@ export interface NewsArticle {
 
 export const generateNewsSitemap = (articles: NewsArticle[]) => {
   const baseUrl = 'https://sipbrewery.com';
-  const currentDate = new Date().toISOString().split('T')[0];
   
   const xmlHeader = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -37,37 +36,37 @@ export const getNewsArticles = (): NewsArticle[] => {
     {
       url: '/blog/hdb-financial-services-ipo-analysis',
       title: 'HDB Financial Services IPO Analysis 2025 | Complete Financial Review & SWOT',
-      publishedDate: '2025-06-21',
+      publishedDate: '2025-06-21T18:00:00+05:30',
       language: 'en'
     },
     {
       url: '/blog/veeda-clinical-research-ipo-analysis',
       title: 'Veeda Clinical Research IPO Analysis 2024 | Complete SWOT & Financial Review',
-      publishedDate: '2025-06-21',
+      publishedDate: '2025-06-21T17:30:00+05:30',
       language: 'en'
     },
     {
       url: '/blog/nbfc-sector-analysis-india-2025',
       title: 'NBFC Sector Analysis India 2025: Complete Guide to Non-Banking Financial Companies',
-      publishedDate: '2025-06-21',
+      publishedDate: '2025-06-21T17:00:00+05:30',
       language: 'en'
     },
     {
       url: '/blog/how-fund-managers-make-money-mutual-funds',
       title: 'Why Regular Mutual Fund Plans Can Outperform Direct Plans',
-      publishedDate: '2025-06-20',
+      publishedDate: '2025-06-20T12:00:00+05:30',
       language: 'en'
     },
     {
       url: '/blog/ipo-analysis-guide',
       title: 'IPO Analysis Guide: Understanding Key Metrics for IPO Evaluation 2025',
-      publishedDate: '2025-06-21',
+      publishedDate: '2025-06-21T16:30:00+05:30',
       language: 'en'
     },
     {
       url: '/blog/healthcare-sector-outlook',
       title: 'Healthcare Sector Outlook: India\'s Healthcare & Biotech Investment Themes 2025',
-      publishedDate: '2025-06-21',
+      publishedDate: '2025-06-21T16:00:00+05:30',
       language: 'en'
     }
   ];
