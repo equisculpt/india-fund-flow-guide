@@ -20,6 +20,8 @@ import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
 import CommunityBlogs from '@/components/community/CommunityBlogs';
 import CreateBlogModal from '@/components/community/CreateBlogModal';
 import ChatPage from '@/pages/ChatPage';
+import PublicFundsPage from '@/pages/PublicFundsPage';
+import FundComparisonPage from '@/pages/FundComparisonPage';
 import VeedaClinicalResearchIPOBlog from './pages/VeedaClinicalResearchIPOBlog';
 import IPOAnalysisGuideBlog from './pages/IPOAnalysisGuideBlog';
 import HealthcareSectorOutlookBlog from './pages/HealthcareSectorOutlookBlog';
@@ -58,6 +60,8 @@ function App() {
                       <Route path="/terms" element={<TermsOfServicePage />} />
                       <Route path="/privacy" element={<PrivacyPolicyPage />} />
                       <Route path="/chat" element={<ChatPage />} />
+                      <Route path="/public-funds" element={<PublicFundsPage />} />
+                      <Route path="/fund-comparison" element={<FundComparisonPage />} />
                       <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
                       <Route path="/blog/ipo-analysis-guide" element={<IPOAnalysisGuideBlog />} />
                       <Route path="/blog/healthcare-sector-outlook" element={<HealthcareSectorOutlookBlog />} />
