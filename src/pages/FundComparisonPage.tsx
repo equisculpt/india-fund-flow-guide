@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import Layout from '@/components/Layout';
 import ComparisonLoadingState from '@/components/comparison/ComparisonLoadingState';
 import TopLevelFundComparison from '@/components/TopLevelFundComparison';
 import SEOHead from '@/components/SEOHead';
@@ -34,16 +35,16 @@ const FundComparisonPage = () => {
 
   if (loading) {
     return (
-      <>
+      <Layout>
         <SEOHead {...seoContent} />
         <ComparisonLoadingState />
-      </>
+      </Layout>
     );
   }
 
   if (showSelection) {
     return (
-      <>
+      <Layout>
         <SEOHead {...seoContent} />
         <div className="min-h-screen bg-gray-50">
           <div className="container mx-auto px-4 py-8 space-y-8">
@@ -51,13 +52,13 @@ const FundComparisonPage = () => {
             <TopLevelFundComparison />
           </div>
         </div>
-      </>
+      </Layout>
     );
   }
 
   if (!comparisonResult) {
     return (
-      <>
+      <Layout>
         <SEOHead {...seoContent} />
         <div className="min-h-screen bg-gray-50">
           <div className="container mx-auto px-4 py-8">
@@ -70,14 +71,14 @@ const FundComparisonPage = () => {
             </div>
           </div>
         </div>
-      </>
+      </Layout>
     );
   }
 
   const advice = getInvestmentHorizonAdvice();
 
   return (
-    <>
+    <Layout>
       <SEOHead {...seoContent} isDynamic={true} />
       <div className="min-h-screen bg-gray-50">      
         <div className="container mx-auto px-4 py-8 space-y-8">
@@ -95,7 +96,7 @@ const FundComparisonPage = () => {
           <AMFIDisclaimer />
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 
