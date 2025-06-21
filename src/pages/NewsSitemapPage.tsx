@@ -3,9 +3,6 @@ import { useEffect } from 'react';
 
 const NewsSitemapPage = () => {
   useEffect(() => {
-    // Set the content type to XML
-    document.contentType = 'application/xml';
-    
     // Generate the news sitemap XML content
     const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset 
