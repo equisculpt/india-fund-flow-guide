@@ -3,6 +3,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import BlogViewCounter from '@/components/blog/BlogViewCounter';
 
 const HDBHeader = () => {
   const navigate = useNavigate();
@@ -22,18 +23,19 @@ const HDBHeader = () => {
 
       {/* Header Section */}
       <div className="text-center mb-12">
-        <Badge className="mb-4 bg-blue-600 text-white px-4 py-2">IPO Analysis</Badge>
+        <Badge className="mb-4 bg-blue-600 text-white px-4 py-2">IPO Analysis • NBFC Sector</Badge>
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-          🏦 HDB Financial Services IPO: The Ultimate Deep Dive Analysis
+          🏦 HDB Financial Services IPO: Comprehensive Deep-Dive Analysis (2025)
         </h1>
         <p className="text-xl text-gray-600 mb-6 max-w-4xl mx-auto">
-          Comprehensive Review of India's Largest NBFC IPO - Strengths, Risks, Numbers, and Growth Story
+          Complete Review of India's Largest NBFC IPO - Updated Financial Data, Growth Story, Risks & Investment Perspective
         </p>
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
-          <span>⏱ Estimated Read Time: 30-40 minutes</span>
-          <span>📍 Category: IPO Tracker | NBFC Sector</span>
-          <span>🗓 Published: {new Date().toLocaleDateString()}</span>
+        <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500 mb-4">
+          <span>⏱ Estimated Read Time: 35-45 minutes</span>
+          <span>📍 Category: IPO Analysis | NBFC Deep Dive</span>
+          <span>🗓 Updated: {new Date().toLocaleDateString()}</span>
         </div>
+        <BlogViewCounter blogSlug="hdb-financial-services-ipo-analysis" className="justify-center" showUniqueViews />
       </div>
     </>
   );
