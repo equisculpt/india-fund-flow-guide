@@ -30,7 +30,19 @@ const SEOHead = ({
   publishedTime,
   modifiedTime
 }: SEOHeadProps) => {
-  const currentUrl = canonicalUrl || (typeof window !== 'undefined' ? window.location.href : 'https://sipbrewery.com');
+  // Get current URL properly - use provided canonicalUrl or construct from window.location
+  const getCurrentUrl = () => {
+    if (canonicalUrl) return canonicalUrl;
+    
+    if (typeof window !== 'undefined') {
+      return window.location.href;
+    }
+    
+    // Fallback only for homepage
+    return 'https://sipbrewery.com';
+  };
+
+  const currentUrl = getCurrentUrl();
   const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://sipbrewery.com${ogImage}`;
 
   console.log('SEOHead - Dynamic meta tags loaded:', { title, description, currentUrl, absoluteOgImage, ogType });
