@@ -15,7 +15,8 @@ const Layout = ({ children }: LayoutProps) => {
   // Pages that have COMPLETE SEO control - Layout must NEVER render ANY SEO
   const pagesWithNuclearSEO = [
     '/blog/veeda-clinical-research-ipo-analysis',
-    '/blog/hdb-financial-services-ipo-analysis'
+    '/blog/hdb-financial-services-ipo-analysis',
+    '/blog/nbfc-sector-analysis-india-2025'
   ];
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);

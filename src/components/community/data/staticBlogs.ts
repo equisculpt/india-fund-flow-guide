@@ -1,4 +1,3 @@
-
 import { StaticBlog } from '../types/blogTypes';
 
 export const staticBlogs: StaticBlog[] = [
@@ -23,6 +22,17 @@ export const staticBlogs: StaticBlog[] = [
     route: '/blog/hdb-financial-services-ipo-analysis',
     featured_image_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=400&fit=crop',
     tags: ['IPO', 'NBFC', 'Financial Services', 'HDFC Bank', 'Investment Analysis']
+  },
+  {
+    id: 'nbfc-sector-deep-dive',
+    title: 'NBFC Sector Analysis India 2025: Complete Guide to Non-Banking Financial Companies',
+    excerpt: 'Deep dive into India\'s NBFC sector - growth trends, key players, regulatory changes, investment opportunities & risks. 40-minute comprehensive analysis.',
+    category: 'Sector Analysis',
+    author: 'SIP Brewery Editorial',
+    published_at: '2025-01-22',
+    route: '/blog/nbfc-sector-analysis-india-2025',
+    featured_image_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=400&fit=crop',
+    tags: ['NBFC', 'Sector Analysis', 'Financial Services', 'Investment Guide', 'RBI Regulations']
   },
   {
     id: 'ipo-analysis-guide',

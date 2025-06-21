@@ -1,4 +1,3 @@
-
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -33,6 +32,7 @@ import HowFundManagersMakeMoneyBlog from './pages/HowFundManagersMakeMoneyBlog';
 import HowMutualFundsWorkBlog from './pages/HowMutualFundsWorkBlog';
 import MutualFundBenefitsBlog from './pages/MutualFundBenefitsBlog';
 import HDBFinancialServicesIPOBlog from './pages/HDBFinancialServicesIPOBlog';
+import NBFCSectorDeepDiveBlog from './pages/NBFCSectorDeepDiveBlog';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -77,6 +77,7 @@ function App() {
                       <Route path="/blog/how-mutual-funds-work-detailed-explanation" element={<HowMutualFundsWorkBlog />} />
                       <Route path="/blog/mutual-funds-benefits-individual-investors" element={<MutualFundBenefitsBlog />} />
                       <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
+                      <Route path="/blog/nbfc-sector-analysis-india-2025" element={<NBFCSectorDeepDiveBlog />} />
                       
                       <Route path="*" element={<NotFound />} />
                     </Routes>
