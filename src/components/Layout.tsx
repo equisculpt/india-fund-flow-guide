@@ -12,20 +12,19 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
-  // Completely skip default SEO for blog routes - they handle their own SEO
-  const shouldRenderDefaultSEO = !location.pathname.startsWith('/blog/');
+  // Always render SEO component - it will handle dynamic content generation
+  // Blog pages can override with their own SEOHead if needed
+  const shouldRenderSEO = true;
   
   console.log('Layout SEO Decision:', {
     currentPath: location.pathname,
-    shouldRenderDefaultSEO,
-    reason: location.pathname.startsWith('/blog/') ? 'Blog route - no default SEO' : 'Non-blog route - render default SEO'
+    shouldRenderSEO,
+    reason: 'Dynamic SEO component handles all routes'
   });
 
   return (
     <div className="min-h-screen flex flex-col">
-      {shouldRenderDefaultSEO && (
-        <SEOHead />
-      )}
+      {shouldRenderSEO && <SEOHead />}
       <Header />
       <main className="flex-1">
         {children}

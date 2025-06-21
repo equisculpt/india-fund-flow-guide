@@ -17,14 +17,12 @@ const VeedaClinicalResearchIPOBlog = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Add console log to debug the canonical URL being passed
-  console.log('VeedaClinicalResearchIPOBlog: CANONICAL_URL being passed to SEOHead:', CANONICAL_URL);
-
   // Enhanced structured data for better social sharing
   const structuredData = createStructuredData(CANONICAL_URL);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Override default SEO with specific blog SEO */}
       <SEOHead 
         title="Veeda Clinical Research IPO Analysis 2024 | Complete SWOT & Financial Review | SIP Brewery"
         description="In-depth analysis of Veeda Clinical Research IPO with financial charts, SWOT analysis, and key insights. Educational content only - not investment advice. Get complete IPO review here."
