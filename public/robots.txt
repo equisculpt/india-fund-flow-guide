@@ -2,13 +2,13 @@
 User-agent: *
 Allow: /
 
-# Important pages
+# Important pages for SEO
 Allow: /fund-comparison
 Allow: /sip-calculator
 Allow: /public-funds
-Allow: /fund/
-Allow: /funds/
-Allow: /blog/
+Allow: /fund/*
+Allow: /funds/*
+Allow: /blog/*
 
 # Block admin and sensitive areas
 Disallow: /admin/

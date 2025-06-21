@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -38,5 +39,9 @@ export default defineConfig(({ mode }) => ({
       },
     },
     copyPublicDir: true,
+  },
+  // Ensure robots.txt is served from root in development
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(mode),
   },
 }));
