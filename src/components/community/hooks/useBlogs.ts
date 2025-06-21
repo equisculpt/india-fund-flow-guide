@@ -23,25 +23,24 @@ export const useBlogs = (category: string) => {
 
       const { data: blogsData, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching blogs:', error);
+        // For now, just set empty array and don't fetch profiles due to RLS issues
+        setBlogs([]);
+        return;
+      }
 
-      // Fetch profiles separately
-      const authorIds = blogsData?.map(b => b.author_id) || [];
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', authorIds);
-
-      // Combine data with profiles
-      const blogsWithProfiles = (blogsData || []).map(blog => ({
+      // Skip profile fetching due to RLS policy issues
+      // Just use the blog data without profile information
+      const blogsWithoutProfiles = (blogsData || []).map(blog => ({
         ...blog,
-        profiles: profiles?.find(p => p.id === blog.author_id) || null
+        profiles: null
       }));
 
-      setBlogs(blogsWithProfiles);
+      setBlogs(blogsWithoutProfiles);
     } catch (error) {
       console.error('Error fetching blogs:', error);
-      toast.error('Failed to load blog posts');
+      setBlogs([]);
     } finally {
       setLoading(false);
     }

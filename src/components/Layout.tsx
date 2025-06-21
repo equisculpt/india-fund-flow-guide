@@ -14,14 +14,12 @@ const Layout = ({ children }: LayoutProps) => {
   
   // Pages that have COMPLETE SEO control - Layout must NEVER render ANY SEO
   const pagesWithNuclearSEO = [
-    '/blog/veeda-clinical-research-ipo-analysis',
-    '/blog/hdb-financial-services-ipo-analysis',
     '/blog/nbfc-sector-analysis-india-2025'
   ];
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout NUCLEAR SEO Guard:', {
+  console.log('🛡️ Layout SEO Guard:', {
     currentPath: location.pathname,
     isNuclearSEOPage,
     willCompletelySkipSEO: isNuclearSEOPage,
@@ -30,7 +28,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* ABSOLUTE ZERO SEO interference for nuclear pages */}
+      {/* Only render SEO for non-nuclear pages */}
       {!isNuclearSEOPage && (
         <SEOHead isDynamic={true} />
       )}

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Layout from '@/components/Layout';
 import HDBBlogSEO from '@/components/blog/hdb-ipo/HDBBlogSEO';
 import HDBBlogLayout from '@/components/blog/hdb-ipo/HDBBlogLayout';
 import HDBBlogContent from '@/components/blog/hdb-ipo/HDBBlogContent';
@@ -9,17 +10,16 @@ const HDBFinancialServicesIPOBlog = () => {
   console.log('📄 HDB BLOG PAGE FORENSIC AUDIT:', {
     component: 'HDBFinancialServicesIPOBlog',
     timestamp: new Date().toISOString(),
-    message: 'Page component rendering - SEO should be first'
+    message: 'Page component rendering with Layout wrapper'
   });
 
   return (
-    <>
-      {/* SEO MUST BE FIRST - NO OTHER HELMET COMPONENTS SHOULD INTERFERE */}
+    <Layout>
       <HDBBlogSEO />
       <HDBBlogLayout>
         <HDBBlogContent />
       </HDBBlogLayout>
-    </>
+    </Layout>
   );
 };
 
