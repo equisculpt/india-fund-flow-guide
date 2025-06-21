@@ -1,57 +1,27 @@
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { generateXMLSitemap } from '@/utils/sitemapGenerator';
 
 const SitemapPage = () => {
-  const xmlContent = generateXMLSitemap();
-
   useEffect(() => {
-    // Set the document title
-    document.title = 'Sitemap - SIP Brewery';
+    // Generate XML content
+    const xmlContent = generateXMLSitemap();
     
-    // Set content type meta tag for XML
-    const metaContentType = document.querySelector('meta[http-equiv="Content-Type"]');
-    if (metaContentType) {
-      metaContentType.setAttribute('content', 'application/xml; charset=utf-8');
-    } else {
-      const meta = document.createElement('meta');
-      meta.setAttribute('http-equiv', 'Content-Type');
-      meta.setAttribute('content', 'application/xml; charset=utf-8');
-      document.head.appendChild(meta);
+    // Replace the entire document with raw XML
+    document.open();
+    document.write(xmlContent);
+    document.close();
+    
+    // Set proper content type
+    if (document.querySelector('meta[http-equiv="Content-Type"]')) {
+      document.querySelector('meta[http-equiv="Content-Type"]')?.setAttribute('content', 'application/xml; charset=utf-8');
     }
+    
+    console.log('📄 Sitemap XML served as raw XML');
+  }, []);
 
-    console.log('📄 Sitemap XML generated successfully:', {
-      url: window.location.href,
-      contentType: 'application/xml',
-      size: xmlContent.length,
-      urlCount: (xmlContent.match(/<url>/g) || []).length
-    });
-
-    // For browsers that support it, set the response headers
-    if ('serviceWorker' in navigator) {
-      // This helps with caching
-      console.log('Service worker available for caching');
-    }
-  }, [xmlContent]);
-
-  return (
-    <div style={{ margin: 0, padding: 0 }}>
-      <pre 
-        style={{ 
-          fontFamily: 'monospace', 
-          fontSize: '12px',
-          lineHeight: '1.4',
-          margin: 0,
-          padding: '10px',
-          backgroundColor: '#fff',
-          color: '#333',
-          whiteSpace: 'pre-wrap',
-          wordWrap: 'break-word'
-        }}
-        dangerouslySetInnerHTML={{ __html: xmlContent.replace(/</g, '&lt;').replace(/>/g, '&gt;') }}
-      />
-    </div>
-  );
+  // This component won't actually render since we replace the document
+  return null;
 };
 
 export default SitemapPage;

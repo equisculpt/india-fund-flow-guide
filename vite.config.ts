@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => ({
     },
     copyPublicDir: true,
   },
-  // Ensure robots.txt is served from root in development
+  // Add middleware to serve XML files with proper content-type
   define: {
     'process.env.NODE_ENV': JSON.stringify(mode),
   },

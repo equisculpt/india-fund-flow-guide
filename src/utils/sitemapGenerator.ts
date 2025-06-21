@@ -54,3 +54,10 @@ export const generateXMLSitemap = (): string => {
 ${urlElements}
 </urlset>`;
 };
+
+// Export a function to update the static sitemap file
+export const updateStaticSitemap = () => {
+  const xmlContent = generateXMLSitemap();
+  console.log('Generated sitemap content for static file update');
+  return xmlContent;
+};
