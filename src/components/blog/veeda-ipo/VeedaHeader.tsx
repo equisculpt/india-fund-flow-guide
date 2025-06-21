@@ -3,6 +3,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import BlogViewCounter from '@/components/blog/BlogViewCounter';
 
 const VeedaHeader = () => {
   const navigate = useNavigate();
@@ -22,18 +23,19 @@ const VeedaHeader = () => {
 
       {/* Header Section */}
       <div className="text-center mb-12">
-        <Badge className="mb-4 bg-blue-600 text-white px-4 py-2">IPO Analysis</Badge>
+        <Badge className="mb-4 bg-purple-600 text-white px-4 py-2">IPO Analysis • CRO Sector</Badge>
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-          🧪 Veeda Clinical Research IPO: Complete SWOT & Financial Analysis
+          🧬 Veeda Clinical Research IPO: Complete Analysis & Investment Guide (2025)
         </h1>
         <p className="text-xl text-gray-600 mb-6 max-w-4xl mx-auto">
-          Understanding the Strategic Strengths & Risks of India's Emerging Global Contract Research Organization
+          In-depth review of India's leading CRO company - Financial performance, growth prospects, risks & investment recommendation
         </p>
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
-          <span>⏱ Estimated Read Time: 15 minutes</span>
-          <span>📍 Category: IPO Tracker | Healthcare R&D</span>
-          <span>🗓 Published: {new Date().toLocaleDateString()}</span>
+        <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500 mb-4">
+          <span>⏱ Estimated Read Time: 25-30 minutes</span>
+          <span>📍 Category: IPO Analysis | Healthcare CRO</span>
+          <span>🗓 Updated: {new Date().toLocaleDateString()}</span>
         </div>
+        <BlogViewCounter blogSlug="veeda-clinical-research-ipo-analysis" className="justify-center" showUniqueViews />
       </div>
     </>
   );
