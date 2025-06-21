@@ -1,4 +1,3 @@
-
 import { Helmet } from 'react-helmet-async';
 
 interface SEOHeadProps {
@@ -35,7 +34,7 @@ const SEOHead = ({
     if (canonicalUrl) return canonicalUrl;
     
     if (typeof window !== 'undefined') {
-      // Use the full current URL including path and query parameters
+      // Use the full current URL including path - this ensures blog posts get their correct URL
       const currentUrl = window.location.origin + window.location.pathname;
       return currentUrl;
     }
@@ -46,9 +45,8 @@ const SEOHead = ({
 
   const currentUrl = getCurrentUrl();
   
-  // Use a larger image that meets Facebook's 200x200 minimum requirement
-  // Default to a business/finance related image from Unsplash that's large enough
-  const defaultOgImage = "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&h=630&fit=crop&crop=center";
+  // Use a much larger image that meets Facebook's requirements (minimum 1200x630 recommended)
+  const defaultOgImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format";
   const finalOgImage = ogImage || defaultOgImage;
   const absoluteOgImage = finalOgImage.startsWith('http') ? finalOgImage : `https://sipbrewery.com${finalOgImage}`;
 
