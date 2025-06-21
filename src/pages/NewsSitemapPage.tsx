@@ -8,17 +8,17 @@ const NewsSitemapPage = () => {
     const articles = getNewsArticles();
     const xmlContent = generateNewsSitemap(articles);
     
-    // Clear the body and set XML content
-    document.body.innerHTML = '';
-    document.body.style.fontFamily = 'monospace';
-    document.body.style.whiteSpace = 'pre-wrap';
-    document.body.style.fontSize = '12px';
-    document.body.style.padding = '10px';
-    document.body.style.backgroundColor = '#f5f5f5';
+    // Set the proper content type header
+    const response = new Response(xmlContent, {
+      headers: {
+        'Content-Type': 'application/xml; charset=utf-8',
+      },
+    });
     
-    // Create a text node with the XML content
-    const xmlTextNode = document.createTextNode(xmlContent);
-    document.body.appendChild(xmlTextNode);
+    // Clear the body and replace with XML content
+    document.open('text/xml', 'replace');
+    document.write(xmlContent);
+    document.close();
     
     console.log('📰 News Sitemap served successfully:', {
       totalArticles: articles.length,
