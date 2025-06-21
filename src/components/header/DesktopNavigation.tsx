@@ -40,6 +40,12 @@ const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsC
           Ask AI Assistant
         </Button>
       </Link>
+
+      <Link to="/community">
+        <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+          Community
+        </Button>
+      </Link>
       
       {user && (
         <>

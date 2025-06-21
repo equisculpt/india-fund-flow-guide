@@ -55,6 +55,14 @@ const MobileNavigation = ({
         >
           Ask AI Assistant
         </Button>
+
+        <Button 
+          variant="ghost" 
+          onClick={() => handleNavigation('/community')}
+          className="w-full justify-start text-gray-700 hover:text-blue-600"
+        >
+          Community
+        </Button>
         
         {user && (
           <>
