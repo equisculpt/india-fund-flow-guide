@@ -18,7 +18,7 @@ const VeedaClinicalResearchIPOBlog = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Completely dynamic SEO - no static values */}
+      {/* Dynamic SEO - will automatically generate correct canonical URL based on current route */}
       <SEOHead isDynamic={true} />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">

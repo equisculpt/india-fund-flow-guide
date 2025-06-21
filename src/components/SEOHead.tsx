@@ -49,13 +49,15 @@ const SEOHead = ({
   const finalCanonicalUrl = canonicalUrl || dynamicContent.canonicalUrl;
   const finalOgType = ogType || dynamicContent.ogType;
   
-  // Enhanced debugging
-  console.log('SEOHead Dynamic Generation:', {
+  // Enhanced debugging for canonical URL specifically
+  console.log('SEOHead Canonical URL Debug:', {
     currentPath: location.pathname,
-    finalTitle: finalTitle.substring(0, 50) + '...',
+    providedCanonicalUrl: canonicalUrl,
+    dynamicCanonicalUrl: dynamicContent.canonicalUrl,
     finalCanonicalUrl,
-    isProvidedOrGenerated: title ? 'Provided' : 'Generated',
-    ogType: finalOgType
+    isProvidedOrGenerated: canonicalUrl ? 'Provided' : 'Generated',
+    ogType: finalOgType,
+    title: finalTitle.substring(0, 60) + '...'
   });
   
   // Use a properly sized default image - Facebook requires minimum 200x200

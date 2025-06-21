@@ -1,6 +1,4 @@
 
-import { useLocation } from 'react-router-dom';
-
 export interface SEOContent {
   title: string;
   description: string;
@@ -23,7 +21,7 @@ export const generateDynamicSEOContent = (currentPath: string): SEOContent => {
   if (currentPath.startsWith('/blog/')) {
     dynamicOgType = 'article';
     
-    if (currentPath.includes('veeda-clinical-research-ipo')) {
+    if (currentPath.includes('veeda-clinical-research-ipo-analysis')) {
       dynamicTitle = "Veeda Clinical Research IPO Analysis 2024 | Complete SWOT & Financial Review | SIP Brewery";
       dynamicDescription = "In-depth analysis of Veeda Clinical Research IPO with financial charts, SWOT analysis, and key insights. Educational content only - not investment advice. Get complete IPO review here.";
       dynamicKeywords = "Veeda Clinical Research IPO, CRO IPO India, clinical research IPO analysis, healthcare IPO 2024, biotech IPO review, SEBI compliant IPO analysis, contract research organization stocks";
