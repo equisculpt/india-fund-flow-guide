@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEOHead from '@/components/SEOHead';
 
 const VeedaBlogSEO = () => {
   const canonicalUrl = "https://sipbrewery.com/blog/veeda-clinical-research-ipo-analysis";
@@ -16,35 +16,46 @@ const VeedaBlogSEO = () => {
     ogImage
   });
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "description": description,
+    "author": {
+      "@type": "Organization",
+      "name": "SIP Brewery"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "SIP Brewery",
+      "logo": {
+        "@type": "ImageObject",
+        "url": ogImage
+      }
+    },
+    "datePublished": new Date().toISOString(),
+    "dateModified": new Date().toISOString(),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": canonicalUrl
+    },
+    "image": ogImage
+  };
+
   return (
-    <Helmet>
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={keywords} />
-      <link rel="canonical" href={canonicalUrl} />
-      
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content="article" />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:image" content={ogImage} />
-      <meta property="og:site_name" content="SIP Brewery" />
-      
-      {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
-      
-      {/* Additional SEO */}
-      <meta name="robots" content="index, follow" />
-      <meta name="author" content="SIP Brewery" />
-      <meta property="article:author" content="SIP Brewery" />
-      <meta property="article:publisher" content="SIP Brewery" />
-      <meta property="article:section" content="IPO Analysis" />
-      <meta property="article:tag" content="IPO, Healthcare, Clinical Research, Investment Analysis" />
-    </Helmet>
+    <SEOHead
+      title={title}
+      description={description}
+      keywords={keywords}
+      canonicalUrl={canonicalUrl}
+      ogImage={ogImage}
+      ogType="article"
+      articleAuthor="SIP Brewery Research Team"
+      articlePublisher="SIP Brewery"
+      publishedTime={new Date().toISOString()}
+      modifiedTime={new Date().toISOString()}
+      structuredData={structuredData}
+    />
   );
 };
 
