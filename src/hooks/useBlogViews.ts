@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface BlogViewCount {
@@ -11,9 +11,13 @@ interface BlogViewCount {
 export const useBlogViews = (blogSlug: string) => {
   const [viewCount, setViewCount] = useState<BlogViewCount | null>(null);
   const [loading, setLoading] = useState(true);
+  const channelRef = useRef<any>(null);
+  const hasTrackedView = useRef(false);
 
   // Track a view when the hook is used
   const trackView = async () => {
+    if (hasTrackedView.current) return;
+    
     try {
       const sessionId = sessionStorage.getItem('session_id') || crypto.randomUUID();
       sessionStorage.setItem('session_id', sessionId);
@@ -27,6 +31,8 @@ export const useBlogViews = (blogSlug: string) => {
         p_user_agent: navigator.userAgent,
         p_session_id: sessionId
       });
+      
+      hasTrackedView.current = true;
     } catch (error) {
       console.error('Error tracking blog view:', error);
     }
@@ -59,12 +65,19 @@ export const useBlogViews = (blogSlug: string) => {
   };
 
   useEffect(() => {
+    // Clean up any existing channel first
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
     fetchViewCount();
     trackView();
 
-    // Set up real-time subscription for live updates
-    const channel = supabase
-      .channel('blog-views')
+    // Create a new channel with a unique name
+    const channelName = `blog-views-${blogSlug}-${Date.now()}`;
+    channelRef.current = supabase
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
@@ -74,6 +87,7 @@ export const useBlogViews = (blogSlug: string) => {
           filter: `blog_slug=eq.${blogSlug}`
         },
         (payload) => {
+          console.log('Real-time update received:', payload);
           if (payload.new) {
             setViewCount(payload.new as BlogViewCount);
           }
@@ -82,7 +96,10 @@ export const useBlogViews = (blogSlug: string) => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, [blogSlug]);
 
