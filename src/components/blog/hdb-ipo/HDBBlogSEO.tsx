@@ -9,13 +9,25 @@ const HDBBlogSEO = () => {
   const keywords = "HDB Financial Services IPO, NBFC IPO India, HDB IPO analysis, HDFC Bank subsidiary IPO, financial services IPO 2025, SEBI compliant IPO analysis, retail lending IPO review";
   const ogImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
 
-  console.log('🎯 HDB Blog SEO Setup - FIXED VERSION:', {
-    title: title.substring(0, 60) + '...',
-    titleLength: title.length,
-    canonicalUrl,
-    description: description.substring(0, 100) + '...',
-    descLength: description.length,
-    ogImage
+  // FORENSIC DEBUGGING - Component level
+  console.log('🎯 HDB Blog SEO FORENSIC AUDIT:', {
+    component: 'HDBBlogSEO',
+    timestamp: new Date().toISOString(),
+    'EXACT_VALUES_BEING_PASSED': {
+      title: `"${title}"`,
+      titleLength: title.length,
+      description: `"${description}"`,
+      descLength: description.length,
+      canonicalUrl: canonicalUrl,
+      ogImage: ogImage,
+      ogType: 'article'
+    },
+    'VALIDATION_CHECKS': {
+      titleNotEmpty: title.trim().length > 0,
+      descNotEmpty: description.trim().length > 0,
+      imageIsAbsolute: ogImage.startsWith('https://'),
+      urlIsAbsolute: canonicalUrl.startsWith('https://')
+    }
   });
 
   const structuredData = {

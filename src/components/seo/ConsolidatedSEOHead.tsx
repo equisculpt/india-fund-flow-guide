@@ -39,26 +39,64 @@ const ConsolidatedSEOHead = ({
   const finalCanonicalUrl = canonicalUrl?.trim() || `https://sipbrewery.com${location.pathname}`;
   
   // Ensure absolute image URL
-  const defaultImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format&q=80";
+  const defaultImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
   let finalOgImage = ogImage?.trim() || defaultImage;
   if (!finalOgImage.startsWith('http')) {
     finalOgImage = `https://sipbrewery.com${finalOgImage}`;
   }
 
-  console.log('🔥 CONSOLIDATED SEO DEBUG:', {
+  // FORENSIC DEBUGGING - Enhanced logging
+  console.log('🔬 FORENSIC AUDIT - ConsolidatedSEOHead:', {
+    component: 'ConsolidatedSEOHead',
+    timestamp: new Date().toISOString(),
     path: location.pathname,
-    title: `"${finalTitle}"`,
-    titleLength: finalTitle.length,
-    description: `"${finalDescription.substring(0, 100)}..."`,
-    descLength: finalDescription.length,
-    ogImage: finalOgImage,
-    ogType,
-    canonicalUrl: finalCanonicalUrl
+    'RAW_INPUTS': {
+      title: title || 'UNDEFINED',
+      description: description || 'UNDEFINED',
+      ogImage: ogImage || 'UNDEFINED'
+    },
+    'PROCESSED_VALUES': {
+      finalTitle: `"${finalTitle}"`,
+      finalDescription: `"${finalDescription}"`,
+      finalOgImage: finalOgImage,
+      finalCanonicalUrl: finalCanonicalUrl
+    },
+    'STRING_CHECKS': {
+      titleValid: !!finalTitle && finalTitle.length > 0,
+      descValid: !!finalDescription && finalDescription.length > 0,
+      imageValid: !!finalOgImage && finalOgImage.startsWith('http')
+    },
+    'META_TAG_VALUES': {
+      'og:title': finalTitle,
+      'og:description': finalDescription,
+      'og:image': finalOgImage,
+      'og:url': finalCanonicalUrl,
+      'og:type': ogType
+    }
   });
+
+  // Add a window check to verify meta tags are actually in DOM
+  React.useEffect(() => {
+    setTimeout(() => {
+      const titleMeta = document.querySelector('meta[property="og:title"]');
+      const descMeta = document.querySelector('meta[property="og:description"]');
+      const imageMeta = document.querySelector('meta[property="og:image"]');
+      
+      console.log('🔍 DOM META TAGS VERIFICATION:', {
+        'og:title in DOM': titleMeta ? titleMeta.getAttribute('content') : 'NOT FOUND',
+        'og:description in DOM': descMeta ? descMeta.getAttribute('content') : 'NOT FOUND',
+        'og:image in DOM': imageMeta ? imageMeta.getAttribute('content') : 'NOT FOUND',
+        'All meta tags': Array.from(document.querySelectorAll('meta[property^="og:"]')).map(meta => ({
+          property: meta.getAttribute('property'),
+          content: meta.getAttribute('content')
+        }))
+      });
+    }, 100);
+  }, [finalTitle, finalDescription, finalOgImage]);
 
   return (
     <Helmet>
-      {/* Clear any existing tags first */}
+      {/* FORCE CLEAR ANY EXISTING TAGS */}
       <title>{finalTitle}</title>
       <meta name="description" content={finalDescription} />
       <meta name="keywords" content={finalKeywords} />
@@ -67,16 +105,16 @@ const ConsolidatedSEOHead = ({
       <meta name="author" content={articleAuthor || "SIP Brewery Research Team"} />
       <link rel="canonical" href={finalCanonicalUrl} />
 
-      {/* Open Graph Tags - Critical for Facebook */}
-      <meta property="og:type" content={ogType} />
+      {/* CRITICAL OPEN GRAPH TAGS - FORCE OVERWRITE */}
       <meta property="og:title" content={finalTitle} />
       <meta property="og:description" content={finalDescription} />
+      <meta property="og:type" content={ogType} />
       <meta property="og:url" content={finalCanonicalUrl} />
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:image" content={finalOgImage} />
       <meta property="og:image:url" content={finalOgImage} />
       <meta property="og:image:secure_url" content={finalOgImage} />
-      <meta property="og:image:type" content="image/jpeg" />
+      <meta property="og:image:type" content="image/png" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={`${finalTitle} - SIP Brewery`} />
