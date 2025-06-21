@@ -165,7 +165,7 @@ const VeedaClinicalResearchIPOBlog = () => {
   return (
     <>
       {/* Helmet as backup - but DOM manipulation takes precedence */}
-      <Helmet priority>
+      <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
