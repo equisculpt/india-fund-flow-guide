@@ -1,4 +1,3 @@
-
 import { Helmet } from 'react-helmet-async';
 
 interface SEOHeadProps {
@@ -30,14 +29,17 @@ const SEOHead = ({
   publishedTime,
   modifiedTime
 }: SEOHeadProps) => {
-  // Build clean URL without query params or hash
+  // Build the correct URL - prioritize canonicalUrl, then construct from current location
   const getCurrentUrl = () => {
-    if (canonicalUrl) return canonicalUrl;
+    // If canonicalUrl is explicitly provided, use it
+    if (canonicalUrl) {
+      console.log('SEOHead using provided canonicalUrl:', canonicalUrl);
+      return canonicalUrl;
+    }
     
     if (typeof window !== 'undefined') {
-      // Clean URL construction - remove query params and hash
       const cleanUrl = `${window.location.origin}${window.location.pathname}`;
-      console.log('SEOHead Clean URL Generated:', cleanUrl);
+      console.log('SEOHead constructed URL from window location:', cleanUrl);
       return cleanUrl;
     }
     
@@ -46,20 +48,19 @@ const SEOHead = ({
 
   const currentUrl = getCurrentUrl();
   
-  // Use large, Facebook-compliant image
-  const defaultOgImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format";
+  // Use a properly sized default image - Facebook requires minimum 200x200
+  const defaultOgImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format&q=80";
   const finalOgImage = ogImage || defaultOgImage;
   const absoluteOgImage = finalOgImage.startsWith('http') ? finalOgImage : `https://sipbrewery.com${finalOgImage}`;
 
-  console.log('SEOHead Final Meta Values:', { 
+  console.log('SEOHead Final Meta Configuration:', { 
     title, 
     description, 
     currentUrl, 
     absoluteOgImage, 
     ogType,
     providedCanonicalUrl: canonicalUrl,
-    windowHref: typeof window !== 'undefined' ? window.location.href : 'undefined',
-    cleanPath: typeof window !== 'undefined' ? window.location.pathname : 'undefined'
+    finalCanonicalUrl: currentUrl
   });
 
   const defaultStructuredData = {
@@ -115,10 +116,10 @@ const SEOHead = ({
       <meta name="robots" content="index, follow" />
       <meta name="author" content={articleAuthor} />
       
-      {/* Canonical URL - Force clean URL */}
+      {/* Canonical URL */}
       <link rel="canonical" href={currentUrl} />
       
-      {/* Open Graph tags - Force correct URL */}
+      {/* Open Graph tags */}
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
