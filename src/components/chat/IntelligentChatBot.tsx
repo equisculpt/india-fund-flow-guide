@@ -1,11 +1,11 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, MessageCircle, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Send, Bot, User, MessageCircle, AlertTriangle, CheckCircle, Paperclip } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import FileUploadComponent from '@/components/shared/FileUploadComponent';
 
 interface Message {
   id: string;
@@ -41,6 +41,8 @@ const IntelligentChatBot = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [escalationStatus, setEscalationStatus] = useState<'none' | 'pending' | 'escalated'>('none');
   const [humanAgentConnected, setHumanAgentConnected] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -210,13 +212,42 @@ const IntelligentChatBot = () => {
     setIsTyping(false);
   };
 
+  const handleFileProcessed = (file: any, extractedContent?: string) => {
+    setUploadedFiles(prev => [...prev, file]);
+    
+    if (extractedContent) {
+      // Add a system message about the uploaded file
+      const fileMessage: Message = {
+        id: `file-${Date.now()}`,
+        content: `📎 File uploaded: ${file.original_filename}\n\nI've extracted the content from your file and can now help you create blogs, analyze the content, or answer questions based on this information. What would you like me to do with this content?`,
+        sender: 'ai',
+        timestamp: new Date(),
+        suggestions: [
+          "Create a blog post from this content",
+          "Summarize the key points",
+          "Extract main topics for discussion",
+          "Generate SEO-friendly content"
+        ]
+      };
+      
+      setMessages(prev => [...prev, fileMessage]);
+    }
+    
+    setShowFileUpload(false);
+  };
+
   const generateEducationalResponse = (userMessage: string): Message => {
     const lowerMessage = userMessage.toLowerCase();
     
     let response = "";
     let suggestions: string[] = [];
 
-    if (lowerMessage.includes("mutual fund") && lowerMessage.includes("basic")) {
+    // Check if user is asking about uploaded files
+    if (uploadedFiles.length > 0 && (lowerMessage.includes("blog") || lowerMessage.includes("create") || lowerMessage.includes("write"))) {
+      const latestFile = uploadedFiles[uploadedFiles.length - 1];
+      response = `I'll help you create a blog post based on your uploaded file "${latestFile.original_filename}". Here's a structured approach:\n\n**Blog Creation Process:**\n\n1. **Content Analysis**: I've analyzed your uploaded content\n2. **Topic Identification**: Key themes and subjects identified\n3. **Structure Planning**: Organized into engaging sections\n4. **SEO Optimization**: Keywords and meta descriptions included\n\n**Suggested Blog Structure:**\n• Introduction with hook\n• Main content sections\n• Key insights and takeaways\n• Call-to-action conclusion\n\nWould you like me to proceed with creating the full blog post, or would you prefer to focus on specific sections first?`;
+      suggestions = ["Create full blog post", "Generate blog outline", "Extract key quotes", "Add SEO keywords"];
+    } else if (lowerMessage.includes("mutual fund") && lowerMessage.includes("basic")) {
       response = "Mutual funds are investment vehicles that pool money from multiple investors to purchase a diversified portfolio of stocks, bonds, or other securities. Here are the key concepts:\n\n• **Professional Management**: Fund managers make investment decisions\n• **Diversification**: Reduces risk by spreading investments\n• **Liquidity**: Can be bought/sold on any business day\n• **Transparency**: Regular reporting of holdings and performance\n\nThere are different types like Equity, Debt, and Hybrid funds, each serving different investment objectives.";
       suggestions = ["Types of mutual funds", "How NAV works", "SIP benefits", "Expense ratio impact"];
     } else if (lowerMessage.includes("sip") || lowerMessage.includes("systematic investment")) {
@@ -284,6 +315,19 @@ const IntelligentChatBot = () => {
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col p-0">
+        {/* File Upload Section */}
+        {showFileUpload && (
+          <div className="border-b p-4 bg-gray-50">
+            <FileUploadComponent
+              onFileProcessed={handleFileProcessed}
+              acceptedTypes={['.pdf', '.xls', '.xlsx', '.doc', '.docx']}
+              maxFileSize={10}
+              uploadPurpose="chat"
+            />
+          </div>
+        )}
+
+        {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -368,6 +412,14 @@ const IntelligentChatBot = () => {
         
         <div className="border-t p-4">
           <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowFileUpload(!showFileUpload)}
+              className="shrink-0"
+            >
+              <Paperclip className="h-4 w-4" />
+            </Button>
             <Input
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}

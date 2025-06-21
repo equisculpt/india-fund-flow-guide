@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,6 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import ContactSubmissionsTab from './ContactSubmissionsTab';
 import ChatSupportTab from './ChatSupportTab';
+import FileManagementTab from './FileManagementTab';
 
 const AdminPanel = () => {
   const [profiles, setProfiles] = useState([]);
@@ -67,7 +67,7 @@ const AdminPanel = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-10">
+        <TabsList className="grid w-full grid-cols-11">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="funds">Funds</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
@@ -76,6 +76,7 @@ const AdminPanel = () => {
           <TabsTrigger value="community">Community</TabsTrigger>
           <TabsTrigger value="blogs">Blogs</TabsTrigger>
           <TabsTrigger value="analysis">Analysis</TabsTrigger>
+          <TabsTrigger value="files">Files</TabsTrigger>
           <TabsTrigger value="contact">Contact</TabsTrigger>
           <TabsTrigger value="chat">Chat Support</TabsTrigger>
         </TabsList>
@@ -188,6 +189,10 @@ const AdminPanel = () => {
               <p>View analytics, performance metrics, and insights.</p>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="files">
+          <FileManagementTab />
         </TabsContent>
 
         <TabsContent value="contact">

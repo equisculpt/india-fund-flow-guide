@@ -1471,6 +1471,51 @@ export type Database = {
           },
         ]
       }
+      uploaded_files: {
+        Row: {
+          created_at: string
+          extracted_content: string | null
+          file_path: string
+          file_size: number
+          file_type: string
+          filename: string
+          id: string
+          is_processed: boolean | null
+          original_filename: string
+          updated_at: string
+          upload_purpose: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          extracted_content?: string | null
+          file_path: string
+          file_size: number
+          file_type: string
+          filename: string
+          id?: string
+          is_processed?: boolean | null
+          original_filename: string
+          updated_at?: string
+          upload_purpose?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          extracted_content?: string | null
+          file_path?: string
+          file_size?: number
+          file_type?: string
+          filename?: string
+          id?: string
+          is_processed?: boolean | null
+          original_filename?: string
+          updated_at?: string
+          upload_purpose?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_consolidated_holdings: {
         Row: {
           id: string
