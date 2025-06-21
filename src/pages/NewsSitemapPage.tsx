@@ -8,17 +8,18 @@ const NewsSitemapPage = () => {
     const articles = getNewsArticles();
     const xmlContent = generateNewsSitemap(articles);
     
-    // Set the proper content type header
-    const response = new Response(xmlContent, {
-      headers: {
-        'Content-Type': 'application/xml; charset=utf-8',
-      },
-    });
-    
-    // Clear the body and replace with XML content
-    document.open('text/xml', 'replace');
+    // Replace the entire document with XML content
+    document.open();
     document.write(xmlContent);
     document.close();
+    
+    // Try to set the content type via document properties
+    try {
+      (document as any).contentType = 'application/xml';
+    } catch (e) {
+      // Fallback - some browsers don't allow this
+      console.log('Could not set content type directly');
+    }
     
     console.log('📰 News Sitemap served successfully:', {
       totalArticles: articles.length,
