@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -70,11 +69,11 @@ const IndustryLandscape = () => {
                     fontSize={11}
                   />
                   <YAxis 
-                    tickFormatter={(value) => `₹${(value/1000).toFixed(0)}K Cr`}
+                    tickFormatter={(value) => `₹${(Number(value)/1000).toFixed(0)}K Cr`}
                     fontSize={11}
                   />
                   <Tooltip 
-                    formatter={(value, name) => [`₹${(value/1000).toFixed(0)}K Cr`, 'AUM']}
+                    formatter={(value, name) => [`₹${(Number(value)/1000).toFixed(0)}K Cr`, 'AUM']}
                     labelFormatter={(label) => `${label}`}
                   />
                   <Bar dataKey="aum" fill="#3b82f6" />
