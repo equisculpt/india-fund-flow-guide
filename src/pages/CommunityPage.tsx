@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageSquare, BookOpen, Plus, Users } from 'lucide-react';
@@ -14,14 +14,25 @@ import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
 
 const CommunityPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useSupabaseAuthContext();
   const [showAskQuestion, setShowAskQuestion] = useState(false);
   const [showCreateBlog, setShowCreateBlog] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  // Check if we should default to blogs tab (when coming from blog pages)
+  const defaultTab = location.state?.tab || 'questions';
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (location.state?.tab) {
+      setActiveTab(location.state.tab);
+    }
+  }, [location.state]);
 
   const handleAskQuestion = () => {
     if (user) {
@@ -63,7 +74,33 @@ const CommunityPage = () => {
               </div>
             </div>
 
-            <Tabs defaultValue="questions" className="w-full">
+            {/* Sub-headers */}
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-center mb-6">Community Sections</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                  <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                    <MessageSquare className="h-6 w-6 text-blue-600" />
+                    Discussion
+                  </h3>
+                  <p className="text-gray-600">
+                    Join the conversation, ask questions, and get expert answers from our community of investment professionals.
+                  </p>
+                </div>
+                
+                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+                  <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                    <BookOpen className="h-6 w-6 text-purple-600" />
+                    Blogs
+                  </h3>
+                  <p className="text-gray-600">
+                    Read the latest investment insights, market analysis, and educational content from our research team.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="questions" className="flex items-center gap-2">
                   <MessageSquare className="h-4 w-4" />

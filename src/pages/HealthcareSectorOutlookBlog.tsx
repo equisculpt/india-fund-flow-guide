@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +15,7 @@ const HealthcareSectorOutlookBlog = () => {
   }, []);
 
   const handleBackClick = () => {
-    navigate('/community');
+    navigate('/community', { state: { tab: 'blogs' } });
   };
 
   const publishedTime = new Date().toISOString();
