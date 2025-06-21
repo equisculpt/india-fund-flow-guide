@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { TrendingUp, TrendingDown, AlertTriangle, Target, Shield, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { TrendingUp, TrendingDown, AlertTriangle, Target, Shield, Zap, ArrowLeft } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import SEOHead from '@/components/SEOHead';
 
 const VeedaClinicalResearchIPOBlog = () => {
+  const navigate = useNavigate();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const revenueData = [
     { year: 'FY22', revenue: 248.1, ebitda: 60.2, pat: 29.6 },
     { year: 'FY23', revenue: 310.7, ebitda: 78.4, pat: 36.1 },
@@ -75,6 +82,17 @@ const VeedaClinicalResearchIPOBlog = () => {
       />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </button>
+        </div>
+
         {/* Header Section */}
         <div className="text-center mb-12">
           <Badge className="mb-4 bg-blue-600 text-white px-4 py-2">IPO Analysis</Badge>
@@ -363,23 +381,17 @@ const VeedaClinicalResearchIPOBlog = () => {
               <h4 className="font-semibold text-blue-600 mb-2 hover:text-blue-800">📊 IPO Analysis Guide</h4>
               <p className="text-gray-600">Understanding key metrics for IPO evaluation with professional techniques</p>
             </Link>
+            
             <Link to="/blog/healthcare-sector-outlook" className="bg-white p-4 rounded border hover:shadow-md transition-shadow">
               <h4 className="font-semibold text-blue-600 mb-2 hover:text-blue-800">🏥 Healthcare Sector Outlook</h4>
-              <p className="text-gray-600">India's healthcare & biotech investment themes and growth opportunities</p>
+              <p className="text-gray-600">India's healthcare investment themes and growth opportunities for 2025</p>
             </Link>
+            
             <Link to="/blog/sebi-guidelines" className="bg-white p-4 rounded border hover:shadow-md transition-shadow">
               <h4 className="font-semibold text-blue-600 mb-2 hover:text-blue-800">⚖️ SEBI Guidelines</h4>
               <p className="text-gray-600">Understanding IPO eligibility norms and investor protection measures</p>
             </Link>
           </div>
-          
-          <Alert className="mt-4 border-yellow-200 bg-yellow-50">
-            <AlertTriangle className="h-4 w-4 text-yellow-600" />
-            <AlertDescription className="text-yellow-800">
-              <strong>Educational Content Notice:</strong> All linked articles are for educational purposes only. 
-              They do not constitute investment recommendations. Always seek professional advice for investment decisions.
-            </AlertDescription>
-          </Alert>
         </div>
       </div>
     </div>

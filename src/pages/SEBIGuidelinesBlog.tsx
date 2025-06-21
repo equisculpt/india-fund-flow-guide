@@ -1,12 +1,19 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle, Shield, FileText, CheckCircle, Scale } from 'lucide-react';
+import { AlertTriangle, Shield, FileText, CheckCircle, Scale, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const SEBIGuidelinesBlog = () => {
+  const navigate = useNavigate();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -40,6 +47,17 @@ const SEBIGuidelinesBlog = () => {
       />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </button>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-12">
           <Badge className="mb-4 bg-blue-600 text-white px-4 py-2">Regulatory Guide</Badge>
