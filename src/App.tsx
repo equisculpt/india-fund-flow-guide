@@ -14,7 +14,6 @@ import ContactPage from '@/pages/ContactPage';
 import UserDashboard from '@/pages/UserDashboard';
 import CommunityPage from '@/pages/CommunityPage';
 import NotFound from '@/pages/NotFound';
-import ComingSoonPage from '@/pages/ComingSoonPage';
 import TermsOfServicePage from '@/pages/TermsOfServicePage';
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
 import CommunityBlogs from '@/components/community/CommunityBlogs';
@@ -42,7 +41,6 @@ function App() {
                     <Route path="/privacy" element={<PrivacyPolicyPage />} />
                     <Route path="/chat" element={<ChatPage />} />
                     <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
-                    <Route path="/coming-soon" element={<ComingSoonPage />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Layout>
