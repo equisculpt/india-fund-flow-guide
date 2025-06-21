@@ -489,6 +489,60 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_view_counts: {
+        Row: {
+          blog_slug: string
+          id: string
+          last_updated: string
+          total_views: number
+          unique_views: number
+        }
+        Insert: {
+          blog_slug: string
+          id?: string
+          last_updated?: string
+          total_views?: number
+          unique_views?: number
+        }
+        Update: {
+          blog_slug?: string
+          id?: string
+          last_updated?: string
+          total_views?: number
+          unique_views?: number
+        }
+        Relationships: []
+      }
+      blog_views: {
+        Row: {
+          blog_slug: string
+          id: string
+          ip_address: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+          viewed_at: string
+        }
+        Insert: {
+          blog_slug: string
+          id?: string
+          ip_address?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string
+        }
+        Update: {
+          blog_slug?: string
+          id?: string
+          ip_address?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string
+        }
+        Relationships: []
+      }
       commissions: {
         Row: {
           agent_id: string | null
@@ -1642,6 +1696,16 @@ export type Database = {
       get_current_user_id: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      increment_blog_view_count: {
+        Args: {
+          p_blog_slug: string
+          p_user_id?: string
+          p_ip_address?: string
+          p_user_agent?: string
+          p_session_id?: string
+        }
+        Returns: number
       }
       log_security_event: {
         Args: {

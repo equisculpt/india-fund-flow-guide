@@ -3,6 +3,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Clock, Calendar, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import BlogViewCounter from '../BlogViewCounter';
 
 const NBFCSectorHeader = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const NBFCSectorHeader = () => {
           to investment opportunities, growth drivers, and future outlook
         </p>
         
-        <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-500 mb-8">
+        <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-500 mb-4">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
             <span>40-45 min read</span>
@@ -44,6 +45,15 @@ const NBFCSectorHeader = () => {
             <Calendar className="h-4 w-4" />
             <span>{new Date().toLocaleDateString()}</span>
           </div>
+        </div>
+
+        {/* Live View Counter */}
+        <div className="flex justify-center mb-8">
+          <BlogViewCounter 
+            blogSlug="nbfc-sector-analysis-india-2025" 
+            showUniqueViews={true}
+            className="bg-white px-4 py-2 rounded-lg shadow-sm"
+          />
         </div>
 
         {/* Key Stats Preview */}

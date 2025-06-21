@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, Calendar, User, ArrowRight, Edit, BookOpen } from 'lucide-react';
 import { CombinedBlog } from '../types/blogTypes';
+import BlogViewCounter from '../../blog/BlogViewCounter';
 
 interface BlogCardProps {
   blog: CombinedBlog;
@@ -51,6 +51,13 @@ const BlogCard = ({ blog, onBlogClick }: BlogCardProps) => {
     return blog.featured_image_url || (blog as any).featured_image_url;
   };
 
+  const getBlogSlug = () => {
+    if (blog.type === 'static') {
+      return (blog as any).slug || blog.id;
+    }
+    return blog.id;
+  };
+
   return (
     <Card 
       className="hover:shadow-lg transition-shadow cursor-pointer"
@@ -77,10 +84,10 @@ const BlogCard = ({ blog, onBlogClick }: BlogCardProps) => {
               </Badge>
             )}
           </div>
-          <span className="text-xs text-gray-500 flex items-center gap-1">
-            <Eye className="h-3 w-3" />
-            {getDisplayViews()}
-          </span>
+          <BlogViewCounter 
+            blogSlug={getBlogSlug()}
+            className="text-xs"
+          />
         </div>
         <CardTitle className="text-lg line-clamp-2">
           {getDisplayTitle()}

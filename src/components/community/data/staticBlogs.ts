@@ -2,26 +2,43 @@ import { StaticBlog } from '../types/blogTypes';
 
 export const staticBlogs: StaticBlog[] = [
   {
-    id: 'veeda-clinical-research-ipo',
-    title: 'Veeda Clinical Research IPO Analysis 2025: Complete CRO Industry Review',
-    excerpt: 'Deep dive into Veeda Clinical Research IPO with comprehensive analysis of the CRO industry, financial performance, and investment prospects.',
-    category: 'IPO Tracker',
-    author: 'SIP Brewery Editorial',
-    published_at: '2025-01-15',
-    route: '/blog/veeda-clinical-research-ipo-analysis',
-    featured_image_url: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=400&fit=crop',
-    tags: ['IPO', 'Healthcare', 'CRO', 'Investment Analysis']
+    id: 'nbfc-sector-deep-dive-2025',
+    title: 'India\'s NBFC Sector: Complete Deep Dive Analysis 2025',
+    excerpt: 'Comprehensive analysis of India\'s Non-Banking Financial Companies sector covering regulatory changes, investment opportunities, growth drivers, and future outlook for 2025.',
+    content: 'Comprehensive sector analysis...',
+    category: 'sector-analysis',
+    tags: ['NBFC', 'Banking', 'Financial Services', 'Investment Analysis', 'India', '2025'],
+    author: 'SIP Brewery Research Team',
+    published_at: '2024-12-21T10:00:00Z',
+    featured_image_url: '/lovable-uploads/b16468ef-9745-48f9-a26e-c8c3869b2a13.png',
+    route: '/blog/nbfc-sector-analysis-india-2025',
+    slug: 'nbfc-sector-analysis-india-2025'
   },
   {
-    id: 'hdb-financial-services-ipo',
-    title: 'HDB Financial Services IPO Analysis 2025: Complete NBFC Review & Investment Guide',
-    excerpt: 'Comprehensive analysis of HDB Financial Services IPO - India\'s largest NBFC subsidiary of HDFC Bank. Complete financial review, SWOT analysis, and investment insights.',
-    category: 'IPO Tracker',
-    author: 'SIP Brewery Editorial',
-    published_at: '2025-01-21',
+    id: 'hdb-financial-ipo-analysis',
+    title: 'HDB Financial Services IPO: Complete Analysis & Investment Guide',
+    excerpt: 'Detailed analysis of HDB Financial Services IPO including business model, financials, risks, and investment recommendation.',
+    content: 'Complete IPO analysis...',
+    category: 'ipo-analysis',
+    tags: ['IPO', 'HDB Financial', 'Investment', 'NBFC'],
+    author: 'SIP Brewery Research Team',
+    published_at: '2024-01-15T10:00:00Z',
+    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
     route: '/blog/hdb-financial-services-ipo-analysis',
-    featured_image_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=400&fit=crop',
-    tags: ['IPO', 'NBFC', 'Financial Services', 'HDFC Bank', 'Investment Analysis']
+    slug: 'hdb-financial-services-ipo-analysis'
+  },
+  {
+    id: 'veeda-clinical-ipo-analysis',
+    title: 'Veeda Clinical Research IPO: Detailed Analysis & Investment Perspective',
+    excerpt: 'In-depth analysis of Veeda Clinical Research IPO covering business fundamentals, financial performance, and investment considerations.',
+    content: 'Detailed IPO analysis...',
+    category: 'ipo-analysis',
+    tags: ['IPO', 'Veeda Clinical', 'Pharmaceutical', 'Research'],
+    author: 'SIP Brewery Research Team',
+    published_at: '2024-01-10T10:00:00Z',
+    featured_image_url: '/lovable-uploads/b16468ef-9745-48f9-a26e-c8c3869b2a13.png',
+    route: '/blog/veeda-clinical-research-ipo-analysis',
+    slug: 'veeda-clinical-research-ipo-analysis'
   },
   {
     id: 'nbfc-sector-deep-dive',
