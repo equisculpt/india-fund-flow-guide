@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import SEOHead from '@/components/SEOHead';
+import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -49,83 +49,69 @@ const IPOAnalysisGuideBlog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <SEOHead 
-        title="IPO Analysis Guide: Understanding Key Metrics for IPO Evaluation 2025 | SIP Brewery"
-        description="Complete guide to analyzing IPOs with key metrics, financial ratios, and evaluation criteria. Learn how to assess IPO investments with professional techniques. Educational content only."
-        keywords="IPO analysis guide, IPO evaluation metrics, how to analyze IPO, IPO investment guide, IPO key ratios, IPO valuation methods, SEBI IPO guidelines"
-        canonicalUrl="https://sipbrewery.com/blog/ipo-analysis-guide"
-        ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
-        structuredData={structuredData}
-        isDynamic={true}
-        ogType="article"
-        articleAuthor="SIP Brewery Research Team"
-        articlePublisher="SIP Brewery"
-        publishedTime={publishedTime}
-        modifiedTime={modifiedTime}
-      />
-      
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Back Button */}
-        <div className="mb-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </button>
-        </div>
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          {/* Back Button */}
+          <div className="mb-6">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </button>
+          </div>
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <Badge className="mb-4 bg-blue-600 text-white px-4 py-2">Investment Education</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            📊 IPO Analysis Guide: Understanding Key Metrics for Evaluation
-          </h1>
-          <p className="text-xl text-gray-600 mb-6 max-w-4xl mx-auto">
-            Master the art of IPO analysis with professional techniques and key metrics used by institutional investors
-          </p>
-        </div>
-
-        {/* Compliance Disclaimer */}
-        <Alert className="mb-8 border-red-200 bg-red-50">
-          <AlertTriangle className="h-4 w-4 text-red-600" />
-          <AlertDescription className="text-red-800 font-medium">
-            <strong>SEBI Compliance Disclaimer:</strong> This article is solely for educational purposes. 
-            It does not constitute investment advice or recommendation. IPO investments carry high risk. 
-            Please consult a SEBI-registered financial advisor before making investment decisions.
-          </AlertDescription>
-        </Alert>
-
-        {/* What is IPO Analysis */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <Eye className="h-6 w-6 text-blue-600" />
-              What is IPO Analysis?
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-gray-700 leading-relaxed">
-              IPO (Initial Public Offering) analysis is the systematic evaluation of a company going public 
-              to determine its investment worthiness. It involves analyzing financial health, business model, 
-              market opportunity, management quality, and valuation metrics.
+          {/* Header */}
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-blue-600 text-white px-4 py-2">Investment Education</Badge>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              📊 IPO Analysis Guide: Understanding Key Metrics for Evaluation
+            </h1>
+            <p className="text-xl text-gray-600 mb-6 max-w-4xl mx-auto">
+              Master the art of IPO analysis with professional techniques and key metrics used by institutional investors
             </p>
-            
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold mb-2">Why IPO Analysis Matters:</h4>
-              <ul className="text-sm space-y-1">
-                <li>• IPOs can be highly volatile in initial trading</li>
-                <li>• Limited historical trading data available</li>
-                <li>• Information asymmetry between promoters and investors</li>
-                <li>• High potential for both gains and losses</li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Key Financial Metrics */}
+          {/* Compliance Disclaimer */}
+          <Alert className="mb-8 border-red-200 bg-red-50">
+            <AlertTriangle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800 font-medium">
+              <strong>SEBI Compliance Disclaimer:</strong> This article is solely for educational purposes. 
+              It does not constitute investment advice or recommendation. IPO investments carry high risk. 
+              Please consult a SEBI-registered financial advisor before making investment decisions.
+            </AlertDescription>
+          </Alert>
+
+          {/* What is IPO Analysis */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <Eye className="h-6 w-6 text-blue-600" />
+                What is IPO Analysis?
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-gray-700 leading-relaxed">
+                IPO (Initial Public Offering) analysis is the systematic evaluation of a company going public 
+                to determine its investment worthiness. It involves analyzing financial health, business model, 
+                market opportunity, management quality, and valuation metrics.
+              </p>
+              
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Why IPO Analysis Matters:</h4>
+                <ul className="text-sm space-y-1">
+                  <li>• IPOs can be highly volatile in initial trading</li>
+                  <li>• Limited historical trading data available</li>
+                  <li>• Information asymmetry between promoters and investors</li>
+                  <li>• High potential for both gains and losses</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Key Financial Metrics */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
@@ -304,15 +290,16 @@ const IPOAnalysisGuideBlog = () => {
           </AlertDescription>
         </Alert>
 
-        {/* Footer */}
-        <div className="text-center bg-gray-50 p-8 rounded-lg">
-          <h3 className="text-xl font-semibold mb-4">📚 Continue Learning</h3>
-          <p className="text-gray-600 mb-4">
-            Master IPO analysis with practice and continuous learning. Remember, successful investing requires patience and discipline.
-          </p>
+          {/* Footer */}
+          <div className="text-center bg-gray-50 p-8 rounded-lg">
+            <h3 className="text-xl font-semibold mb-4">📚 Continue Learning</h3>
+            <p className="text-gray-600 mb-4">
+              Master IPO analysis with practice and continuous learning. Remember, successful investing requires patience and discipline.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
