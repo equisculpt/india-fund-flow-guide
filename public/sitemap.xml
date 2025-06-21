@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -43,6 +44,30 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://sipbrewery.com/blog/what-are-mutual-funds</loc>
+    <lastmod>2025-06-20T00:00:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/how-mutual-funds-work</loc>
+    <lastmod>2025-06-20T00:00:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/mutual-fund-benefits</loc>
+    <lastmod>2025-06-20T00:00:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/sebi-guidelines</loc>
+    <lastmod>2025-06-21T10:30:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sipbrewery.com/fund-comparison</loc>
     <lastmod>2025-06-21T10:30:00.000Z</lastmod>
     <changefreq>daily</changefreq>
@@ -73,6 +98,42 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://sipbrewery.com/fund/icici-prudential-bluechip-fund</loc>
+    <lastmod>2025-06-20T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/fund/axis-long-term-equity-fund</loc>
+    <lastmod>2025-06-20T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/fund/mirae-asset-large-cap-fund</loc>
+    <lastmod>2025-06-20T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/fund/parag-parikh-flexi-cap-fund</loc>
+    <lastmod>2025-06-20T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/fund/motilal-oswal-nasdaq-100-fund</loc>
+    <lastmod>2025-06-20T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/fund/kotak-emerging-equity-fund</loc>
+    <lastmod>2025-06-20T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sipbrewery.com/about</loc>
     <lastmod>2025-06-19T00:00:00.000Z</lastmod>
     <changefreq>monthly</changefreq>
@@ -92,6 +153,12 @@
   </url>
   <url>
     <loc>https://sipbrewery.com/privacy</loc>
+    <lastmod>2025-06-19T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/risk-disclosure</loc>
     <lastmod>2025-06-19T00:00:00.000Z</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
