@@ -30,6 +30,7 @@ export interface StaticBlog {
   published_at: string;
   author: string;
   featured_image_url?: string;
+  slug: string;
 }
 
 export interface BlogWithType extends BlogPost {
