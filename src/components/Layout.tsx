@@ -27,12 +27,12 @@ const Layout = ({ children }: LayoutProps) => {
   console.log('Layout SEO Decision:', {
     currentPath: location.pathname,
     shouldRenderSEO,
-    reason: shouldRenderSEO ? 'No page-specific SEO found' : 'Page has its own SEO'
+    reason: shouldRenderSEO ? 'No page-specific SEO found' : 'Page has its own SEO - SKIPPED'
   });
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Only render SEO if page doesn't have its own */}
+      {/* Only render SEO if page doesn't have its own - Blog pages handle their own SEO */}
       {shouldRenderSEO && <SEOHead isDynamic={true} />}
       <Header />
       <main className="flex-1">
