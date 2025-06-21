@@ -27,7 +27,7 @@ const NBFCTypes = () => {
               <div>
                 <h4 className="font-semibold text-blue-700 mb-2">Non-Systemically Important</h4>
                 <ul className="text-sm text-blue-600 space-y-1">
-                  <li>• Asset size < ₹500 crore</li>
+                  <li>• Asset size &lt; ₹500 crore</li>
                   <li>• Lighter regulatory framework</li>
                   <li>• Local/regional operations</li>
                   <li>• ~9,100 NBFCs in this category</li>

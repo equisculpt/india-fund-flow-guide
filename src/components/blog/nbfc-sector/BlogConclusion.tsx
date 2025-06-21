@@ -74,7 +74,7 @@ const BlogConclusion = () => {
 
           <div className="text-center py-6">
             <div className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Thank you for reading!</div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Thank you for reading!</h3>
               <p className="text-gray-600">
                 Stay informed with SIP Brewery's comprehensive sector analysis and investment insights.
               </p>
