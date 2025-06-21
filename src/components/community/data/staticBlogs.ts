@@ -1,5 +1,4 @@
-
-import { StaticBlog } from '../types/blogTypes';
+import type { StaticBlog } from '../types/blogTypes';
 
 export const staticBlogs: StaticBlog[] = [
   {
@@ -45,5 +44,17 @@ export const staticBlogs: StaticBlog[] = [
     published_at: '2025-06-19',
     author: 'SIP Brewery Team',
     featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png'
+  },
+  {
+    id: 'veeda-clinical-research-ipo-analysis',
+    title: 'Veeda Clinical Research IPO: Complete SWOT & Financial Analysis',
+    excerpt: 'In-depth analysis of Veeda Clinical Research IPO with financial charts, SWOT analysis, and key insights for healthcare sector investors.',
+    author: 'SIP Brewery Research Team',
+    published_at: new Date().toISOString(),
+    category: 'market-analysis',
+    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
+    tags: ['IPO Analysis', 'Healthcare', 'CRO Sector', 'Financial Review'],
+    reading_time: 15,
+    route: '/blog/veeda-clinical-research-ipo-analysis'
   }
 ];
