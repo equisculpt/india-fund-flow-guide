@@ -8,16 +8,20 @@ import BlogViewCounter from '@/components/blog/BlogViewCounter';
 const NBFCSectorHeader = () => {
   const navigate = useNavigate();
 
+  const handleBackClick = () => {
+    navigate('/community', { state: { tab: 'blogs' } });
+  };
+
   return (
     <>
       {/* Back Button */}
       <div className="mb-6">
         <button
-          onClick={() => navigate(-1)}
+          onClick={handleBackClick}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back
+          Back to Blogs
         </button>
       </div>
 
