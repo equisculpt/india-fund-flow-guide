@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+  xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  
   <url>
     <loc>https://sipbrewery.com/blog/hdb-financial-services-ipo-analysis</loc>
     <news:news>
@@ -9,9 +11,10 @@
         <news:language>en</news:language>
       </news:publication>
       <news:publication_date>2025-06-21T18:00:00+05:30</news:publication_date>
-      <news:title><![CDATA[HDB Financial Services IPO Analysis 2025 | Complete Financial Review & SWOT]]></news:title>
+      <news:title>HDB Financial Services IPO Analysis</news:title>
     </news:news>
   </url>
+
   <url>
     <loc>https://sipbrewery.com/blog/veeda-clinical-research-ipo-analysis</loc>
     <news:news>
@@ -20,9 +23,10 @@
         <news:language>en</news:language>
       </news:publication>
       <news:publication_date>2025-06-21T17:30:00+05:30</news:publication_date>
-      <news:title><![CDATA[Veeda Clinical Research IPO Analysis 2024 | Complete SWOT & Financial Review]]></news:title>
+      <news:title>Veeda Clinical Research IPO Analysis</news:title>
     </news:news>
   </url>
+
   <url>
     <loc>https://sipbrewery.com/blog/nbfc-sector-analysis-india-2025</loc>
     <news:news>
@@ -31,9 +35,10 @@
         <news:language>en</news:language>
       </news:publication>
       <news:publication_date>2025-06-21T17:00:00+05:30</news:publication_date>
-      <news:title><![CDATA[NBFC Sector Analysis India 2025: Complete Guide to Non-Banking Financial Companies]]></news:title>
+      <news:title>India’s NBFC Sector Analysis 2025</news:title>
     </news:news>
   </url>
+
   <url>
     <loc>https://sipbrewery.com/blog/how-fund-managers-make-money-mutual-funds</loc>
     <news:news>
@@ -42,9 +47,10 @@
         <news:language>en</news:language>
       </news:publication>
       <news:publication_date>2025-06-20T12:00:00+05:30</news:publication_date>
-      <news:title><![CDATA[Why Regular Mutual Fund Plans Can Outperform Direct Plans]]></news:title>
+      <news:title>How Fund Managers Make Money in Mutual Funds</news:title>
     </news:news>
   </url>
+
   <url>
     <loc>https://sipbrewery.com/blog/ipo-analysis-guide</loc>
     <news:news>
@@ -53,9 +59,10 @@
         <news:language>en</news:language>
       </news:publication>
       <news:publication_date>2025-06-21T16:30:00+05:30</news:publication_date>
-      <news:title><![CDATA[IPO Analysis Guide: Understanding Key Metrics for IPO Evaluation 2025]]></news:title>
+      <news:title>Beginner’s Guide to IPO Analysis</news:title>
     </news:news>
   </url>
+
   <url>
     <loc>https://sipbrewery.com/blog/healthcare-sector-outlook</loc>
     <news:news>
@@ -64,7 +71,8 @@
         <news:language>en</news:language>
       </news:publication>
       <news:publication_date>2025-06-21T16:00:00+05:30</news:publication_date>
-      <news:title><![CDATA[Healthcare Sector Outlook: India's Healthcare & Biotech Investment Themes 2025]]></news:title>
+      <news:title>Healthcare Sector Outlook India 2025</news:title>
     </news:news>
   </url>
+
 </urlset>
