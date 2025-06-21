@@ -13,10 +13,7 @@ const SitemapPage = () => {
     document.close();
     
     // Set proper content type for XML
-    const contentTypeMeta = document.createElement('meta');
-    contentTypeMeta.setAttribute('http-equiv', 'Content-Type');
-    contentTypeMeta.setAttribute('content', 'application/xml; charset=utf-8');
-    document.head.appendChild(contentTypeMeta);
+    document.contentType = 'application/xml';
     
     console.log('📄 Sitemap XML served as raw XML');
   }, []);
