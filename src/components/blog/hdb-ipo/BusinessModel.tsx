@@ -49,30 +49,34 @@ const BusinessModel = () => {
           </div>
           
           <div className="space-y-4">
-            <h3 className="font-semibold text-lg">Key Performance Metrics (June 2025)</h3>
+            <h3 className="font-semibold text-lg">Key Performance Metrics</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 bg-red-50 rounded-lg">
-                <div className="text-2xl font-bold text-red-600">₹70,000+ Cr</div>
+                <div className="text-2xl font-bold text-red-600">₹65,088 Cr</div>
                 <div className="text-sm text-red-700">Gross Loan Book</div>
+                <div className="text-xs text-red-600">Dec 31, 2023</div>
               </div>
               <div className="text-center p-4 bg-orange-50 rounded-lg">
-                <div className="text-2xl font-bold text-orange-600">1,686+</div>
+                <div className="text-2xl font-bold text-orange-600">1,649</div>
                 <div className="text-sm text-orange-700">Branch Network</div>
+                <div className="text-xs text-orange-600">Dec 31, 2023</div>
               </div>
               <div className="text-center p-4 bg-teal-50 rounded-lg">
                 <div className="text-2xl font-bold text-teal-600">1,029+</div>
                 <div className="text-sm text-teal-700">Cities Covered</div>
+                <div className="text-xs text-teal-600">Dec 31, 2023</div>
               </div>
               <div className="text-center p-4 bg-indigo-50 rounded-lg">
                 <div className="text-2xl font-bold text-indigo-600">~56,000</div>
                 <div className="text-sm text-indigo-700">Total Employees</div>
+                <div className="text-xs text-indigo-600">June 2025</div>
               </div>
             </div>
             
             <div className="p-4 bg-yellow-50 rounded-lg">
               <h4 className="font-semibold text-yellow-800 mb-2">Hybrid Distribution Strategy</h4>
               <ul className="text-sm text-yellow-700 space-y-1">
-                <li>• <strong>Physical Presence:</strong> 1,686 branches in Tier 2-4 cities</li>
+                <li>• <strong>Physical Presence:</strong> 1,649 branches in Tier 2-4 cities</li>
                 <li>• <strong>Digital Platforms:</strong> Mobile apps, online portals</li>
                 <li>• <strong>Partner Network:</strong> DSAs, dealers, brokers</li>
                 <li>• <strong>Cross-selling:</strong> HDFC Bank customer acquisition</li>
