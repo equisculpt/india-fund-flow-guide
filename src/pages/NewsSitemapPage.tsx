@@ -8,8 +8,16 @@ const NewsSitemapPage = () => {
     const articles = getNewsArticles();
     const xmlContent = generateNewsSitemap(articles);
     
-    // Set the content type to XML
-    document.contentType = 'application/xml';
+    // Set response headers for XML content type
+    const setXMLHeaders = () => {
+      // We can't modify document.contentType directly, but we can set meta tags
+      const meta = document.createElement('meta');
+      meta.httpEquiv = 'Content-Type';
+      meta.content = 'application/xml; charset=utf-8';
+      document.head.appendChild(meta);
+    };
+    
+    setXMLHeaders();
     
     // Replace the entire page content with XML
     document.open();
@@ -18,7 +26,8 @@ const NewsSitemapPage = () => {
     
     console.log('📰 News Sitemap served dynamically:', {
       totalArticles: articles.length,
-      url: window.location.href
+      url: window.location.href,
+      xmlPreview: xmlContent.substring(0, 200) + '...'
     });
   }, []);
 
