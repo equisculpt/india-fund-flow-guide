@@ -9,11 +9,17 @@ import SEOHead from '@/components/SEOHead';
 
 const VeedaClinicalResearchIPOBlog = () => {
   const navigate = useNavigate();
+  
+  // Define the canonical URL as a constant to ensure it's passed correctly
+  const CANONICAL_URL = "https://sipbrewery.com/blog/veeda-clinical-research-ipo-analysis";
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Add console log to debug the canonical URL being passed
+  console.log('VeedaClinicalResearchIPOBlog: CANONICAL_URL being passed to SEOHead:', CANONICAL_URL);
 
   const revenueData = [
     { year: 'FY22', revenue: 248.1, ebitda: 60.2, pat: 29.6 },
@@ -63,7 +69,7 @@ const VeedaClinicalResearchIPOBlog = () => {
     "dateModified": new Date().toISOString(),
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://sipbrewery.com/blog/veeda-clinical-research-ipo-analysis"
+      "@id": CANONICAL_URL
     },
     "articleSection": "IPO Analysis",
     "keywords": ["Veeda Clinical Research IPO", "CRO IPO India", "clinical research IPO analysis", "healthcare IPO 2024"]
@@ -75,10 +81,15 @@ const VeedaClinicalResearchIPOBlog = () => {
         title="Veeda Clinical Research IPO Analysis 2024 | Complete SWOT & Financial Review | SIP Brewery"
         description="In-depth analysis of Veeda Clinical Research IPO with financial charts, SWOT analysis, and key insights. Educational content only - not investment advice. Get complete IPO review here."
         keywords="Veeda Clinical Research IPO, CRO IPO India, clinical research IPO analysis, healthcare IPO 2024, biotech IPO review, SEBI compliant IPO analysis, contract research organization stocks"
-        canonicalUrl="https://sipbrewery.com/blog/veeda-clinical-research-ipo-analysis"
+        canonicalUrl={CANONICAL_URL}
         ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
         structuredData={structuredData}
         isDynamic={true}
+        ogType="article"
+        articleAuthor="SIP Brewery Research Team"
+        articlePublisher="SIP Brewery"
+        publishedTime={new Date().toISOString()}
+        modifiedTime={new Date().toISOString()}
       />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">
