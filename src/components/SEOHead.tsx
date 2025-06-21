@@ -20,13 +20,19 @@ const SEOHead = ({
   structuredData,
   isDynamic = false
 }: SEOHeadProps) => {
+  // Get current URL
   const currentUrl = canonicalUrl || (typeof window !== 'undefined' ? window.location.href : 'https://sipbrewery.com');
+  
+  // Ensure absolute URL for OG image
   const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://sipbrewery.com${ogImage}`;
   
-  console.log('SEOHead - Meta tags:', { 
+  // Add cache busting for WhatsApp
+  const cacheBustingUrl = `${currentUrl}?v=${Date.now()}`;
+  
+  console.log('SEOHead - Rendering meta tags:', { 
     title, 
     description, 
-    currentUrl,
+    currentUrl: cacheBustingUrl,
     absoluteOgImage
   });
 
@@ -51,20 +57,25 @@ const SEOHead = ({
 
   return (
     <Helmet>
-      {/* Primary Meta Tags */}
+      {/* Primary Meta Tags - Order matters for WhatsApp */}
       <title>{title}</title>
+      <meta name="title" content={title} />
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <meta name="author" content="SIP Brewery" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="robots" content="index, follow" />
+      <meta name="language" content="English" />
+      <meta name="revisit-after" content="1 days" />
+      <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
       <link rel="canonical" href={currentUrl} />
       
-      {/* Open Graph Tags */}
+      {/* Open Graph Tags - Critical for WhatsApp */}
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:url" content={currentUrl} />
+      <meta property="og:url" content={cacheBustingUrl} />
       <meta property="og:image" content={absoluteOgImage} />
       <meta property="og:image:secure_url" content={absoluteOgImage} />
       <meta property="og:image:type" content="image/png" />
@@ -76,15 +87,16 @@ const SEOHead = ({
       {/* Twitter Card Meta Tags */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@sipbrewery" />
+      <meta name="twitter:creator" content="@sipbrewery" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={absoluteOgImage} />
+      <meta name="twitter:image:alt" content={title} />
       
-      {/* Additional SEO Meta Tags */}
-      <meta name="robots" content="index, follow" />
-      <meta name="language" content="English" />
-      <meta name="revisit-after" content="1 days" />
-      <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+      {/* WhatsApp specific meta tags */}
+      <meta property="og:updated_time" content={new Date().toISOString()} />
+      <meta name="theme-color" content="#2563eb" />
+      <meta name="msapplication-TileColor" content="#2563eb" />
       
       {/* Structured Data */}
       <script type="application/ld+json">
