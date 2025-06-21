@@ -25,6 +25,13 @@ const OpenGraphTags = ({
   publishedTime,
   modifiedTime
 }: OpenGraphTagsProps) => {
+  console.log('🔧 OpenGraph Tags Debug:', {
+    title: title.substring(0, 50) + '...',
+    description: description.substring(0, 50) + '...',
+    ogImage,
+    ogType
+  });
+
   return (
     <Helmet>
       <meta property="og:site_name" content="SIP Brewery" />

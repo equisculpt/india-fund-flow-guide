@@ -49,15 +49,19 @@ const SEOHead = ({
   const finalCanonicalUrl = canonicalUrl || (dynamicContent?.canonicalUrl) || `https://sipbrewery.com${location.pathname}`;
   const finalOgType = ogType || (dynamicContent?.ogType) || 'website';
   
-  // Clear debugging for canonical URL
-  console.log('SEOHead Final Values:', {
+  // Enhanced debugging for SEO values
+  console.log('🎯 SEOHead Final Values (Enhanced):', {
     currentPath: location.pathname,
     isDynamic,
+    providedTitle: title || 'Not provided',
+    providedDescription: description || 'Not provided',
     providedCanonicalUrl: canonicalUrl || 'Not provided',
-    dynamicCanonicalUrl: dynamicContent?.canonicalUrl || 'Not generated',
-    finalCanonicalUrl,
     finalTitle: finalTitle.substring(0, 60) + '...',
-    finalOgType
+    finalDescription: finalDescription.substring(0, 60) + '...',
+    finalCanonicalUrl,
+    finalOgType,
+    articleAuthor,
+    articlePublisher
   });
   
   // Use a properly sized default image - Facebook requires minimum 200x200
