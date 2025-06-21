@@ -1,3 +1,4 @@
+
 import { Helmet } from 'react-helmet-async';
 
 interface SEOHeadProps {
@@ -29,36 +30,36 @@ const SEOHead = ({
   publishedTime,
   modifiedTime
 }: SEOHeadProps) => {
-  // Get current URL properly - ALWAYS use current page URL, never fallback to homepage
+  // Build clean URL without query params or hash
   const getCurrentUrl = () => {
     if (canonicalUrl) return canonicalUrl;
     
     if (typeof window !== 'undefined') {
-      // Always use the current page's full URL
-      const currentUrl = window.location.href;
-      console.log('SEOHead getCurrentUrl:', currentUrl);
-      return currentUrl;
+      // Clean URL construction - remove query params and hash
+      const cleanUrl = `${window.location.origin}${window.location.pathname}`;
+      console.log('SEOHead Clean URL Generated:', cleanUrl);
+      return cleanUrl;
     }
     
-    // This should never happen in practice
     return 'https://sipbrewery.com';
   };
 
   const currentUrl = getCurrentUrl();
   
-  // ALWAYS use the large image - never use the small logo
+  // Use large, Facebook-compliant image
   const defaultOgImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format";
   const finalOgImage = ogImage || defaultOgImage;
   const absoluteOgImage = finalOgImage.startsWith('http') ? finalOgImage : `https://sipbrewery.com${finalOgImage}`;
 
-  console.log('SEOHead - Meta tags:', { 
+  console.log('SEOHead Final Meta Values:', { 
     title, 
     description, 
     currentUrl, 
     absoluteOgImage, 
     ogType,
-    canonicalUrl,
-    windowLocation: typeof window !== 'undefined' ? window.location.href : 'undefined'
+    providedCanonicalUrl: canonicalUrl,
+    windowHref: typeof window !== 'undefined' ? window.location.href : 'undefined',
+    cleanPath: typeof window !== 'undefined' ? window.location.pathname : 'undefined'
   });
 
   const defaultStructuredData = {
@@ -102,6 +103,10 @@ const SEOHead = ({
 
   return (
     <Helmet>
+      {/* Force clear any existing meta tags first */}
+      <meta property="og:url" content="" />
+      <link rel="canonical" href="" />
+      
       {/* Basic meta tags */}
       <title>{title}</title>
       <meta name="description" content={description} />
@@ -110,10 +115,10 @@ const SEOHead = ({
       <meta name="robots" content="index, follow" />
       <meta name="author" content={articleAuthor} />
       
-      {/* Canonical URL - ALWAYS uses current page URL */}
+      {/* Canonical URL - Force clean URL */}
       <link rel="canonical" href={currentUrl} />
       
-      {/* Open Graph tags - Essential for WhatsApp and Facebook */}
+      {/* Open Graph tags - Force correct URL */}
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
