@@ -1,7 +1,6 @@
 
 import React, { lazy, Suspense } from 'react';
 import HeroSection from '@/components/HeroSection';
-import SEOHead from '@/components/SEOHead';
 import { useFundData } from '@/components/FundData';
 
 // Lazy load non-critical components
@@ -16,81 +15,8 @@ const Index = () => {
     console.log('Risk profiling completed:', result);
   };
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "SIP Brewery",
-    "description": "India's #1 SEBI registered mutual fund distributor offering regular mutual funds with professional advisory and consistency rewards",
-    "url": "https://sipbrewery.com",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://sipbrewery.com/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    },
-    "mainEntity": {
-      "@type": "FinancialService",
-      "name": "SIP Brewery - Best Mutual Fund Platform India",
-      "serviceType": "Mutual Fund Distribution & SIP Investment Platform",
-      "areaServed": "India",
-      "offers": [
-        {
-          "@type": "Offer",
-          "name": "Regular Mutual Fund SIP Investment",
-          "description": "Start SIP with ₹500, get consistency rewards and professional advisory"
-        },
-        {
-          "@type": "Offer", 
-          "name": "Best SIP Plans India 2025",
-          "description": "Top performing regular mutual funds with professional recommendations"
-        },
-        {
-          "@type": "Offer",
-          "name": "SIP Calculator & Comparison Tool",
-          "description": "Compare 1000+ mutual funds and calculate SIP returns"
-        }
-      ],
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Mutual Fund Investment Services",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Best SIP Plans India 2025",
-              "description": "Start SIP investment online with top performing regular mutual funds. Professional advisory, consistency rewards, SEBI & AMFI registered distributor."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service", 
-              "name": "Regular Mutual Fund Investment Platform",
-              "description": "Invest in regular mutual funds online with SIP calculator, performance tracker, and refer & earn program"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "SIP vs Lump Sum Calculator",
-              "description": "Compare SIP vs lump sum investment strategies with professional recommendations"
-            }
-          }
-        ]
-      }
-    }
-  };
-
   return (
     <>
-      <SEOHead
-        title="Best Mutual Fund Platform India 2025 | Start SIP ₹500 | AMFI Registered | SIP Brewery"
-        description="India's trusted AMFI registered mutual fund distributor & SIP investment platform. Start SIP online with ₹500, get consistency rewards. Professional advisory, regular mutual funds, best SIP plans 2025."
-        keywords="mutual fund distributor India, best SIP plans India 2025, invest in mutual funds online, SIP investment platform, start SIP online, best mutual fund platform India, SIP calculator India, SIP vs lump sum, regular mutual fund app, mutual funds India, SIP consistency rewards, AMFI registered distributor, SIP rewards India, mutual fund comparison tool"
-        structuredData={structuredData}
-      />
-      
       {/* Hero Section - Critical above-the-fold content */}
       <div className="critical-content">
         <HeroSection />

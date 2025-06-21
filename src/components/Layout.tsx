@@ -12,18 +12,15 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
-  // Skip SEO rendering for blog pages - they handle their own SEO
-  const shouldRenderSEO = !location.pathname.startsWith('/blog/');
-  
-  console.log('Layout SEO Decision:', {
+  console.log('Layout Dynamic SEO:', {
     currentPath: location.pathname,
-    shouldRenderSEO,
-    reason: shouldRenderSEO ? 'Default SEO for non-blog pages' : 'Blog page handles own SEO'
+    reason: 'All pages now use dynamic SEO generation'
   });
 
   return (
     <div className="min-h-screen flex flex-col">
-      {shouldRenderSEO && <SEOHead />}
+      {/* Dynamic SEO for all pages */}
+      <SEOHead isDynamic={true} />
       <Header />
       <main className="flex-1">
         {children}
