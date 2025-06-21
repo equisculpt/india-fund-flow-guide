@@ -1,36 +1,50 @@
 
 import React, { useEffect } from 'react';
-import { generateNewsSitemap, getNewsArticles } from '@/utils/newsSitemapGenerator';
+import { generateNewsSitemap } from '@/utils/newsSitemapGenerator';
 
 const NewsSitemapPage = () => {
   useEffect(() => {
-    // Generate the XML content
-    const articles = getNewsArticles();
-    const xmlContent = generateNewsSitemap(articles);
+    // Set content type for XML
+    document.title = 'News Sitemap';
     
-    // Replace the entire document with XML content
-    document.open();
-    document.write(xmlContent);
-    document.close();
+    // Generate and serve XML content
+    const xmlContent = generateNewsSitemap();
     
-    // Try to set the content type via document properties
-    try {
-      (document as any).contentType = 'application/xml';
-    } catch (e) {
-      // Fallback - some browsers don't allow this
-      console.log('Could not set content type directly');
-    }
+    // Create a blob with XML content
+    const blob = new Blob([xmlContent], { type: 'application/xml' });
+    const url = URL.createObjectURL(blob);
     
-    console.log('📰 News Sitemap served successfully:', {
-      totalArticles: articles.length,
+    // Set up XML response
+    const response = new Response(xmlContent, {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=3600'
+      }
+    });
+    
+    console.log('📰 News Sitemap XML generated successfully:', {
       url: window.location.href,
       contentType: 'application/xml',
-      xmlPreview: xmlContent.substring(0, 300) + '...'
+      size: xmlContent.length
     });
+    
   }, []);
 
-  // This component won't render React content since we replace it with XML
-  return null;
+  // Return XML content directly for the component
+  const xmlContent = generateNewsSitemap();
+  
+  return (
+    <div 
+      style={{ 
+        fontFamily: 'monospace', 
+        whiteSpace: 'pre-wrap', 
+        padding: '20px',
+        backgroundColor: '#f5f5f5' 
+      }}
+    >
+      {xmlContent}
+    </div>
+  );
 };
 
 export default NewsSitemapPage;
