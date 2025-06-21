@@ -288,162 +288,164 @@ const IntelligentChatBot = () => {
   };
 
   return (
-    <Card className="h-[600px] flex flex-col">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2">
-          <MessageCircle className="h-5 w-5 text-blue-600" />
-          Investment Information Assistant
-          <div className="ml-auto flex items-center gap-2">
-            {escalationStatus === 'escalated' && (
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
-                <CheckCircle className="h-3 w-3 mr-1" />
-                Human Advisor
-              </Badge>
-            )}
-            {escalationStatus === 'pending' && (
-              <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                <AlertTriangle className="h-3 w-3 mr-1" />
-                Connecting...
-              </Badge>
-            )}
-            <span className="text-sm font-normal text-green-600 flex items-center gap-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              Online
-            </span>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      
-      <CardContent className="flex-1 flex flex-col p-0">
-        {/* File Upload Section */}
-        {showFileUpload && (
-          <div className="border-b p-4 bg-gray-50">
-            <FileUploadComponent
-              onFileProcessed={handleFileProcessed}
-              acceptedTypes={['.pdf', '.xls', '.xlsx', '.doc', '.docx']}
-              maxFileSize={10}
-              uploadPurpose="chat"
-            />
-          </div>
-        )}
+    <div className="h-[600px] flex flex-col">
+      <Card className="h-full flex flex-col">
+        <CardHeader className="pb-4 flex-shrink-0">
+          <CardTitle className="flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-blue-600" />
+            Investment Information Assistant
+            <div className="ml-auto flex items-center gap-2">
+              {escalationStatus === 'escalated' && (
+                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  Human Advisor
+                </Badge>
+              )}
+              {escalationStatus === 'pending' && (
+                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                  <AlertTriangle className="h-3 w-3 mr-1" />
+                  Connecting...
+                </Badge>
+              )}
+              <span className="text-sm font-normal text-green-600 flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                Online
+              </span>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        
+        <CardContent className="flex-1 flex flex-col p-0 min-h-0">
+          {/* File Upload Section */}
+          {showFileUpload && (
+            <div className="border-b p-4 bg-gray-50 flex-shrink-0">
+              <FileUploadComponent
+                onFileProcessed={handleFileProcessed}
+                acceptedTypes={['.pdf', '.xls', '.xlsx', '.doc', '.docx']}
+                maxFileSize={10}
+                uploadPurpose="chat"
+              />
+            </div>
+          )}
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message) => (
-            <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[85%] ${message.sender === 'user' ? 'order-2' : 'order-1'}`}>
-                <div className={`flex items-start gap-2 ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                  <div className={`p-2 rounded-full ${
-                    message.sender === 'user' ? 'bg-blue-600' : 
-                    message.sender === 'human' ? 'bg-green-600' : 'bg-gray-100'
-                  }`}>
-                    {message.sender === 'user' ? (
-                      <User className="h-4 w-4 text-white" />
-                    ) : message.sender === 'human' ? (
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+            {messages.map((message) => (
+              <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[85%] ${message.sender === 'user' ? 'order-2' : 'order-1'}`}>
+                  <div className={`flex items-start gap-2 ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <div className={`p-2 rounded-full flex-shrink-0 ${
+                      message.sender === 'user' ? 'bg-blue-600' : 
+                      message.sender === 'human' ? 'bg-green-600' : 'bg-gray-100'
+                    }`}>
+                      {message.sender === 'user' ? (
+                        <User className="h-4 w-4 text-white" />
+                      ) : message.sender === 'human' ? (
+                        <User className="h-4 w-4 text-white" />
+                      ) : (
+                        <Bot className="h-4 w-4 text-gray-600" />
+                      )}
+                    </div>
+                    <div className={`rounded-lg p-3 ${
+                      message.sender === 'user' ? 'bg-blue-600 text-white' : 
+                      message.sender === 'human' ? 'bg-green-100 text-green-900' :
+                      message.type === 'escalation' ? 'bg-yellow-100 text-yellow-900' :
+                      'bg-gray-100 text-gray-900'
+                    }`}>
+                      <p className="whitespace-pre-line text-sm leading-relaxed">{message.content}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className={`text-xs ${
+                          message.sender === 'user' ? 'text-blue-100' : 
+                          message.sender === 'human' ? 'text-green-600' : 'text-gray-500'
+                        }`}>
+                          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        {message.sender === 'human' && (
+                          <Badge variant="outline" className="text-xs bg-green-50 border-green-200">
+                            Qualified Advisor
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {message.suggestions && message.suggestions.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {message.suggestions.map((suggestion, index) => (
+                        <Button
+                          key={index}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSuggestionClick(suggestion)}
+                          className="text-xs hover:bg-blue-50 hover:text-blue-700 border-blue-200"
+                        >
+                          {suggestion}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="flex items-center gap-2">
+                  <div className={`p-2 rounded-full flex-shrink-0 ${humanAgentConnected ? 'bg-green-600' : 'bg-gray-100'}`}>
+                    {humanAgentConnected ? (
                       <User className="h-4 w-4 text-white" />
                     ) : (
                       <Bot className="h-4 w-4 text-gray-600" />
                     )}
                   </div>
-                  <div className={`rounded-lg p-3 ${
-                    message.sender === 'user' ? 'bg-blue-600 text-white' : 
-                    message.sender === 'human' ? 'bg-green-100 text-green-900' :
-                    message.type === 'escalation' ? 'bg-yellow-100 text-yellow-900' :
-                    'bg-gray-100 text-gray-900'
-                  }`}>
-                    <p className="whitespace-pre-line text-sm leading-relaxed">{message.content}</p>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className={`text-xs ${
-                        message.sender === 'user' ? 'text-blue-100' : 
-                        message.sender === 'human' ? 'text-green-600' : 'text-gray-500'
-                      }`}>
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                      {message.sender === 'human' && (
-                        <Badge variant="outline" className="text-xs bg-green-50 border-green-200">
-                          Qualified Advisor
-                        </Badge>
-                      )}
+                  <div className={`rounded-lg p-3 ${humanAgentConnected ? 'bg-green-100' : 'bg-gray-100'}`}>
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                     </div>
                   </div>
                 </div>
-                
-                {message.suggestions && message.suggestions.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {message.suggestions.map((suggestion, index) => (
-                      <Button
-                        key={index}
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        className="text-xs hover:bg-blue-50 hover:text-blue-700 border-blue-200"
-                      >
-                        {suggestion}
-                      </Button>
-                    ))}
-                  </div>
-                )}
               </div>
-            </div>
-          ))}
-          
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="flex items-center gap-2">
-                <div className={`p-2 rounded-full ${humanAgentConnected ? 'bg-green-600' : 'bg-gray-100'}`}>
-                  {humanAgentConnected ? (
-                    <User className="h-4 w-4 text-white" />
-                  ) : (
-                    <Bot className="h-4 w-4 text-gray-600" />
-                  )}
-                </div>
-                <div className={`rounded-lg p-3 ${humanAgentConnected ? 'bg-green-100' : 'bg-gray-100'}`}>
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-        
-        <div className="border-t p-4">
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowFileUpload(!showFileUpload)}
-              className="shrink-0"
-            >
-              <Paperclip className="h-4 w-4" />
-            </Button>
-            <Input
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              placeholder={humanAgentConnected ? "Ask your qualified advisor..." : "Ask about mutual funds, market concepts..."}
-              onKeyPress={handleKeyPress}
-              disabled={isTyping}
-            />
-            <Button 
-              onClick={() => sendMessage(inputMessage)} 
-              disabled={!inputMessage.trim() || isTyping}
-              className="shrink-0"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex items-center justify-between mt-2">
-            <p className="text-xs text-gray-500">Educational information only • Not investment advice</p>
-            {escalationStatus === 'none' && (
-              <p className="text-xs text-blue-600">AI will connect human advisor if needed</p>
             )}
+            <div ref={messagesEndRef} />
           </div>
-        </div>
-      </CardContent>
-    </Card>
+          
+          <div className="border-t p-4 flex-shrink-0">
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowFileUpload(!showFileUpload)}
+                className="shrink-0"
+              >
+                <Paperclip className="h-4 w-4" />
+              </Button>
+              <Input
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                placeholder={humanAgentConnected ? "Ask your qualified advisor..." : "Ask about mutual funds, market concepts..."}
+                onKeyPress={handleKeyPress}
+                disabled={isTyping}
+              />
+              <Button 
+                onClick={() => sendMessage(inputMessage)} 
+                disabled={!inputMessage.trim() || isTyping}
+                className="shrink-0"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-xs text-gray-500">Educational information only • Not investment advice</p>
+              {escalationStatus === 'none' && (
+                <p className="text-xs text-blue-600">AI will connect human advisor if needed</p>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
