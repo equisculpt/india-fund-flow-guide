@@ -21,7 +21,7 @@ const SEOHead = ({
   description = "India's #1 SEBI registered mutual fund investment platform. Compare 1000+ mutual funds, professional recommendations, SIP calculator, goal-based investing. Start SIP with ₹500. Regular mutual funds only.",
   keywords = "mutual funds india, SIP investment, mutual fund comparison, best mutual funds 2024, SIP calculator, ELSS funds, large cap funds, small cap funds, mutual fund analysis, investment advisor, portfolio tracker, regular mutual funds",
   canonicalUrl,
-  ogImage = "/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+  ogImage,
   structuredData,
   isDynamic = false,
   ogType = 'website',
@@ -43,7 +43,12 @@ const SEOHead = ({
   };
 
   const currentUrl = getCurrentUrl();
-  const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://sipbrewery.com${ogImage}`;
+  
+  // Use a larger image that meets Facebook's 200x200 minimum requirement
+  // Default to a business/finance related image from Unsplash that's large enough
+  const defaultOgImage = "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&h=630&fit=crop&crop=center";
+  const finalOgImage = ogImage || defaultOgImage;
+  const absoluteOgImage = finalOgImage.startsWith('http') ? finalOgImage : `https://sipbrewery.com${finalOgImage}`;
 
   console.log('SEOHead - Dynamic meta tags loaded:', { title, description, currentUrl, absoluteOgImage, ogType });
 
@@ -96,7 +101,7 @@ const SEOHead = ({
       <meta name="robots" content="index, follow" />
       <meta name="author" content={articleAuthor} />
       
-      {/* Canonical URL */}
+      {/* Canonical URL - now uses current URL instead of hardcoded homepage */}
       <link rel="canonical" href={currentUrl} />
       
       {/* Open Graph tags - Essential for WhatsApp */}
@@ -107,7 +112,7 @@ const SEOHead = ({
       <meta property="og:url" content={currentUrl} />
       <meta property="og:image" content={absoluteOgImage} />
       <meta property="og:image:secure_url" content={absoluteOgImage} />
-      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:type" content="image/jpeg" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={`${title} - SIP Brewery`} />
