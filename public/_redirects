@@ -1,0 +1,8 @@
+
+# Serve XML files directly
+/sitemap.xml /sitemap.xml 200
+/news-sitemap.xml /news-sitemap.xml 200
+/robots.txt /robots.txt 200
+
+# All other routes should go to React
+/* /index.html 200

@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -8,6 +7,11 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    // Configure dev server to serve XML files properly
+    middlewareMode: false,
+    fs: {
+      strict: false
+    }
   },
   plugins: [
     react(),
@@ -30,10 +34,12 @@ export default defineConfig(({ mode }) => ({
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
         },
         assetFileNames: (assetInfo) => {
-          // Keep robots.txt, sitemap.xml, and news-sitemap.xml in root
-          if (assetInfo.name === 'robots.txt' || 
-              assetInfo.name === 'sitemap.xml' || 
-              assetInfo.name === 'news-sitemap.xml') {
+          // Keep XML files in root with original names
+          if (assetInfo.name?.endsWith('.xml')) {
+            return '[name][extname]';
+          }
+          // Keep robots.txt in root
+          if (assetInfo.name === 'robots.txt') {
             return '[name][extname]';
           }
           return 'assets/[name]-[hash][extname]';
@@ -42,7 +48,7 @@ export default defineConfig(({ mode }) => ({
     },
     copyPublicDir: true,
   },
-  // Ensure XML files are served with correct MIME type
+  // Configure MIME types for XML files
   define: {
     'process.env.NODE_ENV': JSON.stringify(mode),
   },

@@ -20,6 +20,30 @@ import AdminPage from "./pages/AdminPage";
 
 const queryClient = new QueryClient();
 
+// Custom component to handle route exclusions
+const AppRoutes = () => {
+  // Don't render React routes for static files
+  if (window.location.pathname.endsWith('.xml') || window.location.pathname.endsWith('.txt')) {
+    return null;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/fund/:fundSlug" element={<FundDetailsPage />} />
+      <Route path="/funds/:fundType" element={<PublicFundsPage />} />
+      <Route path="/fund-comparison" element={<FundComparisonPage />} />
+      <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/terms" element={<TermsOfServicePage />} />
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+      <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
+      <Route path="/admin/*" element={<AdminPage />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <SupabaseAuthProvider>
@@ -28,20 +52,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/fund/:fundSlug" element={<FundDetailsPage />} />
-              <Route path="/funds/:fundType" element={<PublicFundsPage />} />
-              <Route path="/fund-comparison" element={<FundComparisonPage />} />
-              <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/terms" element={<TermsOfServicePage />} />
-              <Route path="/privacy" element={<PrivacyPolicyPage />} />
-              <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
-              <Route path="/admin/*" element={<AdminPage />} />
-              {/* Ensure sitemap.xml and news-sitemap.xml are not handled by React Router */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AppRoutes />
           </BrowserRouter>
         </TooltipProvider>
       </HelmetProvider>
