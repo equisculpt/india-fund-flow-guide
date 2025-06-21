@@ -1,4 +1,3 @@
-
 import { Helmet } from 'react-helmet-async';
 
 interface SEOHeadProps {
@@ -30,26 +29,15 @@ const SEOHead = ({
   publishedTime,
   modifiedTime
 }: SEOHeadProps) => {
-  // Force the correct URL - always use current page URL if canonicalUrl is not provided
-  const getCurrentUrl = () => {
-    // If canonicalUrl is explicitly provided, use it
-    if (canonicalUrl) {
-      console.log('SEOHead using provided canonicalUrl:', canonicalUrl);
-      return canonicalUrl;
-    }
-    
-    // Always construct from current location if no canonicalUrl provided
-    if (typeof window !== 'undefined') {
-      const fullUrl = `${window.location.origin}${window.location.pathname}`;
-      console.log('SEOHead constructing URL from current location:', fullUrl);
-      return fullUrl;
-    }
-    
-    // Fallback
-    return 'https://sipbrewery.com';
-  };
-
-  const currentUrl = getCurrentUrl();
+  // CRITICAL FIX: Always use the provided canonicalUrl if available, otherwise construct current URL
+  const finalUrl = canonicalUrl || (typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : 'https://sipbrewery.com');
+  
+  console.log('SEOHead FINAL URL DECISION:', {
+    providedCanonicalUrl: canonicalUrl,
+    constructedUrl: typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : 'not available',
+    finalUrlUsed: finalUrl,
+    windowHref: typeof window !== 'undefined' ? window.location.href : 'not available'
+  });
   
   // Use a properly sized default image - Facebook requires minimum 200x200
   const defaultOgImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format&q=80";
@@ -59,11 +47,11 @@ const SEOHead = ({
   console.log('SEOHead Final Meta Configuration:', { 
     title, 
     description, 
-    currentUrl, 
+    currentUrl: finalUrl, 
     absoluteOgImage, 
     ogType,
     providedCanonicalUrl: canonicalUrl,
-    finalCanonicalUrl: currentUrl,
+    finalCanonicalUrl: finalUrl,
     windowLocation: typeof window !== 'undefined' ? {
       href: window.location.href,
       pathname: window.location.pathname,
@@ -77,7 +65,7 @@ const SEOHead = ({
     "name": title,
     "headline": title,
     "description": description,
-    "url": currentUrl,
+    "url": finalUrl,
     "logo": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
     "image": absoluteOgImage,
     ...(ogType === 'article' && {
@@ -112,9 +100,9 @@ const SEOHead = ({
 
   return (
     <Helmet>
-      {/* Force clear existing meta tags */}
-      <meta property="og:url" />
-      <link rel="canonical" />
+      {/* FORCE CLEAR - Remove any existing conflicting meta tags */}
+      <meta property="og:url" content="" />
+      <link rel="canonical" href="" />
       
       {/* Basic meta tags */}
       <title>{title}</title>
@@ -124,15 +112,15 @@ const SEOHead = ({
       <meta name="robots" content="index, follow" />
       <meta name="author" content={articleAuthor} />
       
-      {/* Canonical URL - Force current page URL */}
-      <link rel="canonical" href={currentUrl} />
+      {/* CRITICAL: Canonical URL - Use finalUrl */}
+      <link rel="canonical" href={finalUrl} />
       
-      {/* Open Graph tags - Force current page URL */}
+      {/* CRITICAL: Open Graph tags - Use finalUrl */}
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:url" content={currentUrl} />
+      <meta property="og:url" content={finalUrl} />
       <meta property="og:image" content={absoluteOgImage} />
       <meta property="og:image:secure_url" content={absoluteOgImage} />
       <meta property="og:image:type" content="image/jpeg" />
