@@ -2,10 +2,21 @@
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://sipbrewery.com/sitemap.xml
+# Important pages
+Allow: /fund-comparison
+Allow: /sip-calculator
+Allow: /public-funds
+Allow: /fund/
+Allow: /funds/
+Allow: /blog/
 
-# Specific bot instructions
+# Block admin and sensitive areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /dashboard
+
+# Crawl delays for different bots
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
@@ -20,18 +31,6 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-# Allow fund pages and key sections
-User-agent: *
-Allow: /fund/
-Allow: /funds/
-Allow: /sip-calculator
-Allow: /fund-comparison
-Allow: /explore-funds
-Allow: /public-funds
+# Sitemap location
+Sitemap: https://sipbrewery.com/sitemap.xml
 
-# Block admin and sensitive areas
-Disallow: /admin/
-Disallow: /api/
-Disallow: /private/
-
-# End of robots.txt
