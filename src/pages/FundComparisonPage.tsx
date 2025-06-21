@@ -32,6 +32,7 @@ const FundComparisonPage = () => {
   useEffect(() => {
     const state = location.state as ComparisonPageState;
     if (!state?.funds || state.funds.length < 2) {
+      console.log('FundComparisonPage: No funds data in location state');
       return;
     }
 
@@ -97,15 +98,17 @@ const FundComparisonPage = () => {
   };
 
   const handleNewComparison = () => {
-    navigate('/fund-comparison', { replace: true });
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100);
+    // Clear the current comparison and show selection interface
+    setFundsWithDetails([]);
+    setComparisonResult(null);
+    setLoading(false);
+    // Don't navigate, just reset state to show TopLevelFundComparison
   };
 
-  // If no funds selected or comparison is in progress, show the selection interface
+  // Check if we have funds to compare
   const state = location.state as ComparisonPageState;
-  const showSelection = !state?.funds || state.funds.length < 2;
+  const hasFundsToCompare = state?.funds && state.funds.length >= 2;
+  const showSelection = !hasFundsToCompare || (!loading && fundsWithDetails.length === 0);
 
   if (loading) {
     return <ComparisonLoadingState />;

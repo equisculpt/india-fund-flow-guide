@@ -18,26 +18,18 @@ const Header = () => {
   const location = useLocation();
 
   const handleFundComparisonClick = () => {
-    if (location.pathname === '/') {
-      const element = document.getElementById('fund-comparison');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      navigate('/fund-comparison');
-    }
+    console.log('Header: Fund comparison clicked, current path:', location.pathname);
+    
+    // Always navigate to fund comparison page
+    navigate('/fund-comparison');
     setIsMenuOpen(false);
   };
 
   const handleBrowseFundsClick = () => {
-    if (location.pathname === '/') {
-      const element = document.getElementById('explore-funds');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      navigate('/public-funds');
-    }
+    console.log('Header: Browse funds clicked, current path:', location.pathname);
+    
+    // Always navigate to public funds page for browsing
+    navigate('/public-funds');
     setIsMenuOpen(false);
   };
 
