@@ -1,3 +1,4 @@
+
 import { Helmet } from 'react-helmet-async';
 
 interface SEOHeadProps {
@@ -29,35 +30,19 @@ const SEOHead = ({
   publishedTime,
   modifiedTime
 }: SEOHeadProps) => {
-  // CRITICAL FIX: Always use the provided canonicalUrl if available, otherwise construct current URL
+  // CRITICAL: Always prioritize the provided canonicalUrl
   const finalUrl = canonicalUrl || (typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : 'https://sipbrewery.com');
   
-  console.log('SEOHead FINAL URL DECISION:', {
+  console.log('SEOHead URL Resolution:', {
     providedCanonicalUrl: canonicalUrl,
-    constructedUrl: typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : 'not available',
     finalUrlUsed: finalUrl,
-    windowHref: typeof window !== 'undefined' ? window.location.href : 'not available'
+    windowLocation: typeof window !== 'undefined' ? window.location.href : 'not available'
   });
   
   // Use a properly sized default image - Facebook requires minimum 200x200
   const defaultOgImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format&q=80";
   const finalOgImage = ogImage || defaultOgImage;
   const absoluteOgImage = finalOgImage.startsWith('http') ? finalOgImage : `https://sipbrewery.com${finalOgImage}`;
-
-  console.log('SEOHead Final Meta Configuration:', { 
-    title, 
-    description, 
-    currentUrl: finalUrl, 
-    absoluteOgImage, 
-    ogType,
-    providedCanonicalUrl: canonicalUrl,
-    finalCanonicalUrl: finalUrl,
-    windowLocation: typeof window !== 'undefined' ? {
-      href: window.location.href,
-      pathname: window.location.pathname,
-      origin: window.location.origin
-    } : 'not available'
-  });
 
   const defaultStructuredData = {
     "@context": "https://schema.org",
@@ -100,10 +85,6 @@ const SEOHead = ({
 
   return (
     <Helmet>
-      {/* FORCE CLEAR - Remove any existing conflicting meta tags */}
-      <meta property="og:url" content="" />
-      <link rel="canonical" href="" />
-      
       {/* Basic meta tags */}
       <title>{title}</title>
       <meta name="description" content={description} />
@@ -112,10 +93,10 @@ const SEOHead = ({
       <meta name="robots" content="index, follow" />
       <meta name="author" content={articleAuthor} />
       
-      {/* CRITICAL: Canonical URL - Use finalUrl */}
+      {/* CRITICAL: Canonical URL */}
       <link rel="canonical" href={finalUrl} />
       
-      {/* CRITICAL: Open Graph tags - Use finalUrl */}
+      {/* CRITICAL: Open Graph tags */}
       <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
