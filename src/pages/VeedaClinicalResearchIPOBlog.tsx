@@ -11,16 +11,36 @@ import InvestmentConsiderations from '@/components/blog/veeda-ipo/InvestmentCons
 import BlogFooter from '@/components/blog/veeda-ipo/BlogFooter';
 
 const VeedaClinicalResearchIPOBlog = () => {
-  // Scroll to top when component mounts
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const canonicalUrl = "https://sipbrewery.com/blog/veeda-clinical-research-ipo-analysis";
   const title = "Veeda Clinical Research IPO Analysis 2024 | Complete SWOT & Financial Review | SIP Brewery";
   const description = "In-depth analysis of Veeda Clinical Research IPO with financial charts, SWOT analysis, and key insights. Educational content only - not investment advice. Get complete IPO review here.";
   const keywords = "Veeda Clinical Research IPO, CRO IPO India, clinical research IPO analysis, healthcare IPO 2024, biotech IPO review, SEBI compliant IPO analysis, contract research organization stocks";
   const ogImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
+
+  // Force immediate SEO rendering and scroll to top
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    
+    // Force immediate meta tag update
+    document.title = title;
+    
+    // Update canonical link immediately
+    const existingCanonical = document.querySelector('link[rel="canonical"]');
+    if (existingCanonical) {
+      existingCanonical.setAttribute('href', canonicalUrl);
+    } else {
+      const canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      canonicalLink.href = canonicalUrl;
+      document.head.appendChild(canonicalLink);
+    }
+    
+    console.log('IMMEDIATE SEO UPDATE:', {
+      documentTitle: document.title,
+      canonicalInDOM: document.querySelector('link[rel="canonical"]')?.getAttribute('href'),
+      timestamp: new Date().toISOString()
+    });
+  }, [title, canonicalUrl]);
 
   console.log('Veeda Blog Page - PRIORITY SEO Implementation:', {
     canonicalUrl,
@@ -31,7 +51,7 @@ const VeedaClinicalResearchIPOBlog = () => {
 
   return (
     <>
-      {/* HIGHEST PRIORITY - This Helmet should override ANY other SEO */}
+      {/* IMMEDIATE PRIORITY - This Helmet should override ANY other SEO */}
       <Helmet prioritizeSeoTags defer={false}>
         <title>{title}</title>
         <meta name="description" content={description} />
