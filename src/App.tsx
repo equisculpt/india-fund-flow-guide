@@ -6,8 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import Index from "./pages/Index";
-import SitemapPage from "./pages/SitemapPage";
-import NewsSitemapPage from "./pages/NewsSitemapPage";
 import NotFound from "./pages/NotFound";
 import FundDetailsPage from "./pages/FundDetailsPage";
 import FundComparisonPage from "./pages/FundComparisonPage";
@@ -30,8 +28,6 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/sitemap.xml" element={<SitemapPage />} />
-            <Route path="/news-sitemap.xml" element={<NewsSitemapPage />} />
             <Route path="/fund/:fundSlug" element={<FundDetailsPage />} />
             <Route path="/funds/:fundType" element={<PublicFundsPage />} />
             <Route path="/fund-comparison" element={<FundComparisonPage />} />
