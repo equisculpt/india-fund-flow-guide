@@ -20,7 +20,7 @@ const SEOHead = ({
   structuredData,
   isDynamic = false
 }: SEOHeadProps) => {
-  const currentUrl = canonicalUrl || window.location.href;
+  const currentUrl = canonicalUrl || (typeof window !== 'undefined' ? window.location.href : 'https://sipbrewery.com');
 
   // Ensure we have absolute URLs for images
   const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://sipbrewery.com${ogImage}`;
@@ -99,76 +99,56 @@ const SEOHead = ({
 
   return (
     <Helmet>
-      {/* Clear any existing meta tags first */}
-      <meta name="title" content="" />
-      <meta name="description" content="" />
-      <meta property="og:title" content="" />
-      <meta property="og:description" content="" />
-      <meta property="og:image" content="" />
-      <meta name="twitter:title" content="" />
-      <meta name="twitter:description" content="" />
-      <meta name="twitter:image" content="" />
-      
-      {/* Primary Meta Tags - These should come first and override everything */}
+      {/* Primary Meta Tags */}
       <title>{title}</title>
       <meta name="title" content={title} />
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <link rel="canonical" href={currentUrl} />
       
-      {/* Open Graph - High priority for social sharing */}
+      {/* Open Graph Meta Tags */}
       <meta property="og:type" content={isDynamic ? "article" : "website"} />
+      <meta property="og:url" content={currentUrl} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:url" content={currentUrl} />
-      <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:image" content={absoluteOgImage} />
       <meta property="og:image:secure_url" content={absoluteOgImage} />
+      <meta property="og:image:type" content="image/png" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={title} />
+      <meta property="og:site_name" content="SIP Brewery" />
       <meta property="og:locale" content="en_IN" />
       
-      {/* Twitter Card - Enhanced for better sharing */}
+      {/* Twitter Card Meta Tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@sipbrewery" />
-      <meta name="twitter:creator" content="@sipbrewery" />
+      <meta name="twitter:url" content={currentUrl} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={absoluteOgImage} />
       <meta name="twitter:image:alt" content={title} />
+      <meta name="twitter:site" content="@sipbrewery" />
+      <meta name="twitter:creator" content="@sipbrewery" />
       
-      {/* WhatsApp specific meta tags - Force override */}
-      <meta property="whatsapp:title" content={title} />
-      <meta property="whatsapp:description" content={description} />
-      <meta property="whatsapp:image" content={absoluteOgImage} />
-      
-      {/* Additional meta tags to force social media crawlers */}
-      <meta name="format-detection" content="telephone=no" />
-      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      
-      {/* Force refresh social media cache */}
-      {isDynamic && (
-        <>
-          <meta httpEquiv="cache-control" content="no-cache, no-store, must-revalidate" />
-          <meta httpEquiv="pragma" content="no-cache" />
-          <meta httpEquiv="expires" content="0" />
-          <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1, max-snippet-length:320" />
-          <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-          <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-          <meta name="revisit-after" content="1 hour" />
-          <meta name="last-modified" content={new Date().toISOString()} />
-          <meta name="content-freshness" content="dynamic" />
-        </>
-      )}
-      
-      {/* Additional social media meta tags */}
+      {/* Additional Meta Tags for Social Media */}
       <meta property="article:author" content="SIP Brewery Research Team" />
       <meta property="article:publisher" content="https://sipbrewery.com" />
       <meta property="article:section" content="Investment Analysis" />
+      <meta name="author" content="SIP Brewery" />
+      <meta name="publisher" content="SIP Brewery" />
       
-      {/* Additional SEO */}
+      {/* Force social media crawlers to refresh */}
+      {isDynamic && (
+        <>
+          <meta property="og:updated_time" content={new Date().toISOString()} />
+          <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        </>
+      )}
+      
+      {/* Additional meta tags */}
+      <meta name="format-detection" content="telephone=no" />
+      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
       <meta name="googlebot" content="index, follow" />
       <meta name="bingbot" content="index, follow" />
@@ -182,8 +162,6 @@ const SEOHead = ({
       <meta name="geo.region" content="IN" />
       <meta name="geo.country" content="India" />
       <meta name="language" content="en-IN" />
-      <meta name="author" content="SIP Brewery" />
-      <meta name="publisher" content="SIP Brewery" />
     </Helmet>
   );
 };
