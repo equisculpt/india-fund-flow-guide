@@ -17,6 +17,13 @@ import TermsOfServicePage from "./pages/TermsOfServicePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import RiskDisclosurePage from "./pages/RiskDisclosurePage";
 import AdminPage from "./pages/AdminPage";
+import CommunityPage from "./pages/CommunityPage";
+import HDBFinancialServicesIPOBlog from "./pages/HDBFinancialServicesIPOBlog";
+import VeedaClinicalResearchIPOBlog from "./pages/VeedaClinicalResearchIPOBlog";
+import NBFCSectorDeepDiveBlog from "./pages/NBFCSectorDeepDiveBlog";
+import HowFundManagersMakeMoneyBlog from "./pages/HowFundManagersMakeMoneyBlog";
+import IPOAnalysisGuideBlog from "./pages/IPOAnalysisGuideBlog";
+import HealthcareSectorOutlookBlog from "./pages/HealthcareSectorOutlookBlog";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +47,13 @@ const AppRoutes = () => {
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
       <Route path="/admin/*" element={<AdminPage />} />
+      <Route path="/community" element={<CommunityPage />} />
+      <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
+      <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
+      <Route path="/blog/nbfc-sector-analysis-india-2025" element={<NBFCSectorDeepDiveBlog />} />
+      <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
+      <Route path="/blog/ipo-analysis-guide" element={<IPOAnalysisGuideBlog />} />
+      <Route path="/blog/healthcare-sector-outlook" element={<HealthcareSectorOutlookBlog />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
