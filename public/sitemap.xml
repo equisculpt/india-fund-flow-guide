@@ -1,80 +1,87 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sipbrewery.com/</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/fund-comparison</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/public-funds</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/sip-calculator</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/contact</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/terms</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/privacy</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://sipbrewery.com/community</loc>
+    <lastmod>2025-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sipbrewery.com/blog/hdb-financial-services-ipo-analysis</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/blog/veeda-clinical-research-ipo-analysis</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/blog/nbfc-sector-analysis-india-2025</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/blog/how-fund-managers-make-money-mutual-funds</loc>
-    <lastmod>2025-06-20</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/blog/ipo-analysis-guide</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sipbrewery.com/blog/healthcare-sector-outlook</loc>
-    <lastmod>2025-06-21</lastmod>
+    <lastmod>2025-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
