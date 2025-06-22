@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -33,10 +32,8 @@ export default defineConfig(({ mode }) => ({
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
         },
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name?.endsWith('.xml')) {
-            return '[name][extname]';
-          }
-          if (assetInfo.name === 'robots.txt') {
+          // Keep XML and TXT files in root
+          if (assetInfo.name?.endsWith('.xml') || assetInfo.name === 'robots.txt') {
             return '[name][extname]';
           }
           return 'assets/[name]-[hash][extname]';
