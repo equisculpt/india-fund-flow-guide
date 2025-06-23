@@ -52,14 +52,14 @@ const BlogFooter = () => {
             <p className="text-gray-600">Master the art of IPO evaluation with professional analysis techniques</p>
           </Link>
           
-          <Link to="/blog/nbfc-sector-outlook" className="bg-white p-4 rounded border hover:shadow-md transition-shadow">
+          <Link to="/blog/nbfc-sector-analysis-india-2025" className="bg-white p-4 rounded border hover:shadow-md transition-shadow">
             <h4 className="font-semibold text-blue-600 mb-2 hover:text-blue-800">🏦 NBFC Sector Deep Dive</h4>
             <p className="text-gray-600">Understanding India's non-banking financial sector opportunities</p>
           </Link>
           
-          <Link to="/blog/sebi-guidelines" className="bg-white p-4 rounded border hover:shadow-md transition-shadow">
-            <h4 className="font-semibold text-blue-600 mb-2 hover:text-blue-800">⚖️ SEBI Investment Guidelines</h4>
-            <p className="text-gray-600">Know your rights and regulations for safe IPO investing</p>
+          <Link to="/blog/healthcare-sector-outlook" className="bg-white p-4 rounded border hover:shadow-md transition-shadow">
+            <h4 className="font-semibold text-blue-600 mb-2 hover:text-blue-800">🏥 Healthcare Sector Outlook</h4>
+            <p className="text-gray-600">India's healthcare and biotech investment opportunities for 2025</p>
           </Link>
         </div>
       </div>

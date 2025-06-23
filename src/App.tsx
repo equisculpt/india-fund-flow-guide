@@ -29,13 +29,14 @@ const queryClient = new QueryClient();
 
 // Custom component to handle route exclusions
 const AppRoutes = () => {
-  // Don't render React routes for static files - redirect to actual file
   const pathname = window.location.pathname;
   
-  // Handle XML and static files by redirecting to the actual file
-  if (pathname === '/sitemap.xml' || pathname === '/news-sitemap.xml' || pathname === '/robots.txt') {
-    // Force browser to navigate to the actual static file
-    window.location.href = pathname;
+  // Handle static XML and TXT files - these should be served directly from public folder
+  const staticFiles = ['/sitemap.xml', '/news-sitemap.xml', '/robots.txt'];
+  
+  if (staticFiles.includes(pathname)) {
+    // Force redirect to actual static file
+    window.location.replace(pathname);
     return null;
   }
 

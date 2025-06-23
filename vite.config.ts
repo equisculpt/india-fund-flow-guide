@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => ({
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
         },
         assetFileNames: (assetInfo) => {
-          // Keep XML and TXT files in root
+          // Keep XML and TXT files in root directory for SEO
           if (assetInfo.name?.endsWith('.xml') || assetInfo.name === 'robots.txt') {
             return '[name][extname]';
           }
