@@ -122,8 +122,8 @@ export const useDigioKYC = () => {
       
       setKycStatus(prev => ({
         ...prev,
-        status: result.status === 'completed' ? 'completed' : 'pending',
-        kycComplete: result.status === 'completed'
+        status: result.status === 'success' ? 'completed' : 'pending',
+        kycComplete: result.status === 'success'
       }));
 
       return result;

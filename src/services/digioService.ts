@@ -10,14 +10,16 @@ interface KYCRequest {
   customer_identifier: string;
   template_name?: string;
   expire_in_days?: number;
+  entity_type?: 'individual' | 'nri' | 'corporate';
 }
 
 interface DocumentVerificationRequest {
   reference_id: string;
-  document_type: 'pan' | 'aadhaar' | 'driving_license' | 'voter_id';
+  document_type: 'pan' | 'aadhaar' | 'passport' | 'driving_license' | 'voter_id';
   document_number: string;
   customer_name?: string;
   date_of_birth?: string;
+  entity_type?: 'individual' | 'nri' | 'corporate';
 }
 
 interface ESignRequest {
@@ -30,6 +32,39 @@ interface ESignRequest {
     mobile: string;
   };
   expire_in_days?: number;
+  sign_type?: 'aadhaar' | 'dsc' | 'coordinates';
+}
+
+interface VideoKYCRequest {
+  reference_id: string;
+  customer_name: string;
+  email: string;
+  mobile: string;
+  nationality: string;
+  document_type: 'passport' | 'aadhaar' | 'pan';
+  document_number: string;
+}
+
+interface CorporateKYCRequest {
+  reference_id: string;
+  company_name: string;
+  company_type: 'private_limited' | 'llp' | 'trust' | 'partnership';
+  pan_number: string;
+  gst_number?: string;
+  directors: Array<{
+    name: string;
+    pan: string;
+    aadhaar?: string;
+    email: string;
+    mobile: string;
+  }>;
+  authorized_signatories: Array<{
+    name: string;
+    designation: string;
+    pan: string;
+    email: string;
+    mobile: string;
+  }>;
 }
 
 interface DigioResponse {
@@ -85,13 +120,15 @@ export class DigioService {
     }
   }
 
+  // Individual KYC Methods
   async initiatePANVerification(panNumber: string, customerName: string, referenceId: string): Promise<DigioResponse> {
     const endpoint = '/v2/client/kyc/pan_verification';
     const data: DocumentVerificationRequest = {
       reference_id: referenceId,
       document_type: 'pan',
       document_number: panNumber,
-      customer_name: customerName
+      customer_name: customerName,
+      entity_type: 'individual'
     };
 
     return this.makeRequest(endpoint, 'POST', data);
@@ -103,7 +140,8 @@ export class DigioService {
       reference_id: referenceId,
       document_type: 'aadhaar',
       document_number: aadhaarNumber,
-      customer_name: customerName
+      customer_name: customerName,
+      entity_type: 'individual'
     };
 
     return this.makeRequest(endpoint, 'POST', data);
@@ -121,18 +159,83 @@ export class DigioService {
       reference_id: referenceId,
       customer_identifier: customerData.email,
       template_name: 'kyc_template_v1',
+      expire_in_days: 30,
+      entity_type: 'individual'
+    };
+
+    return this.makeRequest(endpoint, 'POST', data);
+  }
+
+  // NRI KYC Methods
+  async initiateNRIKYC(customerData: {
+    name: string;
+    email: string;
+    mobile: string;
+    nationality: string;
+    passport_number: string;
+    country_of_residence: string;
+  }, referenceId: string): Promise<DigioResponse> {
+    const endpoint = '/v2/client/kyc/nri';
+    const data = {
+      reference_id: referenceId,
+      customer_identifier: customerData.email,
+      customer_name: customerData.name,
+      mobile: customerData.mobile,
+      nationality: customerData.nationality,
+      passport_number: customerData.passport_number,
+      country_of_residence: customerData.country_of_residence,
+      template_name: 'nri_kyc_template_v1',
       expire_in_days: 30
     };
 
     return this.makeRequest(endpoint, 'POST', data);
   }
 
+  async initiateVideoKYC(customerData: VideoKYCRequest): Promise<DigioResponse> {
+    const endpoint = '/v2/client/kyc/video_kyc';
+    return this.makeRequest(endpoint, 'POST', customerData);
+  }
+
+  async initiatePassportVerification(passportNumber: string, customerName: string, referenceId: string): Promise<DigioResponse> {
+    const endpoint = '/v2/client/kyc/passport_verification';
+    const data: DocumentVerificationRequest = {
+      reference_id: referenceId,
+      document_type: 'passport',
+      document_number: passportNumber,
+      customer_name: customerName,
+      entity_type: 'nri'
+    };
+
+    return this.makeRequest(endpoint, 'POST', data);
+  }
+
+  // Corporate KYC Methods
+  async initiateCorporateKYC(corporateData: CorporateKYCRequest): Promise<DigioResponse> {
+    const endpoint = '/v2/client/kyc/corporate';
+    return this.makeRequest(endpoint, 'POST', corporateData);
+  }
+
+  async initiateCorporatePANVerification(panNumber: string, companyName: string, referenceId: string): Promise<DigioResponse> {
+    const endpoint = '/v2/client/kyc/corporate_pan_verification';
+    const data: DocumentVerificationRequest = {
+      reference_id: referenceId,
+      document_type: 'pan',
+      document_number: panNumber,
+      customer_name: companyName,
+      entity_type: 'corporate'
+    };
+
+    return this.makeRequest(endpoint, 'POST', data);
+  }
+
+  // eSign Methods
   async createESignDocument(documentData: {
     name: string;
     email: string;
     mobile: string;
     documentName: string;
     documentContent: string;
+    signType?: 'aadhaar' | 'dsc' | 'coordinates';
   }, referenceId: string): Promise<DigioResponse> {
     const endpoint = '/v2/client/document/upload';
     const data: ESignRequest = {
@@ -144,12 +247,39 @@ export class DigioService {
         email: documentData.email,
         mobile: documentData.mobile
       },
-      expire_in_days: 30
+      expire_in_days: 30,
+      sign_type: documentData.signType || 'aadhaar'
     };
 
     return this.makeRequest(endpoint, 'POST', data);
   }
 
+  // Bank Account Verification (Penny Drop)
+  async initiateBankVerification(accountNumber: string, ifscCode: string, accountHolderName: string, referenceId: string): Promise<DigioResponse> {
+    const endpoint = '/v2/client/kyc/bank_verification';
+    const data = {
+      reference_id: referenceId,
+      account_number: accountNumber,
+      ifsc_code: ifscCode,
+      account_holder_name: accountHolderName,
+      verification_type: 'penny_drop'
+    };
+
+    return this.makeRequest(endpoint, 'POST', data);
+  }
+
+  // CKYC Fetch
+  async fetchCKYC(ckycNumber: string, referenceId: string): Promise<DigioResponse> {
+    const endpoint = '/v2/client/kyc/ckyc_fetch';
+    const data = {
+      reference_id: referenceId,
+      ckyc_number: ckycNumber
+    };
+
+    return this.makeRequest(endpoint, 'POST', data);
+  }
+
+  // Status and Download Methods
   async getKYCStatus(referenceId: string): Promise<DigioResponse> {
     const endpoint = `/v2/client/kyc/${referenceId}`;
     return this.makeRequest(endpoint, 'GET');

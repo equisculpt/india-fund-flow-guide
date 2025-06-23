@@ -53,7 +53,7 @@ const DigioKYCVerification = ({ clientData, onKYCComplete, onBack }: DigioKYCVer
         if (result.referenceId) {
           try {
             const status = await checkKYCStatus(result.referenceId);
-            if (status.status === 'completed') {
+            if (status.status === 'success') {
               clearInterval(pollInterval);
               onKYCComplete();
             }
