@@ -1,6 +1,6 @@
-
 interface DigioConfig {
-  apiKey: string;
+  clientId: string;
+  clientSecret: string;
   baseUrl: string;
   environment: 'sandbox' | 'production';
 }
@@ -82,7 +82,8 @@ export class DigioService {
 
   constructor() {
     this.config = {
-      apiKey: '', // Will be set from environment
+      clientId: '', // Will be set from environment
+      clientSecret: '', // Will be set from environment
       baseUrl: 'https://ext.digio.in:444',
       environment: 'sandbox' // Change to 'production' for live
     };
@@ -93,7 +94,7 @@ export class DigioService {
     
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'Authorization': `Basic ${btoa(this.config.apiKey + ':')}`
+      'Authorization': `Basic ${btoa(this.config.clientId + ':' + this.config.clientSecret)}`
     };
 
     const options: RequestInit = {
@@ -312,8 +313,9 @@ export class DigioService {
     return `${prefix}_${timestamp}_${random}`;
   }
 
-  setApiKey(apiKey: string) {
-    this.config.apiKey = apiKey;
+  setCredentials(clientId: string, clientSecret: string) {
+    this.config.clientId = clientId;
+    this.config.clientSecret = clientSecret;
   }
 
   setEnvironment(env: 'sandbox' | 'production') {

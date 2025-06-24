@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,10 +10,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, Settings, Users, Download, RefreshCw } from 'lucide-react';
 import { digioService } from '@/services/digioService';
+import { supabase } from '@/lib/supabase';
 
 const DigioManagementTab = () => {
   const [config, setConfig] = useState({
-    apiKey: '',
     environment: 'sandbox' as 'sandbox' | 'production',
     autoKycEnabled: true,
     webhookEnabled: true,
@@ -36,13 +35,11 @@ const DigioManagementTab = () => {
   }, []);
 
   const loadDigioSettings = async () => {
-    // In a real app, this would load from your backend/database
+    // Load saved configuration (excluding API keys which are stored securely)
     const savedConfig = localStorage.getItem('digio_config');
     if (savedConfig) {
       const parsedConfig = JSON.parse(savedConfig);
       setConfig(parsedConfig);
-      digioService.setApiKey(parsedConfig.apiKey);
-      digioService.setEnvironment(parsedConfig.environment);
     }
   };
 
@@ -80,12 +77,8 @@ const DigioManagementTab = () => {
   const handleSaveConfig = async () => {
     setIsLoading(true);
     try {
-      // Save to localStorage (in real app, save to backend)
+      // Save configuration (excluding API keys)
       localStorage.setItem('digio_config', JSON.stringify(config));
-      
-      // Update service configuration
-      digioService.setApiKey(config.apiKey);
-      digioService.setEnvironment(config.environment);
 
       toast({
         title: "Settings Saved",
@@ -103,28 +96,28 @@ const DigioManagementTab = () => {
   };
 
   const handleTestConnection = async () => {
-    if (!config.apiKey) {
-      toast({
-        title: "API Key Required",
-        description: "Please enter your Digio API key first.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
     try {
-      // Test connection by trying to generate a reference ID
-      const testReferenceId = digioService.generateReferenceId('TEST');
-      
+      // Test connection by calling our edge function
+      const { data, error } = await supabase.functions.invoke('digio-kyc', {
+        body: { 
+          action: 'get_status', 
+          data: { referenceId: 'TEST_CONNECTION' } 
+        }
+      });
+
+      if (error) {
+        throw new Error('Connection test failed');
+      }
+
       toast({
         title: "Connection Successful",
-        description: `Test reference ID generated: ${testReferenceId}`,
+        description: "Successfully connected to Digio API using secure credentials.",
       });
     } catch (error) {
       toast({
         title: "Connection Failed",
-        description: "Unable to connect to Digio API. Please check your API key.",
+        description: "Unable to connect to Digio API. Please check your credentials in Supabase secrets.",
         variant: "destructive",
       });
     } finally {
@@ -171,21 +164,12 @@ const DigioManagementTab = () => {
             Digio Configuration
           </CardTitle>
           <CardDescription>
-            Configure Digio API settings for KYC verification and document processing
+            Configure Digio settings for KYC verification and document processing. 
+            API credentials are securely stored in Supabase secrets.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="apiKey">Digio API Key</Label>
-              <Input
-                id="apiKey"
-                type="password"
-                value={config.apiKey}
-                onChange={(e) => setConfig({ ...config, apiKey: e.target.value })}
-                placeholder="Enter your Digio API key"
-              />
-            </div>
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <Label htmlFor="environment">Environment</Label>
               <select
@@ -248,8 +232,8 @@ const DigioManagementTab = () => {
           <Alert>
             <Shield className="h-4 w-4" />
             <AlertDescription>
-              <strong>Security Note:</strong> API keys are stored securely and never transmitted in plain text. 
-              Make sure to use production API keys only in production environment.
+              <strong>Security Note:</strong> API credentials are securely stored in Supabase secrets 
+              and accessed only by authorized edge functions. Your credentials are never exposed in the frontend code.
             </AlertDescription>
           </Alert>
         </CardContent>

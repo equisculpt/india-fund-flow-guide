@@ -1,7 +1,6 @@
-
 import { useState, useCallback } from 'react';
-import { digioService } from '@/services/digioService';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface KYCData {
   panNumber: string;
@@ -32,19 +31,37 @@ export const useDigioKYC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  const callDigioAPI = async (action: string, data: any) => {
+    const { data: result, error } = await supabase.functions.invoke('digio-kyc', {
+      body: { action, data }
+    });
+
+    if (error) {
+      throw new Error(error.message || 'Failed to call Digio API');
+    }
+
+    return result;
+  };
+
+  const generateReferenceId = (prefix: string = 'SB'): string => {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
+    return `${prefix}_${timestamp}_${random}`;
+  };
+
   const initiateKYC = useCallback(async (kycData: KYCData) => {
     setIsLoading(true);
     setKycStatus(prev => ({ ...prev, status: 'initiating' }));
 
     try {
-      const referenceId = digioService.generateReferenceId('KYC');
+      const referenceId = generateReferenceId('KYC');
 
       // Step 1: Verify PAN
-      const panResult = await digioService.initiatePANVerification(
-        kycData.panNumber,
-        kycData.fullName,
-        `${referenceId}_PAN`
-      );
+      const panResult = await callDigioAPI('pan_verification', {
+        referenceId: `${referenceId}_PAN`,
+        panNumber: kycData.panNumber,
+        customerName: kycData.fullName
+      });
 
       if (panResult.status === 'success') {
         setKycStatus(prev => ({ ...prev, panVerified: true }));
@@ -55,11 +72,11 @@ export const useDigioKYC = () => {
       }
 
       // Step 2: Verify Aadhaar
-      const aadhaarResult = await digioService.initiateAadhaarVerification(
-        kycData.aadhaarNumber,
-        kycData.fullName,
-        `${referenceId}_AADHAAR`
-      );
+      const aadhaarResult = await callDigioAPI('aadhaar_verification', {
+        referenceId: `${referenceId}_AADHAAR`,
+        aadhaarNumber: kycData.aadhaarNumber,
+        customerName: kycData.fullName
+      });
 
       if (aadhaarResult.status === 'success') {
         setKycStatus(prev => ({ ...prev, aadhaarVerified: true }));
@@ -70,13 +87,14 @@ export const useDigioKYC = () => {
       }
 
       // Step 3: Initiate full KYC
-      const kycResult = await digioService.initiateKYC({
-        name: kycData.fullName,
+      const kycResult = await callDigioAPI('initiate_kyc', {
+        referenceId,
         email: kycData.email,
+        name: kycData.fullName,
         mobile: kycData.phone,
         pan: kycData.panNumber,
         aadhaar: kycData.aadhaarNumber
-      }, referenceId);
+      });
 
       setKycStatus(prev => ({
         ...prev,
@@ -118,7 +136,7 @@ export const useDigioKYC = () => {
 
   const checkKYCStatus = useCallback(async (referenceId: string) => {
     try {
-      const result = await digioService.getKYCStatus(referenceId);
+      const result = await callDigioAPI('get_status', { referenceId });
       
       setKycStatus(prev => ({
         ...prev,
