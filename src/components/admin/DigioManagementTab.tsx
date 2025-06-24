@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, Settings, Users, Download, RefreshCw } from 'lucide-react';
 import { digioService } from '@/services/digioService';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 const DigioManagementTab = () => {
   const [config, setConfig] = useState({
