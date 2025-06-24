@@ -21,6 +21,10 @@ export const storage = getStorage(app);
 export const googleProvider = new GoogleAuthProvider();
 export const facebookProvider = new FacebookAuthProvider();
 
+// Configure Google provider
+googleProvider.addScope('profile');
+googleProvider.addScope('email');
+
 export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
 export const signInWithFacebook = () => signInWithPopup(auth, facebookProvider);
 export const logout = () => signOut(auth);

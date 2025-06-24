@@ -10,6 +10,7 @@ import { User, Users } from "lucide-react";
 import BreweryLogo from "./BreweryLogo";
 import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { signInWithGoogle, signInWithFacebook } from "@/services/firebase";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -24,7 +25,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login, loginWithGoogle, loginWithFacebook } = useEnhancedAuth();
+  const { login } = useEnhancedAuth();
   const { toast } = useToast();
 
   const resetForm = () => {
@@ -37,13 +38,24 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
-      const success = await loginWithGoogle();
-      if (success) {
+      const result = await signInWithGoogle();
+      const user = result.user;
+      
+      if (user) {
+        toast({
+          title: "Success",
+          description: "Logged in with Google successfully!",
+        });
         onClose();
         resetForm();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Google login error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to login with Google",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -52,13 +64,24 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const handleFacebookLogin = async () => {
     setIsLoading(true);
     try {
-      const success = await loginWithFacebook();
-      if (success) {
+      const result = await signInWithFacebook();
+      const user = result.user;
+      
+      if (user) {
+        toast({
+          title: "Success",
+          description: "Logged in with Facebook successfully!",
+        });
         onClose();
         resetForm();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Facebook login error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to login with Facebook",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }

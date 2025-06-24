@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSupabaseAuthContext } from "@/contexts/SupabaseAuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { signInWithGoogle, auth } from "@/services/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import LoginTab from "./auth/LoginTab";
 import SignupTab from "./auth/SignupTab";
 
@@ -16,19 +18,34 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
 
-  const { signIn, signUp, signOut } = useSupabaseAuthContext();
+  const { signIn, signUp } = useSupabaseAuthContext();
   const { toast } = useToast();
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
-      // For now, show a message that Google login is not implemented
-      toast({
-        title: "Coming Soon",
-        description: "Google login will be available soon. Please use email/password for now.",
-        variant: "destructive",
-      });
+      const result = await signInWithGoogle();
+      const user = result.user;
+      
+      if (user) {
+        // Get the Firebase ID token and use it to sign in to Supabase
+        const idToken = await user.getIdToken();
+        
+        // Create or update user profile in Supabase
+        await signUp(user.email!, '', {
+          full_name: user.displayName || '',
+          phone: user.phoneNumber || '',
+          user_type: 'customer'
+        });
+
+        toast({
+          title: "Success",
+          description: "Logged in with Google successfully!",
+        });
+        onClose();
+      }
     } catch (error: any) {
+      console.error("Google login error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to login with Google",
