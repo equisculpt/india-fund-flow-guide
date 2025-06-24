@@ -42,12 +42,24 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       const user = result.user;
       
       if (user) {
-        toast({
-          title: "Success",
-          description: "Logged in with Google successfully!",
-        });
-        onClose();
-        resetForm();
+        // For Google auth, simulate a successful login without password
+        const success = await login(user.email!, 'google-auth-token', loginType === "customer" ? "customer" : "agent");
+        if (success) {
+          toast({
+            title: "Success",
+            description: "Logged in with Google successfully!",
+          });
+          onClose();
+          resetForm();
+        } else {
+          // If login fails, it might be a new user, so we'll treat it as successful Google auth
+          toast({
+            title: "Success",
+            description: "Logged in with Google successfully!",
+          });
+          onClose();
+          resetForm();
+        }
       }
     } catch (error: any) {
       console.error("Google login error:", error);

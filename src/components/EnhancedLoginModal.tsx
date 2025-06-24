@@ -4,8 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSupabaseAuthContext } from "@/contexts/SupabaseAuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { signInWithGoogle, auth } from "@/services/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { handleGoogleSignup, handleGoogleLogin } from "@/services/googleAuthService";
 import LoginTab from "./auth/LoginTab";
 import SignupTab from "./auth/SignupTab";
 
@@ -21,34 +20,28 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
   const { signIn, signUp } = useSupabaseAuthContext();
   const { toast } = useToast();
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleAuth = async () => {
     setIsLoading(true);
     try {
-      const result = await signInWithGoogle();
-      const user = result.user;
+      let result;
+      if (activeTab === "signup") {
+        result = await handleGoogleSignup();
+      } else {
+        result = await handleGoogleLogin();
+      }
       
-      if (user) {
-        // Get the Firebase ID token and use it to sign in to Supabase
-        const idToken = await user.getIdToken();
-        
-        // Create or update user profile in Supabase
-        await signUp(user.email!, '', {
-          full_name: user.displayName || '',
-          phone: user.phoneNumber || '',
-          user_type: 'customer'
-        });
-
+      if (result.success) {
         toast({
           title: "Success",
-          description: "Logged in with Google successfully!",
+          description: "Authenticated with Google successfully!",
         });
         onClose();
       }
     } catch (error: any) {
-      console.error("Google login error:", error);
+      console.error("Google auth error:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to login with Google",
+        description: error.message || "Failed to authenticate with Google",
         variant: "destructive",
       });
     } finally {
@@ -138,7 +131,7 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
           
           <TabsContent value="login">
             <LoginTab 
-              onGoogleLogin={handleGoogleLogin}
+              onGoogleLogin={handleGoogleAuth}
               onLogin={handleLogin}
               isLoading={isLoading}
             />
@@ -146,7 +139,7 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
           
           <TabsContent value="signup">
             <SignupTab 
-              onGoogleLogin={handleGoogleLogin}
+              onGoogleLogin={handleGoogleAuth}
               onSignup={handleSignup}
               isLoading={isLoading}
             />
