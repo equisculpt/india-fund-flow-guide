@@ -6,11 +6,12 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, L
 import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
 
 const IndogulfIPOBlog = () => {
-  // Updated financial data for charts
+  // Updated financial data based on restated consolidated financials
   const financialData = [
-    { year: 'FY22', revenue: 137.2, ebitda: 20.9, pat: 10.3, ebitdaMargin: 15.2, netMargin: 7.5 },
-    { year: 'FY23', revenue: 174.1, ebitda: 25.8, pat: 12.9, ebitdaMargin: 14.8, netMargin: 7.4 },
-    { year: '9M FY25*', revenue: 619.0, ebitda: 58.2, pat: 28.9, ebitdaMargin: 16.5, netMargin: 8.1 }
+    { year: 'FY22', revenue: 490.23, ebitda: 47.24, pat: 26.36, ebitdaMargin: 9.6, netMargin: 5.4, assets: 413.59, netWorth: 180.51 },
+    { year: 'FY23', revenue: 552.19, ebitda: 49.04, pat: 22.42, ebitdaMargin: 8.9, netMargin: 4.1, assets: 517.51, netWorth: 203.25 },
+    { year: 'FY24', revenue: 555.79, ebitda: 55.74, pat: 28.23, ebitdaMargin: 10.0, netMargin: 5.1, assets: 542.25, netWorth: 231.65 },
+    { year: '9M FY25', revenue: 466.31, ebitda: 44.78, pat: 21.68, ebitdaMargin: 9.6, netMargin: 4.6, assets: 597.81, netWorth: 265.43 }
   ];
 
   const revenueBreakdown = [
@@ -27,10 +28,10 @@ const IndogulfIPOBlog = () => {
   ];
 
   const peerComparison = [
-    { company: 'Indogulf Cropsciences', revenue: 619.0, pat: 28.9, pe: 24.3, margin: 8.1 },
-    { company: 'India Pesticides', revenue: 889.3, pat: 151.3, pe: 25.0, margin: 17.0 },
-    { company: 'Bharat Rasayan', revenue: 1011.7, pat: 180.2, pe: 22.0, margin: 17.8 },
-    { company: 'Heranba Industries', revenue: 1425.0, pat: 109.3, pe: 13.0, margin: 7.7 }
+    { company: 'Indogulf Cropsciences', revenue: 555.79, pat: 28.23, pe: 24.3, margin: 5.1, roe: 12.2 },
+    { company: 'India Pesticides', revenue: 889.3, pat: 151.3, pe: 25.0, margin: 17.0, roe: 18.5 },
+    { company: 'Bharat Rasayan', revenue: 1011.7, pat: 180.2, pe: 22.0, margin: 17.8, roe: 22.1 },
+    { company: 'Heranba Industries', revenue: 1425.0, pat: 109.3, pe: 13.0, margin: 7.7, roe: 15.8 }
   ];
 
   const useOfProceeds = [
@@ -38,6 +39,14 @@ const IndogulfIPOBlog = () => {
     { purpose: 'Debt Prepayment', amount: 34.12, percentage: 21.3 },
     { purpose: 'Dry Flowable Plant Setup', amount: 14.0, percentage: 8.8 },
     { purpose: 'General Corporate Purposes', amount: 46.88, percentage: 29.3 }
+  ];
+
+  // Balance sheet strength indicators
+  const balanceSheetData = [
+    { year: 'FY22', totalBorrowing: 101.38, netWorth: 180.51, debtToEquity: 0.56 },
+    { year: 'FY23', totalBorrowing: 189.22, netWorth: 203.25, debtToEquity: 0.93 },
+    { year: 'FY24', totalBorrowing: 154.56, netWorth: 231.65, debtToEquity: 0.67 },
+    { year: '9M FY25', totalBorrowing: 206.30, netWorth: 265.43, debtToEquity: 0.78 }
   ];
 
   return (
@@ -287,59 +296,81 @@ const IndogulfIPOBlog = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
                 <span>💰</span>
-                Financial Performance Analysis
+                Financial Performance Analysis (Restated Consolidated)
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-8">
                 {/* Updated Financial Metrics Table */}
                 <div>
-                  <h3 className="text-xl font-semibold mb-4">Key Financial Metrics (Annualized 9M FY25)</h3>
+                  <h3 className="text-xl font-semibold mb-4">Key Financial Metrics (Restated Consolidated)</h3>
                   <Table>
                     <TableHeader>
                       <TableRow className="bg-gray-50">
                         <TableHead>Metric</TableHead>
                         <TableHead>FY22</TableHead>
                         <TableHead>FY23</TableHead>
-                        <TableHead>9M FY25 (Ann.)</TableHead>
-                        <TableHead>Growth Trend</TableHead>
+                        <TableHead>FY24</TableHead>
+                        <TableHead>9M FY25</TableHead>
+                        <TableHead>Trend</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       <TableRow>
                         <TableCell className="font-medium">Revenue (₹ Cr)</TableCell>
-                        <TableCell>137.2</TableCell>
-                        <TableCell>174.1</TableCell>
-                        <TableCell className="font-semibold text-green-600">619.0</TableCell>
-                        <TableCell className="text-green-600 font-semibold">Strong Growth</TableCell>
+                        <TableCell>490.23</TableCell>
+                        <TableCell>552.19</TableCell>
+                        <TableCell>555.79</TableCell>
+                        <TableCell className="font-semibold text-orange-600">466.31</TableCell>
+                        <TableCell className="text-orange-600 font-semibold">Cyclical</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">EBITDA (₹ Cr)</TableCell>
-                        <TableCell>20.9</TableCell>
-                        <TableCell>25.8</TableCell>
-                        <TableCell className="font-semibold text-green-600">58.2</TableCell>
-                        <TableCell className="text-green-600 font-semibold">Accelerating</TableCell>
+                        <TableCell>47.24</TableCell>
+                        <TableCell>49.04</TableCell>
+                        <TableCell>55.74</TableCell>
+                        <TableCell className="font-semibold text-green-600">44.78</TableCell>
+                        <TableCell className="text-green-600 font-semibold">Growing</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">PAT (₹ Cr)</TableCell>
-                        <TableCell>10.3</TableCell>
-                        <TableCell>12.9</TableCell>
-                        <TableCell className="font-semibold text-green-600">28.9</TableCell>
-                        <TableCell className="text-green-600 font-semibold">Robust</TableCell>
+                        <TableCell>26.36</TableCell>
+                        <TableCell>22.42</TableCell>
+                        <TableCell>28.23</TableCell>
+                        <TableCell className="font-semibold text-blue-600">21.68</TableCell>
+                        <TableCell className="text-blue-600 font-semibold">Variable</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">EBITDA Margin (%)</TableCell>
-                        <TableCell>15.2%</TableCell>
-                        <TableCell>14.8%</TableCell>
-                        <TableCell>16.5%</TableCell>
-                        <TableCell className="text-blue-600">Improving</TableCell>
+                        <TableCell>9.6%</TableCell>
+                        <TableCell>8.9%</TableCell>
+                        <TableCell>10.0%</TableCell>
+                        <TableCell>9.6%</TableCell>
+                        <TableCell className="text-blue-600">Stable</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">Net Margin (%)</TableCell>
-                        <TableCell>7.5%</TableCell>
-                        <TableCell>7.4%</TableCell>
-                        <TableCell>8.1%</TableCell>
-                        <TableCell className="text-blue-600">Stable+</TableCell>
+                        <TableCell>5.4%</TableCell>
+                        <TableCell>4.1%</TableCell>
+                        <TableCell>5.1%</TableCell>
+                        <TableCell>4.6%</TableCell>
+                        <TableCell className="text-blue-600">Consistent</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">Total Assets (₹ Cr)</TableCell>
+                        <TableCell>413.59</TableCell>
+                        <TableCell>517.51</TableCell>
+                        <TableCell>542.25</TableCell>
+                        <TableCell className="font-semibold text-green-600">597.81</TableCell>
+                        <TableCell className="text-green-600 font-semibold">Growing</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">Net Worth (₹ Cr)</TableCell>
+                        <TableCell>180.51</TableCell>
+                        <TableCell>203.25</TableCell>
+                        <TableCell>231.65</TableCell>
+                        <TableCell className="font-semibold text-green-600">265.43</TableCell>
+                        <TableCell className="text-green-600 font-semibold">Strengthening</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
@@ -353,25 +384,25 @@ const IndogulfIPOBlog = () => {
                     <div className="text-xs text-gray-600 mt-1">At upper band ₹111</div>
                   </div>
                   <div className="text-center p-6 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">₹619 Cr</div>
-                    <div className="text-sm text-green-700 mt-1">Revenue (9M FY25)</div>
-                    <div className="text-xs text-gray-600 mt-1">Annualized</div>
+                    <div className="text-2xl font-bold text-green-600">₹555.79 Cr</div>
+                    <div className="text-sm text-green-700 mt-1">Revenue (FY24)</div>
+                    <div className="text-xs text-gray-600 mt-1">Latest full year</div>
                   </div>
                   <div className="text-center p-6 bg-purple-50 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">₹28.9 Cr</div>
-                    <div className="text-sm text-purple-700 mt-1">PAT (9M FY25)</div>
-                    <div className="text-xs text-gray-600 mt-1">Annualized</div>
+                    <div className="text-2xl font-bold text-purple-600">₹28.23 Cr</div>
+                    <div className="text-sm text-purple-700 mt-1">PAT (FY24)</div>
+                    <div className="text-xs text-gray-600 mt-1">Latest full year</div>
                   </div>
                   <div className="text-center p-6 bg-orange-50 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-600">8.1%</div>
-                    <div className="text-sm text-orange-700 mt-1">Net Margin</div>
-                    <div className="text-xs text-gray-600 mt-1">Healthy profitability</div>
+                    <div className="text-2xl font-bold text-orange-600">10.0%</div>
+                    <div className="text-sm text-orange-700 mt-1">EBITDA Margin</div>
+                    <div className="text-xs text-gray-600 mt-1">FY24 performance</div>
                   </div>
                 </div>
 
                 {/* Revenue and Profitability Chart */}
                 <div>
-                  <h3 className="text-xl font-semibold mb-4">Revenue & Profitability Trends</h3>
+                  <h3 className="text-xl font-semibold mb-4">Financial Trends Over Time</h3>
                   <ResponsiveContainer width="100%" height={400}>
                     <LineChart data={financialData}>
                       <CartesianGrid strokeDasharray="3 3" />
@@ -387,6 +418,28 @@ const IndogulfIPOBlog = () => {
                       <Line type="monotone" dataKey="pat" stroke="#ef4444" strokeWidth={3} name="PAT" />
                     </LineChart>
                   </ResponsiveContainer>
+                </div>
+
+                {/* Balance Sheet Strength */}
+                <div>
+                  <h3 className="text-xl font-semibold mb-4">Balance Sheet Strength Analysis</h3>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart data={balanceSheetData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="year" />
+                      <YAxis />
+                      <Tooltip formatter={(value) => [`₹${value} Cr`, 'Amount']} />
+                      <Legend />
+                      <Bar dataKey="netWorth" fill="#10b981" name="Net Worth" />
+                      <Bar dataKey="totalBorrowing" fill="#ef4444" name="Total Borrowing" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <div className="mt-4 p-4 bg-orange-50 rounded-lg">
+                    <p className="text-sm text-orange-700">
+                      <strong>Key Observation:</strong> Debt-to-equity ratio has fluctuated between 0.56x to 0.93x, 
+                      indicating moderate leverage. Current 9M FY25 D/E of 0.78x is manageable but worth monitoring.
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -459,6 +512,12 @@ const IndogulfIPOBlog = () => {
                       <li>• Capex for Dry Flowable plant (8.8%) enhances production capacity</li>
                       <li>• Strategic allocation provides operational flexibility</li>
                     </ul>
+                    <div className="mt-4 p-3 bg-white rounded">
+                      <p className="text-sm text-gray-700">
+                        <strong>Impact on D/E:</strong> With ₹34.12 Cr debt reduction from current ₹206.30 Cr, 
+                        debt-to-equity should improve from 0.78x to approximately 0.65x.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -483,6 +542,7 @@ const IndogulfIPOBlog = () => {
                       <TableHead>PAT (₹ Cr)</TableHead>
                       <TableHead>P/E Ratio</TableHead>
                       <TableHead>Net Margin (%)</TableHead>
+                      <TableHead>ROE (%)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -493,6 +553,7 @@ const IndogulfIPOBlog = () => {
                         <TableCell>{company.pat}</TableCell>
                         <TableCell>{company.pe}x</TableCell>
                         <TableCell>{company.margin}%</TableCell>
+                        <TableCell>{company.roe}%</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -502,9 +563,10 @@ const IndogulfIPOBlog = () => {
                   <h4 className="font-semibold text-blue-800 mb-3">💡 Valuation Insights</h4>
                   <ul className="space-y-2 text-blue-700">
                     <li>• Indogulf's P/E of 24.3x is in line with quality peers like India Pesticides (25x)</li>
-                    <li>• Premium valuation reflects strong export focus and growth trajectory</li>
-                    <li>• Net margins at 8.1% show room for improvement vs industry leaders</li>
-                    <li>• Smaller scale provides higher growth potential in expanding markets</li>
+                    <li>• However, net margins at 5.1% are significantly lower than industry leaders (17-18%)</li>
+                    <li>• ROE at 12.2% is below peer average, indicating room for improvement in capital efficiency</li>
+                    <li>• Smaller scale provides higher growth potential but also higher execution risk</li>
+                    <li>• Valuation premium may be justified by export focus and integrated model</li>
                   </ul>
                 </div>
               </div>
@@ -535,15 +597,15 @@ const IndogulfIPOBlog = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-green-600 mt-1">•</span>
+                        <span>Consistent asset growth (₹413 Cr to ₹598 Cr over 3 years)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-600 mt-1">•</span>
+                        <span>Growing net worth base providing financial stability</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-600 mt-1">•</span>
                         <span>In-house R&D capabilities and regulatory expertise</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-green-600 mt-1">•</span>
-                        <span>Diversified product portfolio across crop protection segments</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-green-600 mt-1">•</span>
-                        <span>Strategic capex allocation for capacity enhancement</span>
                       </li>
                     </ul>
                   </div>
@@ -561,15 +623,15 @@ const IndogulfIPOBlog = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-blue-600 mt-1">•</span>
-                        <span>Expansion opportunities in emerging markets</span>
+                        <span>Margin improvement potential through operational efficiencies</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-blue-600 mt-1">•</span>
-                        <span>Increasing adoption of precision agriculture</span>
+                        <span>Capacity expansion through Dry Flowable plant</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-blue-600 mt-1">•</span>
-                        <span>Government support for agricultural productivity</span>
+                        <span>Government support for agricultural productivity enhancement</span>
                       </li>
                     </ul>
                   </div>
@@ -581,11 +643,15 @@ const IndogulfIPOBlog = () => {
                     <ul className="space-y-3 text-orange-700">
                       <li className="flex items-start gap-2">
                         <span className="text-orange-600 mt-1">•</span>
-                        <span>Seasonal business cycles dependent on agricultural patterns</span>
+                        <span>Lower net margins (5.1%) compared to industry leaders</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-orange-600 mt-1">•</span>
-                        <span>Working capital intensive operations</span>
+                        <span>Fluctuating profitability and revenue patterns</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-orange-600 mt-1">•</span>
+                        <span>Moderate debt levels with D/E at 0.78x</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-orange-600 mt-1">•</span>
@@ -593,11 +659,7 @@ const IndogulfIPOBlog = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-orange-600 mt-1">•</span>
-                        <span>Limited domestic brand presence</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-orange-600 mt-1">•</span>
-                        <span>High dependence on key export markets</span>
+                        <span>Working capital intensive operations</span>
                       </li>
                     </ul>
                   </div>
@@ -611,7 +673,7 @@ const IndogulfIPOBlog = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-red-600 mt-1">•</span>
-                        <span>Increasing regulatory compliance costs</span>
+                        <span>Increasing regulatory compliance costs across markets</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-red-600 mt-1">•</span>
@@ -619,11 +681,11 @@ const IndogulfIPOBlog = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-red-600 mt-1">•</span>
-                        <span>Foreign exchange fluctuation risks</span>
+                        <span>Foreign exchange fluctuation risks from export focus</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-red-600 mt-1">•</span>
-                        <span>Climate change affecting crop patterns</span>
+                        <span>Seasonal agricultural patterns affecting demand</span>
                       </li>
                     </ul>
                   </div>
@@ -648,23 +710,23 @@ const IndogulfIPOBlog = () => {
                     <ul className="space-y-3 text-green-700">
                       <li className="flex items-start gap-2">
                         <span className="text-green-600 mt-1">•</span>
-                        <span>Robust integrated operations with backward integration</span>
+                        <span>Integrated operations with backward integration advantages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-green-600 mt-1">•</span>
-                        <span>Strong export diversification (60% of revenue)</span>
+                        <span>Strong export diversification reducing domestic dependency</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-green-600 mt-1">•</span>
-                        <span>Clear capex/debt roadmap for growth</span>
+                        <span>Growing asset base and strengthening balance sheet</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-green-600 mt-1">•</span>
-                        <span>Mainboard listing provides better liquidity</span>
+                        <span>Strategic fund utilization for debt reduction and capacity expansion</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-green-600 mt-1">•</span>
-                        <span>Beneficiary of China+1 strategy</span>
+                        <span>Beneficiary of China+1 strategy and global supply chain shifts</span>
                       </li>
                     </ul>
                   </div>
@@ -674,23 +736,23 @@ const IndogulfIPOBlog = () => {
                     <ul className="space-y-3 text-orange-700">
                       <li className="flex items-start gap-2">
                         <span className="text-orange-600 mt-1">•</span>
-                        <span>Premium valuation at 24.3x P/E vs sector average</span>
+                        <span>Premium valuation at 24.3x P/E vs sector fundamentals</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-orange-600 mt-1">•</span>
-                        <span>Cyclical business dependent on agricultural cycles</span>
+                        <span>Lower margins compared to industry leaders indicate operational challenges</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-orange-600 mt-1">•</span>
-                        <span>Raw material price volatility risks</span>
+                        <span>Fluctuating revenue and profitability patterns</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-orange-600 mt-1">•</span>
-                        <span>Working capital intensive operations</span>
+                        <span>Working capital intensive business model</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-orange-600 mt-1">•</span>
-                        <span>Seasonal demand patterns</span>
+                        <span>Cyclical nature of agricultural business</span>
                       </li>
                     </ul>
                   </div>
@@ -700,24 +762,25 @@ const IndogulfIPOBlog = () => {
                   <h4 className="text-2xl font-bold text-blue-800 mb-4 text-center">🎯 Final Recommendation</h4>
                   <div className="space-y-4 text-blue-700">
                     <p className="text-lg font-semibold text-center">
-                      <span className="bg-blue-200 px-4 py-2 rounded-full">SUBSCRIBE WITH CAUTION</span>
+                      <span className="bg-orange-200 px-4 py-2 rounded-full">SUBSCRIBE WITH SELECTIVE CAUTION</span>
                     </p>
                     <p className="text-center leading-relaxed">
-                      Indogulf Cropsciences is a compelling agrochemical play with strong fundamentals and export focus. 
-                      However, the premium valuation suggests measured participation. Suitable for investors with 
-                      medium to long-term horizon and risk appetite for cyclical businesses.
+                      Indogulf Cropsciences presents a mixed investment proposition. While the integrated model, 
+                      export focus, and strategic fund utilization are positives, the lower margins, fluctuating 
+                      performance, and premium valuation warrant careful consideration. Best suited for investors 
+                      with sector expertise and medium to long-term investment horizon.
                     </p>
                     <div className="grid md:grid-cols-3 gap-4 mt-6">
                       <div className="text-center p-4 bg-white rounded-lg">
-                        <div className="text-xl font-bold text-blue-600">2-3 Years</div>
+                        <div className="text-xl font-bold text-blue-600">3-5 Years</div>
                         <div className="text-sm">Investment Horizon</div>
                       </div>
                       <div className="text-center p-4 bg-white rounded-lg">
-                        <div className="text-xl font-bold text-green-600">12-18%</div>
+                        <div className="text-xl font-bold text-orange-600">10-15%</div>
                         <div className="text-sm">Expected Returns</div>
                       </div>
                       <div className="text-center p-4 bg-white rounded-lg">
-                        <div className="text-xl font-bold text-orange-600">Medium-High</div>
+                        <div className="text-xl font-bold text-red-600">Medium-High</div>
                         <div className="text-sm">Risk Level</div>
                       </div>
                     </div>
@@ -745,13 +808,13 @@ const IndogulfIPOBlog = () => {
                 investment horizon, and financial goals.
               </p>
               <p>
+                <strong>Data Accuracy:</strong> Financial data is based on company's restated consolidated financials as available in public domain. 
+                Investors should verify all information from official company documents and regulatory filings.
+              </p>
+              <p>
                 <strong>Regulatory Notice:</strong> SIP Brewery and its affiliates are not SEBI-registered investment advisors. 
                 This analysis is based on publicly available information and our research. Market conditions, company performance, 
                 and regulatory changes can significantly impact investment outcomes.
-              </p>
-              <p>
-                <strong>Valuation Risks:</strong> The company trades at a premium valuation. Agricultural and cyclical business risks, 
-                raw material price volatility, and regulatory changes can impact future performance significantly.
               </p>
             </div>
           </div>
