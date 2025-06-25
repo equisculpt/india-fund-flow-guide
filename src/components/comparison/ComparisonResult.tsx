@@ -36,7 +36,7 @@ const ComparisonResult = ({ comparisonResult, selectedFunds }: ComparisonResultP
             <Star className="h-6 w-6 text-green-600" />
             <div>
               <h3 className="text-lg font-bold text-green-800">
-                🤖 AI Research Verdict: {comparisonResult.bestFund}
+                🤖 AI Research Analysis: {comparisonResult.bestFund}
               </h3>
               <p className="text-green-700">
                 Score: {comparisonResult.bestScore}/10 • {comparisonResult.reasoning}
