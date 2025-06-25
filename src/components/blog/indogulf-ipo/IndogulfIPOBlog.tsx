@@ -10,7 +10,7 @@ import FinancialPerformanceSection from './components/FinancialPerformanceSectio
 import UseOfProceedsSection from './components/UseOfProceedsSection';
 import PeerComparisonSection from './components/PeerComparisonSection';
 import SWOTAnalysisSection from './components/SWOTAnalysisSection';
-import InvestmentVerdictSection from './components/InvestmentVerdictSection';
+import ResearchVerdictSection from './components/ResearchVerdictSection';
 import RiskDisclosureSection from './components/RiskDisclosureSection';
 import BlogFooter from './components/BlogFooter';
 
@@ -55,9 +55,9 @@ const IndogulfIPOBlog = () => {
   return (
     <>
       <ConsolidatedSEOHead
-        title="Indogulf Cropsciences IPO Analysis 2025 | Complete Financial Review & Investment Guide"
-        description="Comprehensive analysis of Indogulf Cropsciences IPO - ₹200 crore mainboard offering. Detailed insights on financials, valuation, sectoral analysis, and investment recommendations."
-        keywords="Indogulf Cropsciences IPO 2025, agrochemicals IPO, mainboard IPO, crop protection IPO, investment analysis, IPO review"
+        title="Indogulf Cropsciences IPO Research Analysis 2025 | Complete Financial Review & Research Report"
+        description="Comprehensive research analysis of Indogulf Cropsciences IPO - ₹200 crore mainboard offering. Detailed insights on financials, valuation, sectoral analysis, and research findings."
+        keywords="Indogulf Cropsciences IPO 2025, agrochemicals IPO, mainboard IPO, crop protection IPO, research analysis, IPO review"
         ogType="article"
         articleAuthor="SIP Brewery Research Team"
         articlePublisher="SIP Brewery"
@@ -82,7 +82,7 @@ const IndogulfIPOBlog = () => {
           <UseOfProceedsSection useOfProceeds={useOfProceeds} />
           <PeerComparisonSection peerComparison={peerComparison} />
           <SWOTAnalysisSection />
-          <InvestmentVerdictSection />
+          <ResearchVerdictSection />
           <RiskDisclosureSection />
           <BlogFooter />
         </div>

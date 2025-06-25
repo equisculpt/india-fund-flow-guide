@@ -1,5 +1,6 @@
 
 import React from 'react';
+import BlogViewCounter from '@/components/blog/BlogViewCounter';
 
 const IndogulfBlogHeader = () => {
   return (
@@ -9,11 +10,11 @@ const IndogulfBlogHeader = () => {
           <h1 className="text-5xl font-bold mb-6 leading-tight">
             🧪 Indogulf Cropsciences Limited IPO (2025)
           </h1>
-          <p className="text-2xl mb-4 text-green-100">Complete In-Depth Analysis & Investment Guide</p>
+          <p className="text-2xl mb-4 text-green-100">Complete In-Depth Research Analysis & Report</p>
           <p className="text-xl text-green-200 mb-8">
             Analyzing the ₹200 Crore Mainboard Offering in India's Growing Agrochemical Sector
           </p>
-          <div className="flex items-center justify-center gap-6 text-green-100">
+          <div className="flex items-center justify-center gap-6 text-green-100 mb-4">
             <span className="flex items-center gap-2">
               <span>📅</span>
               Opens June 26, 2025
@@ -27,6 +28,11 @@ const IndogulfBlogHeader = () => {
               45-minute read
             </span>
           </div>
+          <BlogViewCounter 
+            blogSlug="indogulf-cropsciences-ipo-complete-analysis-2024"
+            className="justify-center text-green-100"
+            showUniqueViews
+          />
         </div>
       </div>
     </div>
