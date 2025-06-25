@@ -1707,6 +1707,10 @@ export type Database = {
         }
         Returns: number
       }
+      is_admin_user: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       log_security_event: {
         Args: {
           event_type_param: string
