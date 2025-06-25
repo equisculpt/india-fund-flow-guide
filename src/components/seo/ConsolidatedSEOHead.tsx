@@ -79,11 +79,18 @@ const ConsolidatedSEOHead = ({
   // Use NewsArticle schema if available, otherwise use provided structured data
   const finalStructuredData = newsArticleSchema || structuredData;
 
-  console.log('🔄 ConsolidatedSEOHead Rendering:', {
+  console.log('🎯 ConsolidatedSEOHead COMPLETE AUDIT V3:', {
     path: location.pathname,
-    title: finalTitle.substring(0, 50) + '...',
+    title: finalTitle.substring(0, 80) + '...',
+    titleLength: finalTitle.length,
+    description: finalDescription.substring(0, 80) + '...',
+    descLength: finalDescription.length,
+    canonicalUrl: finalCanonicalUrl,
+    ogImage: finalOgImage,
     isNewsArticle,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    'HELMET_RENDERING': 'ACTIVE - Will override any existing meta tags',
+    'META_CONTROL': 'COMPLETE_TAKEOVER'
   });
 
   return (

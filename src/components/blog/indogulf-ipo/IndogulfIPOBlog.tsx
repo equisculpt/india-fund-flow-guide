@@ -15,6 +15,16 @@ import RiskDisclosureSection from './components/RiskDisclosureSection';
 import BlogFooter from './components/BlogFooter';
 
 const IndogulfIPOBlog = () => {
+  // FORENSIC SEO AUDIT - Component Level
+  console.log('🔍 INDOGULF BLOG SEO FORENSIC AUDIT V3:', {
+    component: 'IndogulfIPOBlog',
+    timestamp: new Date().toISOString(),
+    path: window.location.pathname,
+    'SEO_CONTROL': 'TAKING_COMPLETE_CONTROL',
+    'LAYOUT_BYPASS': 'Should be bypassed by nuclear SEO guard',
+    'META_TAGS': 'Will be set by ConsolidatedSEOHead only'
+  });
+
   // Financial data with updated 9M FY25 data from uploaded image
   const financialData = [
     { year: 'FY22', revenue: 490.23, ebitda: 47.24, pat: 26.36, ebitdaMargin: 9.6, netMargin: 5.4, assets: 413.59, netWorth: 180.51 },
@@ -58,6 +68,8 @@ const IndogulfIPOBlog = () => {
         title="Indogulf Cropsciences IPO Research Analysis 2025 | Complete Financial Review & Research Report"
         description="Comprehensive research analysis of Indogulf Cropsciences IPO - ₹200 crore mainboard offering. Detailed insights on financials, valuation, sectoral analysis, and research findings."
         keywords="Indogulf Cropsciences IPO 2025, agrochemicals IPO, mainboard IPO, crop protection IPO, research analysis, IPO review"
+        canonicalUrl="https://sipbrewery.com/blog/indogulf-cropsciences-ipo-complete-analysis-2024"
+        ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
         ogType="article"
         articleAuthor="SIP Brewery Research Team"
         articlePublisher="SIP Brewery"

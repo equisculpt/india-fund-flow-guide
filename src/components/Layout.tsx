@@ -22,16 +22,18 @@ const Layout = ({ children }: LayoutProps) => {
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout SEO Guard V2:', {
+  console.log('🛡️ Layout SEO Guard V3 - COMPLETE AUDIT:', {
     currentPath: location.pathname,
     isNuclearSEOPage,
     willCompletelySkipSEO: isNuclearSEOPage,
-    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO INTERFERENCE' : 'Normal page - will render SEO'
+    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO INTERFERENCE' : 'Normal page - will render SEO',
+    timestamp: new Date().toISOString(),
+    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_SEO' : 'ALLOWING_SEO'
   });
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Only render SEO for non-nuclear pages */}
+      {/* CRITICAL: Only render SEO for non-nuclear pages */}
       {!isNuclearSEOPage && (
         <SEOHead isDynamic={true} />
       )}
