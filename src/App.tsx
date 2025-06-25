@@ -1,85 +1,66 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Toaster } from "@/components/ui/toaster"
+import { QueryClient } from 'react-query';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from 'react-helmet-async';
-import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import FundDetailsPage from "./pages/FundDetailsPage";
-import FundComparisonPage from "./pages/FundComparisonPage";
-import PublicFundsPage from "./pages/PublicFundsPage";
-import SIPCalculatorPage from "./pages/SIPCalculatorPage";
-import ContactPage from "./pages/ContactPage";
-import TermsOfServicePage from "./pages/TermsOfServicePage";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
-import RiskDisclosurePage from "./pages/RiskDisclosurePage";
-import AdminPage from "./pages/AdminPage";
-import SecureAdminPage from "./pages/SecureAdminPage";
-import CommunityPage from "./pages/CommunityPage";
-import HDBFinancialServicesIPOBlog from "./pages/HDBFinancialServicesIPOBlog";
-import VeedaClinicalResearchIPOBlog from "./pages/VeedaClinicalResearchIPOBlog";
-import NBFCSectorDeepDiveBlog from "./pages/NBFCSectorDeepDiveBlog";
-import HowFundManagersMakeMoneyBlog from "./pages/HowFundManagersMakeMoneyBlog";
-import IPOAnalysisGuideBlog from "./pages/IPOAnalysisGuideBlog";
-import HealthcareSectorOutlookBlog from "./pages/HealthcareSectorOutlookBlog";
+import LanguageProvider from './components/LanguageProvider';
+import BrandingProvider from './components/BrandingProvider';
+import EnhancedAuthProvider from './components/auth/AuthProvider';
+import SecurityHeaders from './components/SecurityHeaders';
 
-const queryClient = new QueryClient();
+import HomePage from './pages/HomePage';
+import FundComparisonPage from './pages/FundComparisonPage';
+import PublicFundsPage from './pages/PublicFundsPage';
+import SIPCalculatorPage from './pages/SIPCalculatorPage';
+import ContactPage from './pages/ContactPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import CommunityPage from './pages/CommunityPage';
+import FundDetailsPage from './pages/FundDetailsPage';
+import FundsPage from './pages/FundsPage';
+import BlogPage from './pages/BlogPage';
+import BlogPostPage from './pages/BlogPostPage';
+import AdminLoginPage from './pages/AdminLoginPage';
+import SecureAdminPage from './pages/SecureAdminPage';
+import IndogulfCropsciencesIPOBlogPage from '@/pages/IndogulfCropsciencesIPOBlog';
 
-// Custom component to handle route exclusions
-const AppRoutes = () => {
-  const pathname = window.location.pathname;
-  
-  // Handle static XML and TXT files - these should be served directly from public folder
-  const staticFiles = ['/sitemap.xml', '/news-sitemap.xml', '/robots.txt'];
-  
-  if (staticFiles.includes(pathname)) {
-    // Force redirect to actual static file
-    window.location.replace(pathname);
-    return null;
-  }
-
+function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/fund/:fundSlug" element={<FundDetailsPage />} />
-      <Route path="/funds/:fundType" element={<PublicFundsPage />} />
-      <Route path="/fund-comparison" element={<FundComparisonPage />} />
-      <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/terms" element={<TermsOfServicePage />} />
-      <Route path="/privacy" element={<PrivacyPolicyPage />} />
-      <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
-      <Route path="/admin" element={<AdminPage />} />
-      <Route path="/secure-admin" element={<SecureAdminPage />} />
-      <Route path="/community" element={<CommunityPage />} />
-      <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
-      <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
-      <Route path="/blog/nbfc-sector-analysis-india-2025" element={<NBFCSectorDeepDiveBlog />} />
-      <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
-      <Route path="/blog/ipo-analysis-guide" element={<IPOAnalysisGuideBlog />} />
-      <Route path="/blog/healthcare-sector-outlook" element={<HealthcareSectorOutlookBlog />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <Router>
+      <div className="min-h-screen bg-background">
+        <QueryClient>
+          <EnhancedAuthProvider>
+            <LanguageProvider>
+              <BrandingProvider>
+                <Toaster />
+                <SecurityHeaders />
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                  <Route path="/public-funds" element={<PublicFundsPage />} />
+                  <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/community" element={<CommunityPage />} />
+                  <Route path="/fund/:fundId" element={<FundDetailsPage />} />
+                  <Route path="/funds/:fundId" element={<FundDetailsPage />} />
+                  <Route path="/funds" element={<FundsPage />} />
+                  <Route path="/blog" element={<BlogPage />} />
+                  <Route path="/blog/:slug" element={<BlogPostPage />} />
+                  <Route path="/admin/login" element={<AdminLoginPage />} />
+                  <Route path="/secure-admin" element={<SecureAdminPage />} />
+                  
+                  <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={<IndogulfCropsciencesIPOBlogPage />} />
+                  
+                </Routes>
+              </BrandingProvider>
+            </LanguageProvider>
+          </EnhancedAuthProvider>
+        </QueryClient>
+      </div>
+    </Router>
   );
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <SupabaseAuthProvider>
-      <HelmetProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
-      </HelmetProvider>
-    </SupabaseAuthProvider>
-  </QueryClientProvider>
-);
+}
 
 export default App;
