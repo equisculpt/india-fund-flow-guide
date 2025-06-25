@@ -41,6 +41,11 @@ serve(async (req) => {
       adminSessionToken: adminSessionToken ? 'present' : 'missing' 
     })
 
+    if (!file || !originalFilename || !adminSessionToken) {
+      console.error('Missing required fields:', { file: !!file, originalFilename, adminSessionToken: !!adminSessionToken })
+      throw new Error('Missing required fields')
+    }
+
     // Verify admin session using service role client
     const { data: sessionData, error: sessionError } = await supabaseAdmin
       .from('admin_sessions')

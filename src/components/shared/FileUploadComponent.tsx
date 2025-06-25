@@ -82,15 +82,16 @@ const FileUploadComponent = ({
         console.log('Using admin upload flow');
         
         // For admin users, use the admin upload edge function that bypasses RLS
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('original_filename', file.name);
+        formData.append('file_type', file.type || 'application/octet-stream');
+        formData.append('file_size', file.size.toString());
+        formData.append('upload_purpose', uploadPurpose);
+        formData.append('admin_session_token', adminSessionToken);
+
         const { data, error } = await supabase.functions.invoke('admin-file-upload', {
-          body: {
-            file: file,
-            original_filename: file.name,
-            file_type: file.type || 'application/octet-stream',
-            file_size: file.size,
-            upload_purpose: uploadPurpose,
-            admin_session_token: adminSessionToken
-          }
+          body: formData
         });
 
         clearInterval(progressInterval);
