@@ -72,10 +72,15 @@ const FundResultItem = ({ fund, onSelect }: FundResultItemProps) => {
     }
   };
 
+  const handleClick = () => {
+    console.log('FundResultItem: Fund selected:', fund.schemeName, 'Scheme Code:', fund.schemeCode);
+    onSelect(fund);
+  };
+
   return (
     <div
       className="p-4 hover:bg-blue-50 cursor-pointer transition-all duration-200 hover:shadow-sm border-l-4 border-transparent hover:border-blue-500"
-      onClick={() => onSelect(fund)}
+      onClick={handleClick}
     >
       <div className="flex justify-between items-start gap-3">
         <div className="flex-1 min-w-0">
@@ -99,6 +104,11 @@ const FundResultItem = ({ fund, onSelect }: FundResultItemProps) => {
                 {fund.category}
               </Badge>
             )}
+            
+            {/* Debug info */}
+            <div className="text-xs text-blue-600">
+              ID: {fund.schemeCode}
+            </div>
           </div>
         </div>
         

@@ -31,8 +31,9 @@ const EnhancedFundSearch = ({ placeholder = "Search mutual funds...", className 
     if (onFundSelect) {
       onFundSelect(selectedFund);
     } else {
-      const formattedName = fund.schemeName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      navigate(`/fund/${formattedName}`);
+      // Navigate using the scheme code directly
+      console.log('EnhancedFundSearch: Navigating to fund with scheme code:', fund.schemeCode);
+      navigate(`/fund/${fund.schemeCode}`);
     }
   };
 
@@ -59,14 +60,17 @@ const EnhancedFundSearch = ({ placeholder = "Search mutual funds...", className 
           ) : searchResults && searchResults.length > 0 ? (
             searchResults.map((fund, index) => (
               <Button
-                key={index}
+                key={`${fund.schemeCode}-${index}`}
                 variant="ghost"
                 className="w-full justify-start p-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
                 onClick={() => handleFundSelect(fund)}
               >
-                <div>
+                <div className="w-full">
                   <div className="font-medium text-gray-900">{fund.schemeName}</div>
-                  <div className="text-sm text-gray-500">{fund.fundHouse || fund.category}</div>
+                  <div className="text-sm text-gray-500 flex items-center justify-between">
+                    <span>{fund.fundHouse || fund.category}</span>
+                    <span className="text-xs text-blue-600">Code: {fund.schemeCode}</span>
+                  </div>
                 </div>
               </Button>
             ))

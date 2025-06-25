@@ -15,8 +15,8 @@ const FundDetailsPage: React.FC = () => {
   const params = useParams();
   const { handleBackClick } = useFundDetailsNavigation();
   
-  // Extract fundId from various possible parameter names
-  const fundId = params.fundId || params.id || params.fundName;
+  // Get fund identifier from URL - use fundSlug as the primary parameter
+  const fundId = params.fundSlug || params.fundId || params.id || params.fundName;
   
   console.log('FundDetailsPage: URL params:', params);
   console.log('FundDetailsPage: Extracted fundId:', fundId);
@@ -37,7 +37,8 @@ const FundDetailsPage: React.FC = () => {
     fundData: !!fundData, 
     isLoading, 
     navError,
-    fundName: fundData?.schemeName 
+    fundName: fundData?.schemeName,
+    schemeCode: fundData?.schemeCode
   });
 
   // Show loading only when actually loading and no fund data is available
@@ -73,7 +74,7 @@ const FundDetailsPage: React.FC = () => {
     ...(aiAnalysis || {})
   };
 
-  console.log('FundDetailsPage: Rendering fund details for:', fundData.schemeName);
+  console.log('FundDetailsPage: Rendering fund details for:', fundData.schemeName, 'with scheme code:', fundData.schemeCode);
 
   return (
     <Layout>

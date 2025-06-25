@@ -1,116 +1,176 @@
 
 import { useState, useEffect } from 'react';
-import { FundDetailsService } from '@/services/fundDetailsService';
-import { AIAnalysisService } from '@/services/aiAnalysisService';
-import { FundData, UseFundDetailsReturn } from './types/fundDetailsTypes';
+import { FundDataService } from '@/services/fundDataService';
+import { MutualFundSearchService } from '@/services/mutualFundSearchService';
+import { supabase } from '@/integrations/supabase/client';
 
-export const useFundDetails = (fundId: string | undefined): UseFundDetailsReturn => {
-  const [fundData, setFundData] = useState<FundData | null>(null);
+export const useFundDetails = (fundId: string | undefined) => {
+  const [fundData, setFundData] = useState<any>(null);
   const [latestNAV, setLatestNAV] = useState<any>(null);
   const [historicalData, setHistoricalData] = useState<any[]>([]);
   const [navError, setNavError] = useState<string>('');
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
-  const [aiLoading, setAiLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState<boolean>(false);
   const [aiError, setAiError] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log('useFundDetails: Effect triggered with fundId:', fundId);
-    
-    if (!fundId || fundId === 'undefined' || typeof fundId !== 'string') {
-      console.log('useFundDetails: Invalid fundId, stopping loading');
+    if (!fundId) {
+      console.log('useFundDetails: No fundId provided');
       setIsLoading(false);
-      setNavError('Invalid fund ID');
       return;
     }
 
-    console.log('useFundDetails: Starting fund data fetch for fundId:', fundId);
-    loadFundData();
+    loadFundDetails();
   }, [fundId]);
 
-  const loadFundData = async () => {
-    if (!fundId || fundId === 'undefined' || typeof fundId !== 'string') {
-      console.log('useFundDetails: Invalid fundId in loadFundData');
-      return;
-    }
+  const loadFundDetails = async () => {
+    if (!fundId) return;
+
+    setIsLoading(true);
+    console.log('useFundDetails: Loading fund details for ID:', fundId);
 
     try {
-      setIsLoading(true);
-      setNavError('');
-      console.log('useFundDetails: Loading basic fund details for:', fundId);
+      let resolvedFundData = null;
+      let schemeCode = fundId;
+
+      // First, try to get fund data using the fundId as scheme code
+      console.log('useFundDetails: Trying to get fund data with scheme code:', fundId);
       
-      // Load basic fund details - this should always return something
-      const { fundData: basicFundData, latestNAV: nav, navError: error } = 
-        await FundDetailsService.loadBasicFundDetails(fundId);
+      // Check if it's a valid scheme code (numeric) or a slug
+      const isNumericSchemeCode = /^\d+$/.test(fundId);
       
-      console.log('useFundDetails: Basic fund data loaded:', basicFundData);
-      
-      if (basicFundData) {
-        setFundData(basicFundData);
-        setLatestNAV(nav);
-        setNavError(error);
-        setIsLoading(false); // Set loading to false immediately after basic data is loaded
-        
-        // Load enhanced details and AI analysis in background (non-blocking)
-        loadEnhancedDataInBackground(basicFundData);
-        
-        // Load historical data (non-blocking)
-        FundDetailsService.loadHistoricalData(fundId)
-          .then(setHistoricalData)
-          .catch(err => console.error('Historical data failed:', err));
+      if (isNumericSchemeCode) {
+        // It's a numeric scheme code, use it directly
+        console.log('useFundDetails: Using numeric scheme code:', fundId);
+        resolvedFundData = await FundDataService.getMockFundData(fundId);
+        schemeCode = fundId;
       } else {
-        console.error('useFundDetails: No basic fund data available');
+        // It might be a fund name slug, try to find the scheme code
+        console.log('useFundDetails: Trying to resolve fund name to scheme code:', fundId);
+        
+        // Try to search for the fund by name
+        const searchResults = await MutualFundSearchService.searchFunds(fundId.replace(/-/g, ' '));
+        
+        if (searchResults && searchResults.length > 0) {
+          // Use the first result
+          const firstResult = searchResults[0];
+          schemeCode = firstResult.schemeCode;
+          console.log('useFundDetails: Found scheme code from search:', schemeCode);
+          
+          // Get enhanced fund details
+          const enhancedData = await MutualFundSearchService.getEnhancedFundDetails(schemeCode);
+          
+          if (enhancedData) {
+            resolvedFundData = {
+              schemeCode: enhancedData.schemeCode,
+              schemeName: enhancedData.schemeName,
+              fundHouse: enhancedData.fundHouse,
+              category: enhancedData.category,
+              nav: enhancedData.nav,
+              navDate: enhancedData.navDate,
+              returns1Y: enhancedData.returns1Y,
+              returns3Y: enhancedData.returns3Y,
+              returns5Y: enhancedData.returns5Y,
+              expenseRatio: enhancedData.expenseRatio,
+              aum: enhancedData.aum,
+              volatility: enhancedData.volatility,
+              minSipAmount: 500
+            };
+          }
+        }
+        
+        // If search didn't work, try the mapping service
+        if (!resolvedFundData) {
+          const mappedSchemeCode = FundDataService.getSchemeCodeByName(fundId);
+          if (mappedSchemeCode) {
+            schemeCode = mappedSchemeCode;
+            resolvedFundData = await FundDataService.getMockFundData(schemeCode);
+            console.log('useFundDetails: Found scheme code from mapping:', schemeCode);
+          }
+        }
+      }
+
+      // If we still don't have fund data, try one more approach
+      if (!resolvedFundData) {
+        resolvedFundData = await FundDataService.getMockFundData(fundId);
+      }
+
+      if (!resolvedFundData) {
+        console.log('useFundDetails: No fund data found for:', fundId);
+        setNavError(`Fund not found for identifier: ${fundId}`);
         setIsLoading(false);
-        setNavError('Failed to load fund data');
+        return;
       }
+
+      console.log('useFundDetails: Successfully loaded fund data:', resolvedFundData.schemeName);
+      setFundData(resolvedFundData);
+
+      // Fetch latest NAV
+      try {
+        const navData = await FundDataService.fetchLatestNAV(schemeCode);
+        if (navData) {
+          setLatestNAV(navData);
+          console.log('useFundDetails: Latest NAV loaded:', navData.nav);
+        } else {
+          setNavError('Using cached NAV data - live data temporarily unavailable');
+        }
+      } catch (error) {
+        console.error('useFundDetails: Error fetching NAV:', error);
+        setNavError('NAV data temporarily unavailable');
+      }
+
+      // Fetch historical data
+      try {
+        const historical = await FundDataService.fetchHistoricalNAV(schemeCode, 365);
+        setHistoricalData(historical);
+        console.log('useFundDetails: Historical data loaded:', historical.length, 'records');
+      } catch (error) {
+        console.error('useFundDetails: Error fetching historical data:', error);
+      }
+
+      // Fetch AI analysis
+      await fetchAIAnalysis(resolvedFundData);
+
     } catch (error) {
-      console.error('useFundDetails: Error in loadFundData:', error);
+      console.error('useFundDetails: Error loading fund details:', error);
+      setNavError(`Error loading fund details: ${error.message}`);
+    } finally {
       setIsLoading(false);
-      setNavError('Failed to load fund data');
     }
   };
 
-  const loadEnhancedDataInBackground = async (basicFundData: FundData) => {
-    if (!fundId || fundId === 'undefined' || typeof fundId !== 'string') return;
+  const fetchAIAnalysis = async (fundData: any) => {
+    if (!fundData) return;
+
+    setAiLoading(true);
+    setAiError('');
 
     try {
-      console.log('useFundDetails: Loading enhanced details in background...');
+      console.log('useFundDetails: Fetching AI analysis for:', fundData.schemeName);
       
-      // Try to get enhanced fund details
-      const enhancedFundData = await FundDetailsService.loadEnhancedFundDetails(fundId, basicFundData);
-      
-      if (enhancedFundData !== basicFundData) {
-        console.log('useFundDetails: Enhanced data loaded, updating state');
-        setFundData(enhancedFundData);
-        setNavError('✓ Performance calculated from actual NAV history data');
+      const { data, error } = await supabase.functions.invoke('ai-fund-analysis', {
+        body: { fundData }
+      });
+
+      if (error) {
+        console.error('useFundDetails: AI analysis error:', error);
+        setAiError('AI analysis temporarily unavailable');
+        return;
       }
-      
-      // Perform AI analysis with the final fund data
-      await performAIAnalysis(enhancedFundData);
-      
-    } catch (error) {
-      console.error('useFundDetails: Error loading enhanced data:', error);
-      // Still perform AI analysis with basic data
-      await performAIAnalysis(basicFundData);
-    }
-  };
 
-  const performAIAnalysis = async (fundDataForAnalysis: FundData) => {
-    try {
-      setAiLoading(true);
-      console.log('useFundDetails: Starting AI analysis...');
-      
-      const { analysis, loading, error } = await AIAnalysisService.performFundAnalysis(fundDataForAnalysis);
-      
-      setAiAnalysis(analysis);
-      setAiLoading(loading);
-      setAiError(error);
-      
-      console.log('useFundDetails: AI analysis completed');
+      if (data?.success && data?.analysis) {
+        setAiAnalysis(data.analysis);
+        console.log('useFundDetails: AI analysis completed successfully');
+      } else {
+        console.log('useFundDetails: AI analysis failed or returned invalid data');
+        setAiError('AI analysis temporarily unavailable');
+      }
     } catch (error) {
       console.error('useFundDetails: AI analysis error:', error);
+      setAiError('AI analysis temporarily unavailable');
+    } finally {
       setAiLoading(false);
-      setAiError('AI analysis failed');
     }
   };
 
