@@ -22,13 +22,14 @@ const Layout = ({ children }: LayoutProps) => {
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout SEO Guard V3 - COMPLETE AUDIT:', {
+  console.log('🛡️ Layout SEO Guard V4 - ULTIMATE AUDIT:', {
     currentPath: location.pathname,
     isNuclearSEOPage,
     willCompletelySkipSEO: isNuclearSEOPage,
     reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO INTERFERENCE' : 'Normal page - will render SEO',
     timestamp: new Date().toISOString(),
-    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_SEO' : 'ALLOWING_SEO'
+    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_SEO' : 'ALLOWING_SEO',
+    'CRITICAL_CHECK': 'Layout will NOT render any SEO for nuclear pages'
   });
 
   return (

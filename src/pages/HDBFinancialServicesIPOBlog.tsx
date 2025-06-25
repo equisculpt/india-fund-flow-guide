@@ -7,10 +7,12 @@ import HDBBlogContent from '@/components/blog/hdb-ipo/HDBBlogContent';
 
 const HDBFinancialServicesIPOBlog = () => {
   // FORENSIC DEBUGGING - Page level
-  console.log('📄 HDB BLOG PAGE FORENSIC AUDIT:', {
+  console.log('📄 HDB BLOG PAGE FORENSIC AUDIT V4:', {
     component: 'HDBFinancialServicesIPOBlog',
     timestamp: new Date().toISOString(),
-    message: 'Page component rendering with Layout wrapper'
+    path: window.location.pathname,
+    message: 'HDB Page component rendering - SEO should ONLY render here',
+    'CRITICAL_CHECK': 'This page should be the ONLY place HDB SEO renders'
   });
 
   return (

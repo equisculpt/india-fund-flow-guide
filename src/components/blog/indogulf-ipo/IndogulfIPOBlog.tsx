@@ -15,14 +15,20 @@ import RiskDisclosureSection from './components/RiskDisclosureSection';
 import BlogFooter from './components/BlogFooter';
 
 const IndogulfIPOBlog = () => {
-  // FORENSIC SEO AUDIT - Component Level
-  console.log('🔍 INDOGULF BLOG SEO FORENSIC AUDIT V3:', {
+  // CRITICAL CHECK - Only render on correct path
+  const currentPath = window.location.pathname;
+  const isIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
+
+  // FORENSIC SEO AUDIT - Component Level with PATH VALIDATION
+  console.log('🔍 INDOGULF BLOG SEO FORENSIC AUDIT V4 - PATH VALIDATION:', {
     component: 'IndogulfIPOBlog',
     timestamp: new Date().toISOString(),
-    path: window.location.pathname,
-    'SEO_CONTROL': 'TAKING_COMPLETE_CONTROL',
+    currentPath,
+    isIndogulfPage,
+    'SHOULD_RENDER': isIndogulfPage ? 'YES - Correct path' : 'NO - Wrong path, will not render',
+    'SEO_CONTROL': isIndogulfPage ? 'TAKING_COMPLETE_CONTROL' : 'BLOCKED - Wrong path',
     'LAYOUT_BYPASS': 'Should be bypassed by nuclear SEO guard',
-    'META_TAGS': 'Will be set by ConsolidatedSEOHead only'
+    'META_TAGS': isIndogulfPage ? 'Will be set by ConsolidatedSEOHead only' : 'NO META TAGS - Wrong path'
   });
 
   // Financial data with updated 9M FY25 data from uploaded image
@@ -61,6 +67,12 @@ const IndogulfIPOBlog = () => {
     pat: (21.68 * 12) / 9, // ~28.91 Cr
     ebitda: (44.78 * 12) / 9 // ~59.71 Cr
   };
+
+  // CRITICAL: Only render SEO and content if we're on the correct page
+  if (!isIndogulfPage) {
+    console.log('🚫 INDOGULF BLOG BLOCKED - Not on Indogulf page, returning null');
+    return null;
+  }
 
   return (
     <>

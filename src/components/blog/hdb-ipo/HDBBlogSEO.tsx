@@ -11,11 +11,18 @@ const HDBBlogSEO = () => {
   const publishedTime = "2025-06-21T12:00:00+05:30";
   const modifiedTime = "2025-06-21T12:00:00+05:30";
 
-  // FORENSIC DEBUGGING - Component level
-  console.log('🎯 HDB Blog SEO FORENSIC AUDIT:', {
+  // CRITICAL CHECK - Only render on correct path
+  const currentPath = window.location.pathname;
+  const isHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
+
+  // FORENSIC DEBUGGING - Component level with PATH VALIDATION
+  console.log('🎯 HDB Blog SEO FORENSIC AUDIT V4 - PATH VALIDATION:', {
     component: 'HDBBlogSEO',
     timestamp: new Date().toISOString(),
-    'EXACT_VALUES_BEING_PASSED': {
+    currentPath,
+    isHDBPage,
+    'SHOULD_RENDER': isHDBPage ? 'YES - Correct path' : 'NO - Wrong path, will not render',
+    'EXACT_VALUES_BEING_PASSED': isHDBPage ? {
       title: `"${title}"`,
       titleLength: title.length,
       description: `"${description}"`,
@@ -24,14 +31,20 @@ const HDBBlogSEO = () => {
       ogImage: ogImage,
       ogType: 'article',
       isNewsArticle: true
-    },
-    'VALIDATION_CHECKS': {
+    } : 'NOT_RENDERING - Wrong path',
+    'VALIDATION_CHECKS': isHDBPage ? {
       titleNotEmpty: title.trim().length > 0,
       descNotEmpty: description.trim().length > 0,
       imageIsAbsolute: ogImage.startsWith('https://'),
       urlIsAbsolute: canonicalUrl.startsWith('https://')
-    }
+    } : 'SKIPPED - Wrong path'
   });
+
+  // CRITICAL: Only render SEO if we're on the correct page
+  if (!isHDBPage) {
+    console.log('🚫 HDB SEO BLOCKED - Not on HDB page, returning null');
+    return null;
+  }
 
   return (
     <ConsolidatedSEOHead
