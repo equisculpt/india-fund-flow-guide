@@ -10,7 +10,6 @@ import { useFundComparison } from '@/hooks/useFundComparison';
 import { generateSEOContent } from '@/components/fund-comparison/SEOContentGenerator';
 import ComparisonResultsSection from '@/components/fund-comparison/ComparisonResultsSection';
 import ComparisonHeader from '@/components/fund-comparison/ComparisonHeader';
-import AMFIDisclaimer from '@/components/fund-comparison/AMFIDisclaimer';
 
 const FundComparisonPage = () => {
   const navigate = useNavigate();
@@ -92,8 +91,6 @@ const FundComparisonPage = () => {
             comparisonResult={comparisonResult}
             advice={advice}
           />
-
-          <AMFIDisclaimer />
         </div>
       </div>
     </Layout>

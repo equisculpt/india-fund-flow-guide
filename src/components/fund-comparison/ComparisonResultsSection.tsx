@@ -5,6 +5,7 @@ import KeyInsights from '@/components/comparison/KeyInsights';
 import InvestmentHorizonRecommendations from '@/components/comparison/InvestmentHorizonRecommendations';
 import DetailedFundAnalysis from '@/components/comparison/DetailedFundAnalysis';
 import MarketRecommendationCard from '@/components/comparison/MarketRecommendationCard';
+import AMFIDisclaimer from '@/components/fund-comparison/AMFIDisclaimer';
 
 interface ComparisonResultsSectionProps {
   comparisonResult: any;
@@ -30,6 +31,7 @@ const ComparisonResultsSection = ({ comparisonResult, advice }: ComparisonResult
         marketRecommendation={comparisonResult.marketRecommendation}
         marketTiming={comparisonResult.marketTiming}
       />
+      <AMFIDisclaimer />
     </div>
   );
 };
