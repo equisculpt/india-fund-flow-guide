@@ -16,12 +16,13 @@ const Layout = ({ children }: LayoutProps) => {
   const pagesWithNuclearSEO = [
     '/blog/nbfc-sector-analysis-india-2025',
     '/blog/hdb-financial-services-ipo-analysis',
-    '/blog/veeda-clinical-research-ipo-analysis'
+    '/blog/veeda-clinical-research-ipo-analysis',
+    '/blog/indogulf-cropsciences-ipo-complete-analysis-2024'
   ];
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout SEO Guard:', {
+  console.log('🛡️ Layout SEO Guard V2:', {
     currentPath: location.pathname,
     isNuclearSEOPage,
     willCompletelySkipSEO: isNuclearSEOPage,

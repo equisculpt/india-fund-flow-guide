@@ -22,6 +22,8 @@ import CommunityPage from './pages/CommunityPage';
 import FundDetailsPage from './pages/FundDetailsPage';
 import SecureAdminPage from './pages/SecureAdminPage';
 import IndogulfCropsciencesIPOBlogPage from '@/pages/IndogulfCropsciencesIPOBlog';
+import HDBFinancialServicesIPOBlog from '@/pages/HDBFinancialServicesIPOBlog';
+import VeedaClinicalResearchIPOBlog from '@/pages/VeedaClinicalResearchIPOBlog';
 
 const queryClient = new QueryClient();
 
@@ -50,7 +52,10 @@ function App() {
                       <Route path="/funds/:fundId" element={<FundDetailsPage />} />
                       <Route path="/secure-admin" element={<SecureAdminPage />} />
                       
+                      {/* Blog Routes */}
                       <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={<IndogulfCropsciencesIPOBlogPage />} />
+                      <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
+                      <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
                       
                     </Routes>
                   </BrandingProvider>

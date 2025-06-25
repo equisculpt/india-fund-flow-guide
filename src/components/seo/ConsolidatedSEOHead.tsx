@@ -79,62 +79,16 @@ const ConsolidatedSEOHead = ({
   // Use NewsArticle schema if available, otherwise use provided structured data
   const finalStructuredData = newsArticleSchema || structuredData;
 
-  // FORENSIC DEBUGGING - Enhanced logging
-  console.log('🔬 FORENSIC AUDIT - ConsolidatedSEOHead:', {
-    component: 'ConsolidatedSEOHead',
-    timestamp: new Date().toISOString(),
+  console.log('🔄 ConsolidatedSEOHead Rendering:', {
     path: location.pathname,
-    'RAW_INPUTS': {
-      title: title || 'UNDEFINED',
-      description: description || 'UNDEFINED',
-      ogImage: ogImage || 'UNDEFINED'
-    },
-    'PROCESSED_VALUES': {
-      finalTitle: `"${finalTitle}"`,
-      finalDescription: `"${finalDescription}"`,
-      finalOgImage: finalOgImage,
-      finalCanonicalUrl: finalCanonicalUrl
-    },
-    'STRING_CHECKS': {
-      titleValid: !!finalTitle && finalTitle.length > 0,
-      descValid: !!finalDescription && finalDescription.length > 0,
-      imageValid: !!finalOgImage && finalOgImage.startsWith('http')
-    },
-    'META_TAG_VALUES': {
-      'og:title': finalTitle,
-      'og:description': finalDescription,
-      'og:image': finalOgImage,
-      'og:url': finalCanonicalUrl,
-      'og:type': ogType
-    },
-    'NEWS_ARTICLE': {
-      isNewsArticle,
-      hasNewsSchema: !!newsArticleSchema
-    }
+    title: finalTitle.substring(0, 50) + '...',
+    isNewsArticle,
+    timestamp: new Date().toISOString()
   });
-
-  // Add a window check to verify meta tags are actually in DOM
-  React.useEffect(() => {
-    setTimeout(() => {
-      const titleMeta = document.querySelector('meta[property="og:title"]');
-      const descMeta = document.querySelector('meta[property="og:description"]');
-      const imageMeta = document.querySelector('meta[property="og:image"]');
-      
-      console.log('🔍 DOM META TAGS VERIFICATION:', {
-        'og:title in DOM': titleMeta ? titleMeta.getAttribute('content') : 'NOT FOUND',
-        'og:description in DOM': descMeta ? descMeta.getAttribute('content') : 'NOT FOUND',
-        'og:image in DOM': imageMeta ? imageMeta.getAttribute('content') : 'NOT FOUND',
-        'All meta tags': Array.from(document.querySelectorAll('meta[property^="og:"]')).map(meta => ({
-          property: meta.getAttribute('property'),
-          content: meta.getAttribute('content')
-        }))
-      });
-    }, 100);
-  }, [finalTitle, finalDescription, finalOgImage]);
 
   return (
     <Helmet>
-      {/* FORCE CLEAR ANY EXISTING TAGS */}
+      {/* Basic Meta Tags */}
       <title>{finalTitle}</title>
       <meta name="description" content={finalDescription} />
       <meta name="keywords" content={finalKeywords} />
@@ -143,7 +97,7 @@ const ConsolidatedSEOHead = ({
       <meta name="author" content={articleAuthor || "SIP Brewery Research Team"} />
       <link rel="canonical" href={finalCanonicalUrl} />
 
-      {/* CRITICAL OPEN GRAPH TAGS - FORCE OVERWRITE */}
+      {/* Open Graph Tags */}
       <meta property="og:title" content={finalTitle} />
       <meta property="og:description" content={finalDescription} />
       <meta property="og:type" content={ogType} />
