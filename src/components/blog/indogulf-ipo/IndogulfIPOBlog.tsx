@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -6,7 +5,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, L
 import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
 
 const IndogulfIPOBlog = () => {
-  // Updated financial data based on restated consolidated financials
+  // Updated financial data based on restated consolidated financials INCLUDING 9M FY25 data from uploaded image
   const financialData = [
     { year: 'FY22', revenue: 490.23, ebitda: 47.24, pat: 26.36, ebitdaMargin: 9.6, netMargin: 5.4, assets: 413.59, netWorth: 180.51 },
     { year: 'FY23', revenue: 552.19, ebitda: 49.04, pat: 22.42, ebitdaMargin: 8.9, netMargin: 4.1, assets: 517.51, netWorth: 203.25 },
@@ -41,13 +40,20 @@ const IndogulfIPOBlog = () => {
     { purpose: 'General Corporate Purposes', amount: 46.88, percentage: 29.3 }
   ];
 
-  // Balance sheet strength indicators
+  // Updated balance sheet strength indicators with correct 9M FY25 data
   const balanceSheetData = [
-    { year: 'FY22', totalBorrowing: 101.38, netWorth: 180.51, debtToEquity: 0.56 },
-    { year: 'FY23', totalBorrowing: 189.22, netWorth: 203.25, debtToEquity: 0.93 },
-    { year: 'FY24', totalBorrowing: 154.56, netWorth: 231.65, debtToEquity: 0.67 },
-    { year: '9M FY25', totalBorrowing: 206.30, netWorth: 265.43, debtToEquity: 0.78 }
+    { year: 'FY22', totalBorrowing: 101.38, netWorth: 180.51, debtToEquity: 0.56, reserves: 160.21 },
+    { year: 'FY23', totalBorrowing: 189.22, netWorth: 203.25, debtToEquity: 0.93, reserves: 183.15 },
+    { year: 'FY24', totalBorrowing: 154.56, netWorth: 231.65, debtToEquity: 0.67, reserves: 211.45 },
+    { year: '9M FY25', totalBorrowing: 206.30, netWorth: 265.43, debtToEquity: 0.78, reserves: 216.64 }
   ];
+
+  // Annualized projections based on 9M FY25 performance
+  const annualizedFY25Projections = {
+    revenue: (466.31 * 12) / 9, // ~621.75 Cr
+    pat: (21.68 * 12) / 9, // ~28.91 Cr
+    ebitda: (44.78 * 12) / 9 // ~59.71 Cr
+  };
 
   return (
     <>
@@ -94,7 +100,7 @@ const IndogulfIPOBlog = () => {
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-12">
-          {/* Quick Summary Box */}
+          {/* Quick Summary Box with updated financial data */}
           <Card className="mb-12 bg-blue-50 border-blue-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-blue-800 text-2xl">
@@ -291,7 +297,7 @@ const IndogulfIPOBlog = () => {
             </CardContent>
           </Card>
 
-          {/* Financial Performance */}
+          {/* Financial Performance with updated 9M FY25 data */}
           <Card className="mb-12">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
@@ -301,7 +307,7 @@ const IndogulfIPOBlog = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-8">
-                {/* Updated Financial Metrics Table */}
+                {/* Updated Financial Metrics Table with 9M FY25 data */}
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Key Financial Metrics (Restated Consolidated)</h3>
                   <Table>
@@ -311,7 +317,7 @@ const IndogulfIPOBlog = () => {
                         <TableHead>FY22</TableHead>
                         <TableHead>FY23</TableHead>
                         <TableHead>FY24</TableHead>
-                        <TableHead>9M FY25</TableHead>
+                        <TableHead>9M FY25*</TableHead>
                         <TableHead>Trend</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -321,8 +327,8 @@ const IndogulfIPOBlog = () => {
                         <TableCell>490.23</TableCell>
                         <TableCell>552.19</TableCell>
                         <TableCell>555.79</TableCell>
-                        <TableCell className="font-semibold text-orange-600">466.31</TableCell>
-                        <TableCell className="text-orange-600 font-semibold">Cyclical</TableCell>
+                        <TableCell className="font-semibold text-green-600">466.31</TableCell>
+                        <TableCell className="text-green-600 font-semibold">Steady</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">EBITDA (₹ Cr)</TableCell>
@@ -338,7 +344,7 @@ const IndogulfIPOBlog = () => {
                         <TableCell>22.42</TableCell>
                         <TableCell>28.23</TableCell>
                         <TableCell className="font-semibold text-blue-600">21.68</TableCell>
-                        <TableCell className="text-blue-600 font-semibold">Variable</TableCell>
+                        <TableCell className="text-blue-600 font-semibold">Recovering</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">EBITDA Margin (%)</TableCell>
@@ -372,8 +378,49 @@ const IndogulfIPOBlog = () => {
                         <TableCell className="font-semibold text-green-600">265.43</TableCell>
                         <TableCell className="text-green-600 font-semibold">Strengthening</TableCell>
                       </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">Total Borrowing (₹ Cr)</TableCell>
+                        <TableCell>101.38</TableCell>
+                        <TableCell>189.22</TableCell>
+                        <TableCell>154.56</TableCell>
+                        <TableCell className="font-semibold text-orange-600">206.30</TableCell>
+                        <TableCell className="text-orange-600 font-semibold">Elevated</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">Reserves & Surplus (₹ Cr)</TableCell>
+                        <TableCell>160.21</TableCell>
+                        <TableCell>183.15</TableCell>
+                        <TableCell>211.45</TableCell>
+                        <TableCell className="font-semibold text-green-600">216.64</TableCell>
+                        <TableCell className="text-green-600 font-semibold">Growing</TableCell>
+                      </TableRow>
                     </TableBody>
                   </Table>
+                  <p className="text-sm text-gray-600 mt-2">
+                    *9M FY25 data is for 9 months ended December 31, 2024 (unaudited)
+                  </p>
+                </div>
+
+                {/* Annualized Projections */}
+                <div className="bg-blue-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-blue-800 mb-3">📊 FY25 Annualized Projections (Based on 9M Performance)</h4>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="text-center p-4 bg-white rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">₹{annualizedFY25Projections.revenue.toFixed(0)} Cr</div>
+                      <div className="text-sm text-blue-700 mt-1">Projected Revenue</div>
+                    </div>
+                    <div className="text-center p-4 bg-white rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">₹{annualizedFY25Projections.pat.toFixed(1)} Cr</div>
+                      <div className="text-sm text-green-700 mt-1">Projected PAT</div>
+                    </div>
+                    <div className="text-center p-4 bg-white rounded-lg">
+                      <div className="text-2xl font-bold text-purple-600">₹{annualizedFY25Projections.ebitda.toFixed(1)} Cr</div>
+                      <div className="text-sm text-purple-700 mt-1">Projected EBITDA</div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 mt-3">
+                    Note: These are mathematical projections based on 9M performance and may not reflect actual FY25 results due to seasonal variations.
+                  </p>
                 </div>
 
                 {/* Valuation Metrics */}
@@ -409,7 +456,7 @@ const IndogulfIPOBlog = () => {
                       <XAxis dataKey="year" />
                       <YAxis />
                       <Tooltip formatter={(value, name) => {
-                        if (name === 'revenue' || name === 'ebitda' || name === 'pat') return [`₹${value} Cr`, name.toUpperCase()];
+                        if (['revenue', 'ebitda', 'pat'].includes(name)) return [`₹${value} Cr`, name.toUpperCase()];
                         return [`${value}%`, name];
                       }} />
                       <Legend />
@@ -420,7 +467,7 @@ const IndogulfIPOBlog = () => {
                   </ResponsiveContainer>
                 </div>
 
-                {/* Balance Sheet Strength */}
+                {/* Balance Sheet Strength with updated data */}
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Balance Sheet Strength Analysis</h3>
                   <ResponsiveContainer width="100%" height={350}>
@@ -432,12 +479,14 @@ const IndogulfIPOBlog = () => {
                       <Legend />
                       <Bar dataKey="netWorth" fill="#10b981" name="Net Worth" />
                       <Bar dataKey="totalBorrowing" fill="#ef4444" name="Total Borrowing" />
+                      <Bar dataKey="reserves" fill="#8b5cf6" name="Reserves & Surplus" />
                     </BarChart>
                   </ResponsiveContainer>
                   <div className="mt-4 p-4 bg-orange-50 rounded-lg">
                     <p className="text-sm text-orange-700">
-                      <strong>Key Observation:</strong> Debt-to-equity ratio has fluctuated between 0.56x to 0.93x, 
-                      indicating moderate leverage. Current 9M FY25 D/E of 0.78x is manageable but worth monitoring.
+                      <strong>Key Observation:</strong> Total borrowing increased to ₹206.30 Cr in 9M FY25 from ₹154.56 Cr in FY24, 
+                      pushing D/E ratio to 0.78x. However, reserves & surplus continued growing to ₹216.64 Cr, indicating 
+                      healthy internal accruals.
                     </p>
                   </div>
                 </div>
