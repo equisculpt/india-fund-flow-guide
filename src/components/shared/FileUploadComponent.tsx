@@ -56,17 +56,46 @@ const FileUploadComponent = ({
     await uploadFile(file);
   };
 
+  const getAuthenticatedUserId = async () => {
+    // Check if we're in admin context first
+    const adminSessionToken = localStorage.getItem('admin_session_token');
+    if (adminSessionToken) {
+      // Verify admin session and get admin user
+      const { data: sessionData, error } = await supabase
+        .from('admin_sessions')
+        .select(`
+          admin_user_id,
+          expires_at,
+          admin_users!admin_sessions_admin_user_id_fkey (
+            id,
+            email
+          )
+        `)
+        .eq('session_token', adminSessionToken)
+        .gt('expires_at', new Date().toISOString())
+        .single();
+
+      if (!error && sessionData) {
+        return sessionData.admin_user_id;
+      }
+    }
+
+    // Fall back to regular user authentication
+    const { data: { user } } = await supabase.auth.getUser();
+    return user?.id || null;
+  };
+
   const uploadFile = async (file: File) => {
     try {
       setIsUploading(true);
       setUploadProgress(0);
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const userId = await getAuthenticatedUserId();
+      if (!userId) {
         throw new Error('User not authenticated');
       }
 
-      const fileName = `${user.id}/${Date.now()}_${file.name}`;
+      const fileName = `${userId}/${Date.now()}_${file.name}`;
       
       // Simulate progress for better UX
       const progressInterval = setInterval(() => {
@@ -93,7 +122,7 @@ const FileUploadComponent = ({
       const { data: dbData, error: dbError } = await supabase
         .from('uploaded_files')
         .insert({
-          user_id: user.id,
+          user_id: userId,
           filename: fileName,
           original_filename: file.name,
           file_type: file.type || 'application/octet-stream',
