@@ -117,12 +117,12 @@ const FileUploadComponent = ({
 
       if (storageError) throw storageError;
 
-      // For admin users, we need to use a different approach to insert files
-      // We'll use the service role to bypass RLS for admin uploads
+      // Check if we're in admin context
       const adminSessionToken = localStorage.getItem('admin_session_token');
       
       let dbData;
       if (adminSessionToken) {
+        console.log('Using admin upload path with token:', adminSessionToken);
         // Use edge function for admin uploads to bypass RLS
         const { data: functionData, error: functionError } = await supabase.functions.invoke('admin-file-upload', {
           body: {
@@ -138,7 +138,10 @@ const FileUploadComponent = ({
           }
         });
 
-        if (functionError) throw functionError;
+        if (functionError) {
+          console.error('Admin upload function error:', functionError);
+          throw functionError;
+        }
         dbData = functionData;
       } else {
         // Regular user upload
@@ -167,14 +170,20 @@ const FileUploadComponent = ({
       // Update with extracted content
       if (extractedContent) {
         if (adminSessionToken) {
+          console.log('Using admin update path');
           // Use edge function for admin updates
-          await supabase.functions.invoke('admin-file-update', {
+          const { error: updateError } = await supabase.functions.invoke('admin-file-update', {
             body: {
               file_id: dbData.id,
               extracted_content: extractedContent,
               admin_session_token: adminSessionToken
             }
           });
+          
+          if (updateError) {
+            console.error('Admin update function error:', updateError);
+            throw updateError;
+          }
         } else {
           const { error: updateError } = await supabase
             .from('uploaded_files')

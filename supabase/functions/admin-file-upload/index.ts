@@ -13,9 +13,16 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
+    // Create service role client for admin operations
+    const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
     )
 
     const { 
@@ -30,8 +37,15 @@ serve(async (req) => {
       admin_session_token 
     } = await req.json()
 
-    // Verify admin session
-    const { data: sessionData, error: sessionError } = await supabaseClient
+    console.log('Admin file upload request:', { 
+      user_id, 
+      filename, 
+      original_filename,
+      admin_session_token: admin_session_token ? 'present' : 'missing'
+    })
+
+    // Verify admin session using service role client
+    const { data: sessionData, error: sessionError } = await supabaseAdmin
       .from('admin_sessions')
       .select(`
         admin_user_id,
@@ -46,12 +60,15 @@ serve(async (req) => {
       .gt('expires_at', new Date().toISOString())
       .single()
 
+    console.log('Session validation result:', { sessionData, sessionError })
+
     if (sessionError || !sessionData || !sessionData.admin_users.is_active) {
+      console.error('Invalid admin session:', sessionError)
       throw new Error('Invalid admin session')
     }
 
-    // Insert file record using service role (bypasses RLS)
-    const { data, error } = await supabaseClient
+    // Insert file record using service role (bypasses all RLS)
+    const { data, error } = await supabaseAdmin
       .from('uploaded_files')
       .insert({
         user_id,
@@ -60,13 +77,16 @@ serve(async (req) => {
         file_type,
         file_size,
         file_path,
-        upload_purpose,
-        is_processed
+        upload_purpose: upload_purpose || 'blog',
+        is_processed: is_processed || false
       })
       .select()
       .single()
 
+    console.log('File insert result:', { data, error })
+
     if (error) {
+      console.error('Database insert error:', error)
       throw new Error(`Database error: ${error.message}`)
     }
 
