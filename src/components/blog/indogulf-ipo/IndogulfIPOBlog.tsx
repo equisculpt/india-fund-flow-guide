@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -456,8 +457,9 @@ const IndogulfIPOBlog = () => {
                       <XAxis dataKey="year" />
                       <YAxis />
                       <Tooltip formatter={(value, name) => {
-                        if (['revenue', 'ebitda', 'pat'].includes(name)) return [`₹${value} Cr`, name.toUpperCase()];
-                        return [`${value}%`, name];
+                        const nameStr = String(name);
+                        if (['revenue', 'ebitda', 'pat'].includes(nameStr)) return [`₹${value} Cr`, nameStr.toUpperCase()];
+                        return [`${value}%`, nameStr];
                       }} />
                       <Legend />
                       <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} name="Revenue" />
