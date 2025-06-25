@@ -1,6 +1,6 @@
-
 import React from 'react';
 import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
+import HydrationAwareSEO from '@/components/seo/HydrationAwareSEO';
 import IndogulfBlogHeader from './components/IndogulfBlogHeader';
 import IPOQuickSummary from './components/IPOQuickSummary';
 import IPOTimelineSection from './components/IPOTimelineSection';
@@ -19,16 +19,12 @@ const IndogulfIPOBlog = () => {
   const currentPath = window.location.pathname;
   const isIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
 
-  // FORENSIC SEO AUDIT - Component Level with PATH VALIDATION
-  console.log('🔍 INDOGULF BLOG SEO FORENSIC AUDIT V4 - PATH VALIDATION:', {
+  console.log('🔍 INDOGULF BLOG V5 - HYDRATION AWARE:', {
     component: 'IndogulfIPOBlog',
     timestamp: new Date().toISOString(),
     currentPath,
     isIndogulfPage,
-    'SHOULD_RENDER': isIndogulfPage ? 'YES - Correct path' : 'NO - Wrong path, will not render',
-    'SEO_CONTROL': isIndogulfPage ? 'TAKING_COMPLETE_CONTROL' : 'BLOCKED - Wrong path',
-    'LAYOUT_BYPASS': 'Should be bypassed by nuclear SEO guard',
-    'META_TAGS': isIndogulfPage ? 'Will be set by ConsolidatedSEOHead only' : 'NO META TAGS - Wrong path'
+    'RENDER_STATUS': isIndogulfPage ? 'WILL_RENDER_AFTER_HYDRATION' : 'BLOCKED_WRONG_PATH'
   });
 
   // Financial data with updated 9M FY25 data from uploaded image
@@ -53,7 +49,6 @@ const IndogulfIPOBlog = () => {
     { purpose: 'General Corporate Purposes', amount: 46.88, percentage: 29.3 }
   ];
 
-  // Balance sheet strength indicators with correct 9M FY25 data
   const balanceSheetData = [
     { year: 'FY22', totalBorrowing: 101.38, netWorth: 180.51, debtToEquity: 0.56, reserves: 160.21 },
     { year: 'FY23', totalBorrowing: 189.22, netWorth: 203.25, debtToEquity: 0.93, reserves: 183.15 },
@@ -61,11 +56,10 @@ const IndogulfIPOBlog = () => {
     { year: '9M FY25', totalBorrowing: 206.30, netWorth: 265.43, debtToEquity: 0.78, reserves: 216.64 }
   ];
 
-  // Annualized projections based on 9M FY25 performance
   const annualizedFY25Projections = {
-    revenue: (466.31 * 12) / 9, // ~621.75 Cr
-    pat: (21.68 * 12) / 9, // ~28.91 Cr
-    ebitda: (44.78 * 12) / 9 // ~59.71 Cr
+    revenue: (466.31 * 12) / 9,
+    pat: (21.68 * 12) / 9,
+    ebitda: (44.78 * 12) / 9
   };
 
   // CRITICAL: Only render SEO and content if we're on the correct page
@@ -76,19 +70,21 @@ const IndogulfIPOBlog = () => {
 
   return (
     <>
-      <ConsolidatedSEOHead
-        title="Indogulf Cropsciences IPO Research Analysis 2025 | Complete Financial Review & Research Report"
-        description="Comprehensive research analysis of Indogulf Cropsciences IPO - ₹200 crore mainboard offering. Detailed insights on financials, valuation, sectoral analysis, and research findings."
-        keywords="Indogulf Cropsciences IPO 2025, agrochemicals IPO, mainboard IPO, crop protection IPO, research analysis, IPO review"
-        canonicalUrl="https://sipbrewery.com/blog/indogulf-cropsciences-ipo-complete-analysis-2024"
-        ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
-        ogType="article"
-        articleAuthor="SIP Brewery Research Team"
-        articlePublisher="SIP Brewery"
-        publishedTime="2025-06-25T12:00:00Z"
-        modifiedTime={new Date().toISOString()}
-        isNewsArticle={true}
-      />
+      <HydrationAwareSEO>
+        <ConsolidatedSEOHead
+          title="Indogulf Cropsciences IPO Research Analysis 2025 | Complete Financial Review & Research Report"
+          description="Comprehensive research analysis of Indogulf Cropsciences IPO - ₹200 crore mainboard offering. Detailed insights on financials, valuation, sectoral analysis, and research findings."
+          keywords="Indogulf Cropsciences IPO 2025, agrochemicals IPO, mainboard IPO, crop protection IPO, research analysis, IPO review"
+          canonicalUrl="https://sipbrewery.com/blog/indogulf-cropsciences-ipo-complete-analysis-2024"
+          ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+          ogType="article"
+          articleAuthor="SIP Brewery Research Team"
+          articlePublisher="SIP Brewery"
+          publishedTime="2025-06-25T12:00:00Z"
+          modifiedTime={new Date().toISOString()}
+          isNewsArticle={true}
+        />
+      </HydrationAwareSEO>
       
       <div className="min-h-screen bg-gray-50">
         <IndogulfBlogHeader />
