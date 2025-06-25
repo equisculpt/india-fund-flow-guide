@@ -17,6 +17,7 @@ import TermsOfServicePage from "./pages/TermsOfServicePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import RiskDisclosurePage from "./pages/RiskDisclosurePage";
 import AdminPage from "./pages/AdminPage";
+import SecureAdminPage from "./pages/SecureAdminPage";
 import CommunityPage from "./pages/CommunityPage";
 import HDBFinancialServicesIPOBlog from "./pages/HDBFinancialServicesIPOBlog";
 import VeedaClinicalResearchIPOBlog from "./pages/VeedaClinicalResearchIPOBlog";
@@ -51,7 +52,8 @@ const AppRoutes = () => {
       <Route path="/terms" element={<TermsOfServicePage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
-      <Route path="/admin/*" element={<AdminPage />} />
+      <Route path="/admin" element={<AdminPage />} />
+      <Route path="/secure-admin" element={<SecureAdminPage />} />
       <Route path="/community" element={<CommunityPage />} />
       <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
       <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
