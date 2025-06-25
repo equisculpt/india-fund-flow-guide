@@ -3,10 +3,12 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 
 import { LanguageProvider } from './contexts/LanguageContext';
 import { BrandingProvider } from './contexts/BrandingContext';
 import { EnhancedAuthProvider } from './contexts/EnhancedAuthContext';
+import { SupabaseAuthProvider } from './contexts/SupabaseAuthContext';
 import SecurityHeaders from './components/SecurityHeaders';
 
 import Index from './pages/Index';
@@ -25,36 +27,40 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-background">
-        <QueryClientProvider client={queryClient}>
-          <EnhancedAuthProvider>
-            <LanguageProvider>
-              <BrandingProvider>
-                <Toaster />
-                <SecurityHeaders />
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/fund-comparison" element={<FundComparisonPage />} />
-                  <Route path="/public-funds" element={<PublicFundsPage />} />
-                  <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-                  <Route path="/contact" element={<ContactPage />} />
-                  <Route path="/terms" element={<TermsOfServicePage />} />
-                  <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                  <Route path="/community" element={<CommunityPage />} />
-                  <Route path="/fund/:fundId" element={<FundDetailsPage />} />
-                  <Route path="/funds/:fundId" element={<FundDetailsPage />} />
-                  <Route path="/secure-admin" element={<SecureAdminPage />} />
-                  
-                  <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={<IndogulfCropsciencesIPOBlogPage />} />
-                  
-                </Routes>
-              </BrandingProvider>
-            </LanguageProvider>
-          </EnhancedAuthProvider>
-        </QueryClientProvider>
-      </div>
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <div className="min-h-screen bg-background">
+          <QueryClientProvider client={queryClient}>
+            <SupabaseAuthProvider>
+              <EnhancedAuthProvider>
+                <LanguageProvider>
+                  <BrandingProvider>
+                    <Toaster />
+                    <SecurityHeaders />
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                      <Route path="/public-funds" element={<PublicFundsPage />} />
+                      <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+                      <Route path="/contact" element={<ContactPage />} />
+                      <Route path="/terms" element={<TermsOfServicePage />} />
+                      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                      <Route path="/community" element={<CommunityPage />} />
+                      <Route path="/fund/:fundId" element={<FundDetailsPage />} />
+                      <Route path="/funds/:fundId" element={<FundDetailsPage />} />
+                      <Route path="/secure-admin" element={<SecureAdminPage />} />
+                      
+                      <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={<IndogulfCropsciencesIPOBlogPage />} />
+                      
+                    </Routes>
+                  </BrandingProvider>
+                </LanguageProvider>
+              </EnhancedAuthProvider>
+            </SupabaseAuthProvider>
+          </QueryClientProvider>
+        </div>
+      </Router>
+    </HelmetProvider>
   );
 }
 
