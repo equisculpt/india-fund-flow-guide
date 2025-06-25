@@ -14,15 +14,14 @@ serve(async (req) => {
   try {
     const { extractedContent, requirements, fileNames } = await req.json()
     
-    // Try multiple possible environment variable names for the OpenAI API key
-    const openAIApiKey = Deno.env.get('GWMINI_KEY') || Deno.env.get('OPENAI_API_KEY') || Deno.env.get('GWMINI')
-    if (!openAIApiKey) {
-      console.error('OpenAI API key not found in environment variables')
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
+    if (!geminiApiKey) {
+      console.error('Gemini API key not found in environment variables')
       console.log('Available env vars:', Object.keys(Deno.env.toObject()))
-      throw new Error('OpenAI API key not configured. Please add your OpenAI API key to the edge function secrets as GWMINI_KEY or OPENAI_API_KEY.')
+      throw new Error('Gemini API key not configured. Please add your Gemini API key to the edge function secrets as GEMINI_API_KEY.')
     }
 
-    console.log('OpenAI API Key configured:', openAIApiKey ? 'Yes' : 'No')
+    console.log('Gemini API Key configured:', geminiApiKey ? 'Yes' : 'No')
     console.log('Generating blog for files:', fileNames)
 
     const prompt = `
@@ -54,36 +53,39 @@ Guidelines:
 - Ensure content flows logically from introduction to conclusion
 `
 
-    console.log('Making request to OpenAI API...')
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    console.log('Making request to Gemini API...')
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: 'You are an expert blog writer who creates engaging, well-structured content.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 4000,
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 4000,
+        }
       }),
     })
 
-    console.log('OpenAI API response status:', response.status)
+    console.log('Gemini API response status:', response.status)
     
     if (!response.ok) {
       const errorData = await response.text()
-      console.error('OpenAI API error response:', errorData)
-      throw new Error(`OpenAI API error: ${response.status} ${response.statusText} - ${errorData}`)
+      console.error('Gemini API error response:', errorData)
+      throw new Error(`Gemini API error: ${response.status} ${response.statusText} - ${errorData}`)
     }
 
     const data = await response.json()
-    console.log('OpenAI API response received successfully')
+    console.log('Gemini API response received successfully')
     
-    const generatedContent = data.choices[0].message.content
+    const generatedContent = data.candidates?.[0]?.content?.parts?.[0]?.text
 
     // Parse the JSON response
     let blog
