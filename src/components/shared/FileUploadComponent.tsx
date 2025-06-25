@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -118,38 +117,75 @@ const FileUploadComponent = ({
 
       if (storageError) throw storageError;
 
-      // Save file metadata to database
-      const { data: dbData, error: dbError } = await supabase
-        .from('uploaded_files')
-        .insert({
-          user_id: userId,
-          filename: fileName,
-          original_filename: file.name,
-          file_type: file.type || 'application/octet-stream',
-          file_size: file.size,
-          file_path: storageData.path,
-          upload_purpose: uploadPurpose,
-          is_processed: false
-        })
-        .select()
-        .single();
+      // For admin users, we need to use a different approach to insert files
+      // We'll use the service role to bypass RLS for admin uploads
+      const adminSessionToken = localStorage.getItem('admin_session_token');
+      
+      let dbData;
+      if (adminSessionToken) {
+        // Use edge function for admin uploads to bypass RLS
+        const { data: functionData, error: functionError } = await supabase.functions.invoke('admin-file-upload', {
+          body: {
+            user_id: userId,
+            filename: fileName,
+            original_filename: file.name,
+            file_type: file.type || 'application/octet-stream',
+            file_size: file.size,
+            file_path: storageData.path,
+            upload_purpose: uploadPurpose,
+            is_processed: false,
+            admin_session_token: adminSessionToken
+          }
+        });
 
-      if (dbError) throw dbError;
+        if (functionError) throw functionError;
+        dbData = functionData;
+      } else {
+        // Regular user upload
+        const { data: insertData, error: dbError } = await supabase
+          .from('uploaded_files')
+          .insert({
+            user_id: userId,
+            filename: fileName,
+            original_filename: file.name,
+            file_type: file.type || 'application/octet-stream',
+            file_size: file.size,
+            file_path: storageData.path,
+            upload_purpose: uploadPurpose,
+            is_processed: false
+          })
+          .select()
+          .single();
+
+        if (dbError) throw dbError;
+        dbData = insertData;
+      }
 
       // Simulate content extraction
       const extractedContent = await simulateContentExtraction(file);
       
       // Update with extracted content
       if (extractedContent) {
-        const { error: updateError } = await supabase
-          .from('uploaded_files')
-          .update({ 
-            extracted_content: extractedContent,
-            is_processed: true 
-          })
-          .eq('id', dbData.id);
+        if (adminSessionToken) {
+          // Use edge function for admin updates
+          await supabase.functions.invoke('admin-file-update', {
+            body: {
+              file_id: dbData.id,
+              extracted_content: extractedContent,
+              admin_session_token: adminSessionToken
+            }
+          });
+        } else {
+          const { error: updateError } = await supabase
+            .from('uploaded_files')
+            .update({ 
+              extracted_content: extractedContent,
+              is_processed: true 
+            })
+            .eq('id', dbData.id);
 
-        if (updateError) throw updateError;
+          if (updateError) throw updateError;
+        }
       }
 
       setUploadedFile({ ...dbData, extracted_content: extractedContent });
