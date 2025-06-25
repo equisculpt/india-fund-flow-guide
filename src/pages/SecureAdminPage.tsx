@@ -3,6 +3,7 @@ import { useEnhancedAdminAuth } from '@/hooks/useEnhancedAdminAuth';
 import SecureAdminLogin from '@/components/admin/SecureAdminLogin';
 import AdminDashboard from '@/components/AdminDashboard';
 import SecurityDashboard from '@/components/admin/SecurityDashboard';
+import BlogGenerationTab from '@/components/admin/BlogGenerationTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { LogOut, Shield } from 'lucide-react';
@@ -69,13 +70,18 @@ const SecureAdminPage = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
         <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 max-w-md">
+          <TabsList className="grid w-full grid-cols-4 max-w-2xl">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="blog-generator">Blog Generator</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard">
             <AdminDashboard />
+          </TabsContent>
+
+          <TabsContent value="blog-generator">
+            <BlogGenerationTab />
           </TabsContent>
 
           <TabsContent value="security">
