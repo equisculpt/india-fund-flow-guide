@@ -14,10 +14,12 @@ serve(async (req) => {
   try {
     const { extractedContent, requirements, fileNames } = await req.json()
     
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
+    // Try multiple possible environment variable names for the OpenAI API key
+    const openAIApiKey = Deno.env.get('GWMINI_KEY') || Deno.env.get('OPENAI_API_KEY') || Deno.env.get('GWMINI')
     if (!openAIApiKey) {
       console.error('OpenAI API key not found in environment variables')
-      throw new Error('OpenAI API key not configured. Please add your OpenAI API key to the edge function secrets.')
+      console.log('Available env vars:', Object.keys(Deno.env.toObject()))
+      throw new Error('OpenAI API key not configured. Please add your OpenAI API key to the edge function secrets as GWMINI_KEY or OPENAI_API_KEY.')
     }
 
     console.log('OpenAI API Key configured:', openAIApiKey ? 'Yes' : 'No')
