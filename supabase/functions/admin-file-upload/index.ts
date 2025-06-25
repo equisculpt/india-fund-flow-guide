@@ -69,8 +69,37 @@ serve(async (req) => {
       throw new Error('Invalid admin session')
     }
 
-    const adminUserId = sessionData.admin_user_id
-    const fileName = `${adminUserId}/${Date.now()}_${originalFilename}`
+    // Get or create a system user for admin uploads
+    let systemUserId: string
+    
+    // First, try to find an existing system user
+    const { data: existingSystemUser } = await supabaseAdmin.auth.admin.listUsers()
+    const systemUser = existingSystemUser?.users?.find(user => user.email === 'system@sipbrewery.com')
+    
+    if (systemUser) {
+      systemUserId = systemUser.id
+      console.log('Using existing system user:', systemUserId)
+    } else {
+      // Create a system user if it doesn't exist
+      const { data: newSystemUser, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
+        email: 'system@sipbrewery.com',
+        email_confirm: true,
+        user_metadata: {
+          full_name: 'System User for Admin Uploads',
+          role: 'system'
+        }
+      })
+      
+      if (createUserError || !newSystemUser.user) {
+        console.error('Failed to create system user:', createUserError)
+        throw new Error('Failed to create system user')
+      }
+      
+      systemUserId = newSystemUser.user.id
+      console.log('Created new system user:', systemUserId)
+    }
+
+    const fileName = `admin/${Date.now()}_${originalFilename}`
 
     // Upload file to storage using service role (bypasses RLS)
     const { data: storageData, error: storageError } = await supabaseAdmin.storage
@@ -84,18 +113,24 @@ serve(async (req) => {
       throw new Error(`Storage upload failed: ${storageError.message}`)
     }
 
-    // Insert file record using service role (bypasses all RLS)
+    // Insert file record using service role with system user ID
     const { data: dbData, error: dbError } = await supabaseAdmin
       .from('uploaded_files')
       .insert({
-        user_id: adminUserId,
+        user_id: systemUserId, // Use system user ID instead of admin user ID
         filename: fileName,
         original_filename: originalFilename,
         file_type: fileType,
         file_size: fileSize,
         file_path: storageData.path,
         upload_purpose: uploadPurpose || 'blog',
-        is_processed: false
+        is_processed: false,
+        // Add metadata to track that this was uploaded by admin
+        extracted_content: JSON.stringify({
+          uploaded_by_admin: sessionData.admin_users.email,
+          admin_user_id: sessionData.admin_user_id,
+          upload_timestamp: new Date().toISOString()
+        })
       })
       .select()
       .single()
