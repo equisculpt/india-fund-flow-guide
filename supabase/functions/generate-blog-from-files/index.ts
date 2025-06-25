@@ -25,9 +25,9 @@ serve(async (req) => {
     console.log('Generating blog for files:', fileNames)
 
     const prompt = `
-You are an expert blog writer. Generate a high-quality, engaging blog post based on the following:
+You are an expert financial blog writer specializing in investment analysis. Generate a comprehensive, engaging blog post based on the following:
 
-EXTRACTED CONTENT FROM PDF FILES:
+EXTRACTED CONTENT FROM FILES:
 ${fileNames.map((name: string, idx: number) => `File ${idx + 1}: ${name}`).join('\n')}
 
 ${extractedContent}
@@ -35,22 +35,42 @@ ${extractedContent}
 REQUIREMENTS:
 ${requirements}
 
-Please generate a blog post with the following JSON structure:
+Create a blog post following this structure and format it as valid JSON:
+
 {
-  "title": "Compelling blog title",
-  "content": "Full blog content with proper paragraphs separated by \\n",
-  "excerpt": "Brief description/summary for preview",
-  "tags": ["tag1", "tag2", "tag3"],
-  "slug": "url-friendly-slug"
+  "title": "Compelling, SEO-friendly title (60-70 characters)",
+  "content": "Full blog content with proper formatting using \\n for line breaks and \\n\\n for paragraph separation",
+  "excerpt": "Engaging 2-3 sentence summary for preview (150-160 characters)",
+  "tags": ["relevant", "seo", "tags", "5-8 tags"],
+  "slug": "url-friendly-slug-with-hyphens"
 }
 
-Guidelines:
-- Make it engaging and well-structured
-- Include relevant headings and subheadings in the content
-- Ensure it's SEO-friendly
-- Write in a professional yet accessible tone
-- Include actionable insights where appropriate
-- Ensure content flows logically from introduction to conclusion
+CONTENT STRUCTURE REQUIREMENTS:
+1. **Opening Hook**: Start with an engaging introduction that highlights the key investment opportunity or theme
+2. **Executive Summary**: Brief overview of main points with key financial metrics
+3. **Detailed Analysis**: 
+   - Company/sector overview with business model
+   - Financial performance with specific numbers and percentages
+   - Market positioning and competitive landscape
+   - Growth prospects and future outlook
+4. **Investment Considerations**:
+   - Key strengths and opportunities
+   - Risk factors and challenges
+   - Timeline and important dates
+5. **Actionable Insights**: Clear takeaways for investors
+6. **Compliance Disclaimer**: Standard investment disclaimer
+
+FORMATTING GUIDELINES:
+- Use **bold text** for section headings and key points
+- Include specific financial data (₹ amounts, percentages, dates)
+- Create clear paragraph breaks with \\n\\n
+- Use bullet points with • for lists
+- Include timeline information in a structured format
+- Add numerical data that can be visualized
+- Ensure content is engaging yet professional
+- Target 1500-2500 words for comprehensive analysis
+
+IMPORTANT: Return ONLY valid JSON. Do not include markdown formatting, code blocks, or any text outside the JSON structure.
 `
 
     console.log('Making request to Gemini API...')
@@ -90,17 +110,23 @@ Guidelines:
     // Parse the JSON response
     let blog
     try {
-      blog = JSON.parse(generatedContent)
+      // Clean the response to extract JSON if it's wrapped in markdown
+      const cleanedContent = generatedContent.replace(/```json\n?|\n?```/g, '').trim()
+      blog = JSON.parse(cleanedContent)
       console.log('Successfully parsed blog JSON')
     } catch (error) {
       console.error('Failed to parse JSON response, using fallback:', error)
-      // Fallback if JSON parsing fails
+      // Enhanced fallback with better structure
+      const lines = generatedContent.split('\n').filter(line => line.trim())
+      const title = lines.find(line => line.includes('title') || line.includes('Title')) || "AI-Generated Investment Analysis"
+      const cleanTitle = title.replace(/[^\w\s:()-]/g, '').replace(/title:?\s*/i, '').trim()
+      
       blog = {
-        title: "Generated Blog Post",
+        title: cleanTitle.substring(0, 100) || "Investment Analysis from Uploaded Documents",
         content: generatedContent,
-        excerpt: "AI-generated blog post from uploaded files",
-        tags: ["AI", "Generated"],
-        slug: "ai-generated-blog-" + Date.now()
+        excerpt: "Comprehensive investment analysis based on detailed document review and financial data evaluation.",
+        tags: ["Investment", "Analysis", "Finance", "AI-Generated"],
+        slug: "investment-analysis-" + Date.now()
       }
     }
 
