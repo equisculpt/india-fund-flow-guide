@@ -37,13 +37,13 @@ export const staticBlogs = [
     slug: 'veeda-clinical-research-ipo-analysis'
   },
   {
-    id: 'indogulf-cropsciences-ipo-complete-analysis-2024',
-    title: 'Indogulf Cropsciences IPO Analysis 2024 | Complete Financial Review & Investment Guide',
-    excerpt: 'Comprehensive analysis of Indogulf Cropsciences IPO - a ₹56.72 crore offering in India\'s growing agrochemical sector. Detailed financial review, sectoral analysis, SWOT, and investment recommendations.',
+    id: 'indogulf-cropsciences-ipo-complete-analysis-2025',
+    title: 'Indogulf Cropsciences IPO Analysis 2025 | Complete Financial Review & Investment Guide',
+    excerpt: 'Comprehensive analysis of Indogulf Cropsciences IPO - ₹200 crore mainboard offering. Detailed insights on financials, valuation, sectoral analysis, and investment recommendations.',
     category: 'ipo-analysis',
-    tags: ['IPO Analysis', 'Agrochemicals', 'Crop Protection', 'SME IPO', 'Export Business', 'Technical Manufacturing', 'Indian Agriculture', 'Investment Research'],
+    tags: ['IPO Analysis 2025', 'Indogulf Cropsciences', 'Agrochemicals', 'Mainboard IPO', 'Export Business', 'Crop Protection', 'Investment Guide', 'China+1 Strategy'],
     route: '/blog/indogulf-cropsciences-ipo-complete-analysis-2024',
-    published_at: '2024-06-25T12:00:00Z',
+    published_at: '2025-06-25T12:00:00Z',
     author: 'SIP Brewery Research Team',
     featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
     slug: 'indogulf-cropsciences-ipo-complete-analysis-2024'
