@@ -25,23 +25,20 @@ serve(async (req) => {
       }
     )
 
-    const { 
-      user_id, 
-      filename, 
-      original_filename, 
-      file_type, 
-      file_size, 
-      file_path, 
-      upload_purpose, 
-      is_processed,
-      admin_session_token 
-    } = await req.json()
+    const formData = await req.formData()
+    const file = formData.get('file') as File
+    const originalFilename = formData.get('original_filename') as string
+    const fileType = formData.get('file_type') as string
+    const fileSize = parseInt(formData.get('file_size') as string)
+    const uploadPurpose = formData.get('upload_purpose') as string
+    const adminSessionToken = formData.get('admin_session_token') as string
 
     console.log('Admin file upload request:', { 
-      user_id, 
-      filename, 
-      original_filename,
-      admin_session_token: admin_session_token ? 'present' : 'missing'
+      originalFilename, 
+      fileType,
+      fileSize,
+      uploadPurpose,
+      adminSessionToken: adminSessionToken ? 'present' : 'missing' 
     })
 
     // Verify admin session using service role client
@@ -56,7 +53,7 @@ serve(async (req) => {
           is_active
         )
       `)
-      .eq('session_token', admin_session_token)
+      .eq('session_token', adminSessionToken)
       .gt('expires_at', new Date().toISOString())
       .single()
 
@@ -67,31 +64,46 @@ serve(async (req) => {
       throw new Error('Invalid admin session')
     }
 
+    const adminUserId = sessionData.admin_user_id
+    const fileName = `${adminUserId}/${Date.now()}_${originalFilename}`
+
+    // Upload file to storage using service role (bypasses RLS)
+    const { data: storageData, error: storageError } = await supabaseAdmin.storage
+      .from('chat-uploads')
+      .upload(fileName, file)
+
+    console.log('Storage upload result:', { storageData, storageError })
+
+    if (storageError) {
+      console.error('Storage upload error:', storageError)
+      throw new Error(`Storage upload failed: ${storageError.message}`)
+    }
+
     // Insert file record using service role (bypasses all RLS)
-    const { data, error } = await supabaseAdmin
+    const { data: dbData, error: dbError } = await supabaseAdmin
       .from('uploaded_files')
       .insert({
-        user_id,
-        filename,
-        original_filename,
-        file_type,
-        file_size,
-        file_path,
-        upload_purpose: upload_purpose || 'blog',
-        is_processed: is_processed || false
+        user_id: adminUserId,
+        filename: fileName,
+        original_filename: originalFilename,
+        file_type: fileType,
+        file_size: fileSize,
+        file_path: storageData.path,
+        upload_purpose: uploadPurpose || 'blog',
+        is_processed: false
       })
       .select()
       .single()
 
-    console.log('File insert result:', { data, error })
+    console.log('File insert result:', { dbData, dbError })
 
-    if (error) {
-      console.error('Database insert error:', error)
-      throw new Error(`Database error: ${error.message}`)
+    if (dbError) {
+      console.error('Database insert error:', dbError)
+      throw new Error(`Database error: ${dbError.message}`)
     }
 
     return new Response(
-      JSON.stringify(data),
+      JSON.stringify(dbData),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
 

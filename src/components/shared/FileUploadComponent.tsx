@@ -56,53 +56,17 @@ const FileUploadComponent = ({
     await uploadFile(file);
   };
 
-  const getAuthenticatedUserId = async () => {
-    // Check if we're in admin context first
-    const adminSessionToken = localStorage.getItem('admin_session_token');
-    if (adminSessionToken) {
-      console.log('Admin session token found, validating...');
-      // Verify admin session and get admin user
-      const { data: sessionData, error } = await supabase
-        .from('admin_sessions')
-        .select(`
-          admin_user_id,
-          expires_at,
-          admin_users!admin_sessions_admin_user_id_fkey (
-            id,
-            email
-          )
-        `)
-        .eq('session_token', adminSessionToken)
-        .gt('expires_at', new Date().toISOString())
-        .single();
-
-      if (!error && sessionData) {
-        console.log('Valid admin session, using admin user ID:', sessionData.admin_user_id);
-        return sessionData.admin_user_id;
-      } else {
-        console.error('Admin session validation failed:', error);
-      }
-    }
-
-    // Fall back to regular user authentication
-    const { data: { user } } = await supabase.auth.getUser();
-    console.log('Using regular user authentication:', user?.id);
-    return user?.id || null;
-  };
-
   const uploadFile = async (file: File) => {
     try {
       setIsUploading(true);
       setUploadProgress(0);
 
-      const userId = await getAuthenticatedUserId();
-      if (!userId) {
-        throw new Error('User not authenticated');
-      }
+      // Check if we're in admin context
+      const adminSessionToken = localStorage.getItem('admin_session_token');
+      const isAdminContext = !!adminSessionToken;
 
-      console.log('Starting upload for user:', userId);
-      const fileName = `${userId}/${Date.now()}_${file.name}`;
-      
+      console.log('Upload context:', { isAdminContext, uploadPurpose });
+
       // Simulate progress for better UX
       const progressInterval = setInterval(() => {
         setUploadProgress(prev => {
@@ -114,56 +78,68 @@ const FileUploadComponent = ({
         });
       }, 200);
 
-      // Upload to Supabase Storage
-      console.log('Uploading to storage...');
-      const { data: storageData, error: storageError } = await supabase.storage
-        .from('chat-uploads')
-        .upload(fileName, file);
-
-      clearInterval(progressInterval);
-      setUploadProgress(100);
-
-      if (storageError) {
-        console.error('Storage upload error:', storageError);
-        throw storageError;
-      }
-
-      console.log('Storage upload successful:', storageData);
-
-      // Check if we're in admin context
-      const adminSessionToken = localStorage.getItem('admin_session_token');
-      
-      let dbData;
-      if (adminSessionToken) {
-        console.log('Using admin upload edge function');
-        // Use edge function for admin uploads to bypass RLS
-        const { data: functionData, error: functionError } = await supabase.functions.invoke('admin-file-upload', {
+      if (isAdminContext) {
+        console.log('Using admin upload flow');
+        
+        // For admin users, use the admin upload edge function that bypasses RLS
+        const { data, error } = await supabase.functions.invoke('admin-file-upload', {
           body: {
-            user_id: userId,
-            filename: fileName,
+            file: file,
             original_filename: file.name,
             file_type: file.type || 'application/octet-stream',
             file_size: file.size,
-            file_path: storageData.path,
             upload_purpose: uploadPurpose,
-            is_processed: false,
             admin_session_token: adminSessionToken
           }
         });
 
-        if (functionError) {
-          console.error('Admin upload function error:', functionError);
-          throw functionError;
+        clearInterval(progressInterval);
+        setUploadProgress(100);
+
+        if (error) {
+          console.error('Admin upload error:', error);
+          throw new Error(`Admin upload failed: ${error.message}`);
         }
-        console.log('Admin upload function successful:', functionData);
-        dbData = functionData;
+
+        console.log('Admin upload successful:', data);
+
+        // Simulate content extraction
+        const extractedContent = await simulateContentExtraction(file);
+        
+        const fileData = {
+          ...data,
+          extracted_content: extractedContent
+        };
+
+        setUploadedFile(fileData);
+        onFileProcessed(fileData, extractedContent);
+
       } else {
-        console.log('Using regular user upload');
-        // Regular user upload
-        const { data: insertData, error: dbError } = await supabase
+        console.log('Using regular user upload flow');
+        
+        // Regular user flow - get authenticated user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          throw new Error('User not authenticated');
+        }
+
+        const fileName = `${user.id}/${Date.now()}_${file.name}`;
+        
+        // Upload to Supabase Storage
+        const { data: storageData, error: storageError } = await supabase.storage
+          .from('chat-uploads')
+          .upload(fileName, file);
+
+        if (storageError) {
+          console.error('Storage upload error:', storageError);
+          throw storageError;
+        }
+
+        // Insert file record in database
+        const { data: dbData, error: dbError } = await supabase
           .from('uploaded_files')
           .insert({
-            user_id: userId,
+            user_id: user.id,
             filename: fileName,
             original_filename: file.name,
             file_type: file.type || 'application/octet-stream',
@@ -175,56 +151,35 @@ const FileUploadComponent = ({
           .select()
           .single();
 
+        clearInterval(progressInterval);
+        setUploadProgress(100);
+
         if (dbError) {
-          console.error('Regular upload database error:', dbError);
+          console.error('Database insert error:', dbError);
           throw dbError;
         }
-        console.log('Regular upload successful:', insertData);
-        dbData = insertData;
-      }
 
-      // Simulate content extraction
-      console.log('Starting content extraction...');
-      const extractedContent = await simulateContentExtraction(file);
-      
-      // Update with extracted content
-      if (extractedContent) {
-        if (adminSessionToken) {
-          console.log('Using admin update edge function');
-          // Use edge function for admin updates
-          const { error: updateError } = await supabase.functions.invoke('admin-file-update', {
-            body: {
-              file_id: dbData.id,
-              extracted_content: extractedContent,
-              admin_session_token: adminSessionToken
-            }
-          });
-          
-          if (updateError) {
-            console.error('Admin update function error:', updateError);
-            throw updateError;
-          }
-          console.log('Admin update successful');
-        } else {
-          console.log('Using regular update');
-          const { error: updateError } = await supabase
-            .from('uploaded_files')
-            .update({ 
-              extracted_content: extractedContent,
-              is_processed: true 
-            })
-            .eq('id', dbData.id);
+        // Simulate content extraction
+        const extractedContent = await simulateContentExtraction(file);
+        
+        // Update with extracted content
+        const { error: updateError } = await supabase
+          .from('uploaded_files')
+          .update({ 
+            extracted_content: extractedContent,
+            is_processed: true 
+          })
+          .eq('id', dbData.id);
 
-          if (updateError) {
-            console.error('Regular update error:', updateError);
-            throw updateError;
-          }
-          console.log('Regular update successful');
+        if (updateError) {
+          console.error('Update error:', updateError);
+          throw updateError;
         }
-      }
 
-      setUploadedFile({ ...dbData, extracted_content: extractedContent });
-      onFileProcessed(dbData, extractedContent);
+        const fileData = { ...dbData, extracted_content: extractedContent };
+        setUploadedFile(fileData);
+        onFileProcessed(fileData, extractedContent);
+      }
 
       toast({
         title: "File uploaded successfully",
