@@ -16,8 +16,12 @@ serve(async (req) => {
     
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
     if (!openAIApiKey) {
-      throw new Error('OpenAI API key not found')
+      console.error('OpenAI API key not found in environment variables')
+      throw new Error('OpenAI API key not configured. Please add your OpenAI API key to the edge function secrets.')
     }
+
+    console.log('OpenAI API Key configured:', openAIApiKey ? 'Yes' : 'No')
+    console.log('Generating blog for files:', fileNames)
 
     const prompt = `
 You are an expert blog writer. Generate a high-quality, engaging blog post based on the following:
@@ -48,6 +52,7 @@ Guidelines:
 - Ensure content flows logically from introduction to conclusion
 `
 
+    console.log('Making request to OpenAI API...')
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -65,18 +70,26 @@ Guidelines:
       }),
     })
 
+    console.log('OpenAI API response status:', response.status)
+    
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.statusText}`)
+      const errorData = await response.text()
+      console.error('OpenAI API error response:', errorData)
+      throw new Error(`OpenAI API error: ${response.status} ${response.statusText} - ${errorData}`)
     }
 
     const data = await response.json()
+    console.log('OpenAI API response received successfully')
+    
     const generatedContent = data.choices[0].message.content
 
     // Parse the JSON response
     let blog
     try {
       blog = JSON.parse(generatedContent)
+      console.log('Successfully parsed blog JSON')
     } catch (error) {
+      console.error('Failed to parse JSON response, using fallback:', error)
       // Fallback if JSON parsing fails
       blog = {
         title: "Generated Blog Post",
@@ -95,7 +108,10 @@ Guidelines:
   } catch (error) {
     console.error('Error generating blog:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: 'Check edge function logs for more information'
+      }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
