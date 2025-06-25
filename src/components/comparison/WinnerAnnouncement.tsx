@@ -1,6 +1,6 @@
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Trophy } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
+import { TrendingUp } from "lucide-react";
 
 interface WinnerAnnouncementProps {
   bestFund: string;
@@ -10,16 +10,16 @@ interface WinnerAnnouncementProps {
 
 const WinnerAnnouncement = ({ bestFund, bestScore, reasoning }: WinnerAnnouncementProps) => {
   return (
-    <Card className="border-2 border-green-500 bg-green-50">
+    <Card className="border-green-200 bg-green-50">
       <CardContent className="pt-6">
-        <div className="flex items-center gap-4">
-          <Trophy className="h-8 w-8 text-green-600" />
+        <div className="flex items-center gap-3">
+          <TrendingUp className="h-6 w-6 text-green-600" />
           <div>
-            <h2 className="text-xl font-bold text-green-800">
-              🏆 AI Winner: {bestFund}
-            </h2>
+            <h3 className="text-lg font-bold text-green-800">
+              🤖 AI Research Analysis: {bestFund}
+            </h3>
             <p className="text-green-700">
-              AI Score: {bestScore}/10 • {reasoning}
+              Score: {bestScore}/10 • {reasoning}
             </p>
           </div>
         </div>

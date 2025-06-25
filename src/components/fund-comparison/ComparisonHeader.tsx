@@ -15,7 +15,7 @@ const ComparisonHeader = ({ onNewComparison, onBackToHome, showNewComparison = f
         <ArrowLeft className="h-4 w-4 mr-2" />
         {showNewComparison ? 'New Comparison' : 'Back to Home'}
       </Button>
-      <h1 className="text-2xl font-bold">🤖 AI Fund Research & Comparison</h1>
+      <h1 className="text-2xl font-bold">🤖 AI Fund Research & Analysis</h1>
       {showNewComparison ? (
         <Button variant="ghost" onClick={onBackToHome}>
           Home
