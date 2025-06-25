@@ -103,6 +103,8 @@ export const useEnhancedAdminAuth = () => {
         return;
       }
 
+      console.log('Checking admin session with token:', sessionToken);
+
       // Clean expired sessions first
       await supabase.rpc('cleanup_expired_sessions');
 
@@ -124,24 +126,14 @@ export const useEnhancedAdminAuth = () => {
         .single();
 
       if (sessionError || !sessionData) {
+        console.log('Session validation failed:', sessionError);
         localStorage.removeItem('admin_session_token');
         setAdminUser(null);
         await logSecurityEvent('SESSION_VALIDATION', undefined, false, { 
           reason: 'Invalid or expired session' 
         });
       } else {
-        const context = getSecurityContext();
-        
-        // Validate IP address if stored (basic security check)
-        if (sessionData.ip_address && sessionData.ip_address !== context.ipAddress) {
-          localStorage.removeItem('admin_session_token');
-          setAdminUser(null);
-          await logSecurityEvent('SESSION_VALIDATION', sessionData.admin_users.email, false, { 
-            reason: 'IP address mismatch' 
-          });
-          return;
-        }
-
+        console.log('Session validated successfully:', sessionData);
         setAdminUser(sessionData.admin_users as AdminUser);
         await logSecurityEvent('SESSION_VALIDATION', sessionData.admin_users.email, true);
       }
@@ -163,6 +155,8 @@ export const useEnhancedAdminAuth = () => {
     }
 
     try {
+      console.log('Attempting login for:', email);
+      
       // First validate against whitelist
       const isWhitelisted = await validateAdminWhitelist(email);
       if (!isWhitelisted) {
@@ -191,6 +185,7 @@ export const useEnhancedAdminAuth = () => {
           .single();
 
         if (adminError || !adminUser) {
+          console.error('Admin user lookup failed:', adminError);
           await logSecurityEvent('LOGIN_ATTEMPT', email, false, { 
             reason: 'Admin user not found or inactive' 
           });
@@ -216,16 +211,19 @@ export const useEnhancedAdminAuth = () => {
           .single();
 
         if (sessionError) {
+          console.error('Session creation failed:', sessionError);
           await logSecurityEvent('LOGIN_ATTEMPT', email, false, { 
             reason: 'Failed to create session' 
           });
           return { success: false, error: 'Failed to create session' };
         }
 
+        console.log('Session created successfully:', sessionData);
         localStorage.setItem('admin_session_token', sessionToken);
         localStorage.removeItem('admin_login_attempts');
         localStorage.removeItem('admin_last_attempt');
         
+        // Set the admin user state immediately
         setAdminUser(adminUser);
         
         // Update last login time
@@ -238,6 +236,7 @@ export const useEnhancedAdminAuth = () => {
           session_duration: '2 hours' 
         });
         
+        console.log('Login successful for:', email);
         return { success: true };
       } else {
         // Increment failed attempts
