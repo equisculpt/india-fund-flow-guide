@@ -70,7 +70,7 @@ const DetailedFundAnalysis = ({ analysis, bestFund }: DetailedFundAnalysisProps)
 
             {fund.investmentRecommendation && (
               <div className="bg-blue-50 p-3 rounded-lg">
-                <h5 className="font-semibold text-blue-800 mb-2 text-center">📊 AI Investment Recommendation:</h5>
+                <h5 className="font-semibold text-blue-800 mb-2 text-center">📊 AI Research Analysis:</h5>
                 <p className="text-sm text-blue-700 text-center">{fund.investmentRecommendation}</p>
               </div>
             )}
