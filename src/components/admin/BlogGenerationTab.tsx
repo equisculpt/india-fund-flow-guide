@@ -233,7 +233,7 @@ const BlogGenerationTab = () => {
               <FileUploadComponent
                 onFileProcessed={handleFileProcessed}
                 acceptedTypes={['.pdf']}
-                maxFileSize={10}
+                maxFileSize={25}
                 uploadPurpose="blog"
               />
               
