@@ -16,6 +16,8 @@ interface ConsolidatedSEOHeadProps {
   publishedTime?: string;
   modifiedTime?: string;
   isNewsArticle?: boolean;
+  breadcrumbs?: Array<{name: string; url: string}>;
+  faqData?: Array<{question: string; answer: string}>;
 }
 
 const ConsolidatedSEOHead = ({ 
@@ -30,120 +32,181 @@ const ConsolidatedSEOHead = ({
   articlePublisher,
   publishedTime,
   modifiedTime,
-  isNewsArticle = false
+  isNewsArticle = false,
+  breadcrumbs,
+  faqData
 }: ConsolidatedSEOHeadProps) => {
   const location = useLocation();
   
-  // Ensure we have valid, non-empty strings
-  const finalTitle = title?.trim() || "SIP Brewery - Best Mutual Fund Investment Platform India";
-  const finalDescription = description?.trim() || "India's #1 SEBI registered mutual fund investment platform for smart mutual fund investments and SIP planning.";
-  const finalKeywords = keywords?.trim() || "mutual funds india, SIP investment, SEBI registered platform";
+  // Enhanced defaults with better SEO
+  const finalTitle = title?.trim() || "SIP Brewery - India's #1 SEBI Registered Mutual Fund Investment Platform";
+  const finalDescription = description?.trim() || "Start your mutual fund investment journey with SIP Brewery. SEBI registered platform offering 3000+ mutual funds, AI-powered recommendations, and expert guidance. Minimum SIP ₹500.";
+  const finalKeywords = keywords?.trim() || "mutual funds india, SIP investment, SEBI registered, best mutual funds 2025, mutual fund calculator, SIP calculator, investment advisor";
   const finalCanonicalUrl = canonicalUrl?.trim() || `https://sipbrewery.com${location.pathname}`;
   
-  // Ensure absolute image URL
+  // Enhanced OG image with fallback
   const defaultImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
   let finalOgImage = ogImage?.trim() || defaultImage;
   if (!finalOgImage.startsWith('http')) {
     finalOgImage = `https://sipbrewery.com${finalOgImage}`;
   }
 
-  // Generate NewsArticle schema if this is a news article
-  const newsArticleSchema = isNewsArticle ? {
-    "@context": "https://schema.org",
-    "@type": "NewsArticle",
-    "headline": finalTitle,
-    "datePublished": publishedTime || new Date().toISOString(),
-    "dateModified": modifiedTime || publishedTime || new Date().toISOString(),
-    "author": {
-      "@type": "Organization",
-      "name": articleAuthor || "SIP Brewery Research Team"
-    },
-    "publisher": {
-      "@type": "Organization",
+  // Generate comprehensive schema markup
+  const generateSchemaMarkup = () => {
+    const baseOrganization = {
+      "@context": "https://schema.org",
+      "@type": "FinancialService",
       "name": "SIP Brewery",
+      "alternateName": ["SIPBrewery", "SIP Brewery India"],
+      "url": "https://sipbrewery.com",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+        "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+        "width": 400,
+        "height": 400
+      },
+      "image": finalOgImage,
+      "description": finalDescription,
+      "founder": {
+        "@type": "Organization",
+        "name": "SIP Brewery Team"
+      },
+      "foundingDate": "2024",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN",
+        "addressRegion": "India"
+      },
+      "areaServed": "India",
+      "serviceType": ["Mutual Fund Investment", "SIP Planning", "Financial Advisory"],
+      "priceRange": "₹500-∞",
+      "telephone": "+91-XXXXXXXXXX",
+      "email": "support@sipbrewery.com",
+      "sameAs": [
+        "https://twitter.com/sipbrewery",
+        "https://linkedin.com/company/sipbrewery",
+        "https://facebook.com/sipbrewery"
+      ],
+      "potentialAction": {
+        "@type": "InvestAction",
+        "target": "https://sipbrewery.com/fund-comparison",
+        "name": "Start SIP Investment"
       }
-    },
-    "description": finalDescription,
-    "image": finalOgImage,
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": finalCanonicalUrl
-    },
-    "articleSection": "Investment Analysis",
-    "inLanguage": "en-IN"
-  } : null;
+    };
 
-  // Use NewsArticle schema if available, otherwise use provided structured data
-  const finalStructuredData = newsArticleSchema || structuredData;
-
-  // FORENSIC DEBUGGING - Enhanced logging
-  console.log('🔬 FORENSIC AUDIT - ConsolidatedSEOHead:', {
-    component: 'ConsolidatedSEOHead',
-    timestamp: new Date().toISOString(),
-    path: location.pathname,
-    'RAW_INPUTS': {
-      title: title || 'UNDEFINED',
-      description: description || 'UNDEFINED',
-      ogImage: ogImage || 'UNDEFINED'
-    },
-    'PROCESSED_VALUES': {
-      finalTitle: `"${finalTitle}"`,
-      finalDescription: `"${finalDescription}"`,
-      finalOgImage: finalOgImage,
-      finalCanonicalUrl: finalCanonicalUrl
-    },
-    'STRING_CHECKS': {
-      titleValid: !!finalTitle && finalTitle.length > 0,
-      descValid: !!finalDescription && finalDescription.length > 0,
-      imageValid: !!finalOgImage && finalOgImage.startsWith('http')
-    },
-    'META_TAG_VALUES': {
-      'og:title': finalTitle,
-      'og:description': finalDescription,
-      'og:image': finalOgImage,
-      'og:url': finalCanonicalUrl,
-      'og:type': ogType
-    },
-    'NEWS_ARTICLE': {
-      isNewsArticle,
-      hasNewsSchema: !!newsArticleSchema
+    if (structuredData) {
+      return structuredData;
     }
-  });
 
-  // Add a window check to verify meta tags are actually in DOM
-  React.useEffect(() => {
-    setTimeout(() => {
-      const titleMeta = document.querySelector('meta[property="og:title"]');
-      const descMeta = document.querySelector('meta[property="og:description"]');
-      const imageMeta = document.querySelector('meta[property="og:image"]');
-      
-      console.log('🔍 DOM META TAGS VERIFICATION:', {
-        'og:title in DOM': titleMeta ? titleMeta.getAttribute('content') : 'NOT FOUND',
-        'og:description in DOM': descMeta ? descMeta.getAttribute('content') : 'NOT FOUND',
-        'og:image in DOM': imageMeta ? imageMeta.getAttribute('content') : 'NOT FOUND',
-        'All meta tags': Array.from(document.querySelectorAll('meta[property^="og:"]')).map(meta => ({
-          property: meta.getAttribute('property'),
-          content: meta.getAttribute('content')
-        }))
-      });
-    }, 100);
-  }, [finalTitle, finalDescription, finalOgImage]);
+    if (ogType === 'article' && isNewsArticle) {
+      return {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": finalTitle,
+        "description": finalDescription,
+        "image": {
+          "@type": "ImageObject",
+          "url": finalOgImage,
+          "width": 1200,
+          "height": 630
+        },
+        "datePublished": publishedTime || new Date().toISOString(),
+        "dateModified": modifiedTime || publishedTime || new Date().toISOString(),
+        "author": {
+          "@type": "Organization",
+          "name": articleAuthor || "SIP Brewery Research Team",
+          "url": "https://sipbrewery.com"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "SIP Brewery",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": finalCanonicalUrl
+        },
+        "articleSection": "Investment Analysis",
+        "inLanguage": "en-IN",
+        "isAccessibleForFree": true,
+        "about": {
+          "@type": "Thing",
+          "name": "Mutual Fund Investment"
+        }
+      };
+    }
+
+    return baseOrganization;
+  };
+
+  // Generate breadcrumb schema
+  const generateBreadcrumbSchema = () => {
+    if (!breadcrumbs || breadcrumbs.length === 0) return null;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": breadcrumbs.map((crumb, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": crumb.name,
+        "item": crumb.url
+      }))
+    };
+  };
+
+  // Generate FAQ schema
+  const generateFAQSchema = () => {
+    if (!faqData || faqData.length === 0) return null;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqData.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    };
+  };
+
+  const mainSchema = generateSchemaMarkup();
+  const breadcrumbSchema = generateBreadcrumbSchema();
+  const faqSchema = generateFAQSchema();
+
+  console.log('🎯 Enhanced SEO Setup:', {
+    title: finalTitle.substring(0, 60) + '...',
+    titleLength: finalTitle.length,
+    description: finalDescription.substring(0, 100) + '...',
+    descLength: finalDescription.length,
+    canonicalUrl: finalCanonicalUrl,
+    ogImage: finalOgImage,
+    hasStructuredData: !!mainSchema,
+    hasBreadcrumbs: !!breadcrumbSchema,
+    hasFAQ: !!faqSchema
+  });
 
   return (
     <Helmet>
-      {/* FORCE CLEAR ANY EXISTING TAGS */}
+      {/* Basic Meta Tags */}
       <title>{finalTitle}</title>
       <meta name="description" content={finalDescription} />
       <meta name="keywords" content={finalKeywords} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta name="robots" content="index, follow" />
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
       <meta name="author" content={articleAuthor || "SIP Brewery Research Team"} />
+      <meta name="language" content="en-IN" />
+      <meta name="geo.region" content="IN" />
+      <meta name="geo.country" content="India" />
       <link rel="canonical" href={finalCanonicalUrl} />
 
-      {/* CRITICAL OPEN GRAPH TAGS - FORCE OVERWRITE */}
+      {/* Enhanced Open Graph Tags */}
       <meta property="og:title" content={finalTitle} />
       <meta property="og:description" content={finalDescription} />
       <meta property="og:type" content={ogType} />
@@ -157,8 +220,9 @@ const ConsolidatedSEOHead = ({
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={`${finalTitle} - SIP Brewery`} />
       <meta property="og:locale" content="en_IN" />
+      <meta property="fb:app_id" content="YOUR_FB_APP_ID" />
       
-      {/* Article specific tags */}
+      {/* Article specific OG tags */}
       {ogType === 'article' && (
         <>
           <meta property="article:author" content={articleAuthor || "SIP Brewery Research Team"} />
@@ -166,27 +230,63 @@ const ConsolidatedSEOHead = ({
           <meta property="article:published_time" content={publishedTime || new Date().toISOString()} />
           <meta property="article:modified_time" content={modifiedTime || publishedTime || new Date().toISOString()} />
           <meta property="article:section" content="Investment Analysis" />
+          <meta property="article:tag" content="Mutual Funds" />
+          <meta property="article:tag" content="Investment" />
+          <meta property="article:tag" content="SIP" />
         </>
       )}
 
-      {/* Twitter Card Tags */}
+      {/* Enhanced Twitter Card Tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@SIPBrewery" />
-      <meta name="twitter:creator" content="@SIPBrewery" />
+      <meta name="twitter:site" content="@sipbrewery" />
+      <meta name="twitter:creator" content="@sipbrewery" />
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
       <meta name="twitter:image" content={finalOgImage} />
       <meta name="twitter:image:alt" content={`${finalTitle} - SIP Brewery`} />
+      <meta name="twitter:domain" content="sipbrewery.com" />
+      <meta name="twitter:label1" content="Category" />
+      <meta name="twitter:data1" content="Financial Services" />
 
-      {/* Cache Control */}
+      {/* Additional SEO Meta Tags */}
+      <meta name="theme-color" content="#1e40af" />
+      <meta name="msapplication-TileColor" content="#1e40af" />
+      <meta name="application-name" content="SIP Brewery" />
+      <meta name="apple-mobile-web-app-title" content="SIP Brewery" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      
+      {/* Cache Control & Performance */}
       <meta httpEquiv="Cache-Control" content="public, max-age=3600" />
-
-      {/* Structured Data */}
-      {finalStructuredData && (
+      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+      
+      {/* Schema.org Structured Data */}
+      {mainSchema && (
         <script type="application/ld+json">
-          {JSON.stringify(finalStructuredData)}
+          {JSON.stringify(mainSchema)}
         </script>
       )}
+      
+      {breadcrumbSchema && (
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
+        </script>
+      )}
+      
+      {faqSchema && (
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
+      )}
+
+      {/* Preconnect for performance */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://sipbrewery.com" />
+      
+      {/* Alternative language versions */}
+      <link rel="alternate" hrefLang="en-IN" href={finalCanonicalUrl} />
+      <link rel="alternate" hrefLang="en" href={finalCanonicalUrl} />
     </Helmet>
   );
 };

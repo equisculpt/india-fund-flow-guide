@@ -31,6 +31,12 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-# Sitemap locations (Google's new requirement)
+# Sitemap locations
+Sitemap: https://sipbrewery.com/sitemap-index.xml
 Sitemap: https://sipbrewery.com/sitemap.xml
 Sitemap: https://sipbrewery.com/news-sitemap.xml
+
+# Additional SEO directives
+User-agent: *
+Request-rate: 1/1s
+Visit-time: 0600-2300

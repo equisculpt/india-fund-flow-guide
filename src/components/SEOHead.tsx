@@ -2,11 +2,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { generateDynamicSEOContent } from './seo/utils/seoContentGenerator';
-import BasicMetaTags from './seo/components/BasicMetaTags';
-import OpenGraphTags from './seo/components/OpenGraphTags';
-import TwitterCardTags from './seo/components/TwitterCardTags';
-import StructuredDataTags from './seo/components/StructuredDataTags';
-import CacheControlTags from './seo/components/CacheControlTags';
+import ConsolidatedSEOHead from './seo/ConsolidatedSEOHead';
 
 interface SEOHeadProps {
   title?: string;
@@ -21,6 +17,9 @@ interface SEOHeadProps {
   articlePublisher?: string;
   publishedTime?: string;
   modifiedTime?: string;
+  isNewsArticle?: boolean;
+  breadcrumbs?: Array<{name: string; url: string}>;
+  faqData?: Array<{question: string; answer: string}>;
 }
 
 const SEOHead = ({ 
@@ -35,7 +34,10 @@ const SEOHead = ({
   articleAuthor,
   articlePublisher,
   publishedTime,
-  modifiedTime
+  modifiedTime,
+  isNewsArticle = false,
+  breadcrumbs,
+  faqData
 }: SEOHeadProps) => {
   const location = useLocation();
   
@@ -43,85 +45,68 @@ const SEOHead = ({
   const dynamicContent = isDynamic ? generateDynamicSEOContent(location.pathname) : null;
   
   // Use provided props or fall back to dynamic generation
-  const finalTitle = title || (dynamicContent?.title) || "SIP Brewery - Best Mutual Fund Investment Platform India";
-  const finalDescription = description || (dynamicContent?.description) || "India's #1 SEBI registered mutual fund investment platform";
-  const finalKeywords = keywords || (dynamicContent?.keywords) || "mutual funds india, SIP investment";
-  const finalCanonicalUrl = canonicalUrl || (dynamicContent?.canonicalUrl) || `https://sipbrewery.com${location.pathname}`;
-  const finalOgType = ogType || (dynamicContent?.ogType) || 'website';
+  const finalTitle = title || dynamicContent?.title;
+  const finalDescription = description || dynamicContent?.description;
+  const finalKeywords = keywords || dynamicContent?.keywords;
+  const finalCanonicalUrl = canonicalUrl || dynamicContent?.canonicalUrl || `https://sipbrewery.com${location.pathname}`;
+  const finalOgType = ogType || dynamicContent?.ogType || 'website';
   
-  // FORENSIC debugging for SEO values
-  console.log('🕵️ SEOHead FORENSIC Debug:', {
+  // Auto-generate breadcrumbs if not provided and this is a deep page
+  const autoBreadcrumbs = !breadcrumbs && location.pathname !== '/' ? 
+    generateBreadcrumbs(location.pathname) : breadcrumbs;
+
+  console.log('🎯 SEO Head Setup:', {
     currentPath: location.pathname,
     isDynamic,
-    'INPUT PROPS': {
-      title: title || 'NOT PROVIDED',
-      description: description || 'NOT PROVIDED',
-      canonicalUrl: canonicalUrl || 'NOT PROVIDED',
-      ogType: ogType || 'NOT PROVIDED'
-    },
-    'FINAL VALUES': {
-      finalTitle: finalTitle ? finalTitle.substring(0, 60) + '...' : 'MISSING',
-      finalDescription: finalDescription ? finalDescription.substring(0, 60) + '...' : 'MISSING',
-      finalCanonicalUrl,
-      finalOgType,
-      articleAuthor,
-      articlePublisher
-    },
-    'STRING LENGTHS': {
-      titleLength: finalTitle?.length || 0,
-      descLength: finalDescription?.length || 0
-    }
+    hasTitle: !!finalTitle,
+    hasDescription: !!finalDescription,
+    hasStructuredData: !!structuredData,
+    hasBreadcrumbs: !!autoBreadcrumbs,
+    hasFAQ: !!faqData
   });
-  
-  // Use a properly sized default image - Facebook requires minimum 200x200
-  const defaultOgImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=630&fit=crop&crop=center&auto=format&q=80";
-  const finalOgImage = ogImage || defaultOgImage;
-  const absoluteOgImage = finalOgImage.startsWith('http') ? finalOgImage : `https://sipbrewery.com${finalOgImage}`;
 
   return (
-    <>
-      <BasicMetaTags
-        title={finalTitle}
-        description={finalDescription}
-        keywords={finalKeywords}
-        canonicalUrl={finalCanonicalUrl}
-        articleAuthor={articleAuthor}
-      />
-      
-      <OpenGraphTags
-        title={finalTitle}
-        description={finalDescription}
-        canonicalUrl={finalCanonicalUrl}
-        ogImage={absoluteOgImage}
-        ogType={finalOgType}
-        articleAuthor={articleAuthor}
-        articlePublisher={articlePublisher}
-        publishedTime={publishedTime}
-        modifiedTime={modifiedTime}
-      />
-      
-      <TwitterCardTags
-        title={finalTitle}
-        description={finalDescription}
-        ogImage={absoluteOgImage}
-      />
-      
-      <StructuredDataTags
-        title={finalTitle}
-        description={finalDescription}
-        canonicalUrl={finalCanonicalUrl}
-        ogType={finalOgType}
-        ogImage={absoluteOgImage}
-        articleAuthor={articleAuthor}
-        articlePublisher={articlePublisher}
-        publishedTime={publishedTime}
-        modifiedTime={modifiedTime}
-        structuredData={structuredData}
-      />
-      
-      <CacheControlTags isDynamic={isDynamic} />
-    </>
+    <ConsolidatedSEOHead
+      title={finalTitle}
+      description={finalDescription}
+      keywords={finalKeywords}
+      canonicalUrl={finalCanonicalUrl}
+      ogImage={ogImage}
+      structuredData={structuredData}
+      ogType={finalOgType}
+      articleAuthor={articleAuthor}
+      articlePublisher={articlePublisher}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      isNewsArticle={isNewsArticle}
+      breadcrumbs={autoBreadcrumbs}
+      faqData={faqData}
+    />
   );
+};
+
+// Helper function to generate breadcrumbs from URL path
+const generateBreadcrumbs = (pathname: string) => {
+  const segments = pathname.split('/').filter(segment => segment);
+  const breadcrumbs = [{ name: 'Home', url: 'https://sipbrewery.com/' }];
+  
+  let currentPath = '';
+  segments.forEach((segment, index) => {
+    currentPath += `/${segment}`;
+    
+    // Convert URL segments to readable names
+    const name = segment
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+    
+    breadcrumbs.push({
+      name,
+      url: `https://sipbrewery.com${currentPath}`
+    });
+  });
+  
+  return breadcrumbs;
 };
 
 export default SEOHead;

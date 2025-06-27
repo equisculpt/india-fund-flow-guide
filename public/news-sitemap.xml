@@ -9,8 +9,10 @@
         <news:name>SIP Brewery</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2025-06-22T10:00:00+05:30</news:publication_date>
+      <news:publication_date>2025-06-27T10:00:00+05:30</news:publication_date>
       <news:title><![CDATA[HDB Financial Services IPO Analysis 2025 | Complete Financial Review & SWOT]]></news:title>
+      <news:keywords>HDB Financial Services IPO, NBFC IPO India, financial services</news:keywords>
+      <news:stock_tickers>HDBFS</news:stock_tickers>
     </news:news>
   </url>
   <url>
@@ -20,8 +22,9 @@
         <news:name>SIP Brewery</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2025-06-22T09:30:00+05:30</news:publication_date>
+      <news:publication_date>2025-06-27T09:30:00+05:30</news:publication_date>
       <news:title><![CDATA[Veeda Clinical Research IPO Analysis 2024 | Complete SWOT & Financial Review]]></news:title>
+      <news:keywords>Veeda Clinical Research IPO, CRO IPO India, healthcare IPO</news:keywords>
     </news:news>
   </url>
   <url>
@@ -31,8 +34,9 @@
         <news:name>SIP Brewery</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2025-06-22T09:00:00+05:30</news:publication_date>
+      <news:publication_date>2025-06-27T09:00:00+05:30</news:publication_date>
       <news:title><![CDATA[NBFC Sector Analysis India 2025: Complete Guide to Non-Banking Financial Companies]]></news:title>
+      <news:keywords>NBFC sector India, non-banking financial companies, NBFC analysis</news:keywords>
     </news:news>
   </url>
   <url>
@@ -44,6 +48,7 @@
       </news:publication>
       <news:publication_date>2025-06-21T12:00:00+05:30</news:publication_date>
       <news:title><![CDATA[Why Regular Mutual Fund Plans Can Outperform Direct Plans]]></news:title>
+      <news:keywords>mutual fund plans, regular vs direct, fund manager commission</news:keywords>
     </news:news>
   </url>
   <url>
@@ -53,8 +58,9 @@
         <news:name>SIP Brewery</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2025-06-22T08:30:00+05:30</news:publication_date>
+      <news:publication_date>2025-06-27T08:30:00+05:30</news:publication_date>
       <news:title><![CDATA[IPO Analysis Guide: Understanding Key Metrics for IPO Evaluation 2025]]></news:title>
+      <news:keywords>IPO analysis guide, IPO evaluation, IPO metrics</news:keywords>
     </news:news>
   </url>
   <url>
@@ -62,10 +68,11 @@
     <news:news>
       <news:publication>
         <news:name>SIP Brewery</news:name>
-        <news:language>en</news:language>
+        <news:language>en</language>
       </news:publication>
-      <news:publication_date>2025-06-22T08:00:00+05:30</news:publication_date>
+      <news:publication_date>2025-06-27T08:00:00+05:30</news:publication_date>
       <news:title><![CDATA[Healthcare Sector Outlook: India's Healthcare & Biotech Investment Themes 2025]]></news:title>
+      <news:keywords>healthcare sector outlook, biotech investment, healthcare stocks</news:keywords>
     </news:news>
   </url>
 </urlset>
