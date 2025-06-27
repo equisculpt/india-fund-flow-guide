@@ -4,7 +4,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Menu, X } from 'lucide-react';
 import BreweryLogo from './BreweryLogo';
-import LoginModal from './LoginModal';
 import DesktopNavigation from './header/DesktopNavigation';
 import MobileNavigation from './header/MobileNavigation';
 import FirebaseUserMenu from './header/FirebaseUserMenu';
@@ -95,10 +94,20 @@ const Header = () => {
         </div>
       </header>
 
-      <LoginModal 
-        isOpen={showLoginModal} 
-        onClose={() => setShowLoginModal(false)} 
-      />
+      {showLoginModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold mb-4">Login Required</h2>
+            <p className="mb-4">Please log in to access this feature.</p>
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

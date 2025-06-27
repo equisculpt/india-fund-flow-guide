@@ -1,8 +1,14 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { User } from '@supabase/supabase-js';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  type: 'customer' | 'agent' | 'admin';
+  avatar?: string;
+}
 
 interface MobileNavigationProps {
   isMenuOpen: boolean;
@@ -22,68 +28,37 @@ const MobileNavigation = ({
   if (!isMenuOpen) return null;
 
   return (
-    <div className="lg:hidden bg-white border-t">
-      <div className="px-2 pt-2 pb-3 space-y-1">
-        <Button 
-          variant="ghost" 
+    <div className="lg:hidden border-t border-gray-200 py-4">
+      <nav className="flex flex-col space-y-4 px-4">
+        <button
           onClick={handleBrowseFundsClick}
-          className="w-full justify-start text-gray-700 hover:text-blue-600"
+          className="text-left text-gray-700 hover:text-blue-600 transition-colors py-2"
         >
           Browse Funds
-        </Button>
-        
-        <Button 
-          variant="ghost" 
+        </button>
+        <button
           onClick={handleFundComparisonClick}
-          className="w-full justify-start text-gray-700 hover:text-blue-600"
+          className="text-left text-gray-700 hover:text-blue-600 transition-colors py-2"
         >
           Compare Funds
-        </Button>
-        
-        <Button 
-          variant="ghost" 
+        </button>
+        <Link
+          to="/sip-calculator"
           onClick={() => handleNavigation('/sip-calculator')}
-          className="w-full justify-start text-gray-700 hover:text-blue-600"
+          className="text-gray-700 hover:text-blue-600 transition-colors py-2"
         >
           SIP Calculator
-        </Button>
-
-        <Button 
-          variant="ghost" 
-          onClick={() => handleNavigation('/chat')}
-          className="w-full justify-start text-gray-700 hover:text-blue-600"
-        >
-          Ask AI Assistant
-        </Button>
-
-        <Button 
-          variant="ghost" 
-          onClick={() => handleNavigation('/community')}
-          className="w-full justify-start text-gray-700 hover:text-blue-600"
-        >
-          Community
-        </Button>
-        
+        </Link>
         {user && (
-          <>
-            <Button 
-              variant="ghost" 
-              onClick={() => handleNavigation('/dashboard')}
-              className="w-full justify-start text-gray-700 hover:text-blue-600"
-            >
-              Dashboard
-            </Button>
-            
-            <Button 
-              variant="ghost" 
-              onClick={() => handleNavigation('/ai-portfolio')}
-              className="w-full justify-start text-gray-700 hover:text-blue-600"
-            >
-              AI Portfolio
-            </Button>
-          </>
+          <Link
+            to="/dashboard"
+            onClick={() => handleNavigation('/dashboard')}
+            className="text-gray-700 hover:text-blue-600 transition-colors py-2"
+          >
+            Dashboard
+          </Link>
         )}
-      </div>
+      </nav>
     </div>
   );
 };

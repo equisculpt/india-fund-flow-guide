@@ -1,8 +1,14 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { User } from '@supabase/supabase-js';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  type: 'customer' | 'agent' | 'admin';
+  avatar?: string;
+}
 
 interface DesktopNavigationProps {
   user: User | null;
@@ -13,54 +19,31 @@ interface DesktopNavigationProps {
 const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsClick }: DesktopNavigationProps) => {
   return (
     <nav className="hidden lg:flex items-center space-x-6">
-      <Button 
-        variant="ghost" 
+      <button
         onClick={handleBrowseFundsClick}
-        className="text-gray-700 hover:text-blue-600"
+        className="text-gray-700 hover:text-blue-600 transition-colors"
       >
         Browse Funds
-      </Button>
-      
-      <Button 
-        variant="ghost" 
+      </button>
+      <button
         onClick={handleFundComparisonClick}
-        className="text-gray-700 hover:text-blue-600"
+        className="text-gray-700 hover:text-blue-600 transition-colors"
       >
         Compare Funds
-      </Button>
-      
-      <Link to="/sip-calculator">
-        <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
-          SIP Calculator
-        </Button>
+      </button>
+      <Link
+        to="/sip-calculator"
+        className="text-gray-700 hover:text-blue-600 transition-colors"
+      >
+        SIP Calculator
       </Link>
-
-      <Link to="/chat">
-        <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
-          Ask AI Assistant
-        </Button>
-      </Link>
-
-      <Link to="/community">
-        <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
-          Community
-        </Button>
-      </Link>
-      
       {user && (
-        <>
-          <Link to="/dashboard">
-            <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
-              Dashboard
-            </Button>
-          </Link>
-          
-          <Link to="/ai-portfolio">
-            <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
-              AI Portfolio
-            </Button>
-          </Link>
-        </>
+        <Link
+          to="/dashboard"
+          className="text-gray-700 hover:text-blue-600 transition-colors"
+        >
+          Dashboard
+        </Link>
       )}
     </nav>
   );
