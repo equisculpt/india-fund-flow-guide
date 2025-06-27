@@ -29,7 +29,7 @@
     <priority>0.8</priority>
   </url>
   
-  <!-- Recent Blog Posts - High Priority for Fresh Content -->
+  <!-- Blog Posts - React Routes (High Priority for Fresh Content) -->
   <url>
     <loc>https://sipbrewery.com/blog/hdb-financial-services-ipo-analysis</loc>
     <lastmod>2025-06-27</lastmod>
@@ -54,16 +54,48 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  
-  <!-- Educational Blog Content -->
   <url>
-    <loc>https://sipbrewery.com/blog/ipo-analysis-guide</loc>
+    <loc>https://sipbrewery.com/blog/healthcare-sector-outlook</loc>
     <lastmod>2025-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  
+  <!-- Static HTML Files for Social Media Crawlers -->
   <url>
-    <loc>https://sipbrewery.com/blog/healthcare-sector-outlook</loc>
+    <loc>https://sipbrewery.com/blog/hdb-financial-services-ipo-analysis.html</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/veeda-clinical-research-ipo-analysis.html</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/nbfc-sector-deep-dive-analysis.html</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/indogulf-cropsciences-ipo-complete-analysis-2024.html</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sipbrewery.com/blog/healthcare-sector-outlook.html</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Educational Blog Content -->
+  <url>
+    <loc>https://sipbrewery.com/blog/ipo-analysis-guide</loc>
     <lastmod>2025-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
