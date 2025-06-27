@@ -3,22 +3,27 @@ import React from 'react';
 import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
 
 const HDBBlogSEO = () => {
-  // CRITICAL: Multiple layers of protection to prevent rendering on wrong pages
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+  // ULTRA CRITICAL: Multiple layers of protection with immediate exit
+  if (typeof window === 'undefined') {
+    console.log('🚫 HDB SEO V7 - SERVER SIDE BLOCKED');
+    return null;
+  }
+
+  const currentPath = window.location.pathname;
   const isHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
 
-  console.log('🎯 HDB Blog SEO V6 - ULTRA STRICT GUARD:', {
+  console.log('🎯 HDB Blog SEO V7 - ULTRA STRICT GUARD:', {
     component: 'HDBBlogSEO',
     timestamp: new Date().toISOString(),
     currentPath,
     isHDBPage,
     'RENDER_STATUS': isHDBPage ? 'ALLOWED' : 'COMPLETELY_BLOCKED',
-    'WINDOW_CHECK': typeof window !== 'undefined' ? 'CLIENT_SIDE' : 'SERVER_SIDE'
+    'CRITICAL_CHECK': 'This component should NEVER render on any other page'
   });
 
   // CRITICAL: Block rendering completely if not on HDB page
-  if (!isHDBPage || typeof window === 'undefined') {
-    console.log('🚫 HDB SEO ULTRA BLOCKED - Wrong path or server-side, returning null');
+  if (!isHDBPage) {
+    console.log('🚫 HDB SEO ULTRA BLOCKED - Wrong path, returning null');
     return null;
   }
 

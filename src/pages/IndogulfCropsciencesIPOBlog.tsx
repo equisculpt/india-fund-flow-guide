@@ -1,26 +1,37 @@
 
-import React from 'react';
-import IndogulfIPOBlog from '@/components/blog/indogulf-ipo/IndogulfIPOBlog';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 
 const IndogulfCropsciencesIPOBlogPage = () => {
-  // CRITICAL: Only proceed if we're on the correct path
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-  const isIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
+  const [shouldRenderIndogulfBlog, setShouldRenderIndogulfBlog] = useState(false);
+  const [IndogulfBlogComponent, setIndogulfBlogComponent] = useState<React.ComponentType | null>(null);
 
-  console.log('📄 INDOGULF PAGE V6 - ULTRA STRICT:', {
-    component: 'IndogulfCropsciencesIPOBlogPage',
-    timestamp: new Date().toISOString(),
-    currentPath,
-    isIndogulfPage,
-    'PAGE_RENDER_STATUS': isIndogulfPage ? 'FULL_RENDER' : 'MINIMAL_RENDER',
-    'SEO_DELEGATION': 'All SEO handled by IndogulfIPOBlog component with strict guards'
-  });
+  useEffect(() => {
+    // Only check and load Indogulf blog after component mounts
+    const currentPath = window.location.pathname;
+    const isIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
+
+    console.log('📄 INDOGULF PAGE V7 - MOUNT CHECK:', {
+      component: 'IndogulfCropsciencesIPOBlogPage',
+      timestamp: new Date().toISOString(),
+      currentPath,
+      isIndogulfPage,
+      'DYNAMIC_IMPORT_STATUS': isIndogulfPage ? 'WILL_LOAD_BLOG' : 'BLOCKED_BLOG'
+    });
+
+    if (isIndogulfPage) {
+      // Dynamic import to prevent loading Indogulf blog on other pages
+      import('@/components/blog/indogulf-ipo/IndogulfIPOBlog').then((module) => {
+        setIndogulfBlogComponent(() => module.default);
+        setShouldRenderIndogulfBlog(true);
+      });
+    }
+  }, []);
 
   return (
     <Layout>
-      {/* IndogulfIPOBlog has its own strict path checking and will return null if not on correct page */}
-      <IndogulfIPOBlog />
+      {/* Only render Indogulf blog if we're on the correct page and component is loaded */}
+      {shouldRenderIndogulfBlog && IndogulfBlogComponent && <IndogulfBlogComponent />}
     </Layout>
   );
 };

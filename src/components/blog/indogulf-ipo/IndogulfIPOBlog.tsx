@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
 import IndogulfBlogHeader from './components/IndogulfBlogHeader';
@@ -15,18 +14,29 @@ import RiskDisclosureSection from './components/RiskDisclosureSection';
 import BlogFooter from './components/BlogFooter';
 
 const IndogulfIPOBlog = () => {
-  // CRITICAL CHECK - Multiple layers of protection
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+  // ULTRA CRITICAL: Multiple layers of protection with immediate exit
+  if (typeof window === 'undefined') {
+    console.log('🚫 INDOGULF BLOG V8 - SERVER SIDE BLOCKED');
+    return null;
+  }
+
+  const currentPath = window.location.pathname;
   const isIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
 
-  console.log('🔍 INDOGULF BLOG V7 - ULTRA STRICT GUARD:', {
+  console.log('🔍 INDOGULF BLOG V8 - ULTRA STRICT GUARD:', {
     component: 'IndogulfIPOBlog',
     timestamp: new Date().toISOString(),
     currentPath,
     isIndogulfPage,
     'RENDER_STATUS': isIndogulfPage ? 'ALLOWED' : 'COMPLETELY_BLOCKED',
-    'WINDOW_CHECK': typeof window !== 'undefined' ? 'CLIENT_SIDE' : 'SERVER_SIDE'
+    'CRITICAL_CHECK': 'This component should NEVER render on any other page'
   });
+
+  // CRITICAL: Block rendering completely if not on Indogulf page
+  if (!isIndogulfPage) {
+    console.log('🚫 INDOGULF BLOG ULTRA BLOCKED - Wrong path, returning null');
+    return null;
+  }
 
   // Financial data with updated 9M FY25 data from uploaded image
   const financialData = [
@@ -62,12 +72,6 @@ const IndogulfIPOBlog = () => {
     pat: (21.68 * 12) / 9,
     ebitda: (44.78 * 12) / 9
   };
-
-  // CRITICAL: Block rendering completely if not on Indogulf page
-  if (!isIndogulfPage || typeof window === 'undefined') {
-    console.log('🚫 INDOGULF BLOG ULTRA BLOCKED - Wrong path or server-side, returning null');
-    return null;
-  }
 
   return (
     <>

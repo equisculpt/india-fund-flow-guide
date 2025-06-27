@@ -1,28 +1,39 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
-import HDBBlogSEO from '@/components/blog/hdb-ipo/HDBBlogSEO';
 import HDBBlogLayout from '@/components/blog/hdb-ipo/HDBBlogLayout';
 import HDBBlogContent from '@/components/blog/hdb-ipo/HDBBlogContent';
 
 const HDBFinancialServicesIPOBlog = () => {
-  // CRITICAL: Only proceed if we're on the correct path
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-  const isHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
+  const [shouldRenderHDBSEO, setShouldRenderHDBSEO] = useState(false);
+  const [HDBBlogSEOComponent, setHDBBlogSEOComponent] = useState<React.ComponentType | null>(null);
 
-  console.log('📄 HDB BLOG PAGE V6 - ULTRA STRICT:', {
-    component: 'HDBFinancialServicesIPOBlog',
-    timestamp: new Date().toISOString(),
-    currentPath,
-    isHDBPage,
-    'PAGE_RENDER_STATUS': isHDBPage ? 'FULL_RENDER' : 'MINIMAL_RENDER',
-    'CRITICAL_CHECK': 'This page should ONLY render HDB SEO on correct path'
-  });
+  useEffect(() => {
+    // Only check and load HDB SEO after component mounts
+    const currentPath = window.location.pathname;
+    const isHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
+    
+    console.log('📄 HDB BLOG PAGE V7 - MOUNT CHECK:', {
+      component: 'HDBFinancialServicesIPOBlog',
+      timestamp: new Date().toISOString(),
+      currentPath,
+      isHDBPage,
+      'DYNAMIC_IMPORT_STATUS': isHDBPage ? 'WILL_LOAD_SEO' : 'BLOCKED_SEO'
+    });
+
+    if (isHDBPage) {
+      // Dynamic import to prevent loading HDB SEO on other pages
+      import('@/components/blog/hdb-ipo/HDBBlogSEO').then((module) => {
+        setHDBBlogSEOComponent(() => module.default);
+        setShouldRenderHDBSEO(true);
+      });
+    }
+  }, []);
 
   return (
     <Layout>
-      {/* CRITICAL: Only render HDB SEO if we're actually on the HDB page */}
-      {isHDBPage && <HDBBlogSEO />}
+      {/* Only render HDB SEO if we're on the correct page and component is loaded */}
+      {shouldRenderHDBSEO && HDBBlogSEOComponent && <HDBBlogSEOComponent />}
       <HDBBlogLayout>
         <HDBBlogContent />
       </HDBBlogLayout>
