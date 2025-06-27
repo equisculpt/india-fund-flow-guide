@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 import { Navigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PortfolioAnalyticsDashboard from '@/components/dashboard/PortfolioAnalyticsDashboard';
@@ -10,7 +10,7 @@ import AIInsightsManager from '@/components/dashboard/AIInsightsManager';
 import { toast } from 'sonner';
 
 const UserDashboard = () => {
-  const { user, loading } = useSupabaseAuthContext();
+  const { user, loading } = useSupabaseAuth();
 
   if (loading) {
     return (

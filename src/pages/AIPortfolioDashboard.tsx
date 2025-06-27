@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 import { Navigate } from 'react-router-dom';
 import AIInsightsDashboard from '@/components/AIInsightsDashboard';
 
 const AIPortfolioDashboard = () => {
-  const { user, loading } = useSupabaseAuthContext();
+  const { user, loading } = useSupabaseAuth();
 
   if (loading) {
     return (

@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from 'react';
-import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/integrations/supabase/client';
 
 export const useReviewPrompt = () => {
   const [shouldShowReview, setShouldShowReview] = useState(false);
-  const { user, profile } = useSupabaseAuthContext();
+  const { user, profile } = useSupabaseAuth();
 
   useEffect(() => {
     const checkReviewStatus = async () => {
