@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSupabaseAuthContext } from "@/contexts/SupabaseAuthContext";
+import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { handleGoogleSignup, handleGoogleLogin } from "@/services/googleAuthService";
 import LoginTab from "./auth/LoginTab";

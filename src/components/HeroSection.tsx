@@ -1,7 +1,6 @@
-
 import React, { useState, lazy, Suspense } from 'react';
 import { Shield } from "lucide-react";
-import { useSupabaseAuthContext } from "@/contexts/SupabaseAuthContext";
+import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
 import { useNavigate } from "react-router-dom";
 import { useInvestorStats } from "@/hooks/useInvestorData";
 import HeroContent from "./hero/HeroContent";
@@ -13,7 +12,7 @@ const BlogSlider = lazy(() => import("./BlogSlider"));
 
 const HeroSection = () => {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
-  const { user } = useSupabaseAuthContext();
+  const { user } = useSupabaseAuth();
   const navigate = useNavigate();
   
   // Handle the database error gracefully

@@ -126,7 +126,7 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
       
       if (!profile?.pan_number) {
         setTwoFactorRequired(true);
-        // Create a 2FA session using raw SQL since the table might not be in types yet
+        // Create a 2FA session directly in the table
         await createTwoFactorSession(userId);
       } else {
         setTwoFactorRequired(false);
@@ -142,31 +142,33 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
       const sessionToken = `2fa_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes
 
-      // Use raw SQL query since the table might not be in generated types
-      const { data, error } = await supabase.rpc('create_2fa_session', {
-        p_user_id: userId,
-        p_session_token: sessionToken,
-        p_expires_at: expiresAt
-      });
+      // Insert directly into two_factor_sessions table
+      const { data, error } = await supabase
+        .from('two_factor_sessions')
+        .insert({
+          user_id: userId,
+          session_token: sessionToken,
+          expires_at: expiresAt
+        })
+        .select()
+        .single();
 
       if (error) {
-        // Fallback to direct insert if RPC doesn't exist
-        const { data: insertData, error: insertError } = await supabase
-          .from('profiles') // Using profiles table as fallback
-          .select('id')
-          .eq('id', userId)
-          .single();
-        
-        if (!insertError) {
-          setTwoFactorSession({
-            id: userId,
-            session_token: sessionToken,
-            is_verified: false,
-            expires_at: expiresAt
-          });
-        }
-      } else {
-        setTwoFactorSession(data);
+        console.error('Error creating 2FA session:', error);
+        // Fallback to a mock session
+        setTwoFactorSession({
+          id: userId,
+          session_token: sessionToken,
+          is_verified: false,
+          expires_at: expiresAt
+        });
+      } else if (data) {
+        setTwoFactorSession({
+          id: data.id,
+          session_token: data.session_token,
+          is_verified: data.is_verified,
+          expires_at: data.expires_at
+        });
       }
     } catch (error) {
       console.error('Error creating 2FA session:', error);

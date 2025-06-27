@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -10,12 +9,12 @@ import CommunityBlogs from '@/components/community/CommunityBlogs';
 import AskQuestionModal from '@/components/community/AskQuestionModal';
 import CreateBlogModal from '@/components/community/CreateBlogModal';
 import EnhancedLoginModal from '@/components/EnhancedLoginModal';
-import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 const CommunityPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useSupabaseAuthContext();
+  const { user } = useSupabaseAuth();
   const [showAskQuestion, setShowAskQuestion] = useState(false);
   const [showCreateBlog, setShowCreateBlog] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
