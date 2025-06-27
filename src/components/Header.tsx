@@ -1,17 +1,17 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Menu, X } from 'lucide-react';
 import BreweryLogo from './BreweryLogo';
-import SimpleLoginModal from './SimpleLoginModal';
+import LoginModal from './LoginModal';
 import DesktopNavigation from './header/DesktopNavigation';
 import MobileNavigation from './header/MobileNavigation';
-import UserMenu from './header/UserMenu';
+import FirebaseUserMenu from './header/FirebaseUserMenu';
 import EnhancedFundSearch from './EnhancedFundSearch';
 
 const Header = () => {
-  const { user, signOut } = useAuth();
+  const { user, logout } = useEnhancedAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
@@ -61,9 +61,9 @@ const Header = () => {
 
             {/* User Menu */}
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <UserMenu 
+              <FirebaseUserMenu 
                 user={user}
-                signOut={signOut}
+                logout={logout}
                 setShowLoginModal={setShowLoginModal}
                 setIsMenuOpen={setIsMenuOpen}
               />
@@ -95,7 +95,7 @@ const Header = () => {
         </div>
       </header>
 
-      <SimpleLoginModal 
+      <LoginModal 
         isOpen={showLoginModal} 
         onClose={() => setShowLoginModal(false)} 
       />

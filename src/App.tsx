@@ -1,9 +1,10 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
 import Index from "./pages/Index";
 import FundDetailsPage from "./pages/FundDetailsPage";
 import FundComparisonPage from "./pages/FundComparisonPage";
@@ -28,7 +29,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
+    <EnhancedAuthProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -56,7 +57,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
-    </AuthProvider>
+    </EnhancedAuthProvider>
   </QueryClientProvider>
 );
 

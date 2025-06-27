@@ -1,9 +1,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User as FirebaseUser, onAuthStateChanged } from 'firebase/auth';
+import { User as FirebaseUser, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, signInWithGoogle, signInWithFacebook, logout as firebaseLogout } from '@/services/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
 
 interface User {
   id: string;
@@ -29,9 +28,10 @@ interface EnhancedAuthContextType {
   user: User | null;
   firebaseUser: FirebaseUser | null;
   login: (email: string, password: string, type: 'customer' | 'agent') => Promise<boolean>;
+  signup: (email: string, password: string, userData: { full_name: string; phone: string; user_type: 'customer' | 'agent' }) => Promise<boolean>;
   loginWithGoogle: () => Promise<boolean>;
   loginWithFacebook: () => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
   completeOnboarding: (userData: Partial<User>) => void;
   isAuthenticated: boolean;
   loading: boolean;
@@ -47,6 +47,7 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log('Firebase auth state changed:', firebaseUser?.email);
       setFirebaseUser(firebaseUser);
       
       if (firebaseUser) {
@@ -61,18 +62,14 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
           const userProfile: User = {
             id: firebaseUser.uid,
             email: firebaseUser.email || '',
-            name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || '',
+            name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
             type: 'customer',
             avatar: firebaseUser.photoURL || undefined,
             isOnboardingComplete: false,
             kycStatus: 'pending'
           };
           setUser(userProfile);
-          
-          // Redirect to onboarding for new users
-          setTimeout(() => {
-            window.location.href = '/onboard';
-          }, 1000);
+          localStorage.setItem(`user_${firebaseUser.uid}`, JSON.stringify(userProfile));
         }
       } else {
         setUser(null);
@@ -87,22 +84,75 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
 
   const login = async (email: string, password: string, type: 'customer' | 'agent'): Promise<boolean> => {
     try {
-      // For now, we'll simulate login since Firebase email/password needs setup
-      const mockUser: User = {
-        id: '1',
-        email,
-        name: email.split('@')[0],
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Email login successful:', result.user.email);
+      
+      // Create or update user profile
+      const userProfile: User = {
+        id: result.user.uid,
+        email: result.user.email || '',
+        name: result.user.displayName || email.split('@')[0],
         type,
         isOnboardingComplete: true,
         kycStatus: 'verified'
       };
       
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      localStorage.setItem(`user_${mockUser.id}`, JSON.stringify(mockUser));
+      setUser(userProfile);
+      localStorage.setItem(`user_${result.user.uid}`, JSON.stringify(userProfile));
+      
+      toast({
+        title: "Login Successful",
+        description: `Welcome back, ${userProfile.name}!`,
+      });
+      
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
+      toast({
+        title: "Login Failed",
+        description: error.message || "Invalid credentials",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
+  const signup = async (email: string, password: string, userData: { 
+    full_name: string; 
+    phone: string; 
+    user_type: 'customer' | 'agent' 
+  }): Promise<boolean> => {
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      console.log('Email signup successful:', result.user.email);
+      
+      // Create user profile
+      const userProfile: User = {
+        id: result.user.uid,
+        email: result.user.email || '',
+        name: userData.full_name,
+        type: userData.user_type,
+        phoneNumber: userData.phone,
+        isOnboardingComplete: true,
+        kycStatus: 'pending'
+      };
+      
+      setUser(userProfile);
+      localStorage.setItem(`user_${result.user.uid}`, JSON.stringify(userProfile));
+      
+      toast({
+        title: "Account Created",
+        description: `Welcome to SIP Brewery, ${userProfile.name}!`,
+      });
+      
+      return true;
+    } catch (error: any) {
+      console.error('Signup error:', error);
+      toast({
+        title: "Signup Failed",
+        description: error.message || "Failed to create account",
+        variant: "destructive",
+      });
       return false;
     }
   };
@@ -110,11 +160,11 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
   const loginWithGoogle = async (): Promise<boolean> => {
     try {
       const result = await signInWithGoogle();
-      console.log('Google login result:', result);
+      console.log('Google login result:', result.user.email);
       
       toast({
         title: "Google Login Successful",
-        description: "Redirecting to complete your profile...",
+        description: "Welcome to SIP Brewery!",
       });
       return true;
     } catch (error: any) {
@@ -131,11 +181,11 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
   const loginWithFacebook = async (): Promise<boolean> => {
     try {
       const result = await signInWithFacebook();
-      console.log('Facebook login result:', result);
+      console.log('Facebook login result:', result.user.email);
       
       toast({
         title: "Facebook Login Successful", 
-        description: "Redirecting to complete your profile...",
+        description: "Welcome to SIP Brewery!",
       });
       return true;
     } catch (error: any) {
@@ -155,10 +205,9 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
         ...user,
         ...userData,
         isOnboardingComplete: true,
-        kycStatus: 'verified' as const // Auto-verify KYC for demo
+        kycStatus: 'verified' as const
       };
       setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
       localStorage.setItem(`user_${updatedUser.id}`, JSON.stringify(updatedUser));
       
       toast({
@@ -176,6 +225,10 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
       if (firebaseUser) {
         localStorage.removeItem(`user_${firebaseUser.uid}`);
       }
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -186,11 +239,12 @@ export const EnhancedAuthProvider = ({ children }: { children: React.ReactNode }
       user,
       firebaseUser,
       login,
+      signup,
       loginWithGoogle,
       loginWithFacebook,
       logout,
       completeOnboarding,
-      isAuthenticated: !!user && user.isOnboardingComplete,
+      isAuthenticated: !!user && (user.isOnboardingComplete ?? false),
       loading
     }}>
       {children}
