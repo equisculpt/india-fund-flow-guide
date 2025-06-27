@@ -1,6 +1,6 @@
+
 import React from 'react';
 import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
-import HydrationAwareSEO from '@/components/seo/HydrationAwareSEO';
 import IndogulfBlogHeader from './components/IndogulfBlogHeader';
 import IPOQuickSummary from './components/IPOQuickSummary';
 import IPOTimelineSection from './components/IPOTimelineSection';
@@ -19,7 +19,7 @@ const IndogulfIPOBlog = () => {
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
   const isIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
 
-  console.log('🔍 INDOGULF BLOG V6 - ULTRA STRICT GUARD:', {
+  console.log('🔍 INDOGULF BLOG V7 - ULTRA STRICT GUARD:', {
     component: 'IndogulfIPOBlog',
     timestamp: new Date().toISOString(),
     currentPath,
