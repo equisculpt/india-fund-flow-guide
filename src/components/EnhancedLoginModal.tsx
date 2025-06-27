@@ -17,7 +17,7 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
 
-  const { signIn, signUp } = useSupabaseAuthContext();
+  const { signIn, signUp } = useSupabaseAuth();
   const { toast } = useToast();
 
   const handleGoogleAuth = async () => {

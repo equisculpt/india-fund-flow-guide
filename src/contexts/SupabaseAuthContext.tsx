@@ -16,20 +16,12 @@ interface UserProfile {
   updated_at: string;
 }
 
-interface TwoFactorSession {
-  id: string;
-  session_token: string;
-  is_verified: boolean;
-  expires_at: string;
-}
-
 interface SupabaseAuthContextType {
   user: User | null;
   profile: UserProfile | null;
   session: Session | null;
   loading: boolean;
   twoFactorRequired: boolean;
-  twoFactorSession: TwoFactorSession | null;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signUp: (email: string, password: string, userData: { full_name: string; phone?: string; user_type?: 'customer' | 'agent' }) => Promise<{ error: AuthError | null }>;
   signInWithGoogle: () => Promise<{ error: AuthError | null }>;
@@ -46,7 +38,6 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [twoFactorRequired, setTwoFactorRequired] = useState(false);
-  const [twoFactorSession, setTwoFactorSession] = useState<TwoFactorSession | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -66,7 +57,6 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
         } else {
           setProfile(null);
           setTwoFactorRequired(false);
-          setTwoFactorSession(null);
         }
         
         setLoading(false);
@@ -126,52 +116,11 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
       
       if (!profile?.pan_number) {
         setTwoFactorRequired(true);
-        // Create a 2FA session directly in the table
-        await createTwoFactorSession(userId);
       } else {
         setTwoFactorRequired(false);
-        setTwoFactorSession(null);
       }
     } catch (error) {
       console.error('Error checking 2FA status:', error);
-    }
-  };
-
-  const createTwoFactorSession = async (userId: string) => {
-    try {
-      const sessionToken = `2fa_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes
-
-      // Insert directly into two_factor_sessions table
-      const { data, error } = await supabase
-        .from('two_factor_sessions')
-        .insert({
-          user_id: userId,
-          session_token: sessionToken,
-          expires_at: expiresAt
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating 2FA session:', error);
-        // Fallback to a mock session
-        setTwoFactorSession({
-          id: userId,
-          session_token: sessionToken,
-          is_verified: false,
-          expires_at: expiresAt
-        });
-      } else if (data) {
-        setTwoFactorSession({
-          id: data.id,
-          session_token: data.session_token,
-          is_verified: data.is_verified,
-          expires_at: data.expires_at
-        });
-      }
-    } catch (error) {
-      console.error('Error creating 2FA session:', error);
     }
   };
 
@@ -266,7 +215,7 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
   };
 
   const verifyPAN = async (panNumber: string) => {
-    if (!user || !twoFactorSession) {
+    if (!user) {
       return { success: false, error: 'No active session' };
     }
 
@@ -280,7 +229,6 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
       if (updateError) throw updateError;
 
       setTwoFactorRequired(false);
-      setTwoFactorSession(null);
       
       // Refresh profile
       await fetchProfile(user.id);
@@ -298,12 +246,7 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
   };
 
   const completeTwoFactor = async () => {
-    if (!twoFactorSession) {
-      return { success: false, error: 'No 2FA session' };
-    }
-
     setTwoFactorRequired(false);
-    setTwoFactorSession(null);
     
     toast({
       title: "Login Complete",
@@ -320,7 +263,6 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
       session,
       loading,
       twoFactorRequired,
-      twoFactorSession,
       signIn,
       signUp,
       signInWithGoogle,

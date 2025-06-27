@@ -22,7 +22,7 @@ interface AskQuestionModalProps {
 }
 
 const AskQuestionModal = ({ isOpen, onClose }: AskQuestionModalProps) => {
-  const { user } = useSupabaseAuthContext();
+  const { user } = useSupabaseAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('general');
