@@ -1,10 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import ComparisonHeader from '@/components/fund-comparison/ComparisonHeader';
 import ComparisonResultsSection from '@/components/fund-comparison/ComparisonResultsSection';
 import AMFIDisclaimer from '@/components/fund-comparison/AMFIDisclaimer';
 import { generateSEOContent } from '@/components/fund-comparison/SEOContentGenerator';
+import { useFundComparison } from '@/hooks/useFundComparison';
+import PageLoader from '@/components/PageLoader';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Fund {
   schemeCode: string;
@@ -15,6 +20,17 @@ interface Fund {
 }
 
 const FundComparisonPage = () => {
+  const navigate = useNavigate();
+  const { 
+    fundsWithDetails, 
+    comparisonResult, 
+    loading, 
+    getInvestmentHorizonAdvice,
+    resetComparison,
+    hasFundsToCompare,
+    showSelection
+  } = useFundComparison();
+  
   const [selectedFunds, setSelectedFunds] = useState<Fund[]>([]);
   const [seoContent, setSeoContent] = useState(generateSEOContent(false, null));
 
@@ -22,6 +38,15 @@ const FundComparisonPage = () => {
     const newSeoContent = generateSEOContent(selectedFunds.length > 0, { funds: selectedFunds });
     setSeoContent(newSeoContent);
   }, [selectedFunds]);
+
+  const handleNewComparison = () => {
+    resetComparison();
+    setSelectedFunds([]);
+  };
+
+  const handleBackToHome = () => {
+    navigate('/');
+  };
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -43,6 +68,21 @@ const FundComparisonPage = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <Layout
+        pageType="tool"
+        title={seoContent.title}
+        description={seoContent.description}
+        keywords={seoContent.keywords}
+        canonicalUrl="https://sipbrewery.com/fund-comparison"
+        schemaData={structuredData}
+      >
+        <PageLoader message="Analyzing funds with AI..." />
+      </Layout>
+    );
+  }
+
   return (
     <Layout
       pageType="tool"
@@ -53,11 +93,33 @@ const FundComparisonPage = () => {
       schemaData={structuredData}
     >
       <div className="container mx-auto px-4 py-8">
-        <ComparisonHeader />
-        <ComparisonResultsSection 
-          selectedFunds={selectedFunds}
-          onFundsChange={setSelectedFunds}
+        <ComparisonHeader 
+          onNewComparison={handleNewComparison}
+          onBackToHome={handleBackToHome}
+          showNewComparison={comparisonResult !== null}
         />
+        
+        {showSelection ? (
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>Fund Comparison</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                To compare funds, please select funds from the fund search page and navigate here with your selections.
+              </p>
+              <Button onClick={handleBackToHome}>
+                Go to Fund Search
+              </Button>
+            </CardContent>
+          </Card>
+        ) : comparisonResult ? (
+          <ComparisonResultsSection
+            comparisonResult={comparisonResult}
+            advice={getInvestmentHorizonAdvice()}
+          />
+        ) : null}
+        
         <AMFIDisclaimer />
       </div>
     </Layout>
