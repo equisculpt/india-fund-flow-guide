@@ -1,35 +1,50 @@
 
 import React from 'react';
 import Layout from '@/components/Layout';
-import HDBBlogLayout from '@/components/blog/hdb-ipo/HDBBlogLayout';
-import HDBBlogContent from '@/components/blog/hdb-ipo/HDBBlogContent';
 
 const HDBFinancialServicesIPOBlog = () => {
-  // Only render HDB-specific content if we're on the exact HDB page
-  const isHDBPage = typeof window !== 'undefined' && window.location.pathname === '/blog/hdb-financial-services-ipo-analysis';
+  // Get current pathname - this is the ONLY way to check path in React Router
+  const currentPath = window.location.pathname;
+  const isExactHDBPath = currentPath === '/blog/hdb-financial-services-ipo-analysis';
 
-  console.log('📄 HDB PAGE V10 - STRICT PATH CHECK:', {
+  console.log('🔍 HDB PAGE V11 - ABSOLUTE PATH ISOLATION:', {
     component: 'HDBFinancialServicesIPOBlog',
-    currentPath: typeof window !== 'undefined' ? window.location.pathname : 'SSR',
-    isHDBPage,
-    renderingSEO: isHDBPage,
+    currentPath,
+    isExactHDBPath,
+    'ISOLATION_STATUS': isExactHDBPath ? 'LOADING_HDB_CONTENT' : 'BLOCKING_ALL_HDB_CONTENT',
     timestamp: new Date().toISOString()
   });
 
-  // Conditional import - only load HDB SEO when absolutely necessary
-  const HDBBlogSEO = isHDBPage ? React.lazy(() => import('@/components/blog/hdb-ipo/HDBBlogSEO')) : null;
+  // If not on exact HDB path, return nothing - don't even load components
+  if (!isExactHDBPath) {
+    console.log('🚫 HDB PAGE V11 - NOT ON HDB PATH - RETURNING NULL');
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4">Page Not Found</h1>
+            <p className="text-gray-600">The requested page could not be found.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Only load HDB components when on exact HDB path
+  const HDBBlogSEO = React.lazy(() => import('@/components/blog/hdb-ipo/HDBBlogSEO'));
+  const HDBBlogLayout = React.lazy(() => import('@/components/blog/hdb-ipo/HDBBlogLayout'));
+  const HDBBlogContent = React.lazy(() => import('@/components/blog/hdb-ipo/HDBBlogContent'));
+
+  console.log('✅ HDB PAGE V11 - LOADING HDB CONTENT ON CORRECT PATH');
 
   return (
     <Layout>
-      {/* Only render HDB SEO when confirmed on HDB page */}
-      {isHDBPage && HDBBlogSEO && (
-        <React.Suspense fallback={null}>
-          <HDBBlogSEO />
-        </React.Suspense>
-      )}
-      <HDBBlogLayout>
-        <HDBBlogContent />
-      </HDBBlogLayout>
+      <React.Suspense fallback={null}>
+        <HDBBlogSEO />
+        <HDBBlogLayout>
+          <HDBBlogContent />
+        </HDBBlogLayout>
+      </React.Suspense>
     </Layout>
   );
 };

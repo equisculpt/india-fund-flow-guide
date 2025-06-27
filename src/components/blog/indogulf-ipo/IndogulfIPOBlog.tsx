@@ -2,17 +2,18 @@
 import React from 'react';
 
 const IndogulfIPOBlog = () => {
-  // BULLETPROOF PROTECTION: Multiple layers of guards
-  console.log('🔒 INDOGULF BLOG V10 - BULLETPROOF ENTRY GUARD:', {
+  // TRIPLE GUARD SYSTEM - Bulletproof isolation
+  console.log('🔒 INDOGULF BLOG V11 - TRIPLE GUARD ENTRY CHECK:', {
     component: 'IndogulfIPOBlog',
     timestamp: new Date().toISOString(),
-    'SERVER_SIDE_CHECK': typeof window === 'undefined' ? 'BLOCKED' : 'ALLOWED',
-    'CLIENT_SIDE_CHECK': typeof window !== 'undefined' ? 'PROCEEDING' : 'BLOCKED'
+    'GUARD_1': typeof window === 'undefined' ? 'SERVER_BLOCKED' : 'CLIENT_ALLOWED',
+    'GUARD_2': 'PATH_CHECK_PENDING',
+    'GUARD_3': 'EXACT_MATCH_PENDING'
   });
 
-  // GUARD 1: Server-side complete block
+  // GUARD 1: Complete server-side block
   if (typeof window === 'undefined') {
-    console.log('🚫 INDOGULF BLOG V10 - SERVER SIDE COMPLETELY BLOCKED');
+    console.log('🚫 INDOGULF BLOG V11 - GUARD 1 TRIGGERED - SERVER SIDE BLOCKED');
     return null;
   }
 
@@ -20,19 +21,19 @@ const IndogulfIPOBlog = () => {
   const currentPath = window.location.pathname;
   const isExactIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
 
-  console.log('🛡️ INDOGULF BLOG V10 - CLIENT SIDE PATH GUARD:', {
+  console.log('🛡️ INDOGULF BLOG V11 - GUARD 2 PATH CHECK:', {
     currentPath,
     isExactIndogulfPage,
-    'EXECUTION_STATUS': isExactIndogulfPage ? 'PROCEEDING_TO_BLOG' : 'BLOCKED_COMPLETELY'
+    'GUARD_2_STATUS': isExactIndogulfPage ? 'PASSED' : 'BLOCKED'
   });
 
   // GUARD 3: Path mismatch complete block
   if (!isExactIndogulfPage) {
-    console.log('🚫 INDOGULF BLOG V10 - WRONG PATH - COMPLETE BLOCK');
+    console.log('🚫 INDOGULF BLOG V11 - GUARD 3 TRIGGERED - WRONG PATH BLOCKED');
     return null;
   }
 
-  // GUARD 4: Only now load the components
+  // Only now load the components - AFTER all guards pass
   const ConsolidatedSEOHead = React.lazy(() => import('@/components/seo/ConsolidatedSEOHead'));
   const IndogulfBlogHeader = React.lazy(() => import('./components/IndogulfBlogHeader'));
   const IPOQuickSummary = React.lazy(() => import('./components/IPOQuickSummary'));
@@ -82,8 +83,8 @@ const IndogulfIPOBlog = () => {
     ebitda: (44.78 * 12) / 9
   };
 
-  console.log('✅ INDOGULF BLOG V10 - EXECUTING BLOG RENDER:', {
-    'FINAL_RENDER': 'ACTIVE'
+  console.log('✅ INDOGULF BLOG V11 - ALL GUARDS PASSED - EXECUTING BLOG RENDER:', {
+    'FINAL_RENDER_STATUS': 'ACTIVE_ON_CORRECT_PATH'
   });
 
   return (

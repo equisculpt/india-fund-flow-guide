@@ -2,17 +2,18 @@
 import React from 'react';
 
 const HDBBlogSEO = () => {
-  // BULLETPROOF PROTECTION: Multiple layers of guards
-  console.log('🔒 HDB SEO V10 - BULLETPROOF ENTRY GUARD:', {
+  // TRIPLE GUARD SYSTEM - Bulletproof isolation
+  console.log('🔒 HDB SEO V11 - TRIPLE GUARD ENTRY CHECK:', {
     component: 'HDBBlogSEO',
     timestamp: new Date().toISOString(),
-    'SERVER_SIDE_CHECK': typeof window === 'undefined' ? 'BLOCKED' : 'ALLOWED',
-    'CLIENT_SIDE_CHECK': typeof window !== 'undefined' ? 'PROCEEDING' : 'BLOCKED'
+    'GUARD_1': typeof window === 'undefined' ? 'SERVER_BLOCKED' : 'CLIENT_ALLOWED',
+    'GUARD_2': 'PATH_CHECK_PENDING',
+    'GUARD_3': 'EXACT_MATCH_PENDING'
   });
 
-  // GUARD 1: Server-side complete block
+  // GUARD 1: Complete server-side block
   if (typeof window === 'undefined') {
-    console.log('🚫 HDB SEO V10 - SERVER SIDE COMPLETELY BLOCKED');
+    console.log('🚫 HDB SEO V11 - GUARD 1 TRIGGERED - SERVER SIDE BLOCKED');
     return null;
   }
 
@@ -20,19 +21,19 @@ const HDBBlogSEO = () => {
   const currentPath = window.location.pathname;
   const isExactHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
 
-  console.log('🛡️ HDB SEO V10 - CLIENT SIDE PATH GUARD:', {
+  console.log('🛡️ HDB SEO V11 - GUARD 2 PATH CHECK:', {
     currentPath,
     isExactHDBPage,
-    'EXECUTION_STATUS': isExactHDBPage ? 'PROCEEDING_TO_SEO' : 'BLOCKED_COMPLETELY'
+    'GUARD_2_STATUS': isExactHDBPage ? 'PASSED' : 'BLOCKED'
   });
 
   // GUARD 3: Path mismatch complete block
   if (!isExactHDBPage) {
-    console.log('🚫 HDB SEO V10 - WRONG PATH - COMPLETE BLOCK');
+    console.log('🚫 HDB SEO V11 - GUARD 3 TRIGGERED - WRONG PATH BLOCKED');
     return null;
   }
 
-  // GUARD 4: Only now load the SEO component
+  // Only now load the SEO component - AFTER all guards pass
   const ConsolidatedSEOHead = React.lazy(() => import('@/components/seo/ConsolidatedSEOHead'));
 
   const canonicalUrl = "https://sipbrewery.com/blog/hdb-financial-services-ipo-analysis";
@@ -43,10 +44,10 @@ const HDBBlogSEO = () => {
   const publishedTime = "2025-06-21T12:00:00+05:30";
   const modifiedTime = "2025-06-21T12:00:00+05:30";
 
-  console.log('✅ HDB SEO V10 - EXECUTING SEO RENDER:', {
+  console.log('✅ HDB SEO V11 - ALL GUARDS PASSED - EXECUTING SEO RENDER:', {
     title: title.substring(0, 50) + '...',
     canonicalUrl,
-    'FINAL_RENDER': 'ACTIVE'
+    'FINAL_RENDER_STATUS': 'ACTIVE_ON_CORRECT_PATH'
   });
 
   return (

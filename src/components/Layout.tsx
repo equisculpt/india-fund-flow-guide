@@ -22,13 +22,14 @@ const Layout = ({ children }: LayoutProps) => {
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout SEO Guard V11 - ULTIMATE FIX:', {
+  console.log('🛡️ Layout SEO Guard V12 - ABSOLUTE ISOLATION FIX:', {
     currentPath: location.pathname,
     isNuclearSEOPage,
     willRenderSEO: !isNuclearSEOPage,
-    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO SEO FROM LAYOUT' : '✅ Normal page - IMMEDIATE SEO render',
+    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO LAYOUT SEO' : '✅ Normal page - IMMEDIATE LAYOUT SEO',
     timestamp: new Date().toISOString(),
-    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_LAYOUT_SEO' : 'IMMEDIATE_LAYOUT_SEO'
+    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_LAYOUT_SEO' : 'IMMEDIATE_LAYOUT_SEO',
+    'ISOLATION_LEVEL': 'COMPLETE'
   });
 
   return (
