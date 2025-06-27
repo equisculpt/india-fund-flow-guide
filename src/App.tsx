@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -21,9 +21,12 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import CommunityPage from './pages/CommunityPage';
 import FundDetailsPage from './pages/FundDetailsPage';
 import SecureAdminPage from './pages/SecureAdminPage';
-import IndogulfCropsciencesIPOBlogPage from '@/pages/IndogulfCropsciencesIPOBlog';
-import HDBFinancialServicesIPOBlog from '@/pages/HDBFinancialServicesIPOBlog';
-import VeedaClinicalResearchIPOBlog from '@/pages/VeedaClinicalResearchIPOBlog';
+
+// ✅ CRITICAL FIX: Router-level lazy loading for blog components
+// This prevents ANY blog code from loading unless user visits that specific blog route
+const IndogulfCropsciencesIPOBlogPage = React.lazy(() => import('@/pages/IndogulfCropsciencesIPOBlog'));
+const HDBFinancialServicesIPOBlog = React.lazy(() => import('@/pages/HDBFinancialServicesIPOBlog'));
+const VeedaClinicalResearchIPOBlog = React.lazy(() => import('@/pages/VeedaClinicalResearchIPOBlog'));
 
 const queryClient = new QueryClient();
 
@@ -39,25 +42,27 @@ function App() {
                   <BrandingProvider>
                     <Toaster />
                     <SecurityHeaders />
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/fund-comparison" element={<FundComparisonPage />} />
-                      <Route path="/public-funds" element={<PublicFundsPage />} />
-                      <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-                      <Route path="/contact" element={<ContactPage />} />
-                      <Route path="/terms" element={<TermsOfServicePage />} />
-                      <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                      <Route path="/community" element={<CommunityPage />} />
-                      <Route path="/fund/:fundId" element={<FundDetailsPage />} />
-                      <Route path="/funds/:fundId" element={<FundDetailsPage />} />
-                      <Route path="/secure-admin" element={<SecureAdminPage />} />
-                      
-                      {/* Blog Routes */}
-                      <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={<IndogulfCropsciencesIPOBlogPage />} />
-                      <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
-                      <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
-                      
-                    </Routes>
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                        <Route path="/public-funds" element={<PublicFundsPage />} />
+                        <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/terms" element={<TermsOfServicePage />} />
+                        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                        <Route path="/community" element={<CommunityPage />} />
+                        <Route path="/fund/:fundId" element={<FundDetailsPage />} />
+                        <Route path="/funds/:fundId" element={<FundDetailsPage />} />
+                        <Route path="/secure-admin" element={<SecureAdminPage />} />
+                        
+                        {/* Blog Routes - Lazy-loaded only when needed */}
+                        <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={<IndogulfCropsciencesIPOBlogPage />} />
+                        <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
+                        <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
+                        
+                      </Routes>
+                    </Suspense>
                   </BrandingProvider>
                 </LanguageProvider>
               </EnhancedAuthProvider>
