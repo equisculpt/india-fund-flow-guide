@@ -64,6 +64,7 @@ const SecurityHeaders = () => {
     };
   }, []);
 
+  // This component returns null - it only sets up security headers
   return null;
 };
 
