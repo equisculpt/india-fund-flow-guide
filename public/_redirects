@@ -1,11 +1,4 @@
 
-# Serve static HTML files for blog posts (for SEO crawlers)
-/blog/hdb-financial-services-ipo-analysis.html /blog/hdb-financial-services-ipo-analysis.html 200
-/blog/veeda-clinical-research-ipo-analysis.html /blog/veeda-clinical-research-ipo-analysis.html 200
-/blog/nbfc-sector-deep-dive-analysis.html /blog/nbfc-sector-deep-dive-analysis.html 200
-/blog/indogulf-cropsciences-ipo-complete-analysis-2024.html /blog/indogulf-cropsciences-ipo-complete-analysis-2024.html 200
-/blog/healthcare-sector-outlook.html /blog/healthcare-sector-outlook.html 200
-
 # Serve XML files directly
 /sitemap.xml /sitemap.xml 200
 /news-sitemap.xml /news-sitemap.xml 200
