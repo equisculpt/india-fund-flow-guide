@@ -1,17 +1,17 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useSupabaseAuthContext } from '@/contexts/SupabaseAuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Menu, X } from 'lucide-react';
 import BreweryLogo from './BreweryLogo';
-import EnhancedLoginModal from './EnhancedLoginModal';
+import SimpleLoginModal from './SimpleLoginModal';
 import DesktopNavigation from './header/DesktopNavigation';
 import MobileNavigation from './header/MobileNavigation';
 import UserMenu from './header/UserMenu';
 import EnhancedFundSearch from './EnhancedFundSearch';
 
 const Header = () => {
-  const { user, signOut } = useSupabaseAuthContext();
+  const { user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
@@ -19,16 +19,12 @@ const Header = () => {
 
   const handleFundComparisonClick = () => {
     console.log('Header: Fund comparison clicked, current path:', location.pathname);
-    
-    // Always navigate to fund comparison page
     navigate('/fund-comparison');
     setIsMenuOpen(false);
   };
 
   const handleBrowseFundsClick = () => {
     console.log('Header: Browse funds clicked, current path:', location.pathname);
-    
-    // Always navigate to public funds page for browsing
     navigate('/public-funds');
     setIsMenuOpen(false);
   };
@@ -36,7 +32,6 @@ const Header = () => {
   const handleNavigation = (path: string) => {
     navigate(path);
     setIsMenuOpen(false);
-    // Ensure page scrolls to top after navigation
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 100);
@@ -100,7 +95,7 @@ const Header = () => {
         </div>
       </header>
 
-      <EnhancedLoginModal 
+      <SimpleLoginModal 
         isOpen={showLoginModal} 
         onClose={() => setShowLoginModal(false)} 
       />
