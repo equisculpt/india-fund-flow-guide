@@ -1,10 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/Layout';
 import PublicFundsTabs from '@/components/public-funds/PublicFundsTabs';
 
 const PublicFundsPage = () => {
+  const [selectedFund, setSelectedFund] = useState(null);
+
+  const handleFundSelect = (fund: any) => {
+    setSelectedFund(fund);
+  };
+
   return (
     <>
       <Helmet>
@@ -14,7 +20,10 @@ const PublicFundsPage = () => {
       </Helmet>
       <Layout>
         <div className="min-h-screen bg-gray-50">
-          <PublicFundsTabs />
+          <PublicFundsTabs 
+            selectedFund={selectedFund}
+            onFundSelect={handleFundSelect}
+          />
         </div>
       </Layout>
     </>
