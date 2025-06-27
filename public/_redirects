@@ -1,4 +1,7 @@
 
+# Serve static HTML files for blog posts (for SEO crawlers)
+/blog/*.html /blog/:splat.html 200
+
 # Serve XML files directly
 /sitemap.xml /sitemap.xml 200
 /news-sitemap.xml /news-sitemap.xml 200
