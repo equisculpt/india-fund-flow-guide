@@ -6,7 +6,12 @@ import HDBBlogLayout from '@/components/blog/hdb-ipo/HDBBlogLayout';
 import HDBBlogContent from '@/components/blog/hdb-ipo/HDBBlogContent';
 
 const HDBFinancialServicesIPOBlog = () => {
-  console.log('🎯 HDB Blog Page - Nuclear SEO Control Active');
+  // FORENSIC DEBUGGING - Page level
+  console.log('📄 HDB BLOG PAGE FORENSIC AUDIT:', {
+    component: 'HDBFinancialServicesIPOBlog',
+    timestamp: new Date().toISOString(),
+    message: 'Page component rendering with Layout wrapper'
+  });
 
   return (
     <Layout>

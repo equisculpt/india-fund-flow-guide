@@ -1,126 +1,97 @@
 
-import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Layout from '@/components/Layout';
-import ComparisonHeader from '@/components/fund-comparison/ComparisonHeader';
-import ComparisonResultsSection from '@/components/fund-comparison/ComparisonResultsSection';
-import AMFIDisclaimer from '@/components/fund-comparison/AMFIDisclaimer';
-import { generateSEOContent } from '@/components/fund-comparison/SEOContentGenerator';
-import { useFundComparison } from '@/hooks/useFundComparison';
-import PageLoader from '@/components/PageLoader';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-interface Fund {
-  schemeCode: string;
-  schemeName: string;
-  category?: string;
-  fundHouse?: string;
-  nav?: number;
-}
+import { ArrowLeft } from 'lucide-react';
+import Layout from '@/components/Layout';
+import ComparisonLoadingState from '@/components/comparison/ComparisonLoadingState';
+import TopLevelFundComparison from '@/components/TopLevelFundComparison';
+import SEOHead from '@/components/SEOHead';
+import { useFundComparison } from '@/hooks/useFundComparison';
+import { generateSEOContent } from '@/components/fund-comparison/SEOContentGenerator';
+import ComparisonResultsSection from '@/components/fund-comparison/ComparisonResultsSection';
+import ComparisonHeader from '@/components/fund-comparison/ComparisonHeader';
 
 const FundComparisonPage = () => {
   const navigate = useNavigate();
-  const { 
-    fundsWithDetails, 
-    comparisonResult, 
-    loading, 
+  const {
+    comparisonResult,
+    loading,
     getInvestmentHorizonAdvice,
     resetComparison,
     hasFundsToCompare,
-    showSelection
+    showSelection,
+    state
   } = useFundComparison();
-  
-  const [selectedFunds, setSelectedFunds] = useState<Fund[]>([]);
-  const [seoContent, setSeoContent] = useState(generateSEOContent(false, null));
-
-  useEffect(() => {
-    const newSeoContent = generateSEOContent(selectedFunds.length > 0, { funds: selectedFunds });
-    setSeoContent(newSeoContent);
-  }, [selectedFunds]);
-
-  const handleNewComparison = () => {
-    resetComparison();
-    setSelectedFunds([]);
-  };
 
   const handleBackToHome = () => {
     navigate('/');
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
   };
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "AI Mutual Fund Comparison Tool",
-    "description": seoContent.description,
-    "url": "https://sipbrewery.com/fund-comparison",
-    "applicationCategory": "FinanceApplication",
-    "operatingSystem": "Any",
-    "provider": {
-      "@type": "Organization",
-      "name": "SIP Brewery",
-      "url": "https://sipbrewery.com"
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "INR"
-    }
-  };
+  const seoContent = generateSEOContent(hasFundsToCompare, state);
 
   if (loading) {
     return (
-      <Layout
-        pageType="tool"
-        title={seoContent.title}
-        description={seoContent.description}
-        keywords={seoContent.keywords}
-        canonicalUrl="https://sipbrewery.com/fund-comparison"
-        schemaData={structuredData}
-      >
-        <PageLoader message="Analyzing funds with AI..." />
+      <Layout>
+        <SEOHead {...seoContent} />
+        <ComparisonLoadingState />
       </Layout>
     );
   }
 
-  return (
-    <Layout
-      pageType="tool"
-      title={seoContent.title}
-      description={seoContent.description}
-      keywords={seoContent.keywords}
-      canonicalUrl="https://sipbrewery.com/fund-comparison"
-      schemaData={structuredData}
-    >
-      <div className="container mx-auto px-4 py-8">
-        <ComparisonHeader 
-          onNewComparison={handleNewComparison}
-          onBackToHome={handleBackToHome}
-          showNewComparison={comparisonResult !== null}
-        />
-        
-        {showSelection ? (
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>Fund Comparison</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4">
-                To compare funds, please select funds from the fund search page and navigate here with your selections.
-              </p>
-              <Button onClick={handleBackToHome}>
-                Go to Fund Search
+  if (showSelection) {
+    return (
+      <Layout>
+        <SEOHead {...seoContent} />
+        <div className="min-h-screen bg-gray-50">
+          <div className="container mx-auto px-4 py-8 space-y-8">
+            <ComparisonHeader onBackToHome={handleBackToHome} onNewComparison={resetComparison} />
+            <TopLevelFundComparison />
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!comparisonResult) {
+    return (
+      <Layout>
+        <SEOHead {...seoContent} />
+        <div className="min-h-screen bg-gray-50">
+          <div className="container mx-auto px-4 py-8">
+            <div className="text-center">
+              <p>No comparison data available</p>
+              <Button onClick={handleBackToHome} className="mt-4">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Home
               </Button>
-            </CardContent>
-          </Card>
-        ) : comparisonResult ? (
-          <ComparisonResultsSection
-            comparisonResult={comparisonResult}
-            advice={getInvestmentHorizonAdvice()}
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const advice = getInvestmentHorizonAdvice();
+
+  return (
+    <Layout>
+      <SEOHead {...seoContent} isDynamic={true} />
+      <div className="min-h-screen bg-gray-50">      
+        <div className="container mx-auto px-4 py-8 space-y-8">
+          <ComparisonHeader 
+            onNewComparison={resetComparison} 
+            onBackToHome={handleBackToHome} 
+            showNewComparison={true}
           />
-        ) : null}
-        
-        <AMFIDisclaimer />
+          
+          <ComparisonResultsSection 
+            comparisonResult={comparisonResult}
+            advice={advice}
+          />
+        </div>
       </div>
     </Layout>
   );

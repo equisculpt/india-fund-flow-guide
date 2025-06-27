@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
 
 const HDBBlogSEO = () => {
   const canonicalUrl = "https://sipbrewery.com/blog/hdb-financial-services-ipo-analysis";
@@ -11,56 +11,42 @@ const HDBBlogSEO = () => {
   const publishedTime = "2025-06-21T12:00:00+05:30";
   const modifiedTime = "2025-06-21T12:00:00+05:30";
 
+  // FORENSIC DEBUGGING - Component level
+  console.log('🎯 HDB Blog SEO FORENSIC AUDIT:', {
+    component: 'HDBBlogSEO',
+    timestamp: new Date().toISOString(),
+    'EXACT_VALUES_BEING_PASSED': {
+      title: `"${title}"`,
+      titleLength: title.length,
+      description: `"${description}"`,
+      descLength: description.length,
+      canonicalUrl: canonicalUrl,
+      ogImage: ogImage,
+      ogType: 'article',
+      isNewsArticle: true
+    },
+    'VALIDATION_CHECKS': {
+      titleNotEmpty: title.trim().length > 0,
+      descNotEmpty: description.trim().length > 0,
+      imageIsAbsolute: ogImage.startsWith('https://'),
+      urlIsAbsolute: canonicalUrl.startsWith('https://')
+    }
+  });
+
   return (
-    <Helmet>
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={keywords} />
-      <link rel="canonical" href={canonicalUrl} />
-      
-      {/* Open Graph Tags */}
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:image" content={ogImage} />
-      <meta property="og:type" content="article" />
-      <meta property="article:author" content="SIP Brewery Research Team" />
-      <meta property="article:publisher" content="SIP Brewery" />
-      <meta property="article:published_time" content={publishedTime} />
-      <meta property="article:modified_time" content={modifiedTime} />
-      
-      {/* Twitter Card Tags */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
-      
-      {/* Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Article",
-          "headline": title,
-          "description": description,
-          "url": canonicalUrl,
-          "image": ogImage,
-          "author": {
-            "@type": "Organization",
-            "name": "SIP Brewery Research Team"
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "SIP Brewery",
-            "logo": {
-              "@type": "ImageObject",
-              "url": ogImage
-            }
-          },
-          "datePublished": publishedTime,
-          "dateModified": modifiedTime
-        })}
-      </script>
-    </Helmet>
+    <ConsolidatedSEOHead
+      title={title}
+      description={description}
+      keywords={keywords}
+      canonicalUrl={canonicalUrl}
+      ogImage={ogImage}
+      ogType="article"
+      articleAuthor="SIP Brewery Research Team"
+      articlePublisher="SIP Brewery"
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      isNewsArticle={true}
+    />
   );
 };
 

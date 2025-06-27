@@ -1,18 +1,44 @@
 
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { Shield } from "lucide-react";
+import { useSupabaseAuthContext } from "@/contexts/SupabaseAuthContext";
+import { useNavigate } from "react-router-dom";
+import { useInvestorStats } from "@/hooks/useInvestorData";
+import HeroContent from "./hero/HeroContent";
+import HeroFeatures from "./hero/HeroFeatures";
+import HeroStats from "./hero/HeroStats";
+
+// Lazy load heavy components
+const BlogSlider = lazy(() => import("./BlogSlider"));
 
 const HeroSection = () => {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
+  const { user } = useSupabaseAuthContext();
+  const navigate = useNavigate();
+  
+  // Handle the database error gracefully
+  const { data: investorStats, error } = useInvestorStats();
+  
+  // Log the error but don't crash the app
+  if (error) {
+    console.warn('Failed to fetch investor stats:', error);
+  }
 
   const handleStartInvesting = () => {
-    // Simple scroll to SIP calculator section
-    const element = document.getElementById('sip-calculator');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (user) {
+      navigate('/dashboard');
     } else {
-      // If calculator not found, show modal
       setShowUserTypeModal(true);
+    }
+  };
+
+  const handleUserTypeSelection = (userType: 'client' | 'agent') => {
+    setShowUserTypeModal(false);
+    if (userType === 'agent') {
+      navigate('/agent');
+    } else {
+      const event = new CustomEvent('openLogin');
+      window.dispatchEvent(event);
     }
   };
 
@@ -23,9 +49,36 @@ const HeroSection = () => {
     }
   };
 
+  // Optimized stats formatting with memoization and fallback
+  const stats = React.useMemo(() => {
+    if (investorStats && !error) {
+      const formatAmount = (amount: number) => {
+        if (amount >= 10000000) {
+          return `₹${(amount / 10000000).toFixed(1)}Cr`;
+        } else if (amount >= 100000) {
+          return `₹${(amount / 100000).toFixed(1)}L`;
+        }
+        return `₹${amount.toLocaleString('en-IN')}`;
+      };
+
+      return {
+        investors: `${investorStats.total_investors.toLocaleString('en-IN')}+`,
+        amount: formatAmount(investorStats.total_amount_invested),
+        rating: `${investorStats.average_rating.toFixed(1)}★`
+      };
+    }
+    
+    // Fallback stats when database is unavailable
+    return {
+      investors: "Growing Community",
+      amount: "₹1Cr+ AUM",
+      rating: "4.8★ Rated"
+    };
+  }, [investorStats, error]);
+
   return (
     <section className="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 overflow-hidden">
-      {/* Background Decorations */}
+      {/* Simplified Background Decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-10 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse"></div>
         <div className="absolute top-32 right-20 w-16 h-16 bg-purple-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
@@ -34,90 +87,27 @@ const HeroSection = () => {
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
-        {/* Main Hero Content */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            India's #1 <span className="text-blue-600">AI-Powered</span><br />
-            Mutual Fund Platform
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Start your wealth building journey with SEBI-registered platform. 
-            Compare funds with AI insights, calculate SIP returns, and invest smarter.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <button 
-              onClick={handleStartInvesting}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg rounded-lg transition-colors font-semibold shadow-lg hover:shadow-xl"
-            >
-              Start Investing Today
-            </button>
-            <button 
-              onClick={handleCalculateReturns}
-              className="bg-white hover:bg-gray-50 text-blue-600 border-2 border-blue-600 px-8 py-4 text-lg rounded-lg transition-colors font-semibold shadow-lg hover:shadow-xl"
-            >
-              Calculate SIP Returns
-            </button>
-          </div>
+        <HeroContent 
+          onStartInvesting={handleStartInvesting}
+          onCalculateReturns={handleCalculateReturns}
+        />
+
+        {/* Blog Slider with Loading Fallback */}
+        <div className="mb-12">
+          <Suspense fallback={
+            <div className="bg-white bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 shadow-lg max-w-4xl mx-auto h-48 flex items-center justify-center">
+              <div className="text-gray-500">Loading blog highlights...</div>
+            </div>
+          }>
+            <BlogSlider />
+          </Suspense>
         </div>
 
-        {/* Trust Indicators */}
-        <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-8 shadow-lg max-w-4xl mx-auto mb-12">
-          <div className="grid md:grid-cols-4 gap-6 text-center">
-            <div>
-              <div className="text-2xl font-bold text-blue-600 mb-1">1000+</div>
-              <div className="text-gray-600 text-sm">Happy Investors</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-green-600 mb-1">₹50Cr+</div>
-              <div className="text-gray-600 text-sm">Assets Under Management</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-purple-600 mb-1">4.8★</div>
-              <div className="text-gray-600 text-sm">User Rating</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-amber-600 mb-1">SEBI</div>
-              <div className="text-gray-600 text-sm">Registered Platform</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Key Features */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="bg-white bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-shadow">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🤖</span>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Fund Analysis</h3>
-            <p className="text-gray-600">
-              Advanced AI algorithms analyze fund performance, risks, and market trends to help you make informed decisions.
-            </p>
-          </div>
-          
-          <div className="bg-white bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-shadow">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">📊</span>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Smart Comparison</h3>
-            <p className="text-gray-600">
-              Compare multiple mutual funds side-by-side with detailed metrics and AI-powered recommendations.
-            </p>
-          </div>
-          
-          <div className="bg-white bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 shadow-lg text-center hover:shadow-xl transition-shadow">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🎯</span>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Goal Planning</h3>
-            <p className="text-gray-600">
-              Set financial goals and get personalized SIP recommendations to achieve your dreams.
-            </p>
-          </div>
-        </div>
+        <HeroFeatures />
+        <HeroStats stats={stats} />
 
         {/* Compliance Notice */}
-        <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 border-2 border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300">
+        <div id="why-choose-sipbrewery" className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 border-2 border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300">
           <div className="flex items-start space-x-3">
             <Shield className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
             <div className="text-left">
@@ -128,7 +118,7 @@ const HeroSection = () => {
                 Past performance is not indicative of future returns. All investments are regulated by SEBI and compliant with AMFI guidelines.
                 <br /><br />
                 <strong>Registration Details:</strong> AMFI Registered Mutual Fund Distributor | 
-                All consistency rewards, gift cards and referral incentives are promotional benefits subject to terms and conditions.
+                All consistency rewards, gift cards and referral incentives are promotional benefits subject to terms and conditions as per SEBI guidelines and do not guarantee investment returns.
               </p>
             </div>
           </div>
@@ -141,26 +131,20 @@ const HeroSection = () => {
           <div className="bg-white rounded-2xl p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Welcome to SIP Brewery!</h3>
-              <p className="text-gray-600">Get started with your investment journey</p>
+              <p className="text-gray-600">Please select your account type to continue</p>
             </div>
             <div className="space-y-4">
               <button 
-                onClick={() => {
-                  setShowUserTypeModal(false);
-                  window.location.href = '/fund-comparison';
-                }}
+                onClick={() => handleUserTypeSelection('client')}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg rounded-lg transition-colors"
               >
-                Explore Fund Comparison
+                I'm an Investor (Client)
               </button>
               <button 
-                onClick={() => {
-                  setShowUserTypeModal(false);
-                  window.location.href = '/sip-calculator';
-                }}
+                onClick={() => handleUserTypeSelection('agent')}
                 className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg rounded-lg transition-colors"
               >
-                Try SIP Calculator
+                I'm a Financial Advisor (Agent)
               </button>
             </div>
             <button 

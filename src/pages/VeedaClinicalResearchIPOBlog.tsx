@@ -6,8 +6,6 @@ import VeedaBlogLayout from '@/components/blog/veeda-ipo/VeedaBlogLayout';
 import VeedaBlogContent from '@/components/blog/veeda-ipo/VeedaBlogContent';
 
 const VeedaClinicalResearchIPOBlog = () => {
-  console.log('🎯 Veeda Blog Page - Nuclear SEO Control Active');
-  
   return (
     <Layout>
       <VeedaBlogSEO />

@@ -23,61 +23,57 @@ interface EnhancedFundDetails extends FundSearchResult {
   volatility: number;
 }
 
-// Add caching to improve performance
-const searchCache = new Map<string, FundSearchResult[]>();
-const detailsCache = new Map<string, FundSearchResult | null>();
-const enhancedCache = new Map<string, EnhancedFundDetails | null>();
-
 export class MutualFundSearchService {
-  private static readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  private static fundListCache: any[] = [];
+  private static lastFetchTime: number = 0;
+  private static readonly CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
   static async searchFunds(query: string): Promise<FundSearchResult[]> {
-    // Check cache first
-    const cacheKey = `search_${query.toLowerCase()}`;
-    if (searchCache.has(cacheKey)) {
-      return searchCache.get(cacheKey)!;
-    }
-
     try {
       console.log('MutualFundSearchService: Searching for:', query);
       
       const results = await FundApiService.searchFunds(query);
       
-      const mappedResults = results.map(fund => ({
+      return results.map(fund => ({
         schemeCode: fund.schemeCode.toString(),
         schemeName: fund.schemeName,
         category: this.detectCategory(fund.schemeName),
         fundHouse: this.extractFundHouse(fund.schemeName)
       }));
-
-      // Cache results
-      searchCache.set(cacheKey, mappedResults);
-      
-      // Clear cache after duration
-      setTimeout(() => {
-        searchCache.delete(cacheKey);
-      }, this.CACHE_DURATION);
-
-      return mappedResults;
     } catch (error) {
       console.error('MutualFundSearchService: Search error:', error);
       return [];
     }
   }
 
-  static async getFundDetails(schemeCode: string): Promise<FundSearchResult | null> {
-    // Check cache first
-    if (detailsCache.has(schemeCode)) {
-      return detailsCache.get(schemeCode)!;
+  static async getAllFunds(): Promise<FundSearchResult[]> {
+    try {
+      console.log('MutualFundSearchService: Fetching all funds');
+      
+      // This would typically fetch from a comprehensive API endpoint
+      // For now, we'll return a sample of funds or implement pagination
+      const results = await FundApiService.searchFunds(''); // Empty query to get all
+      
+      return results.map(fund => ({
+        schemeCode: fund.schemeCode.toString(),
+        schemeName: fund.schemeName,
+        category: this.detectCategory(fund.schemeName),
+        fundHouse: this.extractFundHouse(fund.schemeName)
+      }));
+    } catch (error) {
+      console.error('MutualFundSearchService: Error fetching all funds:', error);
+      return [];
     }
+  }
 
+  static async getFundDetails(schemeCode: string): Promise<FundSearchResult | null> {
     try {
       console.log('MutualFundSearchService: Fetching details for scheme:', schemeCode);
       
       const data = await FundApiService.getFundDetails(schemeCode);
       
       if (!data || !data.meta) {
-        detailsCache.set(schemeCode, null);
+        console.log('MutualFundSearchService: No data found for scheme:', schemeCode);
         return null;
       }
 
@@ -92,58 +88,62 @@ export class MutualFundSearchService {
         subCategory: data.meta.scheme_category
       };
 
-      // Cache result
-      detailsCache.set(schemeCode, result);
-      
-      // Clear cache after duration
-      setTimeout(() => {
-        detailsCache.delete(schemeCode);
-      }, this.CACHE_DURATION);
-
+      console.log('MutualFundSearchService: Returning fund details:', result);
       return result;
     } catch (error) {
       console.error('MutualFundSearchService: Error fetching fund details:', error);
-      detailsCache.set(schemeCode, null);
       return null;
     }
   }
 
-  static async getEnhancedFundDetails(schemeCode: string): Promise<EnhancedFundDetails | null> {
-    // Check cache first
-    if (enhancedCache.has(schemeCode)) {
-      return enhancedCache.get(schemeCode)!;
+  static async getMultipleFundDetails(schemeCodes: string[]): Promise<Map<string, FundSearchResult>> {
+    const results = new Map<string, FundSearchResult>();
+    
+    try {
+      console.log('MutualFundSearchService: Fetching details for multiple funds:', schemeCodes.length);
+      
+      // Fetch details for each scheme code
+      const promises = schemeCodes.map(async (schemeCode) => {
+        const details = await this.getFundDetails(schemeCode);
+        if (details) {
+          results.set(schemeCode, details);
+        }
+      });
+      
+      await Promise.all(promises);
+      
+      console.log('MutualFundSearchService: Fetched details for', results.size, 'funds');
+      return results;
+    } catch (error) {
+      console.error('MutualFundSearchService: Error fetching multiple fund details:', error);
+      return results;
     }
+  }
 
+  static async getEnhancedFundDetails(schemeCode: string): Promise<EnhancedFundDetails | null> {
     try {
       console.log('MutualFundSearchService: Fetching enhanced details for scheme:', schemeCode);
       
+      // Get basic fund details first (this uses /latest endpoint)
       const basicDetails = await this.getFundDetails(schemeCode);
       if (!basicDetails) {
-        enhancedCache.set(schemeCode, null);
+        console.log('MutualFundSearchService: No basic details found for scheme:', schemeCode);
         return null;
       }
 
-      // Get historical data with timeout
-      const timeoutPromise = new Promise<null>((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout')), 5000);
-      });
-
-      let performance = { returns1Y: 0, returns3Y: 0, returns5Y: 0, xirr1Y: 0, xirr3Y: 0, xirr5Y: 0 };
+      // Get FULL historical NAV data for performance calculation (this uses full endpoint)
+      console.log('MutualFundSearchService: Fetching FULL historical data for performance calculation...');
+      const fullHistoricalData = await FundApiService.getFundHistoricalData(schemeCode);
+      const navHistory = fullHistoricalData?.data || [];
       
-      try {
-        const fullHistoricalData = await Promise.race([
-          FundApiService.getFundHistoricalData(schemeCode),
-          timeoutPromise
-        ]);
-        
-        if (fullHistoricalData?.data) {
-          performance = EnhancedFundDataExtractor.calculatePerformanceFromNAV(fullHistoricalData.data);
-        }
-      } catch (timeoutError) {
-        console.log('Historical data fetch timed out, using defaults');
-      }
+      console.log('MutualFundSearchService: Retrieved', navHistory.length, 'NAV records for performance calculation');
 
-      const schemeAge = 5; // Default age
+      // Calculate performance from the FULL NAV history with XIRR
+      const performance = EnhancedFundDataExtractor.calculatePerformanceFromNAV(navHistory);
+      console.log('MutualFundSearchService: ENHANCED Performance calculated from', navHistory.length, 'records:', performance);
+      
+      // Estimate missing data
+      const schemeAge = EnhancedFundDataExtractor.extractSchemeAge(navHistory);
       const expenseRatio = EnhancedFundDataExtractor.estimateExpenseRatio(
         basicDetails.category || 'Equity', 
         basicDetails.fundHouse || ''
@@ -153,61 +153,46 @@ export class MutualFundSearchService {
         schemeAge
       );
 
+      // Calculate volatility from NAV history
+      const volatility = this.calculateVolatility(navHistory);
+
       const enhancedDetails: EnhancedFundDetails = {
         ...basicDetails,
-        ...performance,
-        expenseRatio,
-        aum,
-        volatility: 5.0 // Default volatility
+        returns1Y: performance.returns1Y,
+        returns3Y: performance.returns3Y,
+        returns5Y: performance.returns5Y,
+        xirr1Y: performance.xirr1Y,
+        xirr3Y: performance.xirr3Y,
+        xirr5Y: performance.xirr5Y,
+        expenseRatio: expenseRatio,
+        aum: aum,
+        volatility: volatility
       };
 
-      // Cache result
-      enhancedCache.set(schemeCode, enhancedDetails);
-      
-      // Clear cache after duration
-      setTimeout(() => {
-        enhancedCache.delete(schemeCode);
-      }, this.CACHE_DURATION);
+      console.log('MutualFundSearchService: FINAL Enhanced details with CALCULATED PERFORMANCE AND XIRR:', {
+        schemeName: enhancedDetails.schemeName,
+        totalNAVRecords: navHistory.length,
+        returns1Y: enhancedDetails.returns1Y,
+        returns3Y: enhancedDetails.returns3Y,
+        returns5Y: enhancedDetails.returns5Y,
+        xirr1Y: enhancedDetails.xirr1Y,
+        xirr3Y: enhancedDetails.xirr3Y,
+        xirr5Y: enhancedDetails.xirr5Y,
+        hasRealReturns: enhancedDetails.returns1Y !== 0 || enhancedDetails.returns3Y !== 0 || enhancedDetails.returns5Y !== 0
+      });
 
       return enhancedDetails;
     } catch (error) {
       console.error('MutualFundSearchService: Error fetching enhanced details:', error);
-      enhancedCache.set(schemeCode, null);
       return null;
     }
-  }
-
-  static async getMultipleFundDetails(schemeCodes: string[]): Promise<Map<string, FundSearchResult>> {
-    const results = new Map<string, FundSearchResult>();
-    
-    // Process in batches to avoid overwhelming the API
-    const batchSize = 5;
-    for (let i = 0; i < schemeCodes.length; i += batchSize) {
-      const batch = schemeCodes.slice(i, i + batchSize);
-      const promises = batch.map(async (schemeCode) => {
-        try {
-          const details = await this.getFundDetails(schemeCode);
-          if (details) {
-            results.set(schemeCode, details);
-          }
-        } catch (error) {
-          console.error(`Error fetching details for ${schemeCode}:`, error);
-        }
-      });
-      
-      await Promise.allSettled(promises);
-    }
-    
-    return results;
   }
 
   static calculateVolatility(navHistory: any[]): number {
     if (!navHistory || navHistory.length < 30) return 5.0;
 
     const returns = [];
-    const maxRecords = Math.min(navHistory.length, 50); // Limit for performance
-    
-    for (let i = 1; i < maxRecords; i++) {
+    for (let i = 1; i < Math.min(navHistory.length, 100); i++) {
       const currentNAV = parseFloat(navHistory[i-1]?.nav || '0');
       const previousNAV = parseFloat(navHistory[i]?.nav || '0');
       
@@ -221,9 +206,9 @@ export class MutualFundSearchService {
 
     const mean = returns.reduce((sum, ret) => sum + ret, 0) / returns.length;
     const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - mean, 2), 0) / returns.length;
-    const volatility = Math.sqrt(variance * 252) * 100;
+    const volatility = Math.sqrt(variance * 252) * 100; // Annualized volatility in percentage
 
-    return Math.round(Math.min(volatility, 50) * 100) / 100;
+    return Math.round(Math.min(volatility, 50) * 100) / 100; // Cap at 50% and round to 2 decimals
   }
 
   static detectCategory(schemeName: string): string {
@@ -260,14 +245,5 @@ export class MutualFundSearchService {
     if (name.includes('parag parikh')) return 'PPFAS Mutual Fund';
     
     return 'Unknown';
-  }
-
-  static async getAllFunds(): Promise<FundSearchResult[]> {
-    // Return cached popular funds to improve performance
-    return [
-      { schemeCode: '120503', schemeName: 'HDFC Top 100 Fund - Growth', category: 'Large Cap', fundHouse: 'HDFC Mutual Fund' },
-      { schemeCode: '122639', schemeName: 'SBI Small Cap Fund - Regular Plan - Growth', category: 'Small Cap', fundHouse: 'SBI Mutual Fund' },
-      { schemeCode: '120503', schemeName: 'ICICI Prudential Bluechip Fund - Growth', category: 'Large Cap', fundHouse: 'ICICI Prudential Mutual Fund' }
-    ];
   }
 }

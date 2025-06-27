@@ -1,173 +1,85 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
-import { Toaster } from "@/components/ui/toaster"
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
+import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+import FundDetailsPage from "./pages/FundDetailsPage";
+import FundComparisonPage from "./pages/FundComparisonPage";
+import PublicFundsPage from "./pages/PublicFundsPage";
+import SIPCalculatorPage from "./pages/SIPCalculatorPage";
+import ContactPage from "./pages/ContactPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import RiskDisclosurePage from "./pages/RiskDisclosurePage";
+import AdminPage from "./pages/AdminPage";
+import SecureAdminPage from "./pages/SecureAdminPage";
+import CommunityPage from "./pages/CommunityPage";
+import HDBFinancialServicesIPOBlog from "./pages/HDBFinancialServicesIPOBlog";
+import VeedaClinicalResearchIPOBlog from "./pages/VeedaClinicalResearchIPOBlog";
+import NBFCSectorDeepDiveBlog from "./pages/NBFCSectorDeepDiveBlog";
+import HowFundManagersMakeMoneyBlog from "./pages/HowFundManagersMakeMoneyBlog";
+import IPOAnalysisGuideBlog from "./pages/IPOAnalysisGuideBlog";
+import HealthcareSectorOutlookBlog from "./pages/HealthcareSectorOutlookBlog";
 
-import ErrorBoundary from './components/ErrorBoundary';
-import PageLoader from './components/PageLoader';
+const queryClient = new QueryClient();
 
-// Critical pages - load immediately
-import Index from './pages/Index';
-
-// Non-critical pages - lazy load
-const FundComparisonPage = React.lazy(() => import('./pages/FundComparisonPage'));
-const PublicFundsPage = React.lazy(() => import('./pages/PublicFundsPage'));
-const SIPCalculatorPage = React.lazy(() => import('./pages/SIPCalculatorPage'));
-const ContactPage = React.lazy(() => import('./pages/ContactPage'));
-const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage'));
-const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
-const CommunityPage = React.lazy(() => import('./pages/CommunityPage'));
-const FundDetailsPage = React.lazy(() => import('./pages/FundDetailsPage'));
-const SecureAdminPage = React.lazy(() => import('./pages/SecureAdminPage'));
-
-// Blog pages - heavily lazy loaded
-const IndogulfCropsciencesIPOBlogPage = React.lazy(() => import('@/pages/IndogulfCropsciencesIPOBlog'));
-const HDBFinancialServicesIPOBlog = React.lazy(() => import('@/pages/HDBFinancialServicesIPOBlog'));
-const VeedaClinicalResearchIPOBlog = React.lazy(() => import('@/pages/VeedaClinicalResearchIPOBlog'));
-const NBFCSectorDeepDiveBlog = React.lazy(() => import('@/pages/NBFCSectorDeepDiveBlog'));
-
-// Optimized QueryClient
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-      retry: 1,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
-    },
-    mutations: {
-      retry: 0,
-    },
-  },
-});
-
-const AppPageLoader = ({ message = "Loading..." }: { message?: string }) => (
-  <PageLoader message={message} />
-);
-
-function App() {
-  console.log('🚀 App initializing...');
+// Custom component to handle route exclusions
+const AppRoutes = () => {
+  const pathname = window.location.pathname;
   
+  // Handle static XML and TXT files - these should be served directly from public folder
+  const staticFiles = ['/sitemap.xml', '/news-sitemap.xml', '/robots.txt'];
+  
+  if (staticFiles.includes(pathname)) {
+    // Force redirect to actual static file
+    window.location.replace(pathname);
+    return null;
+  }
+
   return (
-    <ErrorBoundary>
-      <HelmetProvider>
-        <Router basename="/">
-          <div className="min-h-screen bg-background">
-            <QueryClientProvider client={queryClient}>
-              <Helmet>
-                <title>SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered</title>
-                <meta name="description" content="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance." />
-                <meta name="robots" content="index, follow" />
-                <meta name="author" content="SIP Brewery Research Team" />
-                <link rel="canonical" href="https://sipbrewery.com/" />
-              </Helmet>
-              <Toaster />
-              <ErrorBoundary>
-                <Suspense fallback={<AppPageLoader message="Loading application..." />}>
-                  <Routes>
-                    {/* Home route - highest priority */}
-                    <Route 
-                      path="/" 
-                      element={
-                        <ErrorBoundary fallback={<AppPageLoader message="Loading home page..." />}>
-                          <Index />
-                        </ErrorBoundary>
-                      } 
-                    />
-                    
-                    {/* Core pages */}
-                    <Route path="/fund-comparison" element={
-                      <Suspense fallback={<AppPageLoader message="Loading fund comparison..." />}>
-                        <ErrorBoundary fallback={<AppPageLoader message="Loading fund comparison..." />}>
-                          <FundComparisonPage />
-                        </ErrorBoundary>
-                      </Suspense>
-                    } />
-                    <Route path="/public-funds" element={
-                      <Suspense fallback={<AppPageLoader message="Loading public funds..." />}>
-                        <ErrorBoundary fallback={<AppPageLoader message="Loading public funds..." />}>
-                          <PublicFundsPage />
-                        </ErrorBoundary>
-                      </Suspense>
-                    } />
-                    <Route path="/sip-calculator" element={
-                      <Suspense fallback={<AppPageLoader message="Loading SIP calculator..." />}>
-                        <ErrorBoundary fallback={<AppPageLoader message="Loading SIP calculator..." />}>
-                          <SIPCalculatorPage />
-                        </ErrorBoundary>
-                      </Suspense>
-                    } />
-                    
-                    {/* Other pages */}
-                    <Route path="/contact" element={
-                      <Suspense fallback={<AppPageLoader message="Loading contact page..." />}>
-                        <ContactPage />
-                      </Suspense>
-                    } />
-                    <Route path="/terms" element={
-                      <Suspense fallback={<AppPageLoader message="Loading terms..." />}>
-                        <TermsOfServicePage />
-                      </Suspense>
-                    } />
-                    <Route path="/privacy" element={
-                      <Suspense fallback={<AppPageLoader message="Loading privacy policy..." />}>
-                        <PrivacyPolicyPage />
-                      </Suspense>
-                    } />
-                    <Route path="/community" element={
-                      <Suspense fallback={<AppPageLoader message="Loading community..." />}>
-                        <CommunityPage />
-                      </Suspense>
-                    } />
-                    <Route path="/fund/:fundId" element={
-                      <Suspense fallback={<AppPageLoader message="Loading fund details..." />}>
-                        <FundDetailsPage />
-                      </Suspense>
-                    } />
-                    <Route path="/funds/:fundId" element={
-                      <Suspense fallback={<AppPageLoader message="Loading fund analysis..." />}>
-                        <FundDetailsPage />
-                      </Suspense>
-                    } />
-                    <Route path="/secure-admin" element={
-                      <Suspense fallback={<AppPageLoader message="Loading admin panel..." />}>
-                        <SecureAdminPage />
-                      </Suspense>
-                    } />
-                    
-                    {/* Blog Routes */}
-                    <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={
-                      <Suspense fallback={<AppPageLoader message="Loading IPO analysis..." />}>
-                        <IndogulfCropsciencesIPOBlogPage />
-                      </Suspense>
-                    } />
-                    <Route path="/blog/hdb-financial-services-ipo-analysis" element={
-                      <Suspense fallback={<AppPageLoader message="Loading HDB IPO analysis..." />}>
-                        <HDBFinancialServicesIPOBlog />
-                      </Suspense>
-                    } />
-                    <Route path="/blog/veeda-clinical-research-ipo-analysis" element={
-                      <Suspense fallback={<AppPageLoader message="Loading Veeda IPO analysis..." />}>
-                        <VeedaClinicalResearchIPOBlog />
-                      </Suspense>
-                    } />
-                    <Route path="/blog/nbfc-sector-deep-dive-analysis" element={
-                      <Suspense fallback={<AppPageLoader message="Loading NBFC sector analysis..." />}>
-                        <NBFCSectorDeepDiveBlog />
-                      </Suspense>
-                    } />
-                  </Routes>
-                </Suspense>
-              </ErrorBoundary>
-            </QueryClientProvider>
-          </div>
-        </Router>
-      </HelmetProvider>
-    </ErrorBoundary>
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/fund/:fundSlug" element={<FundDetailsPage />} />
+      <Route path="/funds/:fundType" element={<PublicFundsPage />} />
+      <Route path="/fund-comparison" element={<FundComparisonPage />} />
+      <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/terms" element={<TermsOfServicePage />} />
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+      <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
+      <Route path="/admin" element={<AdminPage />} />
+      <Route path="/secure-admin" element={<SecureAdminPage />} />
+      <Route path="/community" element={<CommunityPage />} />
+      <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
+      <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
+      <Route path="/blog/nbfc-sector-analysis-india-2025" element={<NBFCSectorDeepDiveBlog />} />
+      <Route path="/blog/how-fund-managers-make-money-mutual-funds" element={<HowFundManagersMakeMoneyBlog />} />
+      <Route path="/blog/ipo-analysis-guide" element={<IPOAnalysisGuideBlog />} />
+      <Route path="/blog/healthcare-sector-outlook" element={<HealthcareSectorOutlookBlog />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
-}
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <SupabaseAuthProvider>
+      <HelmetProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </TooltipProvider>
+      </HelmetProvider>
+    </SupabaseAuthProvider>
+  </QueryClientProvider>
+);
 
 export default App;
