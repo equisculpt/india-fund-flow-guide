@@ -54,8 +54,6 @@ const queryClient = new QueryClient({
       retry: 1,
     },
   },
-  queryCache: undefined,
-  mutationCache: undefined,
 });
 
 // Enhanced loading component with better UX
@@ -64,6 +62,8 @@ const AppPageLoader = ({ message = "Loading page..." }: { message?: string }) =>
 );
 
 function App() {
+  console.log('🚀 App initializing...');
+  
   return (
     <ErrorBoundary>
       <HelmetProvider>
@@ -84,9 +84,19 @@ function App() {
                       <Toaster />
                       <SecurityHeaders />
                       <ErrorBoundary>
-                        <Suspense fallback={<AppPageLoader />}>
+                        <Suspense fallback={<AppPageLoader message="Loading application..." />}>
                           <Routes>
-                            <Route path="/" element={<Index />} />
+                            {/* Home route - highest priority */}
+                            <Route 
+                              path="/" 
+                              element={
+                                <ErrorBoundary fallback={<AppPageLoader message="Loading home page..." />}>
+                                  <Index />
+                                </ErrorBoundary>
+                              } 
+                            />
+                            
+                            {/* Core pages */}
                             <Route path="/fund-comparison" element={<FundComparisonPage />} />
                             <Route path="/public-funds" element={<PublicFundsPage />} />
                             <Route path="/sip-calculator" element={<SIPCalculatorPage />} />

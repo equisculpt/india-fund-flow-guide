@@ -6,9 +6,19 @@ import SEOContentSection from '@/components/index/SEOContentSection';
 import LazyLoadedSections from '@/components/index/LazyLoadedSections';
 import FAQSection from '@/components/index/FAQSection';
 import { useFundData } from '@/components/FundData';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const Index = () => {
-  const { allFunds } = useFundData();
+  console.log('🏠 Index page loading...');
+  
+  // Handle fund data with error boundary
+  let allFunds = [];
+  try {
+    const { allFunds: funds } = useFundData();
+    allFunds = funds || [];
+  } catch (error) {
+    console.warn('Failed to load fund data:', error);
+  }
 
   const handleRiskProfilingComplete = (result: any) => {
     console.log('Risk profiling completed:', result);
@@ -39,31 +49,41 @@ const Index = () => {
   };
 
   return (
-    <Layout
-      pageType="homepage"
-      title="SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered"
-      description="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance."
-      keywords="mutual funds india, SIP investment, SEBI registered platform, best mutual funds, SIP calculator"
-      canonicalUrl="https://sipbrewery.com/"
-      schemaData={structuredData}
-    >
-      {/* Hero Section - Critical above-the-fold content */}
-      <div className="critical-content">
-        <HeroSection />
-      </div>
+    <ErrorBoundary>
+      <Layout
+        pageType="homepage"
+        title="SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered"
+        description="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance."
+        keywords="mutual funds india, SIP investment, SEBI registered platform, best mutual funds, SIP calculator"
+        canonicalUrl="https://sipbrewery.com/"
+        schemaData={structuredData}
+      >
+        {/* Hero Section - Critical above-the-fold content */}
+        <ErrorBoundary fallback={<div className="h-96 bg-blue-50 flex items-center justify-center"><div className="text-gray-500">Loading hero section...</div></div>}>
+          <div className="critical-content">
+            <HeroSection />
+          </div>
+        </ErrorBoundary>
 
-      {/* SEO Content Section - Critical for SEO but can be optimized */}
-      <SEOContentSection />
+        {/* SEO Content Section - Critical for SEO but can be optimized */}
+        <ErrorBoundary fallback={<div className="h-32 bg-white flex items-center justify-center"><div className="text-gray-400">Loading content...</div></div>}>
+          <SEOContentSection />
+        </ErrorBoundary>
 
-      {/* Lazy loaded sections */}
-      <LazyLoadedSections 
-        allFunds={allFunds} 
-        onRiskProfilingComplete={handleRiskProfilingComplete} 
-      />
-      
-      {/* FAQ Section - Optimized for mobile */}
-      <FAQSection />
-    </Layout>
+        {/* Lazy loaded sections */}
+        <ErrorBoundary fallback={<div className="h-64 bg-gray-50 flex items-center justify-center"><div className="text-gray-400">Loading sections...</div></div>}>
+          <LazyLoadedSections 
+            allFunds={allFunds} 
+            onRiskProfilingComplete={handleRiskProfilingComplete} 
+          />
+        </ErrorBoundary>
+        
+        {/* FAQ Section - Optimized for mobile */}
+        <ErrorBoundary fallback={<div className="h-32 bg-white flex items-center justify-center"><div className="text-gray-400">Loading FAQ...</div></div>}>
+          <FAQSection />
+        </ErrorBoundary>
+      </Layout>
+    </ErrorBoundary>
   );
 };
 
