@@ -15,16 +15,17 @@ import RiskDisclosureSection from './components/RiskDisclosureSection';
 import BlogFooter from './components/BlogFooter';
 
 const IndogulfIPOBlog = () => {
-  // CRITICAL CHECK - Only render on correct path
-  const currentPath = window.location.pathname;
+  // CRITICAL CHECK - Multiple layers of protection
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
   const isIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
 
-  console.log('🔍 INDOGULF BLOG V5 - HYDRATION AWARE:', {
+  console.log('🔍 INDOGULF BLOG V6 - ULTRA STRICT GUARD:', {
     component: 'IndogulfIPOBlog',
     timestamp: new Date().toISOString(),
     currentPath,
     isIndogulfPage,
-    'RENDER_STATUS': isIndogulfPage ? 'WILL_RENDER_AFTER_HYDRATION' : 'BLOCKED_WRONG_PATH'
+    'RENDER_STATUS': isIndogulfPage ? 'ALLOWED' : 'COMPLETELY_BLOCKED',
+    'WINDOW_CHECK': typeof window !== 'undefined' ? 'CLIENT_SIDE' : 'SERVER_SIDE'
   });
 
   // Financial data with updated 9M FY25 data from uploaded image
@@ -62,29 +63,27 @@ const IndogulfIPOBlog = () => {
     ebitda: (44.78 * 12) / 9
   };
 
-  // CRITICAL: Only render SEO and content if we're on the correct page
-  if (!isIndogulfPage) {
-    console.log('🚫 INDOGULF BLOG BLOCKED - Not on Indogulf page, returning null');
+  // CRITICAL: Block rendering completely if not on Indogulf page
+  if (!isIndogulfPage || typeof window === 'undefined') {
+    console.log('🚫 INDOGULF BLOG ULTRA BLOCKED - Wrong path or server-side, returning null');
     return null;
   }
 
   return (
     <>
-      <HydrationAwareSEO>
-        <ConsolidatedSEOHead
-          title="Indogulf Cropsciences IPO Research Analysis 2025 | Complete Financial Review & Research Report"
-          description="Comprehensive research analysis of Indogulf Cropsciences IPO - ₹200 crore mainboard offering. Detailed insights on financials, valuation, sectoral analysis, and research findings."
-          keywords="Indogulf Cropsciences IPO 2025, agrochemicals IPO, mainboard IPO, crop protection IPO, research analysis, IPO review"
-          canonicalUrl="https://sipbrewery.com/blog/indogulf-cropsciences-ipo-complete-analysis-2024"
-          ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
-          ogType="article"
-          articleAuthor="SIP Brewery Research Team"
-          articlePublisher="SIP Brewery"
-          publishedTime="2025-06-25T12:00:00Z"
-          modifiedTime={new Date().toISOString()}
-          isNewsArticle={true}
-        />
-      </HydrationAwareSEO>
+      <ConsolidatedSEOHead
+        title="Indogulf Cropsciences IPO Research Analysis 2025 | Complete Financial Review & Research Report"
+        description="Comprehensive research analysis of Indogulf Cropsciences IPO - ₹200 crore mainboard offering. Detailed insights on financials, valuation, sectoral analysis, and research findings."
+        keywords="Indogulf Cropsciences IPO 2025, agrochemicals IPO, mainboard IPO, crop protection IPO, research analysis, IPO review"
+        canonicalUrl="https://sipbrewery.com/blog/indogulf-cropsciences-ipo-complete-analysis-2024"
+        ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+        ogType="article"
+        articleAuthor="SIP Brewery Research Team"
+        articlePublisher="SIP Brewery"
+        publishedTime="2025-06-25T12:00:00Z"
+        modifiedTime={new Date().toISOString()}
+        isNewsArticle={true}
+      />
       
       <div className="min-h-screen bg-gray-50">
         <IndogulfBlogHeader />

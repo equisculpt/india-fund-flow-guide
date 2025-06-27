@@ -6,18 +6,23 @@ import HDBBlogLayout from '@/components/blog/hdb-ipo/HDBBlogLayout';
 import HDBBlogContent from '@/components/blog/hdb-ipo/HDBBlogContent';
 
 const HDBFinancialServicesIPOBlog = () => {
-  // FORENSIC DEBUGGING - Page level
-  console.log('📄 HDB BLOG PAGE FORENSIC AUDIT V4:', {
+  // CRITICAL: Only proceed if we're on the correct path
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+  const isHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
+
+  console.log('📄 HDB BLOG PAGE V6 - ULTRA STRICT:', {
     component: 'HDBFinancialServicesIPOBlog',
     timestamp: new Date().toISOString(),
-    path: window.location.pathname,
-    message: 'HDB Page component rendering - SEO should ONLY render here',
-    'CRITICAL_CHECK': 'This page should be the ONLY place HDB SEO renders'
+    currentPath,
+    isHDBPage,
+    'PAGE_RENDER_STATUS': isHDBPage ? 'FULL_RENDER' : 'MINIMAL_RENDER',
+    'CRITICAL_CHECK': 'This page should ONLY render HDB SEO on correct path'
   });
 
   return (
     <Layout>
-      <HDBBlogSEO />
+      {/* CRITICAL: Only render HDB SEO if we're actually on the HDB page */}
+      {isHDBPage && <HDBBlogSEO />}
       <HDBBlogLayout>
         <HDBBlogContent />
       </HDBBlogLayout>

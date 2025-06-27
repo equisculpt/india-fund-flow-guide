@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import SEOHead from './SEOHead';
-import HydrationAwareSEO from './seo/HydrationAwareSEO';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,22 +22,20 @@ const Layout = ({ children }: LayoutProps) => {
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout SEO Guard V5 - HYDRATION AWARE:', {
+  console.log('🛡️ Layout SEO Guard V6 - IMMEDIATE RENDER:', {
     currentPath: location.pathname,
     isNuclearSEOPage,
-    willCompletelySkipSEO: isNuclearSEOPage,
-    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO INTERFERENCE' : 'Normal page - will render SEO with hydration guard',
+    willRenderSEO: !isNuclearSEOPage,
+    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO SEO FROM LAYOUT' : '✅ Normal page - immediate SEO render',
     timestamp: new Date().toISOString(),
-    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_SEO' : 'ALLOWING_SEO_AFTER_HYDRATION'
+    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_LAYOUT_SEO' : 'RENDERING_LAYOUT_SEO_IMMEDIATELY'
   });
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* CRITICAL: Only render SEO for non-nuclear pages and only after hydration */}
+      {/* CRITICAL: Only render SEO for non-nuclear pages, render immediately without hydration delays */}
       {!isNuclearSEOPage && (
-        <HydrationAwareSEO>
-          <SEOHead isDynamic={true} />
-        </HydrationAwareSEO>
+        <SEOHead isDynamic={true} />
       )}
       <Header />
       <main className="flex-1">
