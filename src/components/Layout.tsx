@@ -22,18 +22,18 @@ const Layout = ({ children }: LayoutProps) => {
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout SEO Guard V8 - ULTRA IMMEDIATE RENDER:', {
+  console.log('🛡️ Layout SEO Guard V10 - FINAL FIX:', {
     currentPath: location.pathname,
     isNuclearSEOPage,
     willRenderSEO: !isNuclearSEOPage,
-    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO SEO FROM LAYOUT' : '✅ Normal page - ULTRA IMMEDIATE SEO render',
+    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO SEO FROM LAYOUT' : '✅ Normal page - IMMEDIATE SEO render',
     timestamp: new Date().toISOString(),
-    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_LAYOUT_SEO' : 'ULTRA_IMMEDIATE_LAYOUT_SEO'
+    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_LAYOUT_SEO' : 'IMMEDIATE_LAYOUT_SEO'
   });
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* CRITICAL: Only render SEO for non-nuclear pages, render ULTRA immediately */}
+      {/* CRITICAL: Only render SEO for non-nuclear pages, render immediately */}
       {!isNuclearSEOPage && (
         <SEOHead isDynamic={true} />
       )}

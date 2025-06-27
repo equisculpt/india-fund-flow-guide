@@ -1,31 +1,32 @@
 
 import React from 'react';
-import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
 
 const HDBBlogSEO = () => {
-  // ULTRA CRITICAL: Multiple layers of protection with immediate exit
+  // TRIPLE PROTECTION: Server-side, client-side, and path checks
   if (typeof window === 'undefined') {
-    console.log('🚫 HDB SEO V7 - SERVER SIDE BLOCKED');
+    console.log('🚫 HDB SEO V9 - SERVER SIDE COMPLETELY BLOCKED');
     return null;
   }
 
   const currentPath = window.location.pathname;
-  const isHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
+  const isExactHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
 
-  console.log('🎯 HDB Blog SEO V7 - ULTRA STRICT GUARD:', {
+  console.log('🎯 HDB SEO V9 - ULTRA STRICT GUARD:', {
     component: 'HDBBlogSEO',
     timestamp: new Date().toISOString(),
     currentPath,
-    isHDBPage,
-    'RENDER_STATUS': isHDBPage ? 'ALLOWED' : 'COMPLETELY_BLOCKED',
-    'CRITICAL_CHECK': 'This component should NEVER render on any other page'
+    isExactHDBPage,
+    'RENDER_STATUS': isExactHDBPage ? 'ALLOWED' : 'COMPLETELY_BLOCKED'
   });
 
-  // CRITICAL: Block rendering completely if not on HDB page
-  if (!isHDBPage) {
-    console.log('🚫 HDB SEO ULTRA BLOCKED - Wrong path, returning null');
+  // CRITICAL: Complete block if not on exact HDB page
+  if (!isExactHDBPage) {
+    console.log('🚫 HDB SEO V9 - WRONG PATH - RETURNING NULL');
     return null;
   }
+
+  // Only import ConsolidatedSEOHead when we're definitely on HDB page
+  const ConsolidatedSEOHead = React.lazy(() => import('@/components/seo/ConsolidatedSEOHead'));
 
   const canonicalUrl = "https://sipbrewery.com/blog/hdb-financial-services-ipo-analysis";
   const title = "HDB Financial Services IPO Analysis 2025 | Complete Financial Review & SWOT | SIP Brewery";
@@ -36,19 +37,21 @@ const HDBBlogSEO = () => {
   const modifiedTime = "2025-06-21T12:00:00+05:30";
 
   return (
-    <ConsolidatedSEOHead
-      title={title}
-      description={description}
-      keywords={keywords}
-      canonicalUrl={canonicalUrl}
-      ogImage={ogImage}
-      ogType="article"
-      articleAuthor="SIP Brewery Research Team"
-      articlePublisher="SIP Brewery"
-      publishedTime={publishedTime}
-      modifiedTime={modifiedTime}
-      isNewsArticle={true}
-    />
+    <React.Suspense fallback={null}>
+      <ConsolidatedSEOHead
+        title={title}
+        description={description}
+        keywords={keywords}
+        canonicalUrl={canonicalUrl}
+        ogImage={ogImage}
+        ogType="article"
+        articleAuthor="SIP Brewery Research Team"
+        articlePublisher="SIP Brewery"
+        publishedTime={publishedTime}
+        modifiedTime={modifiedTime}
+        isNewsArticle={true}
+      />
+    </React.Suspense>
   );
 };
 

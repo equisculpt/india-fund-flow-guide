@@ -1,39 +1,33 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Layout from '@/components/Layout';
 import HDBBlogLayout from '@/components/blog/hdb-ipo/HDBBlogLayout';
 import HDBBlogContent from '@/components/blog/hdb-ipo/HDBBlogContent';
 
 const HDBFinancialServicesIPOBlog = () => {
-  const [shouldRenderHDBSEO, setShouldRenderHDBSEO] = useState(false);
-  const [HDBBlogSEOComponent, setHDBBlogSEOComponent] = useState<React.ComponentType | null>(null);
+  // Only load HDB SEO if we're definitely on the HDB page
+  const isHDBPage = typeof window !== 'undefined' && window.location.pathname === '/blog/hdb-financial-services-ipo-analysis';
 
-  useEffect(() => {
-    // Only check and load HDB SEO after component mounts
-    const currentPath = window.location.pathname;
-    const isHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
+  console.log('📄 HDB PAGE V9 - PATH CHECK:', {
+    component: 'HDBFinancialServicesIPOBlog',
+    currentPath: typeof window !== 'undefined' ? window.location.pathname : 'SSR',
+    isHDBPage,
+    timestamp: new Date().toISOString()
+  });
+
+  // Import and render HDB SEO only when confirmed on HDB page
+  const HDBSEOComponent = React.useMemo(() => {
+    if (!isHDBPage) return null;
     
-    console.log('📄 HDB BLOG PAGE V7 - MOUNT CHECK:', {
-      component: 'HDBFinancialServicesIPOBlog',
-      timestamp: new Date().toISOString(),
-      currentPath,
-      isHDBPage,
-      'DYNAMIC_IMPORT_STATUS': isHDBPage ? 'WILL_LOAD_SEO' : 'BLOCKED_SEO'
-    });
-
-    if (isHDBPage) {
-      // Dynamic import to prevent loading HDB SEO on other pages
-      import('@/components/blog/hdb-ipo/HDBBlogSEO').then((module) => {
-        setHDBBlogSEOComponent(() => module.default);
-        setShouldRenderHDBSEO(true);
-      });
-    }
-  }, []);
+    // Dynamic import that only happens when we're on HDB page
+    const HDBBlogSEO = React.lazy(() => import('@/components/blog/hdb-ipo/HDBBlogSEO'));
+    return <React.Suspense fallback={null}><HDBBlogSEO /></React.Suspense>;
+  }, [isHDBPage]);
 
   return (
     <Layout>
-      {/* Only render HDB SEO if we're on the correct page and component is loaded */}
-      {shouldRenderHDBSEO && HDBBlogSEOComponent && <HDBBlogSEOComponent />}
+      {/* Only render HDB SEO when absolutely confirmed on HDB page */}
+      {isHDBPage && HDBSEOComponent}
       <HDBBlogLayout>
         <HDBBlogContent />
       </HDBBlogLayout>

@@ -1,42 +1,44 @@
+
 import React from 'react';
-import ConsolidatedSEOHead from '@/components/seo/ConsolidatedSEOHead';
-import IndogulfBlogHeader from './components/IndogulfBlogHeader';
-import IPOQuickSummary from './components/IPOQuickSummary';
-import IPOTimelineSection from './components/IPOTimelineSection';
-import IssueStructureSection from './components/IssueStructureSection';
-import CompanyOverviewSection from './components/CompanyOverviewSection';
-import FinancialPerformanceSection from './components/FinancialPerformanceSection';
-import UseOfProceedsSection from './components/UseOfProceedsSection';
-import PeerComparisonSection from './components/PeerComparisonSection';
-import SWOTAnalysisSection from './components/SWOTAnalysisSection';
-import ResearchVerdictSection from './components/ResearchVerdictSection';
-import RiskDisclosureSection from './components/RiskDisclosureSection';
-import BlogFooter from './components/BlogFooter';
 
 const IndogulfIPOBlog = () => {
-  // ULTRA CRITICAL: Multiple layers of protection with immediate exit
+  // TRIPLE PROTECTION: Server-side, client-side, and path checks
   if (typeof window === 'undefined') {
-    console.log('🚫 INDOGULF BLOG V8 - SERVER SIDE BLOCKED');
+    console.log('🚫 INDOGULF BLOG V9 - SERVER SIDE COMPLETELY BLOCKED');
     return null;
   }
 
   const currentPath = window.location.pathname;
-  const isIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
+  const isExactIndogulfPage = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
 
-  console.log('🔍 INDOGULF BLOG V8 - ULTRA STRICT GUARD:', {
+  console.log('🔍 INDOGULF BLOG V9 - ULTRA STRICT GUARD:', {
     component: 'IndogulfIPOBlog',
     timestamp: new Date().toISOString(),
     currentPath,
-    isIndogulfPage,
-    'RENDER_STATUS': isIndogulfPage ? 'ALLOWED' : 'COMPLETELY_BLOCKED',
-    'CRITICAL_CHECK': 'This component should NEVER render on any other page'
+    isExactIndogulfPage,
+    'RENDER_STATUS': isExactIndogulfPage ? 'ALLOWED' : 'COMPLETELY_BLOCKED'
   });
 
-  // CRITICAL: Block rendering completely if not on Indogulf page
-  if (!isIndogulfPage) {
-    console.log('🚫 INDOGULF BLOG ULTRA BLOCKED - Wrong path, returning null');
+  // CRITICAL: Complete block if not on exact Indogulf page
+  if (!isExactIndogulfPage) {
+    console.log('🚫 INDOGULF BLOG V9 - WRONG PATH - RETURNING NULL');
     return null;
   }
+
+  // Only import components when we're definitely on Indogulf page
+  const ConsolidatedSEOHead = React.lazy(() => import('@/components/seo/ConsolidatedSEOHead'));
+  const IndogulfBlogHeader = React.lazy(() => import('./components/IndogulfBlogHeader'));
+  const IPOQuickSummary = React.lazy(() => import('./components/IPOQuickSummary'));
+  const IPOTimelineSection = React.lazy(() => import('./components/IPOTimelineSection'));
+  const IssueStructureSection = React.lazy(() => import('./components/IssueStructureSection'));
+  const CompanyOverviewSection = React.lazy(() => import('./components/CompanyOverviewSection'));
+  const FinancialPerformanceSection = React.lazy(() => import('./components/FinancialPerformanceSection'));
+  const UseOfProceedsSection = React.lazy(() => import('./components/UseOfProceedsSection'));
+  const PeerComparisonSection = React.lazy(() => import('./components/PeerComparisonSection'));
+  const SWOTAnalysisSection = React.lazy(() => import('./components/SWOTAnalysisSection'));
+  const ResearchVerdictSection = React.lazy(() => import('./components/ResearchVerdictSection'));
+  const RiskDisclosureSection = React.lazy(() => import('./components/RiskDisclosureSection'));
+  const BlogFooter = React.lazy(() => import('./components/BlogFooter'));
 
   // Financial data with updated 9M FY25 data from uploaded image
   const financialData = [
@@ -74,7 +76,7 @@ const IndogulfIPOBlog = () => {
   };
 
   return (
-    <>
+    <React.Suspense fallback={<div>Loading...</div>}>
       <ConsolidatedSEOHead
         title="Indogulf Cropsciences IPO Research Analysis 2025 | Complete Financial Review & Research Report"
         description="Comprehensive research analysis of Indogulf Cropsciences IPO - ₹200 crore mainboard offering. Detailed insights on financials, valuation, sectoral analysis, and research findings."
@@ -110,7 +112,7 @@ const IndogulfIPOBlog = () => {
           <BlogFooter />
         </div>
       </div>
-    </>
+    </React.Suspense>
   );
 };
 
