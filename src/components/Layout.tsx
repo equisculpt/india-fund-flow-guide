@@ -3,13 +3,38 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
-import SEOHead from './SEOHead';
+import UniversalSEOHead from './seo/UniversalSEOHead';
+import ErrorBoundary from './ErrorBoundary';
 
 interface LayoutProps {
   children: React.ReactNode;
+  pageType?: 'homepage' | 'blog' | 'fund' | 'tool' | 'info';
+  title?: string;
+  description?: string;
+  keywords?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  articleAuthor?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  schemaData?: object;
+  noIndex?: boolean;
 }
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ 
+  children, 
+  pageType,
+  title,
+  description,
+  keywords,
+  canonicalUrl,
+  ogImage,
+  articleAuthor,
+  publishedTime,
+  modifiedTime,
+  schemaData,
+  noIndex
+}: LayoutProps) => {
   const location = useLocation();
   
   // Pages that have COMPLETE SEO control - Layout must NEVER render ANY SEO
@@ -22,28 +47,44 @@ const Layout = ({ children }: LayoutProps) => {
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout SEO Guard V12 - ABSOLUTE ISOLATION FIX:', {
+  console.log('🛡️ Layout SEO Guard V13:', {
     currentPath: location.pathname,
     isNuclearSEOPage,
     willRenderSEO: !isNuclearSEOPage,
-    reason: isNuclearSEOPage ? '🚫 NUCLEAR SEO PAGE - ZERO LAYOUT SEO' : '✅ Normal page - IMMEDIATE LAYOUT SEO',
-    timestamp: new Date().toISOString(),
-    'GUARD_STATUS': isNuclearSEOPage ? 'BLOCKING_ALL_LAYOUT_SEO' : 'IMMEDIATE_LAYOUT_SEO',
-    'ISOLATION_LEVEL': 'COMPLETE'
+    pageType
   });
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* CRITICAL: Only render SEO for non-nuclear pages, render immediately */}
-      {!isNuclearSEOPage && (
-        <SEOHead isDynamic={true} />
-      )}
-      <Header />
-      <main className="flex-1">
-        {children}
-      </main>
-      <Footer />
-    </div>
+    <ErrorBoundary>
+      <div className="min-h-screen flex flex-col">
+        {/* CRITICAL: Only render SEO for non-nuclear pages */}
+        {!isNuclearSEOPage && (
+          <UniversalSEOHead
+            pageType={pageType}
+            title={title}
+            description={description}
+            keywords={keywords}
+            canonicalUrl={canonicalUrl}
+            ogImage={ogImage}
+            articleAuthor={articleAuthor}
+            publishedTime={publishedTime}
+            modifiedTime={modifiedTime}
+            schemaData={schemaData}
+            noIndex={noIndex}
+          />
+        )}
+        
+        <Header />
+        
+        <main className="flex-1">
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </main>
+        
+        <Footer />
+      </div>
+    </ErrorBoundary>
   );
 };
 

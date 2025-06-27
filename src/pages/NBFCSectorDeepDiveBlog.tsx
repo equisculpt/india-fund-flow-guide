@@ -6,6 +6,8 @@ import NBFCSectorBlogLayout from '@/components/blog/nbfc-sector/NBFCSectorBlogLa
 import NBFCSectorBlogContent from '@/components/blog/nbfc-sector/NBFCSectorBlogContent';
 
 const NBFCSectorDeepDiveBlog = () => {
+  console.log('🎯 NBFC Blog Page - Nuclear SEO Control Active');
+  
   return (
     <Layout>
       <NBFCSectorBlogSEO />

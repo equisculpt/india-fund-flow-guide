@@ -6,11 +6,7 @@ import HDBBlogLayout from '@/components/blog/hdb-ipo/HDBBlogLayout';
 import HDBBlogContent from '@/components/blog/hdb-ipo/HDBBlogContent';
 
 const HDBFinancialServicesIPOBlog = () => {
-  console.log('✅ HDB PAGE V13 - ROUTER-LEVEL LAZY LOADING - ONLY LOADS ON CORRECT ROUTE:', {
-    component: 'HDBFinancialServicesIPOBlog',
-    route: '/blog/hdb-financial-services-ipo-analysis',
-    timestamp: new Date().toISOString()
-  });
+  console.log('🎯 HDB Blog Page - Nuclear SEO Control Active');
 
   return (
     <Layout>

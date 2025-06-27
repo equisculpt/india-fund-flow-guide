@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import SEOContentSection from '@/components/index/SEOContentSection';
@@ -40,55 +39,31 @@ const Index = () => {
   };
 
   return (
-    <>
-      <Helmet>
-        <title>SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered</title>
-        <meta name="description" content="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance." />
-        <meta name="keywords" content="mutual funds india, SIP investment, SEBI registered platform, best mutual funds, SIP calculator" />
-        <link rel="canonical" href="https://sipbrewery.com/" />
-        
-        {/* Open Graph Tags */}
-        <meta property="og:title" content="SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered" />
-        <meta property="og:description" content="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://sipbrewery.com/" />
-        <meta property="og:site_name" content="SIP Brewery" />
-        <meta property="og:image" content="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:locale" content="en_IN" />
+    <Layout
+      pageType="homepage"
+      title="SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered"
+      description="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance."
+      keywords="mutual funds india, SIP investment, SEBI registered platform, best mutual funds, SIP calculator"
+      canonicalUrl="https://sipbrewery.com/"
+      schemaData={structuredData}
+    >
+      {/* Hero Section - Critical above-the-fold content */}
+      <div className="critical-content">
+        <HeroSection />
+      </div>
 
-        {/* Twitter Cards */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@SIPBrewery" />
-        <meta name="twitter:title" content="SIP Brewery - Best Mutual Fund Investment Platform India" />
-        <meta name="twitter:description" content="India's #1 SEBI registered mutual fund investment platform for smart SIP investments." />
-        <meta name="twitter:image" content="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png" />
+      {/* SEO Content Section - Critical for SEO but can be optimized */}
+      <SEOContentSection />
 
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-      </Helmet>
-      <Layout>
-        {/* Hero Section - Critical above-the-fold content */}
-        <div className="critical-content">
-          <HeroSection />
-        </div>
-
-        {/* SEO Content Section - Critical for SEO but can be optimized */}
-        <SEOContentSection />
-
-        {/* Lazy loaded sections */}
-        <LazyLoadedSections 
-          allFunds={allFunds} 
-          onRiskProfilingComplete={handleRiskProfilingComplete} 
-        />
-        
-        {/* FAQ Section - Optimized for mobile */}
-        <FAQSection />
-      </Layout>
-    </>
+      {/* Lazy loaded sections */}
+      <LazyLoadedSections 
+        allFunds={allFunds} 
+        onRiskProfilingComplete={handleRiskProfilingComplete} 
+      />
+      
+      {/* FAQ Section - Optimized for mobile */}
+      <FAQSection />
+    </Layout>
   );
 };
 

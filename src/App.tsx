@@ -11,6 +11,8 @@ import { BrandingProvider } from './contexts/BrandingContext';
 import { EnhancedAuthProvider } from './contexts/EnhancedAuthContext';
 import { SupabaseAuthProvider } from './contexts/SupabaseAuthContext';
 import SecurityHeaders from './components/SecurityHeaders';
+import ErrorBoundary from './components/ErrorBoundary';
+import PageLoader from './components/PageLoader';
 
 // Critical pages - load immediately
 import Index from './pages/Index';
@@ -32,73 +34,133 @@ const HDBFinancialServicesIPOBlog = React.lazy(() => import('@/pages/HDBFinancia
 const VeedaClinicalResearchIPOBlog = React.lazy(() => import('@/pages/VeedaClinicalResearchIPOBlog'));
 const NBFCSectorDeepDiveBlog = React.lazy(() => import('@/pages/NBFCSectorDeepDiveBlog'));
 
-// Optimized QueryClient with better defaults
+// Optimized QueryClient with better defaults and error handling
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime)
-      retry: 1,
+      retry: (failureCount, error) => {
+        // Don't retry on 4xx errors
+        if (error && 'status' in error && typeof error.status === 'number' && error.status >= 400 && error.status < 500) {
+          return false;
+        }
+        return failureCount < 2;
+      },
       refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
+    },
+    mutations: {
+      retry: 1,
     },
   },
+  queryCache: undefined,
+  mutationCache: undefined,
 });
 
-// Lightweight loading component
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-  </div>
+// Enhanced loading component with better UX
+const AppPageLoader = ({ message = "Loading page..." }: { message?: string }) => (
+  <PageLoader message={message} />
 );
 
 function App() {
   return (
-    <HelmetProvider>
-      <Router basename="/">
-        <div className="min-h-screen bg-background">
-          <QueryClientProvider client={queryClient}>
-            <SupabaseAuthProvider>
-              <EnhancedAuthProvider>
-                <LanguageProvider>
-                  <BrandingProvider>
-                    <Helmet>
-                      <title>SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered</title>
-                      <meta name="description" content="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance." />
-                      <meta name="robots" content="index, follow" />
-                      <meta name="author" content="SIP Brewery Research Team" />
-                      <link rel="canonical" href="https://sipbrewery.com/" />
-                    </Helmet>
-                    <Toaster />
-                    <SecurityHeaders />
-                    <Suspense fallback={<PageLoader />}>
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/fund-comparison" element={<FundComparisonPage />} />
-                        <Route path="/public-funds" element={<PublicFundsPage />} />
-                        <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
-                        <Route path="/contact" element={<ContactPage />} />
-                        <Route path="/terms" element={<TermsOfServicePage />} />
-                        <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                        <Route path="/community" element={<CommunityPage />} />
-                        <Route path="/fund/:fundId" element={<FundDetailsPage />} />
-                        <Route path="/funds/:fundId" element={<FundDetailsPage />} />
-                        <Route path="/secure-admin" element={<SecureAdminPage />} />
-                        
-                        {/* Blog Routes - Lazy-loaded */}
-                        <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={<IndogulfCropsciencesIPOBlogPage />} />
-                        <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
-                        <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
-                        <Route path="/blog/nbfc-sector-deep-dive-analysis" element={<NBFCSectorDeepDiveBlog />} />
-                      </Routes>
-                    </Suspense>
-                  </BrandingProvider>
-                </LanguageProvider>
-              </EnhancedAuthProvider>
-            </SupabaseAuthProvider>
-          </QueryClientProvider>
-        </div>
-      </Router>
-    </HelmetProvider>
+    <ErrorBoundary>
+      <HelmetProvider>
+        <Router basename="/">
+          <div className="min-h-screen bg-background">
+            <QueryClientProvider client={queryClient}>
+              <SupabaseAuthProvider>
+                <EnhancedAuthProvider>
+                  <LanguageProvider>
+                    <BrandingProvider>
+                      <Helmet>
+                        <title>SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered</title>
+                        <meta name="description" content="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance." />
+                        <meta name="robots" content="index, follow" />
+                        <meta name="author" content="SIP Brewery Research Team" />
+                        <link rel="canonical" href="https://sipbrewery.com/" />
+                      </Helmet>
+                      <Toaster />
+                      <SecurityHeaders />
+                      <ErrorBoundary>
+                        <Suspense fallback={<AppPageLoader />}>
+                          <Routes>
+                            <Route path="/" element={<Index />} />
+                            <Route path="/fund-comparison" element={<FundComparisonPage />} />
+                            <Route path="/public-funds" element={<PublicFundsPage />} />
+                            <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
+                            
+                            {/* Lazy loaded pages with specific loading messages */}
+                            <Route path="/contact" element={
+                              <Suspense fallback={<AppPageLoader message="Loading contact page..." />}>
+                                <ContactPage />
+                              </Suspense>
+                            } />
+                            <Route path="/terms" element={
+                              <Suspense fallback={<AppPageLoader message="Loading terms..." />}>
+                                <TermsOfServicePage />
+                              </Suspense>
+                            } />
+                            <Route path="/privacy" element={
+                              <Suspense fallback={<AppPageLoader message="Loading privacy policy..." />}>
+                                <PrivacyPolicyPage />
+                              </Suspense>
+                            } />
+                            <Route path="/community" element={
+                              <Suspense fallback={<AppPageLoader message="Loading community..." />}>
+                                <CommunityPage />
+                              </Suspense>
+                            } />
+                            <Route path="/fund/:fundId" element={
+                              <Suspense fallback={<AppPageLoader message="Loading fund details..." />}>
+                                <FundDetailsPage />
+                              </Suspense>
+                            } />
+                            <Route path="/funds/:fundId" element={
+                              <Suspense fallback={<AppPageLoader message="Loading fund analysis..." />}>
+                                <FundDetailsPage />
+                              </Suspense>
+                            } />
+                            <Route path="/secure-admin" element={
+                              <Suspense fallback={<AppPageLoader message="Loading admin panel..." />}>
+                                <SecureAdminPage />
+                              </Suspense>
+                            } />
+                            
+                            {/* Blog Routes - Lazy-loaded with specific messages */}
+                            <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={
+                              <Suspense fallback={<AppPageLoader message="Loading IPO analysis..." />}>
+                                <IndogulfCropsciencesIPOBlogPage />
+                              </Suspense>
+                            } />
+                            <Route path="/blog/hdb-financial-services-ipo-analysis" element={
+                              <Suspense fallback={<AppPageLoader message="Loading HDB IPO analysis..." />}>
+                                <HDBFinancialServicesIPOBlog />
+                              </Suspense>
+                            } />
+                            <Route path="/blog/veeda-clinical-research-ipo-analysis" element={
+                              <Suspense fallback={<AppPageLoader message="Loading Veeda IPO analysis..." />}>
+                                <VeedaClinicalResearchIPOBlog />
+                              </Suspense>
+                            } />
+                            <Route path="/blog/nbfc-sector-deep-dive-analysis" element={
+                              <Suspense fallback={<AppPageLoader message="Loading NBFC sector analysis..." />}>
+                                <NBFCSectorDeepDiveBlog />
+                              </Suspense>
+                            } />
+                          </Routes>
+                        </Suspense>
+                      </ErrorBoundary>
+                    </BrandingProvider>
+                  </LanguageProvider>
+                </EnhancedAuthProvider>
+              </SupabaseAuthProvider>
+            </QueryClientProvider>
+          </div>
+        </Router>
+      </HelmetProvider>
+    </ErrorBoundary>
   );
 }
 
