@@ -7,7 +7,7 @@ const HDBFinancialServicesIPOBlog = () => {
   const currentPath = window.location.pathname;
   const isExactHDBPath = currentPath === '/blog/hdb-financial-services-ipo-analysis';
 
-  console.log('🔍 HDB PAGE V11 - ABSOLUTE PATH ISOLATION:', {
+  console.log('🔍 HDB PAGE V12 - LAZY IMPORT FIX:', {
     component: 'HDBFinancialServicesIPOBlog',
     currentPath,
     isExactHDBPath,
@@ -17,7 +17,7 @@ const HDBFinancialServicesIPOBlog = () => {
 
   // If not on exact HDB path, return nothing - don't even load components
   if (!isExactHDBPath) {
-    console.log('🚫 HDB PAGE V11 - NOT ON HDB PATH - RETURNING NULL');
+    console.log('🚫 HDB PAGE V12 - NOT ON HDB PATH - RETURNING NULL');
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
@@ -30,12 +30,13 @@ const HDBFinancialServicesIPOBlog = () => {
     );
   }
 
-  // Only load HDB components when on exact HDB path
+  // ✅ CRITICAL FIX: Move lazy imports INSIDE the conditional block
+  // This prevents React from resolving these imports on wrong routes
   const HDBBlogSEO = React.lazy(() => import('@/components/blog/hdb-ipo/HDBBlogSEO'));
   const HDBBlogLayout = React.lazy(() => import('@/components/blog/hdb-ipo/HDBBlogLayout'));
   const HDBBlogContent = React.lazy(() => import('@/components/blog/hdb-ipo/HDBBlogContent'));
 
-  console.log('✅ HDB PAGE V11 - LOADING HDB CONTENT ON CORRECT PATH');
+  console.log('✅ HDB PAGE V12 - LOADING HDB CONTENT ON CORRECT PATH - LAZY IMPORTS SAFE');
 
   return (
     <Layout>

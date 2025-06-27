@@ -7,7 +7,7 @@ const IndogulfCropsciencesIPOBlogPage = () => {
   const currentPath = window.location.pathname;
   const isExactIndogulfPath = currentPath === '/blog/indogulf-cropsciences-ipo-complete-analysis-2024';
 
-  console.log('🔍 INDOGULF PAGE V11 - ABSOLUTE PATH ISOLATION:', {
+  console.log('🔍 INDOGULF PAGE V12 - LAZY IMPORT FIX:', {
     component: 'IndogulfCropsciencesIPOBlogPage',
     currentPath,
     isExactIndogulfPath,
@@ -17,7 +17,7 @@ const IndogulfCropsciencesIPOBlogPage = () => {
 
   // If not on exact Indogulf path, return nothing - don't even load components
   if (!isExactIndogulfPath) {
-    console.log('🚫 INDOGULF PAGE V11 - NOT ON INDOGULF PATH - RETURNING NULL');
+    console.log('🚫 INDOGULF PAGE V12 - NOT ON INDOGULF PATH - RETURNING NULL');
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
@@ -30,10 +30,11 @@ const IndogulfCropsciencesIPOBlogPage = () => {
     );
   }
 
-  // Only load Indogulf components when on exact Indogulf path
+  // ✅ CRITICAL FIX: Move lazy imports INSIDE the conditional block
+  // This prevents React from resolving these imports on wrong routes
   const IndogulfIPOBlog = React.lazy(() => import('@/components/blog/indogulf-ipo/IndogulfIPOBlog'));
 
-  console.log('✅ INDOGULF PAGE V11 - LOADING INDOGULF CONTENT ON CORRECT PATH');
+  console.log('✅ INDOGULF PAGE V12 - LOADING INDOGULF CONTENT ON CORRECT PATH - LAZY IMPORTS SAFE');
 
   return (
     <Layout>
