@@ -2,30 +2,37 @@
 import React from 'react';
 
 const HDBBlogSEO = () => {
-  // TRIPLE PROTECTION: Server-side, client-side, and path checks
+  // BULLETPROOF PROTECTION: Multiple layers of guards
+  console.log('🔒 HDB SEO V10 - BULLETPROOF ENTRY GUARD:', {
+    component: 'HDBBlogSEO',
+    timestamp: new Date().toISOString(),
+    'SERVER_SIDE_CHECK': typeof window === 'undefined' ? 'BLOCKED' : 'ALLOWED',
+    'CLIENT_SIDE_CHECK': typeof window !== 'undefined' ? 'PROCEEDING' : 'BLOCKED'
+  });
+
+  // GUARD 1: Server-side complete block
   if (typeof window === 'undefined') {
-    console.log('🚫 HDB SEO V9 - SERVER SIDE COMPLETELY BLOCKED');
+    console.log('🚫 HDB SEO V10 - SERVER SIDE COMPLETELY BLOCKED');
     return null;
   }
 
+  // GUARD 2: Client-side path verification
   const currentPath = window.location.pathname;
   const isExactHDBPage = currentPath === '/blog/hdb-financial-services-ipo-analysis';
 
-  console.log('🎯 HDB SEO V9 - ULTRA STRICT GUARD:', {
-    component: 'HDBBlogSEO',
-    timestamp: new Date().toISOString(),
+  console.log('🛡️ HDB SEO V10 - CLIENT SIDE PATH GUARD:', {
     currentPath,
     isExactHDBPage,
-    'RENDER_STATUS': isExactHDBPage ? 'ALLOWED' : 'COMPLETELY_BLOCKED'
+    'EXECUTION_STATUS': isExactHDBPage ? 'PROCEEDING_TO_SEO' : 'BLOCKED_COMPLETELY'
   });
 
-  // CRITICAL: Complete block if not on exact HDB page
+  // GUARD 3: Path mismatch complete block
   if (!isExactHDBPage) {
-    console.log('🚫 HDB SEO V9 - WRONG PATH - RETURNING NULL');
+    console.log('🚫 HDB SEO V10 - WRONG PATH - COMPLETE BLOCK');
     return null;
   }
 
-  // Only import ConsolidatedSEOHead when we're definitely on HDB page
+  // GUARD 4: Only now load the SEO component
   const ConsolidatedSEOHead = React.lazy(() => import('@/components/seo/ConsolidatedSEOHead'));
 
   const canonicalUrl = "https://sipbrewery.com/blog/hdb-financial-services-ipo-analysis";
@@ -35,6 +42,12 @@ const HDBBlogSEO = () => {
   const ogImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
   const publishedTime = "2025-06-21T12:00:00+05:30";
   const modifiedTime = "2025-06-21T12:00:00+05:30";
+
+  console.log('✅ HDB SEO V10 - EXECUTING SEO RENDER:', {
+    title: title.substring(0, 50) + '...',
+    canonicalUrl,
+    'FINAL_RENDER': 'ACTIVE'
+  });
 
   return (
     <React.Suspense fallback={null}>

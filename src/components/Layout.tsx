@@ -22,7 +22,7 @@ const Layout = ({ children }: LayoutProps) => {
   
   const isNuclearSEOPage = pagesWithNuclearSEO.includes(location.pathname);
   
-  console.log('🛡️ Layout SEO Guard V10 - FINAL FIX:', {
+  console.log('🛡️ Layout SEO Guard V11 - ULTIMATE FIX:', {
     currentPath: location.pathname,
     isNuclearSEOPage,
     willRenderSEO: !isNuclearSEOPage,
