@@ -34,7 +34,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <HelmetProvider>
-      <Router>
+      <Router basename="/">
         <div className="min-h-screen bg-background">
           <QueryClientProvider client={queryClient}>
             <SupabaseAuthProvider>

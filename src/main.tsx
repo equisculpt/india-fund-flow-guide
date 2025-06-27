@@ -1,6 +1,6 @@
 
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
@@ -9,9 +9,18 @@ if (!container) {
   throw new Error("Root element not found");
 }
 
-const root = createRoot(container);
-root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+// Support react-snap hydration
+if (container.hasChildNodes()) {
+  hydrateRoot(container, 
+    <StrictMode>
+      <App />
+    </StrictMode>
+  );
+} else {
+  const root = createRoot(container);
+  root.render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  );
+}
