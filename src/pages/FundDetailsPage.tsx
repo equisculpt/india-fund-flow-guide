@@ -56,12 +56,49 @@ const FundDetailsPage = () => {
     navDate: latestNAV?.date || fundData?.navDate,
   };
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "FinancialProduct",
+    "name": fundName,
+    "description": `Detailed analysis of ${fundName}. Get performance data, portfolio insights, and investment recommendations with AI-powered analysis.`,
+    "provider": {
+      "@type": "Organization",
+      "name": fundData?.fundHouse || fundData?.amc || "Mutual Fund Provider"
+    },
+    "category": fundCategory,
+    "url": `https://sipbrewery.com/fund/${fundId}`,
+    "offers": {
+      "@type": "Offer",
+      "price": latestNAV?.nav || fundData?.nav || "Current NAV",
+      "priceCurrency": "INR"
+    }
+  };
+
   return (
     <>
       <Helmet>
         <title>{fundName} | Fund Analysis & Performance | SIP Brewery</title>
         <meta name="description" content={`Detailed analysis of ${fundName}. Get performance data, portfolio insights, and investment recommendations with AI-powered analysis.`} />
         <meta name="keywords" content={`${fundName}, ${fundCategory}, mutual fund analysis, fund performance, investment insights`} />
+        <link rel="canonical" href={`https://sipbrewery.com/fund/${fundId}`} />
+        
+        {/* Open Graph Tags */}
+        <meta property="og:title" content={`${fundName} | Fund Analysis & Performance | SIP Brewery`} />
+        <meta property="og:description" content={`Detailed analysis of ${fundName}. Get performance data, portfolio insights, and investment recommendations.`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://sipbrewery.com/fund/${fundId}`} />
+        <meta property="og:image" content="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png" />
+
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${fundName} | Fund Analysis & Performance`} />
+        <meta name="twitter:description" content={`Detailed analysis of ${fundName} with AI-powered insights.`} />
+        <meta name="twitter:image" content="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png" />
+
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Helmet>
       <Layout>
         <div className="min-h-screen bg-gray-50">

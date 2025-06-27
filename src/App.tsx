@@ -28,6 +28,7 @@ import SecureAdminPage from './pages/SecureAdminPage';
 const IndogulfCropsciencesIPOBlogPage = React.lazy(() => import('@/pages/IndogulfCropsciencesIPOBlog'));
 const HDBFinancialServicesIPOBlog = React.lazy(() => import('@/pages/HDBFinancialServicesIPOBlog'));
 const VeedaClinicalResearchIPOBlog = React.lazy(() => import('@/pages/VeedaClinicalResearchIPOBlog'));
+const NBFCSectorDeepDiveBlog = React.lazy(() => import('@/pages/NBFCSectorDeepDiveBlog'));
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,9 @@ function App() {
                     <Helmet>
                       <title>SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered</title>
                       <meta name="description" content="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance." />
+                      <meta name="robots" content="index, follow" />
+                      <meta name="author" content="SIP Brewery Research Team" />
+                      <link rel="canonical" href="https://sipbrewery.com/" />
                     </Helmet>
                     <Toaster />
                     <SecurityHeaders />
@@ -66,6 +70,7 @@ function App() {
                         <Route path="/blog/indogulf-cropsciences-ipo-complete-analysis-2024" element={<IndogulfCropsciencesIPOBlogPage />} />
                         <Route path="/blog/hdb-financial-services-ipo-analysis" element={<HDBFinancialServicesIPOBlog />} />
                         <Route path="/blog/veeda-clinical-research-ipo-analysis" element={<VeedaClinicalResearchIPOBlog />} />
+                        <Route path="/blog/nbfc-sector-deep-dive-analysis" element={<NBFCSectorDeepDiveBlog />} />
                         
                       </Routes>
                     </Suspense>
