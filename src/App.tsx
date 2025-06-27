@@ -1,6 +1,7 @@
 
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
@@ -40,6 +41,11 @@ function App() {
               <EnhancedAuthProvider>
                 <LanguageProvider>
                   <BrandingProvider>
+                    {/* Global fallback Helmet for consistent SEO */}
+                    <Helmet>
+                      <title>SIP Brewery - Best Mutual Fund Investment Platform India | SEBI Registered</title>
+                      <meta name="description" content="India's #1 SEBI registered mutual fund investment platform for smart SIP investments. Compare funds, get AI insights, and build your wealth with expert guidance." />
+                    </Helmet>
                     <Toaster />
                     <SecurityHeaders />
                     <Suspense fallback={<div>Loading...</div>}>
