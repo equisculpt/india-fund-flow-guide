@@ -1,18 +1,11 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  type: 'customer' | 'agent' | 'admin';
-  avatar?: string;
-}
+import { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface MobileNavigationProps {
   isMenuOpen: boolean;
-  user: User | null;
+  user: SupabaseUser | null;
   handleNavigation: (path: string) => void;
   handleFundComparisonClick: () => void;
   handleBrowseFundsClick: () => void;

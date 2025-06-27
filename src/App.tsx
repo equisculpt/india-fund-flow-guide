@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
+import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
 import Index from "./pages/Index";
 import FundDetailsPage from "./pages/FundDetailsPage";
 import FundComparisonPage from "./pages/FundComparisonPage";
@@ -29,7 +29,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <EnhancedAuthProvider>
+    <SupabaseAuthProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -57,7 +57,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
-    </EnhancedAuthProvider>
+    </SupabaseAuthProvider>
   </QueryClientProvider>
 );
 

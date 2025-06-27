@@ -2,14 +2,14 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const { loading } = useEnhancedAuth();
+  const { loading } = useSupabaseAuth();
 
   if (loading) {
     return (
