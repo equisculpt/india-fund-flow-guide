@@ -38,12 +38,11 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
       {/* Enhanced Description */}
       <div className="mb-10">
         <p className="text-xl md:text-2xl text-gray-700 mb-4 max-w-5xl mx-auto leading-relaxed font-medium">
-          Invest in top-performing regular mutual funds with professional{" "}
-          <span className="font-semibold text-blue-600">AMFI registered distributor</span>.
+          Invest in top-performing mutual funds through our{" "}
+          <span className="font-semibold text-blue-600">AMFI-registered platform</span>.
         </p>
         <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-4">
-          Earn consistency rewards and gift cards for maintaining 12 uninterrupted SIPs
-          AND portfolio transfer incentives up to ₹50,000!
+          As a gesture of appreciation, we may, from time to time and at our sole discretion, offer platform rewards or loyalty bonuses to customers who use our services, maintain active SIPs, or consolidate portfolios with us.*
         </p>
         <p className="text-lg md:text-xl text-green-600 font-semibold max-w-4xl mx-auto leading-relaxed">
           🎁 Refer friends and earn up to ₹500 on successful referrals!*
