@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -84,11 +85,21 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'rainbow': {
+					'0%': { color: '#ef4444' },
+					'16.66%': { color: '#f97316' },
+					'33.33%': { color: '#eab308' },
+					'50%': { color: '#22c55e' },
+					'66.66%': { color: '#3b82f6' },
+					'83.33%': { color: '#a855f7' },
+					'100%': { color: '#ec4899' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'rainbow': 'rainbow 3s ease-in-out infinite'
 			}
 		}
 	},

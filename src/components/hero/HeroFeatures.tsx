@@ -57,10 +57,21 @@ const HeroFeatures = () => {
   return (
     <div className="mb-16">
       <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 animate-pulse">SIP Brewery</span>?
+        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          Why Choose{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
+            SIP Brewery
+          </span>
+          ?
         </h2>
-        <div className="h-1 w-24 bg-gradient-to-r from-cyan-400 to-purple-400 mx-auto rounded-full animate-pulse"></div>
+        <p className="text-xl text-gray-600 mb-6">
+          Upgrade Your{" "}
+          <span className="animate-rainbow font-bold">
+            Mutual Fund
+          </span>{" "}
+          Experience Today
+        </p>
+        <div className="h-1 w-32 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto rounded-full"></div>
       </div>
       
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -69,19 +80,19 @@ const HeroFeatures = () => {
           return (
             <div 
               key={index}
-              className={`group relative text-center bg-white/5 backdrop-blur-xl rounded-3xl p-8 shadow-xl hover:${feature.glowColor} transition-all duration-500 hover:scale-105 hover:-translate-y-3 border border-white/20 overflow-hidden`}
+              className={`group relative text-center bg-white rounded-3xl p-8 shadow-xl hover:${feature.glowColor} transition-all duration-500 hover:scale-105 hover:-translate-y-3 border border-gray-100 overflow-hidden`}
             >
               {/* Animated background gradient */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.hoverGradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-3xl`}></div>
+              <div className={`absolute inset-0 bg-gradient-to-br ${feature.hoverGradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-3xl`}></div>
               
               <div className="relative z-10">
                 <div className={`bg-gradient-to-br ${feature.gradient} rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:${feature.glowColor} group-hover:scale-110 transition-all duration-500 group-hover:rotate-6 border border-white/20`}>
                   <Icon className="h-10 w-10 text-white" />
                 </div>
-                <h3 className="font-bold text-xl text-white mb-4 group-hover:text-white transition-colors duration-300">
+                <h3 className="font-bold text-xl text-gray-900 mb-4 group-hover:text-gray-800 transition-colors duration-300">
                   {feature.title}
                 </h3>
-                <p className="text-white/70 font-medium leading-relaxed group-hover:text-white/80 transition-colors duration-300">
+                <p className="text-gray-600 font-medium leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
                   {feature.description}
                 </p>
               </div>
