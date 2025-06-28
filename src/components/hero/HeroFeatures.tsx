@@ -38,7 +38,7 @@ const HeroFeatures = () => {
     },
     {
       icon: Users,
-      title: "Expert Advisory",
+      title: "Expert Support",
       description: "Dedicated relationship managers for guidance",
       gradient: "from-pink-400 to-rose-500",
       hoverGradient: "from-pink-300 to-rose-400",
