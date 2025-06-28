@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -316,7 +317,10 @@ const AgentClientOnboarding = ({ agentId, socialLoginUser, referralCode }: Agent
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" onCheckedChange={setTncAccepted} />
+              <Checkbox 
+                id="terms" 
+                onCheckedChange={(checked) => setTncAccepted(checked === true)} 
+              />
               <Label htmlFor="terms" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                 I agree to the terms and conditions
               </Label>
