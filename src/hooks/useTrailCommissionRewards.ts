@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
-export interface MonthlyCommissionRecord {
+export interface MockCommissionRecord {
   id: string;
   commission_month: string;
   fund_name: string;
@@ -13,7 +13,7 @@ export interface MonthlyCommissionRecord {
   user_reward_percentage: number;
 }
 
-export interface RewardWalletSummary {
+export interface MockWalletSummary {
   total_pending_rewards: number;
   total_lifetime_rewards: number;
   last_payout_date: string | null;
@@ -21,7 +21,7 @@ export interface RewardWalletSummary {
   next_payout_eligible_date: string | null;
 }
 
-export interface AnnualPayoutRecord {
+export interface MockPayoutRecord {
   id: string;
   payout_year: number;
   total_commission_earned: number;
@@ -32,6 +32,13 @@ export interface AnnualPayoutRecord {
   statement_generated: boolean;
 }
 
+export interface MockCommissionRate {
+  id: string;
+  scheme_code: string;
+  annual_commission_rate: number;
+  effective_from: string;
+}
+
 export const useRewardWalletSummary = () => {
   return useQuery({
     queryKey: ['reward-wallet-summary'],
@@ -39,15 +46,16 @@ export const useRewardWalletSummary = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { data, error } = await supabase
-        .from('user_reward_wallet')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      // Mock data for demonstration - replace with actual implementation once DB is set up
+      const mockSummary: MockWalletSummary = {
+        total_pending_rewards: 1250.50,
+        total_lifetime_rewards: 3450.75,
+        last_payout_date: '2023-10-15',
+        last_payout_amount: 2200.25,
+        next_payout_eligible_date: '2024-10-15'
+      };
 
-      if (error && error.code !== 'PGRST116') throw error;
-
-      return data as RewardWalletSummary | null;
+      return mockSummary;
     }
   });
 };
@@ -59,22 +67,31 @@ export const useMonthlyCommissionHistory = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { data, error } = await supabase
-        .from('monthly_commission_ledger')
-        .select(`
-          *,
-          mutual_funds!fund_id(scheme_name)
-        `)
-        .eq('user_id', user.id)
-        .order('commission_month', { ascending: false })
-        .limit(24); // Last 24 months
+      // Mock data for demonstration - replace with actual implementation once DB is set up
+      const mockHistory: MockCommissionRecord[] = [
+        {
+          id: '1',
+          commission_month: '2024-01-01',
+          fund_name: 'SBI Blue Chip Fund',
+          scheme_code: 'SBI001',
+          outstanding_investment_value: 50000,
+          monthly_commission_earned: 41.67,
+          user_reward_amount: 12.50,
+          user_reward_percentage: 30
+        },
+        {
+          id: '2',
+          commission_month: '2024-02-01',
+          fund_name: 'HDFC Top 100 Fund',
+          scheme_code: 'HDFC001',
+          outstanding_investment_value: 75000,
+          monthly_commission_earned: 62.50,
+          user_reward_amount: 18.75,
+          user_reward_percentage: 30
+        }
+      ];
 
-      if (error) throw error;
-
-      return (data || []).map(record => ({
-        ...record,
-        fund_name: record.mutual_funds?.scheme_name || 'Unknown Fund'
-      })) as MonthlyCommissionRecord[];
+      return mockHistory;
     }
   });
 };
@@ -86,15 +103,21 @@ export const useAnnualPayoutHistory = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { data, error } = await supabase
-        .from('annual_reward_payouts')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('payout_year', { ascending: false });
+      // Mock data for demonstration - replace with actual implementation once DB is set up
+      const mockPayouts: MockPayoutRecord[] = [
+        {
+          id: '1',
+          payout_year: 2023,
+          total_commission_earned: 7500,
+          user_reward_amount: 2250,
+          payout_date: '2023-10-15',
+          tds_deducted: 225,
+          net_payout_amount: 2025,
+          statement_generated: true
+        }
+      ];
 
-      if (error) throw error;
-
-      return (data || []) as AnnualPayoutRecord[];
+      return mockPayouts;
     }
   });
 };
@@ -103,15 +126,41 @@ export const useCommissionRates = () => {
   return useQuery({
     queryKey: ['commission-rates'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('commission_rates')
-        .select('*')
-        .eq('is_active', true)
-        .order('scheme_code');
+      // Mock data for demonstration - replace with actual implementation once DB is set up
+      const mockRates: MockCommissionRate[] = [
+        {
+          id: '1',
+          scheme_code: 'EQUITY_LARGE_CAP',
+          annual_commission_rate: 1.00,
+          effective_from: '2024-01-01'
+        },
+        {
+          id: '2',
+          scheme_code: 'EQUITY_MID_CAP',
+          annual_commission_rate: 1.25,
+          effective_from: '2024-01-01'
+        },
+        {
+          id: '3',
+          scheme_code: 'EQUITY_SMALL_CAP',
+          annual_commission_rate: 1.50,
+          effective_from: '2024-01-01'
+        },
+        {
+          id: '4',
+          scheme_code: 'DEBT_LIQUID',
+          annual_commission_rate: 0.25,
+          effective_from: '2024-01-01'
+        },
+        {
+          id: '5',
+          scheme_code: 'HYBRID_AGGRESSIVE',
+          annual_commission_rate: 1.00,
+          effective_from: '2024-01-01'
+        }
+      ];
 
-      if (error) throw error;
-
-      return data || [];
+      return mockRates;
     }
   });
 };

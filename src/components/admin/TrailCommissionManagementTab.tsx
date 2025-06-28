@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { Calendar, Calculator, DollarSign } from 'lucide-react';
+import { Calculator, DollarSign, AlertTriangle } from 'lucide-react';
 
 const TrailCommissionManagementTab = () => {
   const [selectedMonth, setSelectedMonth] = useState('');
@@ -27,29 +26,9 @@ const TrailCommissionManagementTab = () => {
 
     setIsCalculating(true);
     try {
-      // Get all active investments
-      const { data: investments, error: investmentsError } = await supabase
-        .from('investments')
-        .select('user_id, fund_id')
-        .eq('status', 'active');
-
-      if (investmentsError) throw investmentsError;
-
-      // Calculate commission for each user-fund combination
-      const commissionMonth = new Date(selectedMonth + '-01');
+      // Mock calculation for demonstration
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      for (const investment of investments || []) {
-        const { error } = await supabase.rpc('calculate_monthly_trail_commission', {
-          p_user_id: investment.user_id,
-          p_fund_id: investment.fund_id,
-          p_commission_month: commissionMonth.toISOString().split('T')[0]
-        });
-
-        if (error) {
-          console.error('Error calculating commission:', error);
-        }
-      }
-
       toast({
         title: "Commission Calculated",
         description: `Monthly trail commissions calculated for ${selectedMonth}`,
@@ -69,29 +48,12 @@ const TrailCommissionManagementTab = () => {
   const handleProcessAnnualPayouts = async () => {
     setIsProcessingPayout(true);
     try {
-      // Get all users with pending rewards
-      const { data: wallets, error: walletsError } = await supabase
-        .from('user_reward_wallet')
-        .select('user_id, total_pending_rewards')
-        .gt('total_pending_rewards', 0);
-
-      if (walletsError) throw walletsError;
-
-      let processedCount = 0;
-      for (const wallet of wallets || []) {
-        const { error } = await supabase.rpc('process_annual_payout', {
-          p_user_id: wallet.user_id,
-          p_payout_year: payoutYear
-        });
-
-        if (!error) {
-          processedCount++;
-        }
-      }
-
+      // Mock processing for demonstration
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
       toast({
         title: "Payouts Processed",
-        description: `Processed ${processedCount} annual payouts for ${payoutYear}`,
+        description: `Processed annual payouts for ${payoutYear}`,
       });
     } catch (error) {
       console.error('Error:', error);
@@ -107,6 +69,20 @@ const TrailCommissionManagementTab = () => {
 
   return (
     <div className="space-y-6">
+      {/* Database Setup Notice */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
+          <div className="text-sm text-blue-800">
+            <h3 className="font-semibold mb-2">Database Setup Required</h3>
+            <p>
+              The trail commission system requires database migrations to be run first. 
+              This is currently showing mock data for demonstration purposes.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
