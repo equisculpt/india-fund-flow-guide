@@ -38,13 +38,15 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
       {/* Enhanced Description */}
       <div className="mb-10">
         <p className="text-xl md:text-2xl text-gray-700 mb-4 max-w-5xl mx-auto leading-relaxed font-medium">
-          Invest in top-performing mutual funds through our{" "}
-          <span className="font-semibold text-blue-600">AMFI-registered platform</span>.
+          Invest in top-performing regular mutual funds with professional{" "}
+          <span className="font-semibold text-blue-600">AMFI registered advisory</span>.
         </p>
-        <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-          As a gesture of appreciation, we may, from time to time and at our sole discretion, 
-          offer platform rewards or loyalty bonuses to customers who use our services, 
-          maintain active SIPs, or consolidate portfolios with us.*
+        <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-4">
+          Earn consistency rewards and gift cards for maintaining 12 uninterrupted SIPs
+          AND portfolio transfer incentives up to ₹50,000!
+        </p>
+        <p className="text-lg md:text-xl text-green-600 font-semibold max-w-4xl mx-auto leading-relaxed">
+          🎁 Refer friends and earn up to ₹500 on successful referrals!*
         </p>
       </div>
       
@@ -86,8 +88,8 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
           <div className="text-gray-700 font-medium">Minimum SIP Amount</div>
         </div>
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-white/50">
-          <div className="text-3xl font-bold text-purple-600 mb-2">0%</div>
-          <div className="text-gray-700 font-medium">Commission on Direct Plans</div>
+          <div className="text-3xl font-bold text-purple-600 mb-2">₹500</div>
+          <div className="text-gray-700 font-medium">Max Referral Earning</div>
         </div>
       </div>
       

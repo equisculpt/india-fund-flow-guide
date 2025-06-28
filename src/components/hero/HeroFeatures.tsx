@@ -21,7 +21,7 @@ const HeroFeatures = () => {
     {
       icon: Award,
       title: "Consistency Rewards",
-      description: "SIP consistency rewards + Transfer incentives + Referral earnings",
+      description: "SIP consistency rewards + Transfer incentives + Referral earnings up to ₹500",
       gradient: "from-purple-400 to-purple-600",
       hoverGradient: "from-purple-500 to-purple-700"
     },
