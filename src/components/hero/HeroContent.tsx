@@ -13,7 +13,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
     <div className="max-w-5xl mx-auto text-center">
       <div className="mb-6">
         <span className="inline-flex items-center bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-6 py-3 rounded-full text-sm font-semibold mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-          🎉 AMFI Registered: Earn consistency rewards + gift cards for regular SIPs + referral rewards!
+          🎉 AMFI Registered Platform: Professional Advisory & Compliance-First Approach
         </span>
       </div>
       
@@ -26,12 +26,15 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
       </h1>
       
       <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
-        Invest in top-performing regular mutual funds with professional AMFI registered advisory. 
-        Earn consistency rewards and gift cards for maintaining <span className="font-bold text-green-600">12 uninterrupted SIPs</span> 
-        AND portfolio transfer incentives up to <span className="font-bold text-blue-600">₹50,000</span>!
+        Invest in top-performing mutual funds through our AMFI-registered platform.
+        As a gesture of appreciation, we may, from time to time and at our sole discretion, offer platform rewards or loyalty bonuses to customers who use our services, maintain active SIPs, or consolidate portfolios with us.
         <br />
-        <span className="text-lg text-purple-600 font-semibold">
-          PLUS: Refer friends and earn rewards per successful referral! (T&C Apply)
+        <span className="text-lg text-blue-600 font-semibold">
+          These rewards are not guaranteed, are not linked to investment returns, and may be changed or withdrawn without notice.
+        </span>
+        <br />
+        <span className="text-sm text-gray-500">
+          Please see our Terms & Conditions and Commission Disclosure for details. Mutual fund investments are subject to market risk. No incentive or reward is provided as an inducement to invest.
         </span>
       </p>
       
