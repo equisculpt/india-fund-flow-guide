@@ -43,13 +43,22 @@ const MobileNavigation = ({
           SIP Calculator
         </Link>
         {user && (
-          <Link
-            to="/dashboard"
-            onClick={() => handleNavigation('/dashboard')}
-            className="text-gray-700 hover:text-blue-600 transition-colors py-2"
-          >
-            Dashboard
-          </Link>
+          <>
+            <Link
+              to="/dashboard"
+              onClick={() => handleNavigation('/dashboard')}
+              className="text-gray-700 hover:text-blue-600 transition-colors py-2"
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/referral"
+              onClick={() => handleNavigation('/referral')}
+              className="text-gray-700 hover:text-blue-600 transition-colors py-2"
+            >
+              Referral
+            </Link>
+          </>
         )}
       </nav>
     </div>

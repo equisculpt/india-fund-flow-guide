@@ -31,12 +31,20 @@ const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsC
         SIP Calculator
       </Link>
       {user && (
-        <Link
-          to="/dashboard"
-          className="text-gray-700 hover:text-blue-600 transition-colors"
-        >
-          Dashboard
-        </Link>
+        <>
+          <Link
+            to="/dashboard"
+            className="text-gray-700 hover:text-blue-600 transition-colors"
+          >
+            Dashboard
+          </Link>
+          <Link
+            to="/referral"
+            className="text-gray-700 hover:text-blue-600 transition-colors"
+          >
+            Referral
+          </Link>
+        </>
       )}
     </nav>
   );
