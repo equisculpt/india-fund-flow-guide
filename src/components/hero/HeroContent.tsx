@@ -27,15 +27,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
       
       <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed font-medium">
         Invest in top-performing mutual funds through our AMFI-registered platform.
-        As a gesture of appreciation, we may, from time to time and at our sole discretion, offer platform rewards or loyalty bonuses to customers who use our services, maintain active SIPs, or consolidate portfolios with us.
-        <br />
-        <span className="text-lg text-blue-600 font-semibold">
-          These rewards are not guaranteed, are not linked to investment returns, and may be changed or withdrawn without notice.
-        </span>
-        <br />
-        <span className="text-sm text-gray-500">
-          Please see our Terms & Conditions and Commission Disclosure for details. Mutual fund investments are subject to market risk. No incentive or reward is provided as an inducement to invest.
-        </span>
+        As a gesture of appreciation, we may, from time to time and at our sole discretion, offer platform rewards or loyalty bonuses to customers who use our services, maintain active SIPs, or consolidate portfolios with us.*
       </p>
       
       <div className="flex flex-col sm:flex-row justify-center gap-6 mb-12">
@@ -56,6 +48,14 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
           Calculate Returns
           <TrendingUp className="ml-2 h-5 w-5 group-hover:scale-110 transition-transform" />
         </Button>
+      </div>
+      
+      {/* Disclaimer at bottom */}
+      <div className="text-xs text-gray-500 max-w-4xl mx-auto leading-relaxed">
+        <p>
+          *These rewards are not guaranteed, are not linked to investment returns, and may be changed or withdrawn without notice.
+          Please see our Terms & Conditions and Commission Disclosure for details. Mutual fund investments are subject to market risk. No incentive or reward is provided as an inducement to invest.
+        </p>
       </div>
     </div>
   );
