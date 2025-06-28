@@ -39,7 +39,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
       <div className="mb-10">
         <p className="text-xl md:text-2xl text-gray-700 mb-4 max-w-5xl mx-auto leading-relaxed font-medium">
           Invest in top-performing regular mutual funds with professional{" "}
-          <span className="font-semibold text-blue-600">AMFI registered advisory</span>.
+          <span className="font-semibold text-blue-600">AMFI registered distributor</span>.
         </p>
         <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-4">
           Earn consistency rewards and gift cards for maintaining 12 uninterrupted SIPs
