@@ -30,7 +30,11 @@ file_size_limit = "50MiB"
 enabled = true
 port = 54324
 site_url = "http://localhost:3000"
-additional_redirect_urls = ["https://localhost:3000"]
+additional_redirect_urls = [
+  "https://localhost:3000",
+  "https://sipbrewery.com",
+  "https://www.sipbrewery.com"
+]
 jwt_expiry = 3600
 refresh_token_rotation_enabled = true
 refresh_token_reuse_interval = 10
