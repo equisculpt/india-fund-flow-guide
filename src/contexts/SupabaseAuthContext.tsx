@@ -94,8 +94,8 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
         // Type cast the user_type to ensure it matches our union type
         const typedProfile: UserProfile = {
           ...data,
-          user_type: data.user_type as 'customer' | 'agent' | 'admin',
-          kyc_status: data.kyc_status as 'pending' | 'verified' | 'rejected'
+          user_type: (data.user_type as 'customer' | 'agent' | 'admin') || 'customer',
+          kyc_status: (data.kyc_status as 'pending' | 'verified' | 'rejected') || 'pending'
         };
         setProfile(typedProfile);
       }
