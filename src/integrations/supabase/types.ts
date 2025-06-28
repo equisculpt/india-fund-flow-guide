@@ -976,6 +976,60 @@ export type Database = {
         }
         Relationships: []
       }
+      loyalty_rewards: {
+        Row: {
+          created_at: string | null
+          credited_at: string | null
+          id: string
+          investment_id: string | null
+          platform_commission: number
+          reward_amount: number
+          reward_percentage: number | null
+          reward_year: number
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          credited_at?: string | null
+          id?: string
+          investment_id?: string | null
+          platform_commission: number
+          reward_amount: number
+          reward_percentage?: number | null
+          reward_year: number
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          credited_at?: string | null
+          id?: string
+          investment_id?: string | null
+          platform_commission?: number
+          reward_amount?: number
+          reward_percentage?: number | null
+          reward_year?: number
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_rewards_investment_id_fkey"
+            columns: ["investment_id"]
+            isOneToOne: false
+            referencedRelation: "investments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_rewards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mutual_fund_nav_history: {
         Row: {
           created_at: string
@@ -1305,7 +1359,9 @@ export type Database = {
           full_name: string
           id: string
           is_active: boolean | null
+          is_direct_customer: boolean | null
           kyc_status: string | null
+          onboarding_source: string | null
           pan_number: string | null
           phone: string | null
           referral_code: string | null
@@ -1321,7 +1377,9 @@ export type Database = {
           full_name: string
           id: string
           is_active?: boolean | null
+          is_direct_customer?: boolean | null
           kyc_status?: string | null
+          onboarding_source?: string | null
           pan_number?: string | null
           phone?: string | null
           referral_code?: string | null
@@ -1337,7 +1395,9 @@ export type Database = {
           full_name?: string
           id?: string
           is_active?: boolean | null
+          is_direct_customer?: boolean | null
           kyc_status?: string | null
+          onboarding_source?: string | null
           pan_number?: string | null
           phone?: string | null
           referral_code?: string | null
@@ -1397,11 +1457,14 @@ export type Database = {
           created_at: string | null
           id: string
           investment_id: string | null
+          is_direct_customer: boolean | null
           max_commission: number | null
           paid_at: string | null
           referee_id: string | null
           referrer_id: string | null
+          slab_number: number | null
           status: string | null
+          wallet_credited: boolean | null
         }
         Insert: {
           commission_amount: number
@@ -1409,11 +1472,14 @@ export type Database = {
           created_at?: string | null
           id?: string
           investment_id?: string | null
+          is_direct_customer?: boolean | null
           max_commission?: number | null
           paid_at?: string | null
           referee_id?: string | null
           referrer_id?: string | null
+          slab_number?: number | null
           status?: string | null
+          wallet_credited?: boolean | null
         }
         Update: {
           commission_amount?: number
@@ -1421,11 +1487,14 @@ export type Database = {
           created_at?: string | null
           id?: string
           investment_id?: string | null
+          is_direct_customer?: boolean | null
           max_commission?: number | null
           paid_at?: string | null
           referee_id?: string | null
           referrer_id?: string | null
+          slab_number?: number | null
           status?: string | null
+          wallet_credited?: boolean | null
         }
         Relationships: [
           {
@@ -1450,6 +1519,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referral_reward_slabs: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          reward_amount: number
+          slab_max: number | null
+          slab_min: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          reward_amount: number
+          slab_max?: number | null
+          slab_min: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          reward_amount?: number
+          slab_max?: number | null
+          slab_min?: number
+        }
+        Relationships: []
       }
       security_audit_log: {
         Row: {
@@ -1630,6 +1726,91 @@ export type Database = {
         }
         Relationships: []
       }
+      user_wallets: {
+        Row: {
+          balance: number | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          total_earned: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          balance?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          total_earned?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          balance?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          total_earned?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_wallets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          credited_at: string | null
+          description: string | null
+          id: string
+          investment_id: string | null
+          referral_id: string | null
+          status: string | null
+          transaction_type: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          credited_at?: string | null
+          description?: string | null
+          id?: string
+          investment_id?: string | null
+          referral_id?: string | null
+          status?: string | null
+          transaction_type: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          credited_at?: string | null
+          description?: string | null
+          id?: string
+          investment_id?: string | null
+          referral_id?: string | null
+          status?: string | null
+          transaction_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1696,6 +1877,10 @@ export type Database = {
       get_current_user_id: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_referral_reward_amount: {
+        Args: { referral_count: number }
+        Returns: number
       }
       increment_blog_view_count: {
         Args: {

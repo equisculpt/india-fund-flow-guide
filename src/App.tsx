@@ -30,6 +30,7 @@ import IPOAnalysisGuideBlog from "./pages/IPOAnalysisGuideBlog";
 import HealthcareSectorOutlookBlog from "./pages/HealthcareSectorOutlookBlog";
 import NotFound from "./pages/NotFound";
 import SIPManagement from "./pages/SIPManagement";
+import ReferralPage from "./pages/ReferralPage";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
               <Route path="/explore" element={<InvestmentExplorer />} />
               <Route path="/sip-management" element={<SIPManagement />} />
               <Route path="/ai-dashboard" element={<AIPortfolioDashboard />} />
+              <Route path="/referral" element={<ReferralPage />} />
               <Route path="/fund/:schemeCode" element={<FundDetailsPage />} />
               <Route path="/funds/:fundType" element={<PublicFundsPage />} />
               <Route path="/fund-comparison" element={<FundComparisonPage />} />

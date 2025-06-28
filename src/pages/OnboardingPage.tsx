@@ -8,13 +8,15 @@ import { useEffect } from "react";
 const OnboardingPage = () => {
   const [searchParams] = useSearchParams();
   const agentId = searchParams.get("agent");
+  const referralCode = searchParams.get("ref");
   const isFromAgent = !!agentId;
+  const isFromReferral = !!referralCode;
   const { user, profile, loading, isKYCRequired } = useSupabaseAuth();
 
   // If user is already KYC verified, redirect to main app
   useEffect(() => {
     if (!loading && user && profile && !isKYCRequired) {
-      window.location.href = '/';
+      window.location.href = '/dashboard';
     }
   }, [user, profile, loading, isKYCRequired]);
 
@@ -61,6 +63,14 @@ const OnboardingPage = () => {
           </div>
         )}
 
+        {isFromReferral && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-green-800 text-center">
+              🎉 Welcome! You've been referred by a friend. Complete your KYC and make your first investment to help them earn rewards!
+            </p>
+          </div>
+        )}
+
         <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
           <h2 className="text-amber-800 font-semibold mb-2">KYC Verification Required</h2>
           <p className="text-amber-700">
@@ -72,6 +82,7 @@ const OnboardingPage = () => {
         <AgentClientOnboarding 
           agentId={agentId || undefined} 
           socialLoginUser={user}
+          referralCode={referralCode || undefined}
         />
       </div>
     </div>

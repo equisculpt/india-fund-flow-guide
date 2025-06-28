@@ -1,128 +1,74 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Gift, Users, TrendingUp } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import ReferralSystem from "@/components/ReferralSystem";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
+import React from 'react';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { Navigate } from 'react-router-dom';
+import KYCGuard from '@/components/KYCGuard';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import ReferralSystem from '@/components/ReferralSystem';
 
 const ReferralPage = () => {
-  const navigate = useNavigate();
-  const { user } = useEnhancedAuth();
+  const { user, loading } = useSupabaseAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-4 mb-8">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Referral Program</h1>
-              <p className="text-gray-600">Earn up to ₹500 for every successful referral</p>
-            </div>
+    <KYCGuard requireKYC={true}>
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Referral Program</h1>
+            <p className="text-gray-600">
+              Invite friends and earn rewards with our slab-based referral system
+            </p>
           </div>
 
-          <div className="grid lg:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3">
-                  <Gift className="h-8 w-8" />
-                  <div>
-                    <p className="text-green-100">Referral Bonus</p>
-                    <p className="text-2xl font-bold">Up to ₹500</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3">
-                  <Users className="h-8 w-8" />
-                  <div>
-                    <p className="text-blue-100">Min Investment</p>
-                    <p className="text-2xl font-bold">₹1,000</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3">
-                  <TrendingUp className="h-8 w-8" />
-                  <div>
-                    <p className="text-purple-100">Commission Rate</p>
-                    <p className="text-2xl font-bold">0.5%</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3">
-                  <Gift className="h-8 w-8" />
-                  <div>
-                    <p className="text-amber-100">Your Tier</p>
-                    <p className="text-2xl font-bold">{user?.type === 'agent' ? 'Pro' : 'Basic'}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="font-semibold text-blue-800 mb-2">Referral Reward Slabs</h3>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-2 text-sm">
+              <div className="bg-white p-2 rounded text-center">
+                <div className="font-medium">1-3 Referrals</div>
+                <div className="text-green-600">₹100 each</div>
+              </div>
+              <div className="bg-white p-2 rounded text-center">
+                <div className="font-medium">4-6 Referrals</div>
+                <div className="text-green-600">₹200 each</div>
+              </div>
+              <div className="bg-white p-2 rounded text-center">
+                <div className="font-medium">7-16 Referrals</div>
+                <div className="text-green-600">₹300 each</div>
+              </div>
+              <div className="bg-white p-2 rounded text-center">
+                <div className="font-medium">17-50 Referrals</div>
+                <div className="text-green-600">₹400 each</div>
+              </div>
+              <div className="bg-white p-2 rounded text-center">
+                <div className="font-medium">51+ Referrals</div>
+                <div className="text-green-600">₹500 each</div>
+              </div>
+            </div>
+            <p className="text-xs text-blue-700 mt-2">
+              * Rewards are credited after your referred friend completes KYC and makes their first investment.
+              Only direct customers (self-registered) are eligible for wallet rewards.
+            </p>
           </div>
 
           <ReferralSystem />
-          
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Gift className="h-5 w-5 text-amber-600" />
-                Program Terms & Conditions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold mb-2">Eligibility</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• Referral must be a new user to SIP Brewery</li>
-                    <li>• Minimum investment of ₹1,000 required</li>
-                    <li>• Referral must complete KYC verification</li>
-                    <li>• Investment must be maintained for 90 days</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-2">Commission Structure</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• 0.5% of first investment amount</li>
-                    <li>• Maximum ₹500 per referral</li>
-                    <li>• Paid within 30 days of qualification</li>
-                    <li>• No limit on number of referrals</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                <p className="text-sm text-amber-800">
-                  <strong>Important:</strong> Referral bonuses are promotional incentives and do not guarantee investment returns. 
-                  All mutual fund investments are subject to market risks. Please read all scheme related documents carefully.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
         </div>
+        <Footer />
       </div>
-    </ProtectedRoute>
+    </KYCGuard>
   );
 };
 
