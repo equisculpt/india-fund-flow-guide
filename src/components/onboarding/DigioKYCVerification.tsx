@@ -1,14 +1,12 @@
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, Clock, AlertTriangle, ExternalLink, Shield } from 'lucide-react';
-import { useDigioKYC } from '@/hooks/useDigioKYC';
-import { useToast } from '@/hooks/use-toast';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Shield, FileText, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DigioKYCVerificationProps {
   clientData: any;
@@ -17,226 +15,254 @@ interface DigioKYCVerificationProps {
 }
 
 const DigioKYCVerification = ({ clientData, onKYCComplete, onBack }: DigioKYCVerificationProps) => {
-  const [panNumber, setPanNumber] = useState(clientData.panNumber || '');
-  const [aadhaarNumber, setAadhaarNumber] = useState(clientData.aadhaarNumber || '');
-  const [isManualVerification, setIsManualVerification] = useState(false);
-  const { kycStatus, isLoading, initiateKYC, checkKYCStatus } = useDigioKYC();
+  const [step, setStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [panNumber, setPanNumber] = useState("");
+  const [aadhaarNumber, setAadhaarNumber] = useState("");
+  const [kycUrl, setKycUrl] = useState("");
+  const [referenceId, setReferenceId] = useState("");
   const { toast } = useToast();
 
-  const handleDigioKYC = async () => {
-    if (!panNumber || !aadhaarNumber) {
+  const generateReferenceId = () => {
+    return `SB_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+  };
+
+  const initiateDigioKYC = async () => {
+    setIsLoading(true);
+    const refId = generateReferenceId();
+    setReferenceId(refId);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('digio-kyc', {
+        body: {
+          action: 'initiate_kyc',
+          data: {
+            referenceId: refId,
+            email: clientData.email,
+            name: clientData.fullName,
+            mobile: clientData.phone
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.verification_url) {
+        setKycUrl(data.verification_url);
+        setStep(2);
+        toast({
+          title: "KYC Initiated",
+          description: "Please complete your KYC verification using Digio's secure platform",
+        });
+      }
+    } catch (error: any) {
+      console.error('Digio KYC Error:', error);
       toast({
-        title: "Missing Information",
-        description: "Please enter both PAN and Aadhaar numbers.",
-        variant: "destructive",
+        title: "Error",
+        description: "Failed to initiate KYC verification. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyPAN = async () => {
+    if (!panNumber || panNumber.length !== 10) {
+      toast({
+        title: "Invalid PAN",
+        description: "Please enter a valid 10-digit PAN number",
+        variant: "destructive"
       });
       return;
     }
 
-    const kycData = {
-      panNumber: panNumber.toUpperCase(),
-      aadhaarNumber,
-      fullName: clientData.fullName,
-      email: clientData.email,
-      phone: clientData.phone,
-      dateOfBirth: clientData.dateOfBirth
-    };
+    setIsLoading(true);
+    const refId = generateReferenceId();
 
-    const result = await initiateKYC(kycData);
-    
-    if (result.success && result.verificationUrl) {
-      // Open Digio verification in new window
-      window.open(result.verificationUrl, '_blank', 'width=800,height=600');
-      
-      // Start polling for status updates
-      const pollInterval = setInterval(async () => {
-        if (result.referenceId) {
-          try {
-            const status = await checkKYCStatus(result.referenceId);
-            if (status.status === 'success') {
-              clearInterval(pollInterval);
-              onKYCComplete();
-            }
-          } catch (error) {
-            console.error('Status check failed:', error);
+    try {
+      const { data, error } = await supabase.functions.invoke('digio-kyc', {
+        body: {
+          action: 'pan_verification',
+          data: {
+            referenceId: refId,
+            panNumber: panNumber.toUpperCase(),
+            customerName: clientData.fullName
           }
         }
-      }, 10000); // Check every 10 seconds
+      });
 
-      // Clear interval after 30 minutes
-      setTimeout(() => clearInterval(pollInterval), 30 * 60 * 1000);
+      if (error) throw error;
+
+      if (data.status === 'success') {
+        toast({
+          title: "PAN Verified",
+          description: "Your PAN has been verified successfully",
+        });
+        setStep(3);
+      }
+    } catch (error: any) {
+      console.error('PAN Verification Error:', error);
+      toast({
+        title: "PAN Verification Failed",
+        description: "Please check your PAN number and try again",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleManualVerification = () => {
-    // Simulate manual verification process
-    setIsManualVerification(true);
-    toast({
-      title: "Manual Verification Initiated",
-      description: "Your documents will be verified manually within 24 hours.",
-    });
-    
-    // Simulate completion after a short delay for demo
-    setTimeout(() => {
-      onKYCComplete();
-    }, 3000);
-  };
+  const checkKYCStatus = async () => {
+    if (!referenceId) return;
 
-  const renderKYCStatus = () => {
-    const statusConfig = {
-      idle: { color: "bg-gray-100 text-gray-800", icon: Clock, text: "Ready to Start" },
-      initiating: { color: "bg-blue-100 text-blue-800", icon: Clock, text: "Initiating..." },
-      pending: { color: "bg-yellow-100 text-yellow-800", icon: Clock, text: "Verification Pending" },
-      in_progress: { color: "bg-blue-100 text-blue-800", icon: Clock, text: "In Progress" },
-      completed: { color: "bg-green-100 text-green-800", icon: CheckCircle, text: "Completed" },
-      failed: { color: "bg-red-100 text-red-800", icon: AlertTriangle, text: "Failed" }
-    };
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('digio-kyc', {
+        body: {
+          action: 'get_status',
+          data: { referenceId }
+        }
+      });
 
-    const config = statusConfig[kycStatus.status];
-    const Icon = config.icon;
+      if (error) throw error;
 
-    return (
-      <Badge className={config.color}>
-        <Icon className="h-3 w-3 mr-1" />
-        {config.text}
-      </Badge>
-    );
+      if (data.status === 'completed' || data.status === 'success') {
+        toast({
+          title: "KYC Completed",
+          description: "Your KYC verification has been completed successfully!",
+        });
+        onKYCComplete();
+      } else if (data.status === 'failed') {
+        toast({
+          title: "KYC Failed",
+          description: "KYC verification failed. Please try again.",
+          variant: "destructive"
+        });
+        setStep(1);
+      } else {
+        toast({
+          title: "KYC In Progress",
+          description: "Your KYC is still being processed. Please wait.",
+        });
+      }
+    } catch (error: any) {
+      console.error('KYC Status Check Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to check KYC status",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Digio KYC Verification
-          </span>
-          {renderKYCStatus()}
+        <CardTitle className="flex items-center gap-2">
+          <Shield className="h-5 w-5 text-blue-600" />
+          KYC Verification with Digio
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <Alert>
-          <Shield className="h-4 w-4" />
-          <AlertDescription>
-            We use Digio's secure platform for instant KYC verification. Your documents are processed securely and in compliance with RBI guidelines.
-          </AlertDescription>
-        </Alert>
+      <CardContent>
+        {step === 1 && (
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <h4 className="font-semibold text-blue-800 mb-2">Secure KYC Verification</h4>
+              <p className="text-blue-700 text-sm">
+                We use Digio's SEBI-approved platform for secure document verification. 
+                Your data is encrypted and protected throughout the process.
+              </p>
+            </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="pan">PAN Number</Label>
-            <Input
-              id="pan"
-              value={panNumber}
-              onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
-              placeholder="Enter PAN number"
-              maxLength={10}
-            />
-            {kycStatus.panVerified && (
-              <div className="flex items-center gap-1 mt-1 text-green-600 text-sm">
-                <CheckCircle className="h-4 w-4" />
-                Verified
+            <div className="space-y-3">
+              <div>
+                <Label htmlFor="pan">PAN Number *</Label>
+                <Input
+                  id="pan"
+                  value={panNumber}
+                  onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
+                  placeholder="Enter your PAN number"
+                  maxLength={10}
+                  className="uppercase"
+                />
               </div>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="aadhaar">Aadhaar Number</Label>
-            <Input
-              id="aadhaar"
-              value={aadhaarNumber}
-              onChange={(e) => setAadhaarNumber(e.target.value.replace(/\D/g, ''))}
-              placeholder="Enter Aadhaar number"
-              maxLength={12}
-            />
-            {kycStatus.aadhaarVerified && (
-              <div className="flex items-center gap-1 mt-1 text-green-600 text-sm">
-                <CheckCircle className="h-4 w-4" />
-                Verified
-              </div>
-            )}
-          </div>
-        </div>
+              
+              <Button onClick={verifyPAN} disabled={isLoading} className="w-full">
+                {isLoading ? "Verifying PAN..." : "Verify PAN & Proceed"}
+              </Button>
+            </div>
 
-        {kycStatus.status === 'pending' && kycStatus.verificationUrl && (
-          <Alert>
-            <ExternalLink className="h-4 w-4" />
-            <AlertDescription>
-              Complete your verification by clicking the link that opened in a new window. 
-              If it didn't open, <a href={kycStatus.verificationUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">click here</a>.
-            </AlertDescription>
-          </Alert>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={onBack} className="flex-1">
+                Back
+              </Button>
+            </div>
+          </div>
         )}
 
-        {kycStatus.error && (
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>{kycStatus.error}</AlertDescription>
-          </Alert>
+        {step === 2 && (
+          <div className="space-y-4">
+            <div className="text-center">
+              <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Complete KYC Verification</h3>
+              <p className="text-gray-600 mb-4">
+                Click the button below to complete your KYC verification on Digio's secure platform
+              </p>
+              
+              {kycUrl && (
+                <Button 
+                  onClick={() => window.open(kycUrl, '_blank')} 
+                  className="w-full mb-4"
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Complete KYC on Digio
+                </Button>
+              )}
+              
+              <Button 
+                variant="outline" 
+                onClick={checkKYCStatus} 
+                disabled={isLoading}
+                className="w-full"
+              >
+                {isLoading ? "Checking Status..." : "I've Completed KYC - Check Status"}
+              </Button>
+            </div>
+          </div>
         )}
 
-        <div className="space-y-4">
-          <div className="text-center">
-            <h3 className="font-semibold mb-2">Choose Verification Method</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Select how you'd like to complete your KYC verification
-            </p>
+        {step === 3 && (
+          <div className="space-y-4">
+            <div className="text-center">
+              <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-green-800 mb-2">PAN Verified Successfully!</h3>
+              <p className="text-gray-600 mb-4">
+                Now let's complete your full KYC verification with Digio
+              </p>
+              
+              <Button onClick={initiateDigioKYC} disabled={isLoading} className="w-full">
+                {isLoading ? "Initiating KYC..." : "Start Full KYC Verification"}
+              </Button>
+            </div>
           </div>
+        )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="border-blue-200">
-              <CardContent className="p-4 text-center">
-                <div className="mb-3">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                    <Shield className="h-6 w-6 text-blue-600" />
-                  </div>
-                </div>
-                <h4 className="font-semibold mb-2">Instant Digio KYC</h4>
-                <p className="text-sm text-gray-600 mb-4">
-                  Complete verification instantly using Digio's secure platform
-                </p>
-                <Button 
-                  onClick={handleDigioKYC}
-                  disabled={isLoading || !panNumber || !aadhaarNumber}
-                  className="w-full"
-                >
-                  {isLoading ? "Initiating..." : "Start Digio KYC"}
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-gray-200">
-              <CardContent className="p-4 text-center">
-                <div className="mb-3">
-                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto">
-                    <Clock className="h-6 w-6 text-gray-600" />
-                  </div>
-                </div>
-                <h4 className="font-semibold mb-2">Manual Verification</h4>
-                <p className="text-sm text-gray-600 mb-4">
-                  Upload documents for manual review (24-48 hours)
-                </p>
-                <Button 
-                  onClick={handleManualVerification}
-                  variant="outline"
-                  disabled={isLoading || isManualVerification}
-                  className="w-full"
-                >
-                  {isManualVerification ? "Processing..." : "Manual KYC"}
-                </Button>
-              </CardContent>
-            </Card>
+        <div className="mt-6 p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-start gap-2">
+            <FileText className="h-4 w-4 text-gray-600 mt-0.5" />
+            <div className="text-xs text-gray-600">
+              <p className="font-medium mb-1">Documents Required:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>PAN Card</li>
+                <li>Aadhaar Card</li>
+                <li>Bank Account Proof</li>
+                <li>Recent Photo</li>
+              </ul>
+            </div>
           </div>
-        </div>
-
-        <div className="flex justify-between">
-          <Button onClick={onBack} variant="outline">
-            Back
-          </Button>
-          {kycStatus.kycComplete && (
-            <Button onClick={onKYCComplete}>
-              Continue to Risk Profiling
-            </Button>
-          )}
         </div>
       </CardContent>
     </Card>

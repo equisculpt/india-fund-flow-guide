@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,9 @@ import SecureAdminPage from "./pages/SecureAdminPage";
 import CommunityPage from "./pages/CommunityPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import UserDashboard from "./pages/UserDashboard";
+import PortfolioDashboardPage from "./pages/PortfolioDashboard";
+import InvestmentExplorer from "./pages/InvestmentExplorer";
+import AIPortfolioDashboard from "./pages/AIPortfolioDashboard";
 import HDBFinancialServicesIPOBlog from "./pages/HDBFinancialServicesIPOBlog";
 import VeedaClinicalResearchIPOBlog from "./pages/VeedaClinicalResearchIPOBlog";
 import NBFCSectorDeepDiveBlog from "./pages/NBFCSectorDeepDiveBlog";
@@ -27,6 +29,7 @@ import HowFundManagersMakeMoneyBlog from "./pages/HowFundManagersMakeMoneyBlog";
 import IPOAnalysisGuideBlog from "./pages/IPOAnalysisGuideBlog";
 import HealthcareSectorOutlookBlog from "./pages/HealthcareSectorOutlookBlog";
 import NotFound from "./pages/NotFound";
+import SIPManagement from "./pages/SIPManagement";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +45,10 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/onboarding" element={<OnboardingPage />} />
               <Route path="/dashboard" element={<UserDashboard />} />
+              <Route path="/portfolio" element={<PortfolioDashboardPage />} />
+              <Route path="/explore" element={<InvestmentExplorer />} />
+              <Route path="/sip-management" element={<SIPManagement />} />
+              <Route path="/ai-dashboard" element={<AIPortfolioDashboard />} />
               <Route path="/fund/:schemeCode" element={<FundDetailsPage />} />
               <Route path="/funds/:fundType" element={<PublicFundsPage />} />
               <Route path="/fund-comparison" element={<FundComparisonPage />} />

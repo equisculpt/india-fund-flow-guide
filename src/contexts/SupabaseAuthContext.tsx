@@ -1,9 +1,7 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
   id: string;
@@ -125,7 +123,9 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
               phone: userData.user.user_metadata?.phone || '',
               user_type: 'customer' as const,
               kyc_status: 'pending' as const,
-              is_active: true
+              is_active: true,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
             };
 
             const { error: insertError } = await supabase
@@ -322,7 +322,7 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
         
         // Redirect to main app after successful KYC
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = '/dashboard';
         }, 1000);
       }
     } catch (error) {
