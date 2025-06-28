@@ -6,6 +6,7 @@ import SEOContentSection from '@/components/index/SEOContentSection';
 import LazyLoadedSections from '@/components/index/LazyLoadedSections';
 import FAQSection from '@/components/index/FAQSection';
 import SEOHead from '@/components/SEOHead';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { useFundData } from '@/components/FundData';
 
 const Index = () => {
@@ -40,70 +41,74 @@ const Index = () => {
   ];
 
   return (
-    <Layout>
-      <SEOHead
-        title="SIP Brewery - India's #1 SEBI Registered Mutual Fund Investment Platform 2025"
-        description="Start your mutual fund investment journey with SIP Brewery. SEBI registered platform offering 3000+ mutual funds, AI-powered recommendations, and expert guidance. Minimum SIP ₹500. Join 1M+ investors today."
-        keywords="mutual funds india, SIP investment, SEBI registered platform, best mutual funds 2025, mutual fund calculator, SIP calculator, investment advisor, AI mutual fund recommendations, direct mutual funds, regular mutual funds"
-        canonicalUrl="https://sipbrewery.com/"
-        ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
-        ogType="website"
-        breadcrumbs={breadcrumbs}
-        faqData={homepageFAQData}
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "FinancialService",
-          "name": "SIP Brewery",
-          "alternateName": "SIP Brewery India",
-          "url": "https://sipbrewery.com",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
-            "width": 400,
-            "height": 400
-          },
-          "description": "India's #1 SEBI registered mutual fund investment platform offering 3000+ mutual funds with AI-powered recommendations.",
-          "areaServed": "India",
-          "serviceType": ["Mutual Fund Investment", "SIP Planning", "Financial Advisory"],
-          "priceRange": "₹500-∞",
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "reviewCount": "10000",
-            "bestRating": "5",
-            "worstRating": "1"
-          },
-          "offers": {
-            "@type": "Offer",
-            "name": "SIP Investment Service",
-            "description": "Start SIP with minimum ₹500",
-            "price": "500",
-            "priceCurrency": "INR"
-          },
-          "sameAs": [
-            "https://twitter.com/sipbrewery",
-            "https://linkedin.com/company/sipbrewery"
-          ]
-        }}
-      />
-      
-      {/* Hero Section - Critical above-the-fold content */}
-      <div className="critical-content">
-        <HeroSection />
-      </div>
+    <ErrorBoundary>
+      <Layout>
+        <ErrorBoundary fallback={<div>Loading page content...</div>}>
+          <SEOHead
+            title="SIP Brewery - India's #1 SEBI Registered Mutual Fund Investment Platform 2025"
+            description="Start your mutual fund investment journey with SIP Brewery. SEBI registered platform offering 3000+ mutual funds, AI-powered recommendations, and expert guidance. Minimum SIP ₹500. Join 1M+ investors today."
+            keywords="mutual funds india, SIP investment, SEBI registered platform, best mutual funds 2025, mutual fund calculator, SIP calculator, investment advisor, AI mutual fund recommendations, direct mutual funds, regular mutual funds"
+            canonicalUrl="https://sipbrewery.com/"
+            ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+            ogType="website"
+            breadcrumbs={breadcrumbs}
+            faqData={homepageFAQData}
+            structuredData={{
+              "@context": "https://schema.org",
+              "@type": "FinancialService",
+              "name": "SIP Brewery",
+              "alternateName": "SIP Brewery India",
+              "url": "https://sipbrewery.com",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+                "width": 400,
+                "height": 400
+              },
+              "description": "India's #1 SEBI registered mutual fund investment platform offering 3000+ mutual funds with AI-powered recommendations.",
+              "areaServed": "India",
+              "serviceType": ["Mutual Fund Investment", "SIP Planning", "Financial Advisory"],
+              "priceRange": "₹500-∞",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "10000",
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "offers": {
+                "@type": "Offer",
+                "name": "SIP Investment Service",
+                "description": "Start SIP with minimum ₹500",
+                "price": "500",
+                "priceCurrency": "INR"
+              },
+              "sameAs": [
+                "https://twitter.com/sipbrewery",
+                "https://linkedin.com/company/sipbrewery"
+              ]
+            }}
+          />
+        </ErrorBoundary>
+        
+        {/* Hero Section - Critical above-the-fold content */}
+        <div className="critical-content">
+          <HeroSection />
+        </div>
 
-      {/* SEO Content Section - Critical for SEO but can be optimized */}
-      <SEOContentSection />
+        {/* SEO Content Section - Critical for SEO but can be optimized */}
+        <SEOContentSection />
 
-      {/* Lazy loaded sections */}
-      <LazyLoadedSections 
-        allFunds={allFunds} 
-        onRiskProfilingComplete={handleRiskProfilingComplete} 
-      />
-      
-      {/* FAQ Section - Optimized for mobile */}
-      <FAQSection />
-    </Layout>
+        {/* Lazy loaded sections */}
+        <LazyLoadedSections 
+          allFunds={allFunds} 
+          onRiskProfilingComplete={handleRiskProfilingComplete} 
+        />
+        
+        {/* FAQ Section - Optimized for mobile */}
+        <FAQSection />
+      </Layout>
+    </ErrorBoundary>
   );
 };
 
