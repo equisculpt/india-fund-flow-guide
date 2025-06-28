@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import RiskProfiling from "../RiskProfiling";
 import RiskProfileResults from "../RiskProfileResults";
 import DigioKYCVerification from "./DigioKYCVerification";
-import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
+import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
 
 interface OnboardingStepsProps {
   clientData: any;
@@ -31,7 +31,7 @@ const OnboardingSteps = ({ clientData, setClientData, socialLoginUser }: Onboard
   const [riskProfile, setRiskProfile] = useState<RiskProfile | null>(null);
   const [otp, setOtp] = useState("");
   const { toast } = useToast();
-  const { completeOnboarding } = useEnhancedAuth();
+  const { updateKYCStatus } = useSupabaseAuth();
 
   const handleSendOTP = async () => {
     if (!clientData.phone) {
@@ -96,16 +96,14 @@ const OnboardingSteps = ({ clientData, setClientData, socialLoginUser }: Onboard
     setStep(6);
   };
 
-  const handleFinalizeOnboarding = () => {
-    completeOnboarding({
-      phoneNumber: clientData.phone,
-      kycStatus: 'verified',
-      riskProfile: riskProfile?.category,
-    });
+  const handleFinalizeOnboarding = async () => {
+    // Mark KYC as verified in the database
+    await updateKYCStatus('verified');
     
-    setTimeout(() => {
-      window.location.href = '/dashboard';
-    }, 1000);
+    toast({
+      title: "Welcome to SIP Brewery!",
+      description: "Your account setup is complete. Redirecting to dashboard...",
+    });
   };
 
   return (
@@ -114,7 +112,7 @@ const OnboardingSteps = ({ clientData, setClientData, socialLoginUser }: Onboard
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <User className="h-5 w-5" />
-            {socialLoginUser ? "Complete Your Profile" : "Complete Your Onboarding"}
+            {socialLoginUser ? "Complete Your KYC Verification" : "Complete Your Onboarding"}
           </span>
           <Badge variant="outline">Step {step} of 6</Badge>
         </CardTitle>
@@ -227,20 +225,13 @@ const OnboardingSteps = ({ clientData, setClientData, socialLoginUser }: Onboard
         )}
 
         {step === 6 && riskProfile && (
-          <RiskProfileResults 
-            riskProfile={riskProfile} 
-            onContinue={handleRiskProfileContinue} 
-          />
-        )}
-
-        {step === 7 && (
           <div className="text-center space-y-4">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <h3 className="text-lg font-semibold text-green-800 text-center">Onboarding Complete!</h3>
+            <h3 className="text-lg font-semibold text-green-800 text-center">KYC Verification Complete!</h3>
             <p className="text-gray-600 text-center">
-              Your account has been successfully verified with Digio KYC and your risk profile has been assessed. 
+              Your account has been successfully verified and your risk profile has been assessed. 
               You can now start investing in suitable mutual funds.
             </p>
             {riskProfile && (
@@ -254,7 +245,7 @@ const OnboardingSteps = ({ clientData, setClientData, socialLoginUser }: Onboard
               </div>
             )}
             <Button onClick={handleFinalizeOnboarding} className="w-full">
-              Go to Dashboard
+              Complete Setup & Start Investing
             </Button>
           </div>
         )}

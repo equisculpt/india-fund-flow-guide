@@ -18,6 +18,8 @@ import RiskDisclosurePage from "./pages/RiskDisclosurePage";
 import AdminPage from "./pages/AdminPage";
 import SecureAdminPage from "./pages/SecureAdminPage";
 import CommunityPage from "./pages/CommunityPage";
+import OnboardingPage from "./pages/OnboardingPage";
+import UserDashboard from "./pages/UserDashboard";
 import HDBFinancialServicesIPOBlog from "./pages/HDBFinancialServicesIPOBlog";
 import VeedaClinicalResearchIPOBlog from "./pages/VeedaClinicalResearchIPOBlog";
 import NBFCSectorDeepDiveBlog from "./pages/NBFCSectorDeepDiveBlog";
@@ -38,6 +40,8 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/onboarding" element={<OnboardingPage />} />
+              <Route path="/dashboard" element={<UserDashboard />} />
               <Route path="/fund/:schemeCode" element={<FundDetailsPage />} />
               <Route path="/funds/:fundType" element={<PublicFundsPage />} />
               <Route path="/fund-comparison" element={<FundComparisonPage />} />

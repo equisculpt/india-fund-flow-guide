@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
   id: string;
@@ -22,12 +23,14 @@ interface SupabaseAuthContextType {
   session: Session | null;
   loading: boolean;
   twoFactorRequired: boolean;
+  isKYCRequired: boolean;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signUp: (email: string, password: string, userData: { full_name: string; phone?: string; user_type?: 'customer' | 'agent' }) => Promise<{ error: AuthError | null }>;
   signInWithGoogle: () => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   verifyPAN: (panNumber: string) => Promise<{ success: boolean; error?: string }>;
   completeTwoFactor: () => Promise<{ success: boolean; error?: string }>;
+  updateKYCStatus: (status: 'pending' | 'verified' | 'rejected') => Promise<void>;
 }
 
 const SupabaseAuthContext = createContext<SupabaseAuthContextType | undefined>(undefined);
@@ -38,7 +41,30 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [twoFactorRequired, setTwoFactorRequired] = useState(false);
+  const [isKYCRequired, setIsKYCRequired] = useState(false);
   const { toast } = useToast();
+
+  // KYC Status Check
+  const checkKYCStatus = (profile: UserProfile | null) => {
+    if (!profile) return false;
+    return profile.kyc_status === 'pending' || profile.kyc_status === 'rejected';
+  };
+
+  // Handle auth state changes and KYC redirection
+  const handleAuthStateChange = async (session: Session | null) => {
+    setSession(session);
+    setUser(session?.user ?? null);
+    
+    if (session?.user) {
+      await fetchProfile(session.user.id);
+    } else {
+      setProfile(null);
+      setTwoFactorRequired(false);
+      setIsKYCRequired(false);
+    }
+    
+    setLoading(false);
+  };
 
   useEffect(() => {
     // Set up auth state listener
@@ -46,38 +72,37 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
         
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          // Check if 2FA is required
-          await checkTwoFactorStatus(session.user.id);
-          // Fetch user profile
-          await fetchProfile(session.user.id);
-        } else {
-          setProfile(null);
-          setTwoFactorRequired(false);
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          await handleAuthStateChange(session);
+        } else if (event === 'SIGNED_OUT') {
+          await handleAuthStateChange(null);
         }
-        
-        setLoading(false);
       }
     );
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        checkTwoFactorStatus(session.user.id);
-        fetchProfile(session.user.id);
-      } else {
-        setLoading(false);
-      }
+      handleAuthStateChange(session);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Update KYC required status when profile changes
+  useEffect(() => {
+    if (profile) {
+      const kycRequired = checkKYCStatus(profile);
+      setIsKYCRequired(kycRequired);
+      
+      if (kycRequired) {
+        // Redirect to onboarding if KYC is required
+        const currentPath = window.location.pathname;
+        if (currentPath !== '/onboarding' && currentPath !== '/' && !currentPath.startsWith('/onboarding')) {
+          window.location.href = '/onboarding';
+        }
+      }
+    }
+  }, [profile]);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -89,9 +114,32 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
 
       if (error) {
         console.error('Error fetching profile:', error);
+        
+        // If profile doesn't exist, create one for new users
+        if (error.code === 'PGRST116') {
+          const { data: userData} = await supabase.auth.getUser();
+          if (userData.user) {
+            const newProfile = {
+              id: userData.user.id,
+              full_name: userData.user.user_metadata?.full_name || userData.user.user_metadata?.name || '',
+              phone: userData.user.user_metadata?.phone || '',
+              user_type: 'customer' as const,
+              kyc_status: 'pending' as const,
+              is_active: true
+            };
+
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert(newProfile);
+
+            if (!insertError) {
+              setProfile(newProfile);
+              return;
+            }
+          }
+        }
         setProfile(null);
       } else if (data) {
-        // Type cast the user_type to ensure it matches our union type
         const typedProfile: UserProfile = {
           ...data,
           user_type: (data.user_type as 'customer' | 'agent' | 'admin') || 'customer',
@@ -107,7 +155,6 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
 
   const checkTwoFactorStatus = async (userId: string) => {
     try {
-      // Check if user has a verified PAN number
       const { data: profile } = await supabase
         .from('profiles')
         .select('pan_number')
@@ -151,7 +198,7 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
     user_type?: 'customer' | 'agent';
   }) => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/onboarding`;
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -182,7 +229,7 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
 
   const signInWithGoogle = async () => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/onboarding`;
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -208,6 +255,7 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
           title: "Logged Out",
           description: "You have been successfully logged out.",
         });
+        window.location.href = '/';
       }
     } catch (error) {
       console.error('Sign out error:', error);
@@ -220,7 +268,6 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
     }
 
     try {
-      // Update profile with PAN number
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ pan_number: panNumber })
@@ -229,8 +276,6 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
       if (updateError) throw updateError;
 
       setTwoFactorRequired(false);
-      
-      // Refresh profile
       await fetchProfile(user.id);
       
       toast({
@@ -256,6 +301,35 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
     return { success: true };
   };
 
+  const updateKYCStatus = async (status: 'pending' | 'verified' | 'rejected') => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ kyc_status: status })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      await fetchProfile(user.id);
+      
+      if (status === 'verified') {
+        toast({
+          title: "KYC Completed",
+          description: "Your KYC verification has been completed successfully!",
+        });
+        
+        // Redirect to main app after successful KYC
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('Error updating KYC status:', error);
+    }
+  };
+
   return (
     <SupabaseAuthContext.Provider value={{
       user,
@@ -263,12 +337,14 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
       session,
       loading,
       twoFactorRequired,
+      isKYCRequired,
       signIn,
       signUp,
       signInWithGoogle,
       signOut,
       verifyPAN,
       completeTwoFactor,
+      updateKYCStatus,
     }}>
       {children}
     </SupabaseAuthContext.Provider>
