@@ -1,15 +1,13 @@
 
 import React from 'react';
-import { Brain, DollarSign, Users, Shield } from 'lucide-react';
+import { BarChart3, DollarSign, Users, Shield } from 'lucide-react';
 
 const HeroFeatureGrid = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto lg:mx-0">
       <div className="flex items-center bg-gradient-to-r from-blue-50 to-blue-100 p-5 rounded-2xl border-2 border-blue-200 shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
-        <Brain className="h-7 w-7 text-blue-600 mr-4 flex-shrink-0" />
-        <span className="font-bold text-gray-800">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI-Powered</span> Fund Research
-        </span>
+        <BarChart3 className="h-7 w-7 text-blue-600 mr-4 flex-shrink-0" />
+        <span className="font-bold text-gray-800">Advanced Fund Research</span>
       </div>
       <div className="flex items-center bg-gradient-to-r from-green-50 to-green-100 p-5 rounded-2xl border-2 border-green-200 shadow-lg hover:shadow-green-500/25 transition-all duration-300 hover:scale-105">
         <DollarSign className="h-7 w-7 text-green-600 mr-4 flex-shrink-0" />

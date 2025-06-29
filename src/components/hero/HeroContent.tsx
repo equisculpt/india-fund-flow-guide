@@ -20,9 +20,9 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
       <HeroBadge />
 
-      <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[600px]">
+      <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-center min-h-[700px]">
         {/* Left Section - Content */}
-        <div className="space-y-8 text-center lg:text-left">
+        <div className="lg:col-span-7 space-y-8 text-center lg:text-left">
           <HeroHeadline />
           <HeroSubheadline />
           <HeroFeatureGrid />
@@ -35,7 +35,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
         </div>
 
         {/* Right Section - Hero Illustration */}
-        <div className="order-first lg:order-last">
+        <div className="lg:col-span-5 order-first lg:order-last">
           <HeroIllustration />
         </div>
       </div>
