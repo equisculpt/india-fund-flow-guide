@@ -23,7 +23,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
         {/* Left Section - Content */}
         <div className="text-left space-y-8">
           {/* Main Headline */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight">
               Upgrade Your{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
@@ -32,28 +32,26 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
               Experience
             </h1>
             
-            {/* AI Highlight Tagline - More Attractive */}
+            {/* AI Highlight Tagline - Single Line Small Text */}
             <div className="relative inline-block">
-              <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-200 rounded-3xl p-6 shadow-2xl hover:shadow-amber-500/30 transition-all duration-500 transform hover:scale-105">
-                <div className="text-center space-y-3">
-                  <div className="flex items-center justify-center gap-3">
-                    <Brain className="h-7 w-7 text-amber-600 animate-pulse" />
-                    <span className="text-xl font-bold text-amber-900">🚀 Discover Smarter Investing with</span>
+              <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-200 rounded-3xl px-8 py-4 shadow-2xl hover:shadow-amber-500/30 transition-all duration-500 transform hover:scale-105">
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <Brain className="h-5 w-5 text-amber-600 animate-pulse" />
+                    <span className="text-sm font-medium text-amber-700">discover smarter investing with</span>
                   </div>
-                  <div className="text-3xl font-extrabold leading-tight">
+                  <div className="text-2xl font-extrabold mt-1">
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
                       AI-Powered
                     </span>
-                    <br />
-                    <span className="text-amber-800">Fund Research & Insights</span>
-                    <span className="ml-2 text-2xl">✨</span>
+                    <span className="text-amber-800 ml-2">Fund Research & Insights</span>
+                    <span className="ml-2 text-xl">✨</span>
                   </div>
                 </div>
               </div>
               {/* Floating elements */}
-              <div className="absolute -top-3 -right-3 text-3xl animate-bounce">✨</div>
-              <div className="absolute -bottom-3 -left-3 text-2xl animate-pulse">💡</div>
-              <div className="absolute top-1/2 -right-6 text-xl animate-spin">⭐</div>
+              <div className="absolute -top-3 -right-3 text-2xl animate-bounce">✨</div>
+              <div className="absolute -bottom-3 -left-3 text-xl animate-pulse">💡</div>
             </div>
           </div>
 
