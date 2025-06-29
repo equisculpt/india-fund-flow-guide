@@ -13,14 +13,20 @@ const TestDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
 
   if (!user) {
+    console.log('No test user found, redirecting to test login');
     return <Navigate to="/test-login" replace />;
   }
+
+  console.log('Test user authenticated:', user.email);
 
   return (
     <Layout>

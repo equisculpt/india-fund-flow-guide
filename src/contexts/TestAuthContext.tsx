@@ -34,9 +34,15 @@ export const TestAuthProvider = ({ children }: { children: React.ReactNode }) =>
 
   const signIn = async (email: string, password: string) => {
     try {
+      setLoading(true);
       const { user: testUser, error } = await simulateTestLogin(email, password);
       
       if (error) {
+        toast({
+          title: "Login Failed",
+          description: error.message || "Invalid credentials",
+          variant: "destructive",
+        });
         return { error };
       }
 
@@ -51,7 +57,14 @@ export const TestAuthProvider = ({ children }: { children: React.ReactNode }) =>
       return { error: null };
     } catch (error) {
       console.error('Test login error:', error);
+      toast({
+        title: "Login Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
       return { error };
+    } finally {
+      setLoading(false);
     }
   };
 

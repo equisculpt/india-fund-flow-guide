@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +14,15 @@ const TestLogin = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, testCredentials } = useTestAuth();
+  const { signIn, testCredentials, user } = useTestAuth();
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/test-dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,9 +31,8 @@ const TestLogin = () => {
     const { error } = await signIn(email, password);
     
     if (!error) {
-      navigate('/dashboard');
-    } else {
-      console.error('Login failed:', error);
+      // Redirect will happen via useEffect when user state updates
+      console.log('Login successful, redirecting...');
     }
     
     setIsLoading(false);
