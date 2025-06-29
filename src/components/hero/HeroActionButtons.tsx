@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, Calculator, Brain } from 'lucide-react';
+import { ArrowRight, Play, Brain } from 'lucide-react';
 
 interface HeroActionButtonsProps {
   onStartInvesting: () => void;
@@ -24,21 +24,8 @@ const HeroActionButtons = ({ onStartInvesting, onCalculateReturns }: HeroActionB
           <ArrowRight className="h-5 w-5 lg:h-6 lg:w-6 group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0" />
         </div>
       </Button>
-      
-      {/* Secondary CTA */}
-      <Button 
-        size="lg" 
-        variant="outline" 
-        onClick={onCalculateReturns}
-        className="group border-3 border-green-400 text-green-700 hover:bg-green-50 hover:border-green-500 px-6 lg:px-8 py-6 lg:py-7 text-base lg:text-lg font-bold shadow-xl hover:shadow-green-500/40 transition-all duration-300 hover:scale-105 rounded-2xl lg:rounded-3xl bg-gradient-to-r from-green-50 to-emerald-50 min-w-fit"
-      >
-        <div className="flex items-center justify-center gap-2 lg:gap-3">
-          <Calculator className="h-5 w-5 lg:h-6 lg:w-6 group-hover:rotate-12 transition-transform duration-300 flex-shrink-0" />
-          <span className="font-bold whitespace-nowrap">Try SIP Calculator</span>
-        </div>
-      </Button>
 
-      {/* Tertiary CTA - AI Fund Comparison */}
+      {/* Secondary CTA - AI Fund Comparison */}
       <Button 
         size="lg" 
         variant="outline" 
@@ -48,10 +35,10 @@ const HeroActionButtons = ({ onStartInvesting, onCalculateReturns }: HeroActionB
             element.scrollIntoView({ behavior: 'smooth' });
           }
         }}
-        className="group border-3 border-purple-400 text-purple-700 hover:bg-purple-50 hover:border-purple-500 px-4 lg:px-6 py-6 lg:py-7 text-sm lg:text-base font-bold shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105 rounded-2xl lg:rounded-3xl bg-gradient-to-r from-purple-50 to-pink-50 min-w-fit"
+        className="group border-3 border-purple-400 text-purple-700 hover:bg-purple-50 hover:border-purple-500 px-6 lg:px-8 py-6 lg:py-7 text-base lg:text-lg font-bold shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105 rounded-2xl lg:rounded-3xl bg-gradient-to-r from-purple-50 to-pink-50 min-w-fit"
       >
-        <div className="flex items-center justify-center gap-2">
-          <Brain className="h-4 w-4 lg:h-5 lg:w-5 group-hover:animate-pulse flex-shrink-0" />
+        <div className="flex items-center justify-center gap-2 lg:gap-3">
+          <Brain className="h-5 w-5 lg:h-6 lg:w-6 group-hover:animate-pulse flex-shrink-0" />
           <span className="font-bold whitespace-nowrap">AI Fund Compare</span>
         </div>
       </Button>
