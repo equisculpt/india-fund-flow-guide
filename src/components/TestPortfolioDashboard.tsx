@@ -18,6 +18,7 @@ import QuickActionCards from './dashboard/QuickActionCards';
 import HoldingsTab from './dashboard/HoldingsTab';
 import PerformanceTab from './dashboard/PerformanceTab';
 import AllocationTab from './dashboard/AllocationTab';
+import ReferralBanner from './dashboard/ReferralBanner';
 
 const TestPortfolioDashboard = () => {
   const [hideBalance, setHideBalance] = useState(false);
@@ -49,6 +50,8 @@ const TestPortfolioDashboard = () => {
           </Button>
         </div>
       </div>
+
+      <ReferralBanner />
 
       <PortfolioSummaryCards hideBalance={hideBalance} formatCurrency={formatCurrency} />
 
