@@ -12,112 +12,122 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
   return (
     <div className="max-w-7xl mx-auto relative">
       {/* AMFI Badge */}
-      <div className="mb-8 text-center">
-        <span className="inline-flex items-center bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 text-blue-800 px-6 py-3 rounded-full text-sm font-semibold shadow-lg hover:shadow-blue-500/25 transition-all duration-300">
-          <Shield className="h-4 w-4 mr-2 text-blue-600" />
+      <div className="mb-12 text-center">
+        <span className="inline-flex items-center bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 text-blue-800 px-8 py-4 rounded-full text-base font-semibold shadow-lg hover:shadow-blue-500/25 transition-all duration-300">
+          <Shield className="h-5 w-5 mr-3 text-blue-600" />
           🎉 AMFI Registered Distributor | SEBI Compliant | 3000+ Funds | Real Human Support
         </span>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="grid lg:grid-cols-2 gap-16 items-center">
         {/* Left Section - Content */}
-        <div className="text-left">
+        <div className="text-left space-y-8">
           {/* Main Headline */}
-          <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
-            Upgrade Your{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
-              Mutual Fund
-            </span>{" "}
-            Experience
-          </h1>
-          
-          {/* AI Highlight Tagline - Enhanced and Funky */}
-          <div className="mb-8">
-            <div className="relative">
-              <div className="inline-flex flex-col items-center bg-gradient-to-r from-amber-100 via-yellow-100 to-orange-100 border-2 border-amber-300 text-amber-900 px-8 py-4 rounded-2xl shadow-xl hover:shadow-amber-500/30 transition-all duration-300 transform hover:scale-105">
-                <div className="flex items-center mb-2">
-                  <Brain className="h-6 w-6 mr-3 text-amber-600 animate-pulse" />
-                  <span className="text-lg font-bold">🚀 Discover Smarter Investing with</span>
-                </div>
-                <div className="text-2xl font-extrabold">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
-                    AI-Powered
-                  </span>
-                  <span className="mx-2 text-amber-700">✨</span>
-                  <span className="text-amber-800">Fund Research & Insights</span>
+          <div className="space-y-4">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight">
+              Upgrade Your{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
+                Mutual Fund
+              </span>{" "}
+              Experience
+            </h1>
+            
+            {/* AI Highlight Tagline - More Attractive */}
+            <div className="relative inline-block">
+              <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-200 rounded-3xl p-6 shadow-2xl hover:shadow-amber-500/30 transition-all duration-500 transform hover:scale-105">
+                <div className="text-center space-y-3">
+                  <div className="flex items-center justify-center gap-3">
+                    <Brain className="h-7 w-7 text-amber-600 animate-pulse" />
+                    <span className="text-xl font-bold text-amber-900">🚀 Discover Smarter Investing with</span>
+                  </div>
+                  <div className="text-3xl font-extrabold leading-tight">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
+                      AI-Powered
+                    </span>
+                    <br />
+                    <span className="text-amber-800">Fund Research & Insights</span>
+                    <span className="ml-2 text-2xl">✨</span>
+                  </div>
                 </div>
               </div>
-              {/* Floating sparkles */}
-              <div className="absolute -top-2 -right-2 text-2xl animate-bounce">✨</div>
-              <div className="absolute -bottom-2 -left-2 text-xl animate-pulse">💡</div>
+              {/* Floating elements */}
+              <div className="absolute -top-3 -right-3 text-3xl animate-bounce">✨</div>
+              <div className="absolute -bottom-3 -left-3 text-2xl animate-pulse">💡</div>
+              <div className="absolute top-1/2 -right-6 text-xl animate-spin">⭐</div>
             </div>
           </div>
 
           {/* Subheadline */}
-          <p className="text-xl md:text-2xl text-gray-700 mb-6 leading-relaxed font-medium">
-            Invest, track, and grow—all in one place with India's most transparent AMFI-registered platform.
-          </p>
-          <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-            No paperwork, no hidden fees—just honest investing, advanced tools, and exclusive platform rewards.
-          </p>
+          <div className="space-y-4">
+            <p className="text-2xl md:text-3xl text-gray-700 font-medium leading-relaxed">
+              Invest, track, and grow—all in one place with India's most transparent AMFI-registered platform.
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed">
+              No paperwork, no hidden fees—just honest investing, advanced tools, and exclusive platform rewards.
+            </p>
+          </div>
 
-          {/* Features Bar */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div className="flex items-center bg-blue-50 p-4 rounded-xl border border-blue-200">
-              <Brain className="h-6 w-6 text-blue-600 mr-3" />
-              <span className="font-semibold text-gray-800"><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI-Powered</span> Fund Research</span>
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center bg-gradient-to-r from-blue-50 to-blue-100 p-5 rounded-2xl border-2 border-blue-200 shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
+              <Brain className="h-7 w-7 text-blue-600 mr-4 flex-shrink-0" />
+              <span className="font-bold text-gray-800">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI-Powered</span> Fund Research
+              </span>
             </div>
-            <div className="flex items-center bg-green-50 p-4 rounded-xl border border-green-200">
-              <DollarSign className="h-6 w-6 text-green-600 mr-3" />
-              <span className="font-semibold text-gray-800">Zero Hidden Fees</span>
+            <div className="flex items-center bg-gradient-to-r from-green-50 to-green-100 p-5 rounded-2xl border-2 border-green-200 shadow-lg hover:shadow-green-500/25 transition-all duration-300 hover:scale-105">
+              <DollarSign className="h-7 w-7 text-green-600 mr-4 flex-shrink-0" />
+              <span className="font-bold text-gray-800">Zero Hidden Fees</span>
             </div>
-            <div className="flex items-center bg-purple-50 p-4 rounded-xl border border-purple-200">
-              <Users className="h-6 w-6 text-purple-600 mr-3" />
-              <span className="font-semibold text-gray-800">Real Human Support</span>
+            <div className="flex items-center bg-gradient-to-r from-purple-50 to-purple-100 p-5 rounded-2xl border-2 border-purple-200 shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105">
+              <Users className="h-7 w-7 text-purple-600 mr-4 flex-shrink-0" />
+              <span className="font-bold text-gray-800">Real Human Support</span>
             </div>
-            <div className="flex items-center bg-amber-50 p-4 rounded-xl border border-amber-200">
-              <Shield className="h-6 w-6 text-amber-600 mr-3" />
-              <span className="font-semibold text-gray-800">AMFI Registered</span>
+            <div className="flex items-center bg-gradient-to-r from-amber-50 to-amber-100 p-5 rounded-2xl border-2 border-amber-200 shadow-lg hover:shadow-amber-500/25 transition-all duration-300 hover:scale-105">
+              <Shield className="h-7 w-7 text-amber-600 mr-4 flex-shrink-0" />
+              <span className="font-bold text-gray-800">AMFI Registered</span>
             </div>
           </div>
 
-          {/* Reward & Referral Section */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8">
-            <p className="text-gray-700 mb-3 font-medium">
-              As a gesture of appreciation, we may, from time to time, offer platform rewards or loyalty bonuses for active investing, consistent SIPs, and referrals.*
-            </p>
-            <div className="flex items-center text-green-700 font-semibold">
-              <Sparkles className="h-5 w-5 mr-2 text-green-600" />
-              🥳 Refer friends and earn up to ₹500 per successful referral
+          {/* Reward Section */}
+          <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-200 rounded-3xl p-8 shadow-xl hover:shadow-blue-500/25 transition-all duration-300">
+            <div className="space-y-4">
+              <p className="text-gray-700 font-medium text-lg leading-relaxed">
+                As a gesture of appreciation, we may, from time to time, offer platform rewards or loyalty bonuses for active investing, consistent SIPs, and referrals.*
+              </p>
+              <div className="flex items-center text-green-700 font-bold text-lg">
+                <Sparkles className="h-6 w-6 mr-3 text-green-600" />
+                🥳 Refer friends and earn up to ₹500 per successful referral
+              </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row gap-6">
             <Button 
               size="lg" 
               onClick={onStartInvesting}
-              className="group bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-6 text-xl font-bold shadow-xl hover:shadow-green-500/30 transition-all duration-300 hover:scale-105 rounded-xl"
+              className="group bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-10 py-7 text-xl font-bold shadow-2xl hover:shadow-green-500/40 transition-all duration-300 hover:scale-110 rounded-2xl border-2 border-green-500"
             >
-              <Zap className="mr-3 h-6 w-6" />
+              <Zap className="mr-4 h-7 w-7" />
               Start Investing With ₹500
-              <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
+              <ArrowRight className="ml-4 h-7 w-7 group-hover:translate-x-3 transition-transform duration-300" />
             </Button>
             
             <Button 
               size="lg" 
               variant="outline" 
               onClick={onCalculateReturns}
-              className="group border-2 border-amber-400 text-amber-700 hover:bg-amber-50 px-8 py-6 text-xl font-bold shadow-lg hover:shadow-amber-500/30 transition-all duration-300 hover:scale-105 rounded-xl bg-gradient-to-r from-amber-50 to-yellow-50"
+              className="group border-3 border-amber-400 text-amber-700 hover:bg-amber-50 px-10 py-7 text-xl font-bold shadow-xl hover:shadow-amber-500/40 transition-all duration-300 hover:scale-110 rounded-2xl bg-gradient-to-r from-amber-50 to-yellow-50"
             >
-              <Brain className="mr-3 h-6 w-6" />
-              Try <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse ml-1">AI</span> Fund Comparison
+              <Brain className="mr-4 h-7 w-7" />
+              Try <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse ml-2">AI</span> Fund Comparison
             </Button>
           </div>
 
           {/* Compliance Disclaimer */}
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-xs text-red-700 leading-relaxed">
-            <p className="font-medium mb-1">⚠️ Important Disclaimers:</p>
+          <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6 text-sm text-red-700 leading-relaxed shadow-lg">
+            <p className="font-semibold mb-2">⚠️ Important Disclaimers:</p>
             <p>
               *Rewards are discretionary, not guaranteed, and may be changed or withdrawn at any time. 
               AI-generated research and analysis are for informational purposes only and do not constitute investment advice. 
@@ -129,76 +139,86 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
 
         {/* Right Section - Hero Illustration */}
         <div className="relative">
-          <div className="relative bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-3xl p-8 shadow-2xl">
+          <div className="relative bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-3xl p-10 shadow-2xl border border-white/50">
             {/* AI Dashboard Mockup */}
-            <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
-              <div className="flex items-center mb-4">
-                <Brain className="h-8 w-8 text-blue-600 mr-3 animate-pulse" />
-                <h3 className="text-xl font-bold text-gray-800"><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Fund Analysis</h3>
+            <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8 border border-gray-100">
+              <div className="flex items-center mb-6">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-3 mr-4">
+                  <Brain className="h-8 w-8 text-white animate-pulse" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Fund Analysis
+                </h3>
               </div>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Risk Score</span>
-                  <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">Low</div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-gray-600 font-medium">Risk Score</span>
+                  <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold border border-green-200">Low</div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600"><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Recommendation</span>
-                  <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Strong Buy</div>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-gray-600 font-medium">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Recommendation
+                  </span>
+                  <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-bold border border-blue-200">Strong Buy</div>
                 </div>
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 p-3 rounded-lg">
-                  <div className="text-sm text-gray-700">
-                    <strong><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Insight:</strong> This fund shows consistent performance with low volatility, perfect for your risk profile.
+                <div className="bg-gradient-to-br from-green-50 to-blue-50 p-5 rounded-2xl border border-blue-200">
+                  <div className="text-sm text-gray-700 leading-relaxed">
+                    <strong className="text-blue-600">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Insight:
+                    </strong> This fund shows consistent performance with low volatility, perfect for your risk profile.
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Trust Indicators */}
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-white rounded-xl p-4 shadow-lg">
-                <div className="text-2xl font-bold text-blue-600">3000+</div>
-                <div className="text-sm text-gray-600">Funds Available</div>
+            <div className="grid grid-cols-3 gap-6 text-center">
+              <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                <div className="text-3xl font-bold text-blue-600 mb-2">3000+</div>
+                <div className="text-sm text-gray-600 font-medium">Funds Available</div>
               </div>
-              <div className="bg-white rounded-xl p-4 shadow-lg">
-                <div className="text-2xl font-bold text-green-600">₹500</div>
-                <div className="text-sm text-gray-600">Min SIP Amount</div>
+              <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                <div className="text-3xl font-bold text-green-600 mb-2">₹500</div>
+                <div className="text-sm text-gray-600 font-medium">Min SIP Amount</div>
               </div>
-              <div className="bg-white rounded-xl p-4 shadow-lg">
-                <div className="text-2xl font-bold text-purple-600">10K+</div>
-                <div className="text-sm text-gray-600">Happy Investors</div>
+              <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                <div className="text-3xl font-bold text-purple-600 mb-2">10K+</div>
+                <div className="text-sm text-gray-600 font-medium">Happy Investors</div>
               </div>
             </div>
 
             {/* Floating AI Elements */}
-            <div className="absolute -top-4 -right-4 bg-amber-400 text-white p-3 rounded-full shadow-lg animate-bounce">
-              <Brain className="h-6 w-6" />
+            <div className="absolute -top-6 -right-6 bg-gradient-to-r from-amber-400 to-orange-500 text-white p-4 rounded-full shadow-2xl animate-bounce">
+              <Brain className="h-8 w-8" />
             </div>
-            <div className="absolute -bottom-4 -left-4 bg-blue-500 text-white p-3 rounded-full shadow-lg animate-pulse">
-              <TrendingUp className="h-6 w-6" />
+            <div className="absolute -bottom-6 -left-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4 rounded-full shadow-2xl animate-pulse">
+              <TrendingUp className="h-8 w-8" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Trust Bar */}
-      <div className="mt-16 text-center">
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
-          <div className="flex flex-wrap justify-center items-center gap-8">
-            <div className="flex items-center">
-              <Shield className="h-6 w-6 text-blue-600 mr-2" />
-              <span className="font-semibold text-gray-800">AMFI Registered</span>
+      <div className="mt-20 text-center">
+        <div className="bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-3xl p-8 shadow-2xl hover:shadow-xl transition-all duration-500">
+          <div className="flex flex-wrap justify-center items-center gap-12">
+            <div className="flex items-center group">
+              <Shield className="h-8 w-8 text-blue-600 mr-3 group-hover:scale-110 transition-transform duration-300" />
+              <span className="font-bold text-gray-800 text-lg">AMFI Registered</span>
             </div>
-            <div className="flex items-center">
-              <Shield className="h-6 w-6 text-green-600 mr-2" />
-              <span className="font-semibold text-gray-800">SEBI Compliant</span>
+            <div className="flex items-center group">
+              <Shield className="h-8 w-8 text-green-600 mr-3 group-hover:scale-110 transition-transform duration-300" />
+              <span className="font-bold text-gray-800 text-lg">SEBI Compliant</span>
             </div>
-            <div className="flex items-center">
-              <Users className="h-6 w-6 text-purple-600 mr-2" />
-              <span className="font-semibold text-gray-800">Trusted by 10,000+ Investors</span>
+            <div className="flex items-center group">
+              <Users className="h-8 w-8 text-purple-600 mr-3 group-hover:scale-110 transition-transform duration-300" />
+              <span className="font-bold text-gray-800 text-lg">Trusted by 10,000+ Investors</span>
             </div>
-            <div className="flex items-center">
-              <Brain className="h-6 w-6 text-amber-600 mr-2" />
-              <span className="font-semibold text-gray-800"><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI-Powered</span> Research</span>
+            <div className="flex items-center group">
+              <Brain className="h-8 w-8 text-amber-600 mr-3 group-hover:scale-110 transition-transform duration-300" />
+              <span className="font-bold text-gray-800 text-lg">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI-Powered</span> Research
+              </span>
             </div>
           </div>
         </div>
