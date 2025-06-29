@@ -32,15 +32,15 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
               Experience
             </h1>
             
-            {/* AI Highlight Tagline - Single Line Small Text */}
-            <div className="relative inline-block">
-              <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-200 rounded-3xl px-8 py-4 shadow-2xl hover:shadow-amber-500/30 transition-all duration-500 transform hover:scale-105">
+            {/* AI Highlight Tagline - Full Width Centered */}
+            <div className="relative w-full">
+              <div className="w-full bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-200 rounded-3xl px-8 py-6 shadow-2xl hover:shadow-amber-500/30 transition-all duration-500 transform hover:scale-105">
                 <div className="text-center">
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-center gap-2 mb-2">
                     <Brain className="h-5 w-5 text-amber-600 animate-pulse" />
                     <span className="text-sm font-medium text-amber-700">discover smarter investing with</span>
                   </div>
-                  <div className="text-2xl font-extrabold mt-1">
+                  <div className="text-2xl font-extrabold">
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
                       AI-Powered
                     </span>
