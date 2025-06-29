@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { TrendingUp, ArrowRight, Sparkles, Zap, Brain, Shield, Users, DollarSign } from "lucide-react";
@@ -32,11 +31,25 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
             Experience
           </h1>
           
-          {/* AI Highlight Tagline */}
-          <div className="mb-6">
-            <div className="inline-flex items-center bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 text-amber-800 px-6 py-3 rounded-full text-lg font-bold shadow-lg">
-              <Brain className="h-5 w-5 mr-2 text-amber-600 animate-pulse" />
-              Discover smarter investing with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse ml-1">AI-powered</span> fund research and insights
+          {/* AI Highlight Tagline - Enhanced and Funky */}
+          <div className="mb-8">
+            <div className="relative">
+              <div className="inline-flex flex-col items-center bg-gradient-to-r from-amber-100 via-yellow-100 to-orange-100 border-2 border-amber-300 text-amber-900 px-8 py-4 rounded-2xl shadow-xl hover:shadow-amber-500/30 transition-all duration-300 transform hover:scale-105">
+                <div className="flex items-center mb-2">
+                  <Brain className="h-6 w-6 mr-3 text-amber-600 animate-pulse" />
+                  <span className="text-lg font-bold">🚀 Discover Smarter Investing with</span>
+                </div>
+                <div className="text-2xl font-extrabold">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
+                    AI-Powered
+                  </span>
+                  <span className="mx-2 text-amber-700">✨</span>
+                  <span className="text-amber-800">Fund Research & Insights</span>
+                </div>
+              </div>
+              {/* Floating sparkles */}
+              <div className="absolute -top-2 -right-2 text-2xl animate-bounce">✨</div>
+              <div className="absolute -bottom-2 -left-2 text-xl animate-pulse">💡</div>
             </div>
           </div>
 
@@ -195,4 +208,3 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
 };
 
 export default HeroContent;
-
