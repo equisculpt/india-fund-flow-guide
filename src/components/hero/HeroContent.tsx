@@ -21,10 +21,10 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
 
       <div className="grid lg:grid-cols-2 gap-16 items-center">
         {/* Left Section - Content */}
-        <div className="text-left space-y-8">
+        <div className="text-center lg:text-left space-y-8">
           {/* Main Headline */}
           <div className="space-y-6">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight text-center lg:text-left">
               Upgrade Your{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
                 Mutual Fund
@@ -56,7 +56,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
           </div>
 
           {/* Subheadline */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center lg:text-left">
             <p className="text-2xl md:text-3xl text-gray-700 font-medium leading-relaxed">
               Invest, track, and grow—all in one place with India's most transparent AMFI-registered platform.
             </p>
@@ -101,7 +101,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
             <Button 
               size="lg" 
               onClick={onStartInvesting}
@@ -138,7 +138,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
         {/* Right Section - Hero Illustration */}
         <div className="relative">
           <div className="relative bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-3xl p-10 shadow-2xl border border-white/50">
-            {/* AI Dashboard Mockup */}
+            {/* SEBI Compliant Fund Analysis Mockup */}
             <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8 border border-gray-100">
               <div className="flex items-center mb-6">
                 <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-3 mr-4">
@@ -150,20 +150,18 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between items-center py-3">
-                  <span className="text-gray-600 font-medium">Risk Score</span>
-                  <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold border border-green-200">Low</div>
+                  <span className="text-gray-600 font-medium">Risk Assessment</span>
+                  <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold border border-green-200">Low Risk</div>
                 </div>
                 <div className="flex justify-between items-center py-3">
-                  <span className="text-gray-600 font-medium">
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Recommendation
-                  </span>
-                  <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-bold border border-blue-200">Strong Buy</div>
+                  <span className="text-gray-600 font-medium">Performance Rating</span>
+                  <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-bold border border-blue-200">4.2/5 Stars</div>
                 </div>
                 <div className="bg-gradient-to-br from-green-50 to-blue-50 p-5 rounded-2xl border border-blue-200">
                   <div className="text-sm text-gray-700 leading-relaxed">
                     <strong className="text-blue-600">
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Insight:
-                    </strong> This fund shows consistent performance with low volatility, perfect for your risk profile.
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Research:
+                    </strong> This fund shows consistent performance with low volatility. Past performance does not guarantee future results.
                   </div>
                 </div>
               </div>
