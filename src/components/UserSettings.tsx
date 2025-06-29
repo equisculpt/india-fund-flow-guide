@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -77,7 +76,7 @@ const UserSettings = () => {
                     </div>
                     <div>
                       <Label htmlFor="email">Email Address</Label>
-                      <Input id="email" type="email" defaultValue={profile.email} />
+                      <Input id="email" type="email" placeholder="Enter your email" />
                     </div>
                     <div>
                       <Label htmlFor="phone">Phone Number</Label>
@@ -104,12 +103,11 @@ const UserSettings = () => {
                       <Label>KYC Status</Label>
                       <div className="mt-2">
                         <Badge className={
-                          profile.kyc_status === 'completed' ? 'bg-green-100 text-green-800' :
-                          profile.kyc_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          profile.kyc_status === 'verified' ? 'bg-green-100 text-green-800' :
                           'bg-red-100 text-red-800'
                         }>
-                          {profile.kyc_status === 'completed' && <CheckCircle className="h-3 w-3 mr-1" />}
-                          {profile.kyc_status === 'pending' && <AlertCircle className="h-3 w-3 mr-1" />}
+                          {profile.kyc_status === 'verified' && <CheckCircle className="h-3 w-3 mr-1" />}
+                          {profile.kyc_status !== 'verified' && <AlertCircle className="h-3 w-3 mr-1" />}
                           {profile.kyc_status.toUpperCase()}
                         </Badge>
                       </div>
