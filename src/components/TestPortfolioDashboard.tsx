@@ -8,6 +8,7 @@ import { TEST_USER_DATA } from '@/services/testData';
 import { useNavigate } from 'react-router-dom';
 import XIRRAnalytics from './XIRRAnalytics';
 import AIPortfolioInsights from './AIPortfolioInsights';
+import SIPCenter from './SIPCenter';
 
 const TestPortfolioDashboard = () => {
   const [hideBalance, setHideBalance] = useState(false);
@@ -175,8 +176,9 @@ const TestPortfolioDashboard = () => {
       </div>
 
       <Tabs defaultValue="holdings" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="holdings">My Holdings</TabsTrigger>
+          <TabsTrigger value="sip-center">SIP Center</TabsTrigger>
           <TabsTrigger value="ai-insights">AI Portfolio Insights</TabsTrigger>
           <TabsTrigger value="xirr-analytics">XIRR Analytics</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
@@ -227,6 +229,10 @@ const TestPortfolioDashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="sip-center">
+          <SIPCenter />
         </TabsContent>
 
         <TabsContent value="ai-insights">
