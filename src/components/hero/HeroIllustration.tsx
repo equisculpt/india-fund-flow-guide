@@ -1,0 +1,66 @@
+
+import React from 'react';
+import { Brain, TrendingUp } from 'lucide-react';
+
+const HeroIllustration = () => {
+  return (
+    <div className="relative">
+      <div className="relative bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-3xl p-10 shadow-2xl border border-white/50">
+        {/* SEBI Compliant Fund Analysis Mockup */}
+        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8 border border-gray-100">
+          <div className="flex items-center mb-6">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-3 mr-4">
+              <Brain className="h-8 w-8 text-white animate-pulse" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Fund Analysis
+            </h3>
+          </div>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center py-3">
+              <span className="text-gray-600 font-medium">Risk Assessment</span>
+              <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold border border-green-200">Low Risk</div>
+            </div>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-gray-600 font-medium">Performance Rating</span>
+              <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-bold border border-blue-200">4.2/5 Stars</div>
+            </div>
+            <div className="bg-gradient-to-br from-green-50 to-blue-50 p-5 rounded-2xl border border-blue-200">
+              <div className="text-sm text-gray-700 leading-relaxed">
+                <strong className="text-blue-600">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Research:
+                </strong> This fund shows consistent performance with low volatility. Past performance does not guarantee future results.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="grid grid-cols-3 gap-6 text-center">
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:scale-105">
+            <div className="text-3xl font-bold text-blue-600 mb-2">3000+</div>
+            <div className="text-sm text-gray-600 font-medium">Funds Available</div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:scale-105">
+            <div className="text-3xl font-bold text-green-600 mb-2">₹500</div>
+            <div className="text-sm text-gray-600 font-medium">Min SIP Amount</div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:scale-105">
+            <div className="text-3xl font-bold text-purple-600 mb-2">10K+</div>
+            <div className="text-sm text-gray-600 font-medium">Happy Investors</div>
+          </div>
+        </div>
+
+        {/* Floating AI Elements */}
+        <div className="absolute -top-6 -right-6 bg-gradient-to-r from-amber-400 to-orange-500 text-white p-4 rounded-full shadow-2xl animate-bounce">
+          <Brain className="h-8 w-8" />
+        </div>
+        <div className="absolute -bottom-6 -left-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4 rounded-full shadow-2xl animate-pulse">
+          <TrendingUp className="h-8 w-8" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HeroIllustration;
