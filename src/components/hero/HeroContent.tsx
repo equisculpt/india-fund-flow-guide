@@ -21,7 +21,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
       <HeroBadge />
 
       {/* Top Section - Single Column Centered */}
-      <div className="text-center space-y-6 lg:space-y-8 mb-12 lg:mb-16">
+      <div className="text-center space-y-6 lg:space-y-8 mb-12 lg:mb-16 max-w-4xl mx-auto">
         <HeroHeadline />
         <HeroSubheadline />
       </div>
