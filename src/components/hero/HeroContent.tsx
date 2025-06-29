@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { TrendingUp, ArrowRight, Sparkles, Zap, Brain, Shield, Users, DollarSign } from "lucide-react";
@@ -105,9 +106,9 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
             <p className="font-medium mb-1">⚠️ Important Disclaimers:</p>
             <p>
               *Rewards are discretionary, not guaranteed, and may be changed or withdrawn at any time. 
-              <span className="rainbow-text">AI</span>-generated research and analysis are for informational purposes only and do not constitute investment advice. 
+              AI-generated research and analysis are for informational purposes only and do not constitute investment advice. 
               Please see our Terms & Conditions and Commission Disclosure for details. 
-              <span className="rainbow-text">Mutual fund</span> investments are subject to market risk.
+              Mutual fund investments are subject to market risk.
             </p>
           </div>
         </div>
