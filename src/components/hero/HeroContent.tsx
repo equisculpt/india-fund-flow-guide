@@ -18,18 +18,19 @@ interface HeroContentProps {
 const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps) => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-      <HeroBadge />
-
-      {/* Top Section - Single Column Centered */}
-      <div className="text-center space-y-6 lg:space-y-8 mb-12 lg:mb-16 max-w-4xl mx-auto">
-        <HeroHeadline />
-        <HeroSubheadline />
+      {/* Top Section - Badge and Headlines - Single Column Centered */}
+      <div className="text-center mb-16 lg:mb-20">
+        <HeroBadge />
+        <div className="max-w-5xl mx-auto space-y-8">
+          <HeroHeadline />
+          <HeroSubheadline />
+        </div>
       </div>
 
-      {/* Middle Section - Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-start mb-12 lg:mb-16">
+      {/* Middle Section - Two Column Layout for Desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-center mb-16 lg:mb-20">
         {/* Left Column - Interactive Elements */}
-        <div className="space-y-6 lg:space-y-8 order-2 lg:order-1">
+        <div className="space-y-8 order-2 lg:order-1">
           <HeroFeatureGrid />
           <HeroRewardSection />
           <HeroActionButtons 
@@ -44,11 +45,12 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
         </div>
       </div>
 
-      {/* Bottom Section - Single Column Centered */}
-      <div className="text-center max-w-4xl mx-auto mb-12 lg:mb-16">
+      {/* Bottom Section - Disclaimer - Single Column Centered */}
+      <div className="text-center mb-16 lg:mb-20">
         <HeroDisclaimer />
       </div>
 
+      {/* Trust Bar */}
       <HeroTrustBar />
     </div>
   );
