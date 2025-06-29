@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Brain, DollarSign, Users, Shield } from 'lucide-react';
+import { Brain, IndianRupee, Users, Shield } from 'lucide-react';
 
 const HeroFeatureGrid = () => {
   const features = [
@@ -14,7 +13,7 @@ const HeroFeatureGrid = () => {
       tooltip: "Personalized, data-driven insights for every fund"
     },
     {
-      icon: DollarSign,
+      icon: IndianRupee,
       text: "Zero Hidden Fees",
       color: "from-green-500 to-green-600",
       bgColor: "from-green-50 to-green-100",
