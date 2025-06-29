@@ -17,12 +17,12 @@ interface HeroContentProps {
 
 const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps) => {
   return (
-    <div className="max-w-7xl mx-auto relative">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
       <HeroBadge />
 
-      <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[600px]">
         {/* Left Section - Content */}
-        <div className="text-center lg:text-left space-y-8">
+        <div className="space-y-8 text-center lg:text-left">
           <HeroHeadline />
           <HeroSubheadline />
           <HeroFeatureGrid />
@@ -35,7 +35,9 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
         </div>
 
         {/* Right Section - Hero Illustration */}
-        <HeroIllustration />
+        <div className="order-first lg:order-last">
+          <HeroIllustration />
+        </div>
       </div>
 
       <HeroTrustBar />

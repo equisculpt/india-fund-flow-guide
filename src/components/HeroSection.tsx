@@ -77,10 +77,9 @@ const HeroSection = () => {
   }, [investorStats, error, isLoading]);
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 overflow-hidden">
+    <section className="relative min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 sm:py-16 lg:py-20 overflow-hidden">
       {/* Modern Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Subtle geometric patterns */}
         <div className="absolute top-0 left-0 w-full h-full opacity-40">
           <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-br from-blue-200/30 to-indigo-200/30 rounded-full blur-3xl"></div>
           <div className="absolute top-60 right-20 w-80 h-80 bg-gradient-to-br from-purple-200/30 to-pink-200/30 rounded-full blur-3xl"></div>
@@ -88,7 +87,7 @@ const HeroSection = () => {
         </div>
       </div>
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto relative z-10">
         <HeroContent 
           onStartInvesting={handleStartInvesting}
           onCalculateReturns={handleCalculateReturns}
@@ -127,7 +126,7 @@ const HeroSection = () => {
                   All investments are regulated by SEBI and compliant with AMFI guidelines.
                 </p>
                 <p>
-                  <strong className="text-purple-600">AI Research Disclaimer:</strong> All AI-generated research and analysis are for informational purposes only and do not constitute investment advice. Platform rewards and referral incentives are promotional benefits subject to terms and conditions.
+                  <strong className="text-purple-600">Research Disclaimer:</strong> All research and analysis are for informational purposes only and do not constitute investment advice. Platform rewards and referral incentives are promotional benefits subject to terms and conditions.
                 </p>
               </div>
             </div>
