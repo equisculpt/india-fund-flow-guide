@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -271,26 +270,26 @@ const XIRRAnalytics = () => {
         </CardContent>
       </Card>
 
-      {/* AI Insights */}
-      <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+      {/* Simple XIRR Summary - Removed comprehensive AI insights */}
+      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-purple-900">
-            🤖 AI Portfolio Insights
+          <CardTitle className="flex items-center gap-2 text-blue-900">
+            📊 XIRR Summary
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <p className="text-purple-800">
-              <strong>Excellent Performance!</strong> Your XIRR of {portfolioAnalytics.portfolioXIRR}% is significantly above the platform average of {portfolioAnalytics.platformMedianXIRR}%.
+            <p className="text-blue-800">
+              <strong>Strong Performance:</strong> Your XIRR of {portfolioAnalytics.portfolioXIRR}% is above the platform average of {portfolioAnalytics.platformMedianXIRR}%.
             </p>
-            <p className="text-purple-700">
-              <strong>Top Performers:</strong> Your SBI Small Cap Fund (XIRR: {investments[1].xirr}%) and HDFC Top 100 Fund (XIRR: {investments[0].xirr}%) are driving your outperformance.
+            <p className="text-blue-700">
+              <strong>Top Contributors:</strong> Your best performing funds are driving excellent returns.
             </p>
-            <p className="text-purple-700">
-              <strong>Improvement Tip:</strong> Consider increasing SIP amounts during market corrections to potentially boost your XIRR further.
+            <p className="text-blue-700">
+              <strong>Ranking:</strong> You're in the {portfolioAnalytics.xirrPercentile}th percentile of all investors.
             </p>
           </div>
-          <div className="mt-4 text-xs text-purple-600 italic">
+          <div className="mt-4 text-xs text-blue-600 italic">
             Past performance does not guarantee future results. XIRR is based on actual cash flows and NAVs.
           </div>
         </CardContent>

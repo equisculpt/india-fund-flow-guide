@@ -7,6 +7,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { TEST_USER_DATA } from '@/services/testData';
 import { useNavigate } from 'react-router-dom';
 import XIRRAnalytics from './XIRRAnalytics';
+import AIPortfolioInsights from './AIPortfolioInsights';
 
 const TestPortfolioDashboard = () => {
   const [hideBalance, setHideBalance] = useState(false);
@@ -174,8 +175,9 @@ const TestPortfolioDashboard = () => {
       </div>
 
       <Tabs defaultValue="holdings" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="holdings">My Holdings</TabsTrigger>
+          <TabsTrigger value="ai-insights">AI Portfolio Insights</TabsTrigger>
           <TabsTrigger value="xirr-analytics">XIRR Analytics</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="allocation">Asset Allocation</TabsTrigger>
@@ -225,6 +227,10 @@ const TestPortfolioDashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="ai-insights">
+          <AIPortfolioInsights />
         </TabsContent>
 
         <TabsContent value="xirr-analytics">
