@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { TrendingUp, ArrowRight, Sparkles, Zap, Brain, Shield, Users, DollarSign } from "lucide-react";
@@ -25,7 +26,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
           {/* Main Headline */}
           <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
             Upgrade Your{" "}
-            <span className="rainbow-text">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">
               Mutual Fund
             </span>{" "}
             Experience
@@ -35,7 +36,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
           <div className="mb-6">
             <div className="inline-flex items-center bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 text-amber-800 px-6 py-3 rounded-full text-lg font-bold shadow-lg">
               <Brain className="h-5 w-5 mr-2 text-amber-600 animate-pulse" />
-              Discover smarter investing with <span className="rainbow-text ml-1">AI-powered</span> fund research and insights
+              Discover smarter investing with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse ml-1">AI-powered</span> fund research and insights
             </div>
           </div>
 
@@ -51,7 +52,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div className="flex items-center bg-blue-50 p-4 rounded-xl border border-blue-200">
               <Brain className="h-6 w-6 text-blue-600 mr-3" />
-              <span className="font-semibold text-gray-800"><span className="rainbow-text">AI-Powered</span> Fund Research</span>
+              <span className="font-semibold text-gray-800"><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI-Powered</span> Fund Research</span>
             </div>
             <div className="flex items-center bg-green-50 p-4 rounded-xl border border-green-200">
               <DollarSign className="h-6 w-6 text-green-600 mr-3" />
@@ -97,7 +98,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
               className="group border-2 border-amber-400 text-amber-700 hover:bg-amber-50 px-8 py-6 text-xl font-bold shadow-lg hover:shadow-amber-500/30 transition-all duration-300 hover:scale-105 rounded-xl bg-gradient-to-r from-amber-50 to-yellow-50"
             >
               <Brain className="mr-3 h-6 w-6" />
-              Try <span className="rainbow-text ml-1">AI</span> Fund Comparison
+              Try <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse ml-1">AI</span> Fund Comparison
             </Button>
           </div>
 
@@ -120,7 +121,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
               <div className="flex items-center mb-4">
                 <Brain className="h-8 w-8 text-blue-600 mr-3 animate-pulse" />
-                <h3 className="text-xl font-bold text-gray-800"><span className="rainbow-text">AI</span> Fund Analysis</h3>
+                <h3 className="text-xl font-bold text-gray-800"><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Fund Analysis</h3>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
@@ -128,12 +129,12 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
                   <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">Low</div>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600"><span className="rainbow-text">AI</span> Recommendation</span>
+                  <span className="text-gray-600"><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Recommendation</span>
                   <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Strong Buy</div>
                 </div>
                 <div className="bg-gradient-to-r from-green-50 to-blue-50 p-3 rounded-lg">
                   <div className="text-sm text-gray-700">
-                    <strong><span className="rainbow-text">AI</span> Insight:</strong> This fund shows consistent performance with low volatility, perfect for your risk profile.
+                    <strong><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI</span> Insight:</strong> This fund shows consistent performance with low volatility, perfect for your risk profile.
                   </div>
                 </div>
               </div>
@@ -184,7 +185,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
             </div>
             <div className="flex items-center">
               <Brain className="h-6 w-6 text-amber-600 mr-2" />
-              <span className="font-semibold text-gray-800"><span className="rainbow-text">AI-Powered</span> Research</span>
+              <span className="font-semibold text-gray-800"><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 animate-pulse">AI-Powered</span> Research</span>
             </div>
           </div>
         </div>
@@ -194,3 +195,4 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
 };
 
 export default HeroContent;
+
