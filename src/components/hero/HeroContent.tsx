@@ -17,20 +17,20 @@ interface HeroContentProps {
 
 const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps) => {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 relative">
       {/* Top Section - Badge and Headlines - Single Column Centered */}
-      <div className="text-center mb-20 lg:mb-24">
+      <div className="text-center mb-16 lg:mb-20">
         <HeroBadge />
-        <div className="max-w-4xl mx-auto space-y-10 lg:space-y-12">
+        <div className="max-w-6xl mx-auto space-y-8 lg:space-y-10">
           <HeroHeadline />
           <HeroSubheadline />
         </div>
       </div>
 
       {/* Middle Section - Two Column Layout for Desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 xl:gap-24 items-center mb-20 lg:mb-24">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16 2xl:gap-20 items-center mb-16 lg:mb-20 max-w-7xl mx-auto">
         {/* Left Column - Interactive Elements */}
-        <div className="space-y-10 order-2 lg:order-1">
+        <div className="space-y-8 order-2 lg:order-1">
           <HeroFeatureGrid />
           <HeroRewardSection />
           <HeroActionButtons 
@@ -45,13 +45,15 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
         </div>
       </div>
 
-      {/* Bottom Section - Disclaimer - Single Column Centered */}
-      <div className="text-center mb-20 lg:mb-24">
+      {/* Bottom Section - Disclaimer - Full Width */}
+      <div className="mb-16 lg:mb-20 max-w-7xl mx-auto">
         <HeroDisclaimer />
       </div>
 
-      {/* Trust Bar */}
-      <HeroTrustBar />
+      {/* Trust Bar - Full Width */}
+      <div className="max-w-7xl mx-auto">
+        <HeroTrustBar />
+      </div>
     </div>
   );
 };
