@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { TrendingUp, ArrowRight, Sparkles, Zap, Brain, Shield, Users, DollarSign } from "lucide-react";
