@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { TrendingUp, TrendingDown, Eye, EyeOff, Download, Plus, ArrowRight } fro
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { TEST_USER_DATA } from '@/services/testData';
 import { useNavigate } from 'react-router-dom';
+import XIRRAnalytics from './XIRRAnalytics';
 
 const TestPortfolioDashboard = () => {
   const [hideBalance, setHideBalance] = useState(false);
@@ -59,8 +59,8 @@ const TestPortfolioDashboard = () => {
         </div>
       </div>
 
-      {/* Portfolio Summary */}
-      <div className="grid md:grid-cols-4 gap-4">
+      {/* Portfolio Summary - Enhanced with XIRR */}
+      <div className="grid md:grid-cols-5 gap-4">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -101,16 +101,34 @@ const TestPortfolioDashboard = () => {
         <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
           <CardContent className="p-6">
             <div>
-              <p className="text-sm text-purple-700 font-medium">1-Day Change</p>
+              <p className="text-sm text-purple-700 font-medium">Portfolio XIRR</p>
               <div className="flex items-center gap-2">
                 <p className="text-2xl font-bold text-purple-900">
-                  {formatCurrency(portfolioAnalytics.dayChange)}
+                  {portfolioAnalytics.portfolioXIRR}%
                 </p>
                 <span className="text-sm text-purple-700 flex items-center bg-purple-200 px-2 py-1 rounded-full">
                   <TrendingUp className="h-3 w-3 mr-1" />
-                  +{portfolioAnalytics.dayChangePercentage}%
+                  p.a.
                 </span>
               </div>
+              <div className="text-xs text-purple-600 mt-1">Annualized Return</div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+          <CardContent className="p-6">
+            <div>
+              <p className="text-sm text-yellow-700 font-medium">XIRR Percentile</p>
+              <div className="flex items-center gap-2">
+                <p className="text-2xl font-bold text-yellow-900">
+                  {portfolioAnalytics.xirrPercentile}th
+                </p>
+                <span className="text-sm text-yellow-700 bg-yellow-200 px-2 py-1 rounded-full">
+                  Top {100 - portfolioAnalytics.xirrPercentile}%
+                </span>
+              </div>
+              <div className="text-xs text-yellow-600 mt-1">Better than peers</div>
             </div>
           </CardContent>
         </Card>
@@ -156,8 +174,9 @@ const TestPortfolioDashboard = () => {
       </div>
 
       <Tabs defaultValue="holdings" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="holdings">My Holdings</TabsTrigger>
+          <TabsTrigger value="xirr-analytics">XIRR Analytics</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="allocation">Asset Allocation</TabsTrigger>
         </TabsList>
@@ -206,6 +225,10 @@ const TestPortfolioDashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="xirr-analytics">
+          <XIRRAnalytics />
         </TabsContent>
 
         <TabsContent value="performance">

@@ -84,7 +84,10 @@ export const TEST_USER_DATA = {
       start_date: '2024-01-01',
       frequency: 'monthly',
       gains: 6200,
-      gainPercentage: 24.8
+      gainPercentage: 24.8,
+      xirr: 22.5,
+      irr1Y: 24.8,
+      irr3Y: 18.2
     },
     {
       id: 'investment-2-test-user',
@@ -101,7 +104,10 @@ export const TEST_USER_DATA = {
       start_date: '2024-02-01',
       frequency: 'monthly',
       gains: 7350,
-      gainPercentage: 21.0
+      gainPercentage: 21.0,
+      xirr: 19.8,
+      irr1Y: 21.0,
+      irr3Y: 16.5
     },
     {
       id: 'investment-3-test-user',
@@ -118,7 +124,10 @@ export const TEST_USER_DATA = {
       start_date: '2024-03-01',
       frequency: null,
       gains: 3900,
-      gainPercentage: 15.6
+      gainPercentage: 15.6,
+      xirr: 14.2,
+      irr1Y: 15.6,
+      irr3Y: 12.8
     }
   ],
   
@@ -132,6 +141,41 @@ export const TEST_USER_DATA = {
     riskScore: 6.8,
     peerPercentile: 82,
     volatility: 12.5,
-    sharpeRatio: 1.64
+    sharpeRatio: 1.64,
+    // New XIRR/IRR analytics
+    portfolioXIRR: 18.7,
+    portfolioIRR1Y: 20.5,
+    portfolioIRR3Y: 16.2,
+    xirrPercentile: 74,
+    platformMedianXIRR: 11.2,
+    platformTop10XIRR: 24.8,
+    platformBottom10XIRR: 4.3,
+    totalPlatformUsers: 12847,
+    userRank: 3341
+  },
+
+  // Peer comparison data
+  peerBenchmarks: {
+    equity: {
+      userXIRR: 19.2,
+      peerMedian: 12.8,
+      top10Percent: 26.4,
+      bottom10Percent: 3.7,
+      userPercentile: 76
+    },
+    debt: {
+      userXIRR: 8.9,
+      peerMedian: 7.2,
+      top10Percent: 11.8,
+      bottom10Percent: 4.1,
+      userPercentile: 68
+    },
+    hybrid: {
+      userXIRR: 14.5,
+      peerMedian: 10.3,
+      top10Percent: 18.7,
+      bottom10Percent: 5.2,
+      userPercentile: 71
+    }
   }
 };
