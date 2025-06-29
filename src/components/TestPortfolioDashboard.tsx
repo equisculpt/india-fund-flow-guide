@@ -9,6 +9,10 @@ import XIRRAnalytics from './XIRRAnalytics';
 import AIPortfolioInsights from './AIPortfolioInsights';
 import SIPCenter from './SIPCenter';
 import TransactionHistory from './TransactionHistory';
+import TaxCenter from './TaxCenter';
+import RewardsWallet from './RewardsWallet';
+import UserSettings from './UserSettings';
+import FundExplorer from './FundExplorer';
 import PortfolioSummaryCards from './dashboard/PortfolioSummaryCards';
 import QuickActionCards from './dashboard/QuickActionCards';
 import HoldingsTab from './dashboard/HoldingsTab';
@@ -51,14 +55,17 @@ const TestPortfolioDashboard = () => {
       <QuickActionCards handleInvestMore={handleInvestMore} />
 
       <Tabs defaultValue="holdings" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-7">
-          <TabsTrigger value="holdings">My Holdings</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-10">
+          <TabsTrigger value="holdings">Holdings</TabsTrigger>
           <TabsTrigger value="sip-center">SIP Center</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="ai-insights">AI Portfolio Insights</TabsTrigger>
-          <TabsTrigger value="xirr-analytics">XIRR Analytics</TabsTrigger>
+          <TabsTrigger value="tax-center">Tax Center</TabsTrigger>
+          <TabsTrigger value="rewards">Rewards</TabsTrigger>
+          <TabsTrigger value="ai-insights">AI Insights</TabsTrigger>
+          <TabsTrigger value="xirr-analytics">Analytics</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="allocation">Asset Allocation</TabsTrigger>
+          <TabsTrigger value="fund-explorer">Explore</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="holdings">
@@ -73,6 +80,14 @@ const TestPortfolioDashboard = () => {
           <TransactionHistory />
         </TabsContent>
 
+        <TabsContent value="tax-center">
+          <TaxCenter />
+        </TabsContent>
+
+        <TabsContent value="rewards">
+          <RewardsWallet />
+        </TabsContent>
+
         <TabsContent value="ai-insights">
           <AIPortfolioInsights />
         </TabsContent>
@@ -85,6 +100,15 @@ const TestPortfolioDashboard = () => {
           <PerformanceTab formatCurrency={formatCurrency} />
         </TabsContent>
 
+        <TabsContent value="fund-explorer">
+          <FundExplorer />
+        </TabsContent>
+
+        <TabsContent value="settings">
+          <UserSettings />
+        </TabsContent>
+
+        {/* Legacy tabs for backward compatibility */}
         <TabsContent value="allocation">
           <AllocationTab formatCurrency={formatCurrency} />
         </TabsContent>
