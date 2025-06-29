@@ -19,18 +19,18 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
       {/* Top Section - Badge and Headlines - Single Column Centered */}
-      <div className="text-center mb-16 lg:mb-20">
+      <div className="text-center mb-20 lg:mb-24">
         <HeroBadge />
-        <div className="max-w-5xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-10 lg:space-y-12">
           <HeroHeadline />
           <HeroSubheadline />
         </div>
       </div>
 
       {/* Middle Section - Two Column Layout for Desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-center mb-16 lg:mb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 xl:gap-24 items-center mb-20 lg:mb-24">
         {/* Left Column - Interactive Elements */}
-        <div className="space-y-8 order-2 lg:order-1">
+        <div className="space-y-10 order-2 lg:order-1">
           <HeroFeatureGrid />
           <HeroRewardSection />
           <HeroActionButtons 
@@ -46,7 +46,7 @@ const HeroContent = ({ onStartInvesting, onCalculateReturns }: HeroContentProps)
       </div>
 
       {/* Bottom Section - Disclaimer - Single Column Centered */}
-      <div className="text-center mb-16 lg:mb-20">
+      <div className="text-center mb-20 lg:mb-24">
         <HeroDisclaimer />
       </div>
 
