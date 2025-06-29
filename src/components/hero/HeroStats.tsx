@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Users, DollarSign, Star } from 'lucide-react';
+import { Users, IndianRupee, Star } from 'lucide-react';
 
 interface HeroStatsProps {
   stats: {
@@ -22,7 +22,7 @@ const HeroStats = ({ stats }: HeroStatsProps) => {
       glowColor: "shadow-cyan-500/25"
     },
     {
-      icon: DollarSign,
+      icon: IndianRupee,
       value: stats.amount,
       label: "invested",
       color: "text-green-600",
