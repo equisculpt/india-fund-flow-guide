@@ -22,17 +22,20 @@ const Header = () => {
     console.log('Header: Fund comparison clicked, current path:', location.pathname);
     navigate('/fund-comparison');
     setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
   };
 
   const handleBrowseFundsClick = () => {
     console.log('Header: Browse funds clicked, current path:', location.pathname);
     navigate('/public-funds');
     setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
   };
 
   const handleNavigation = (path: string) => {
     navigate(path);
     setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 100);
@@ -65,26 +68,19 @@ const Header = () => {
               </Link>
             </nav>
 
+            {/* Desktop Search */}
+            <div className="hidden lg:flex items-center flex-1 max-w-lg mx-8">
+              <EnhancedFundSearch placeholder="Search mutual funds..." />
+            </div>
+
             {/* Desktop Actions */}
             <div className="hidden lg:flex items-center space-x-4">
-              {/* User Menu */}
-              <div className="flex items-center space-x-2 sm:space-x-4">
-                <SupabaseUserMenu 
-                  user={user}
-                  signOut={signOut}
-                  setShowLoginModal={setShowLoginModal}
-                  setIsMenuOpen={setIsMenuOpen}
-                />
-
-                {/* Mobile menu button */}
-                <button
-                  className="lg:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  aria-label="Toggle menu"
-                >
-                  {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                </button>
-              </div>
+              <SupabaseUserMenu 
+                user={user}
+                signOut={signOut}
+                setShowLoginModal={setShowLoginModal}
+                setIsMenuOpen={setIsMenuOpen}
+              />
             </div>
 
             {/* Mobile menu button */}
@@ -95,9 +91,8 @@ const Header = () => {
               >
                 Test
               </Link>
-              {/* Mobile menu button */}
               <button
-                className="lg:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label="Toggle menu"
               >
@@ -115,23 +110,23 @@ const Header = () => {
           {isMobileMenuOpen && (
             <div className="lg:hidden">
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
-                {/* Mobile Navigation */}
                 <MobileNavigation 
-                  isMenuOpen={isMenuOpen}
+                  isMenuOpen={isMobileMenuOpen}
                   user={user}
                   handleNavigation={handleNavigation}
                   handleFundComparisonClick={handleFundComparisonClick}
                   handleBrowseFundsClick={handleBrowseFundsClick}
                 />
 
-                {/* Test Login Link */}
-                <Link 
-                  to="/test-login" 
-                  className="text-orange-600 hover:text-orange-700 block px-3 py-2 text-base font-medium bg-orange-50 rounded-md border border-orange-200"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Test Login
-                </Link>
+                {/* Mobile User Menu */}
+                <div className="pt-4 border-t border-gray-200">
+                  <SupabaseUserMenu 
+                    user={user}
+                    signOut={signOut}
+                    setShowLoginModal={setShowLoginModal}
+                    setIsMenuOpen={setIsMobileMenuOpen}
+                  />
+                </div>
               </div>
             </div>
           )}
