@@ -23,7 +23,7 @@ const HeroHeadline = () => {
             </div>
             <div className="text-base lg:text-lg xl:text-xl font-extrabold">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600">
-                Fund Research
+                AI-Powered Fund Research
               </span>
               <span className="text-amber-800 ml-2">& Performance Analysis</span>
               <span className="ml-2">✨</span>
