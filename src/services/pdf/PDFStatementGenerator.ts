@@ -1,3 +1,4 @@
+
 import { pdf } from '@react-pdf/renderer';
 import { StatementData } from '../statement/types';
 import { createPDFDocument } from './PDFStatementDocument';
@@ -58,15 +59,21 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
     const pdfBlob = await pdfInstance.toBlob();
     
     console.log('✅ PDF blob generated successfully:', {
-      size: pdfBlob.size,
-      type: pdfBlob.type,
-      sizeInKB: Math.round(pdfBlob.size / 1024),
-      isValidSize: pdfBlob.size > 1000 // Should be at least 1KB for a valid PDF
+      blob: pdfBlob,
+      size: pdfBlob?.size || 0,
+      type: pdfBlob?.type || 'unknown',
+      sizeInKB: pdfBlob ? Math.round(pdfBlob.size / 1024) : 0,
+      isValidBlob: pdfBlob instanceof Blob,
+      isValidSize: pdfBlob && pdfBlob.size > 1000 // Should be at least 1KB for a valid PDF
     });
     
     // Enhanced blob validation
     if (!pdfBlob) {
-      throw new Error('PDF blob generation returned null');
+      throw new Error('PDF blob generation returned null or undefined');
+    }
+    
+    if (!(pdfBlob instanceof Blob)) {
+      throw new Error('PDF generation did not return a valid Blob object');
     }
     
     if (pdfBlob.size === 0) {
@@ -139,7 +146,8 @@ export class PDFStatementGeneratorService {
       console.log('📦 PDF blob ready for download:', {
         blobSize: pdfBlob.size,
         blobType: pdfBlob.type,
-        sizeInKB: Math.round(pdfBlob.size / 1024)
+        sizeInKB: Math.round(pdfBlob.size / 1024),
+        isValidBlob: pdfBlob instanceof Blob
       });
       
       // Test blob validity by creating URL
@@ -159,9 +167,9 @@ export class PDFStatementGeneratorService {
       
       console.log('📄 Preparing download with filename:', filename);
       
-      // Enhanced download mechanism with multiple fallbacks
+      // Enhanced download mechanism
       try {
-        // Method 1: Try standard download approach
+        // Create download link
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
