@@ -1,4 +1,3 @@
-
 import { bseStarMFService } from './bseStarMFService';
 import { format, subMonths, subYears } from 'date-fns';
 
@@ -77,7 +76,7 @@ export interface StatementData {
     frequency: string;
     startDate: string;
     endDate?: string;
-    status: 'ACTIVE' | 'PAUSED' | 'STOPPED';
+    status: 'ACTIVE' | 'PAUSED' | 'STOPPED' | 'PENDING';
     nextDueDate?: string;
     totalInstallments: number;
     completedInstallments: number;
