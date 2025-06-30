@@ -4,6 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 import { useSIPOperations } from './sip/hooks/useSIPOperations';
 import SIPOverviewCards from './sip/SIPOverviewCards';
 import SIPCard from './sip/SIPCard';
@@ -11,8 +13,12 @@ import SIPCalendar from './sip/SIPCalendar';
 import SIPPerformance from './sip/SIPPerformance';
 import SIPSettings from './sip/SIPSettings';
 import SIPAIInsights from './sip/SIPAIInsights';
+import StatementGenerator from './dashboard/StatementGenerator';
 
 const SIPCenter = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
   const {
     sipStatuses,
     isProcessing,
@@ -95,6 +101,16 @@ const SIPCenter = () => {
   const currentValue = 136870;
   const totalReturns = 24.4;
 
+  const handleStartNewSIPClick = () => {
+    toast({
+      title: "Starting New SIP",
+      description: "Redirecting to fund explorer to start a new SIP...",
+    });
+    
+    // Navigate to fund explorer
+    navigate('/explore');
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -103,7 +119,7 @@ const SIPCenter = () => {
           <h2 className="text-3xl font-bold text-gray-900">SIP Center</h2>
           <p className="text-gray-600 mt-1">Manage your systematic investment plans</p>
         </div>
-        <Button onClick={handleStartNewSIP} className="flex items-center gap-2">
+        <Button onClick={handleStartNewSIPClick} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
           <Plus className="h-4 w-4" />
           Start New SIP
         </Button>
@@ -121,11 +137,12 @@ const SIPCenter = () => {
       <SIPAIInsights />
 
       <Tabs defaultValue="active-sips" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="active-sips">Active SIPs</TabsTrigger>
           <TabsTrigger value="sip-calendar">SIP Calendar</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="settings">SIP Settings</TabsTrigger>
+          <TabsTrigger value="statements">Statements</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="active-sips">
@@ -150,6 +167,10 @@ const SIPCenter = () => {
 
         <TabsContent value="performance">
           <SIPPerformance onDownload={handleDownloadStatement} />
+        </TabsContent>
+
+        <TabsContent value="statements">
+          <StatementGenerator onGenerateStatement={handleDownloadStatement} />
         </TabsContent>
 
         <TabsContent value="settings">

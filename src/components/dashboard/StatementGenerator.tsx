@@ -3,12 +3,15 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { DatePicker } from '@/components/ui/date-picker';
-import { Download, FileText, Calculator, PieChart, Receipt } from 'lucide-react';
+import { Download, FileText, Calculator, PieChart, Receipt, TrendingUp, Wallet, Users, Settings } from 'lucide-react';
 import { format } from 'date-fns';
+import { useToast } from '@/hooks/use-toast';
 
 interface StatementGeneratorProps {
-  onGenerateStatement: (type: string, params: any) => void;
+  onGenerateStatement?: (type: string, params: any) => void;
 }
 
 const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateStatement }) => {
@@ -16,118 +19,366 @@ const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateState
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [financialYear, setFinancialYear] = useState('');
+  const [language, setLanguage] = useState('english');
+  const [format, setFormat] = useState('pdf');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const { toast } = useToast();
 
   const statementTypes = [
-    { id: 'tax-saving', name: 'Tax Saving Statement', icon: Calculator, description: 'ELSS investments and tax benefits' },
-    { id: 'sip-statement', name: 'SIP Statement', icon: Receipt, description: 'Systematic Investment Plan details' },
-    { id: 'portfolio-report', name: 'Portfolio Report', icon: PieChart, description: 'Complete portfolio overview' },
-    { id: 'transaction-statement', name: 'Transaction Statement', icon: FileText, description: 'All buy/sell transactions' },
-    { id: 'capital-gains', name: 'Capital Gains Statement', icon: Calculator, description: 'For tax filing purposes' },
-    { id: 'dividend-statement', name: 'Dividend Statement', icon: Receipt, description: 'Dividend income details' },
-    { id: 'annual-report', name: 'Annual Portfolio Report', icon: PieChart, description: 'Yearly performance summary' }
+    { 
+      id: 'portfolio-summary', 
+      name: 'Portfolio Summary Statement', 
+      icon: PieChart, 
+      description: 'Complete portfolio overview with charts and AI insights',
+      category: 'Portfolio'
+    },
+    { 
+      id: 'holdings-statement', 
+      name: 'Holdings Statement', 
+      icon: FileText, 
+      description: 'Fund-wise detailed holdings with current values',
+      category: 'Portfolio'
+    },
+    { 
+      id: 'transaction-statement', 
+      name: 'Transaction Statement', 
+      icon: Receipt, 
+      description: 'Complete transaction history with BSE references',
+      category: 'Transactions'
+    },
+    { 
+      id: 'capital-gains', 
+      name: 'Capital Gains Statement', 
+      icon: Calculator, 
+      description: 'Tax-ready capital gains report for IT returns',
+      category: 'Tax'
+    },
+    { 
+      id: 'sip-statement', 
+      name: 'SIP Statement', 
+      icon: TrendingUp, 
+      description: 'Active, paused, and upcoming SIP details',
+      category: 'SIP'
+    },
+    { 
+      id: 'annual-returns', 
+      name: 'Annualized Returns Statement', 
+      icon: TrendingUp, 
+      description: 'XIRR/IRR analysis with peer comparison',
+      category: 'Performance'
+    },
+    { 
+      id: 'rewards-statement', 
+      name: 'Rewards & Wallet Statement', 
+      icon: Wallet, 
+      description: 'Earnings, referrals, and wallet transactions',
+      category: 'Rewards'
+    },
+    { 
+      id: 'tax-proof-elss', 
+      name: 'Tax Proof / ELSS Statement', 
+      icon: Calculator, 
+      description: '80C tax saving investments and proofs',
+      category: 'Tax'
+    },
+    { 
+      id: 'referral-statement', 
+      name: 'Referral Statement', 
+      icon: Users, 
+      description: 'Referral earnings and referred user details',
+      category: 'Rewards'
+    },
+    { 
+      id: 'custom-statement', 
+      name: 'Custom Period Statement', 
+      icon: Settings, 
+      description: 'Customizable statement with date and fund filters',
+      category: 'Custom'
+    },
+    { 
+      id: 'ai-summary-report', 
+      name: 'AI Summary Report', 
+      icon: TrendingUp, 
+      description: 'AI-powered portfolio health and recommendations',
+      category: 'AI Insights'
+    }
   ];
 
-  const handleGenerateStatement = () => {
-    if (!selectedStatement) return;
+  const categories = ['All', 'Portfolio', 'Transactions', 'Tax', 'SIP', 'Performance', 'Rewards', 'Custom', 'AI Insights'];
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
-    const params = {
-      startDate: startDate ? format(startDate, 'yyyy-MM-dd') : undefined,
-      endDate: endDate ? format(endDate, 'yyyy-MM-dd') : undefined,
-      financialYear
-    };
+  const filteredStatements = selectedCategory === 'All' 
+    ? statementTypes 
+    : statementTypes.filter(s => s.category === selectedCategory);
 
-    onGenerateStatement(selectedStatement, params);
+  const handleGenerateStatement = async () => {
+    if (!selectedStatement) {
+      toast({
+        title: "Please select a statement type",
+        description: "Choose the type of statement you want to generate",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+
+    try {
+      const params = {
+        startDate: startDate ? format(startDate, 'yyyy-MM-dd') : undefined,
+        endDate: endDate ? format(endDate, 'yyyy-MM-dd') : undefined,
+        financialYear,
+        language,
+        format
+      };
+
+      // Simulate statement generation
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      const selectedStatementData = statementTypes.find(s => s.id === selectedStatement);
+      
+      toast({
+        title: "Statement Generated Successfully! 🎉",
+        description: `Your ${selectedStatementData?.name} has been generated and will be downloaded shortly.`,
+      });
+
+      // Call the provided callback if available
+      if (onGenerateStatement) {
+        onGenerateStatement(selectedStatement, params);
+      }
+
+      // Simulate download
+      setTimeout(() => {
+        const blob = new Blob(['Sample statement content'], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `SIP_Brewery_${selectedStatementData?.name.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd')}.${format}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1000);
+
+    } catch (error) {
+      toast({
+        title: "Generation Failed",
+        description: "There was an error generating your statement. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const selectedStatementData = statementTypes.find(s => s.id === selectedStatement);
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Generate Statements & Reports</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Statement Type Selection */}
-          <div>
-            <label className="text-sm font-medium mb-2 block">Select Statement Type</label>
-            <div className="grid md:grid-cols-2 gap-3">
-              {statementTypes.map((statement) => {
-                const Icon = statement.icon;
-                return (
-                  <Card 
-                    key={statement.id}
-                    className={`cursor-pointer transition-colors ${
-                      selectedStatement === statement.id 
-                        ? 'border-blue-500 bg-blue-50' 
-                        : 'hover:bg-gray-50'
-                    }`}
-                    onClick={() => setSelectedStatement(statement.id)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-3">
-                        <Icon className="h-5 w-5 text-blue-600 mt-1" />
-                        <div>
-                          <div className="font-medium">{statement.name}</div>
-                          <div className="text-sm text-gray-600">{statement.description}</div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+      <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <CardHeader className="text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="bg-blue-600 p-2 rounded-lg">
+              <FileText className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl text-blue-900">SIP Brewery Statement Generator</CardTitle>
+              <p className="text-blue-700 font-medium">Brewing Wealth, One SIP at a Time</p>
             </div>
           </div>
+          <p className="text-blue-600">Generate beautiful, branded, and compliant statements for all your investments</p>
+        </CardHeader>
+      </Card>
 
-          {selectedStatement && (
-            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-              <h4 className="font-medium">Statement Parameters</h4>
-              
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Start Date</label>
-                  <DatePicker
-                    selected={startDate}
-                    onSelect={setStartDate}
-                    className="w-full"
-                  />
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium">End Date</label>
-                  <DatePicker
-                    selected={endDate}
-                    onSelect={setEndDate}
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium">Financial Year</label>
-                  <Select value={financialYear} onValueChange={setFinancialYear}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select FY" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="2024-25">FY 2024-25</SelectItem>
-                      <SelectItem value="2023-24">FY 2023-24</SelectItem>
-                      <SelectItem value="2022-23">FY 2022-23</SelectItem>
-                      <SelectItem value="2021-22">FY 2021-22</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <Button 
-                onClick={handleGenerateStatement}
-                className="w-full"
-                disabled={!selectedStatement}
+      {/* Category Filter */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(category)}
+                className={selectedCategory === category ? "bg-blue-600 hover:bg-blue-700" : ""}
               >
-                <Download className="h-4 w-4 mr-2" />
-                Generate {selectedStatementData?.name}
+                {category}
               </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Statement Type Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Select Statement Type</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-3">
+            {filteredStatements.map((statement) => {
+              const Icon = statement.icon;
+              return (
+                <Card 
+                  key={statement.id}
+                  className={`cursor-pointer transition-all hover:scale-105 ${
+                    selectedStatement === statement.id 
+                      ? 'border-blue-500 bg-blue-50 shadow-lg' 
+                      : 'hover:bg-gray-50 hover:shadow-md'
+                  }`}
+                  onClick={() => setSelectedStatement(statement.id)}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className={`p-2 rounded-lg ${
+                        selectedStatement === statement.id ? 'bg-blue-600' : 'bg-gray-200'
+                      }`}>
+                        <Icon className={`h-5 w-5 ${
+                          selectedStatement === statement.id ? 'text-white' : 'text-gray-600'
+                        }`} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900">{statement.name}</div>
+                        <div className="text-sm text-gray-600 mt-1">{statement.description}</div>
+                        <div className="text-xs text-blue-600 font-medium mt-2">
+                          Category: {statement.category}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Statement Parameters */}
+      {selectedStatement && (
+        <Card className="bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-orange-600" />
+              Statement Parameters - {selectedStatementData?.name}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Date Range */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="start-date">Start Date</Label>
+                <DatePicker
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <Label htmlFor="end-date">End Date</Label>
+                <DatePicker
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  className="w-full"
+                />
+              </div>
             </div>
-          )}
+
+            {/* Financial Year */}
+            <div>
+              <Label>Financial Year (For Tax Statements)</Label>
+              <Select value={financialYear} onValueChange={setFinancialYear}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Financial Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="2024-25">FY 2024-25</SelectItem>
+                  <SelectItem value="2023-24">FY 2023-24</SelectItem>
+                  <SelectItem value="2022-23">FY 2022-23</SelectItem>
+                  <SelectItem value="2021-22">FY 2021-22</SelectItem>
+                  <SelectItem value="2020-21">FY 2020-21</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Language and Format */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <Label>Language</Label>
+                <Select value={language} onValueChange={setLanguage}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="english">English</SelectItem>
+                    <SelectItem value="hindi">हिंदी (Hindi)</SelectItem>
+                    <SelectItem value="gujarati">ગુજરાતી (Gujarati)</SelectItem>
+                    <SelectItem value="marathi">मराठी (Marathi)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Download Format</Label>
+                <Select value={format} onValueChange={setFormat}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pdf">PDF (Recommended)</SelectItem>
+                    <SelectItem value="excel">Excel Spreadsheet</SelectItem>
+                    <SelectItem value="csv">CSV Data File</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Generate Button */}
+            <Button 
+              onClick={handleGenerateStatement}
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold"
+              disabled={isGenerating}
+            >
+              {isGenerating ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Generating Statement...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  Generate {selectedStatementData?.name}
+                </>
+              )}
+            </Button>
+
+            {/* Preview Features */}
+            <div className="bg-white p-4 rounded-lg border border-orange-200">
+              <h4 className="font-semibold text-orange-900 mb-2">✨ Your Statement Will Include:</h4>
+              <div className="grid md:grid-cols-2 gap-2 text-sm text-orange-800">
+                <div>• SIP Brewery branding & logo</div>
+                <div>• Beautiful charts & visualizations</div>
+                <div>• AI-powered insights & tips</div>
+                <div>• SEBI/AMFI compliance notes</div>
+                <div>• BSE STAR MF transaction references</div>
+                <div>• Peer performance comparison</div>
+                <div>• Tax-ready calculations</div>
+                <div>• QR code for easy access</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Compliance Footer */}
+      <Card className="bg-gray-50 border-gray-200">
+        <CardContent className="p-4">
+          <p className="text-xs text-gray-600 text-center mb-2">
+            <strong>SIP Brewery Statement Generator</strong> - All statements are auto-generated and branded with compliance to SEBI/AMFI guidelines.
+          </p>
+          <p className="text-xs text-gray-500 text-center">
+            Mutual fund investments are subject to market risk. Please read all scheme related documents carefully. 
+            AI insights are for informational purposes only and do not constitute investment advice. 
+            All transactions processed via BSE STAR MF. AMFI Registration: ARN-XXXXX
+          </p>
         </CardContent>
       </Card>
     </div>
