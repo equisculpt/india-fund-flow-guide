@@ -12,7 +12,7 @@ export const useStatementGenerator = (onGenerateStatement?: (type: string, param
     selectedStatement: '',
     financialYear: '',
     language: 'english',
-    downloadFormat: 'pdf'
+    downloadFormat: 'txt'
   });
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -50,32 +50,52 @@ export const useStatementGenerator = (onGenerateStatement?: (type: string, param
         description: "Gathering your investment data for statement generation",
       });
 
+      console.log(`Generating statement: ${formData.selectedStatement} with params:`, params);
+      
+      // Fetch statement data using BSE STAR MF API format
       const statementData = await statementDataService.getStatementData(mockClientCode, formData.selectedStatement);
       
       console.log('BSE STAR MF API Response:', statementData);
 
+      // Find selected statement details
       const selectedStatementData = statementTypes.find(s => s.id === formData.selectedStatement);
+      const statementName = selectedStatementData?.name || 'Investment Statement';
       
       toast({
         title: "Statement Generated Successfully! 🎉",
-        description: `Your ${selectedStatementData?.name} is being downloaded with SIP Brewery branding.`,
+        description: `Your ${statementName} is being downloaded with SIP Brewery branding.`,
       });
 
+      // Call the callback if provided
       if (onGenerateStatement) {
         onGenerateStatement(formData.selectedStatement, { ...params, data: statementData });
       }
 
+      // Generate and download the statement immediately
+      const content = generateStatementContent(statementName, statementData);
+      
+      console.log(`Generated content length: ${content.length} characters`);
+      
+      // Download with a small delay to show the success message
       setTimeout(() => {
-        const content = generateStatementContent(selectedStatementData?.name || 'Investment Statement', statementData);
-        downloadStatementFile(selectedStatementData?.name || 'Investment Statement', content);
-        
-        console.log('Statement downloaded with BSE STAR MF data integration');
-        
-        toast({
-          title: "Download Complete! 📁",
-          description: "Your statement has been downloaded to your device.",
-        });
-      }, 1000);
+        try {
+          downloadStatementFile(statementName, content);
+          
+          toast({
+            title: "Download Complete! 📁",
+            description: `Your ${statementName} has been downloaded to your device.`,
+          });
+          
+          console.log(`Successfully downloaded: ${statementName}`);
+        } catch (downloadError) {
+          console.error('Download error:', downloadError);
+          toast({
+            title: "Download Failed",
+            description: `Error downloading ${statementName}. Please try again.`,
+            variant: "destructive"
+          });
+        }
+      }, 1500);
 
     } catch (error) {
       console.error('BSE STAR MF API Error:', error);
