@@ -2,6 +2,7 @@
 import { pdf } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { StatementData } from '../statement/types';
+import React from 'react';
 
 export class PDFStatementGenerator {
   async generatePDF(statementType: string, statementData: StatementData): Promise<Blob> {
@@ -11,7 +12,7 @@ export class PDFStatementGenerator {
       // Dynamic import to avoid SSR issues
       const { PDFStatementDocument } = await import('./PDFStatementDocument');
       
-      const pdfDocument = PDFStatementDocument({
+      const pdfDocument = React.createElement(PDFStatementDocument, {
         statementType,
         statementData,
         generatedAt: new Date()
