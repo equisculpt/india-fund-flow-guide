@@ -1,9 +1,10 @@
+
 import { useToast } from '@/hooks/use-toast';
 import { useSIPStatusManager } from './useSIPStatusManager';
 import { SIPOperationService } from '../services/sipOperationService';
 import { statementDataService } from '@/services/statement/statementDataService';
-import { statementGeneratorService } from '../services/statementGeneratorService';
-import { statementTypes } from '@/components/dashboard/statement/statementTypes';
+import { generateStatementContent } from '@/components/dashboard/statement/statementFileGenerator';
+import { format } from 'date-fns';
 import type { SIPOperationHooks, SIPData } from './types';
 
 export const useSIPOperations = (): SIPOperationHooks => {
@@ -67,11 +68,12 @@ export const useSIPOperations = (): SIPOperationHooks => {
       
       const mockClientCode = 'SB123456';
       
-      // Fetch statement data
+      // Step 1: Fetch statement data
+      console.log('Fetching statement data...');
       const statementData = await statementDataService.getStatementData(mockClientCode, type);
-      console.log('BSE STAR MF API Data fetched:', statementData);
+      console.log('Statement data fetched successfully:', statementData);
       
-      // Get statement name
+      // Step 2: Get statement name
       const statementTypeNames: Record<string, string> = {
         'sip-details': 'SIP Details Statement',
         'comprehensive': 'Comprehensive Portfolio Statement',
@@ -98,9 +100,36 @@ export const useSIPOperations = (): SIPOperationHooks => {
         description: `Your ${statementName} has been generated with live BSE STAR MF data.`,
       });
       
-      // Generate and download immediately
-      console.log('Generating statement file...');
-      statementGeneratorService.generateAndDownloadStatement(statementName, statementData);
+      // Step 3: Generate statement content
+      console.log('Generating statement content...');
+      const content = generateStatementContent(statementName, statementData);
+      console.log('Statement content generated, length:', content.length);
+      
+      // Step 4: Create and trigger download
+      console.log('Creating download...');
+      const filename = `SIP_Brewery_${statementName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd_HH-mm-ss')}.txt`;
+      
+      // Create blob with UTF-8 encoding
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      
+      // Create download link
+      const downloadLink = document.createElement('a');
+      downloadLink.href = url;
+      downloadLink.download = filename;
+      downloadLink.style.display = 'none';
+      
+      // Add to DOM and trigger click
+      document.body.appendChild(downloadLink);
+      console.log('Triggering download for:', filename);
+      downloadLink.click();
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(url);
+        console.log('Download cleanup completed');
+      }, 100);
       
       toast({
         title: "Download Complete! 📁",
