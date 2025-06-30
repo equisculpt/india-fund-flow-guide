@@ -17,6 +17,8 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
   } = options;
 
   try {
+    console.log('Creating PDF document with options:', { statementType, generatedAt });
+    
     // Create the PDF document using the factory function
     const document = createPDFDocument({
       statementType,
@@ -24,19 +26,24 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
       generatedAt,
     });
 
+    console.log('PDF document created, generating blob...');
+    
     // Generate the PDF
     const pdfBlob = await pdf(document).toBlob();
+    
+    console.log('PDF blob generated successfully, size:', pdfBlob.size);
     
     return pdfBlob;
   } catch (error) {
     console.error('Error generating PDF statement:', error);
-    throw new Error('Failed to generate PDF statement');
+    throw new Error(`Failed to generate PDF statement: ${error.message}`);
   }
 };
 
 // Create a service class for PDF generation
 export class PDFStatementGeneratorService {
   async generatePDF(statementType: string, statementData: StatementData): Promise<Blob> {
+    console.log('PDFStatementGeneratorService: generatePDF called with', { statementType });
     return generateStatementPDF({
       statementType,
       statementData,
@@ -46,7 +53,11 @@ export class PDFStatementGeneratorService {
 
   async downloadPDF(statementType: string, statementData: StatementData): Promise<void> {
     try {
+      console.log('PDFStatementGeneratorService: downloadPDF called with', { statementType });
+      
       const pdfBlob = await this.generatePDF(statementType, statementData);
+      
+      console.log('PDF blob generated, creating download link...');
       
       // Create download link
       const url = URL.createObjectURL(pdfBlob);
@@ -61,6 +72,8 @@ export class PDFStatementGeneratorService {
       
       // Clean up
       URL.revokeObjectURL(url);
+      
+      console.log('PDF download completed successfully');
     } catch (error) {
       console.error('Error downloading PDF:', error);
       throw error;

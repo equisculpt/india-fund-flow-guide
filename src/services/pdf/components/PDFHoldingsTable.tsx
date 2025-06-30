@@ -10,44 +10,22 @@ interface PDFHoldingsTableProps {
 
 export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) => (
   <View style={styles.section}>
-    <Text style={styles.sectionTitle}>HOLDINGS DETAILS</Text>
-    <View style={styles.table}>
-      <View style={styles.tableRow}>
-        <View style={styles.tableColHeader}>
-          <Text style={styles.tableCellHeader}>Scheme Name</Text>
-        </View>
-        <View style={styles.tableColHeader}>
-          <Text style={styles.tableCellHeader}>Units</Text>
-        </View>
-        <View style={styles.tableColHeader}>
-          <Text style={styles.tableCellHeader}>NAV</Text>
-        </View>
-        <View style={styles.tableColHeader}>
-          <Text style={styles.tableCellHeader}>Invested</Text>
-        </View>
-        <View style={styles.tableColHeader}>
-          <Text style={styles.tableCellHeader}>Current Value</Text>
-        </View>
-      </View>
-      {holdings.slice(0, 10).map((holding, index) => (
-        <View style={styles.tableRow} key={index}>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>{holding.schemeName}</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>{holding.units.toFixed(3)}</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>₹{holding.currentNav.toFixed(2)}</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>₹{holding.investedValue.toLocaleString()}</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>₹{holding.marketValue.toLocaleString()}</Text>
-          </View>
-        </View>
-      ))}
+    <Text style={styles.sectionTitle}>PORTFOLIO HOLDINGS</Text>
+    
+    <View style={styles.tableHeader}>
+      <Text style={[styles.tableCell, { flex: 3 }]}>Fund Name</Text>
+      <Text style={[styles.tableCell, { flex: 1 }]}>Units</Text>
+      <Text style={[styles.tableCell, { flex: 1 }]}>NAV</Text>
+      <Text style={[styles.tableCell, { flex: 1 }]}>Value</Text>
     </View>
+
+    {holdings.map((holding, index) => (
+      <View key={index} style={styles.tableRow}>
+        <Text style={[styles.tableCell, { flex: 3 }]}>{holding.fundName}</Text>
+        <Text style={[styles.tableCell, { flex: 1 }]}>{holding.units.toFixed(3)}</Text>
+        <Text style={[styles.tableCell, { flex: 1 }]}>₹{holding.nav.toFixed(2)}</Text>
+        <Text style={[styles.tableCell, { flex: 1 }]}>₹{holding.currentValue.toLocaleString()}</Text>
+      </View>
+    ))}
   </View>
 );
