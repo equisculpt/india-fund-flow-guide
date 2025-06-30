@@ -4,19 +4,30 @@ import { MockDataGenerator } from './mockDataGenerator';
 
 class StatementDataService {
   async getStatementData(clientCode: string, statementType: string): Promise<StatementData> {
-    console.log(`Generating mock statement data for client: ${clientCode}, type: ${statementType}`);
-    
-    // For demo purposes, return complete mock data immediately
-    // In production, this would fetch from BSE STAR MF APIs
-    const mockData = MockDataGenerator.generateCompleteStatementData(clientCode);
-    
-    console.log('Mock statement data generated successfully:', {
-      holdingsCount: mockData.holdings.length,
-      transactionsCount: mockData.transactions.length,
-      totalValue: mockData.portfolio.currentValue
-    });
-    
-    return mockData;
+    try {
+      console.log(`StatementDataService: Generating mock data for client: ${clientCode}, type: ${statementType}`);
+      
+      // Generate complete mock data for demo purposes
+      const mockData = MockDataGenerator.generateCompleteStatementData(clientCode);
+      
+      console.log('Mock statement data generated successfully:', {
+        userInfo: !!mockData.userInfo,
+        portfolio: !!mockData.portfolio,
+        holdingsCount: mockData.holdings?.length || 0,
+        transactionsCount: mockData.transactions?.length || 0,
+        totalValue: mockData.portfolio?.currentValue || 0
+      });
+      
+      // Validate the generated data
+      if (!mockData.userInfo || !mockData.portfolio || !mockData.holdings) {
+        throw new Error('Generated mock data is incomplete');
+      }
+      
+      return mockData;
+    } catch (error) {
+      console.error('Error generating statement data:', error);
+      throw new Error(`Failed to generate statement data: ${error.message}`);
+    }
   }
 }
 
