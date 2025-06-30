@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,7 @@ const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateState
   const [endDate, setEndDate] = useState<Date>();
   const [financialYear, setFinancialYear] = useState('');
   const [language, setLanguage] = useState('english');
-  const [format, setFormat] = useState('pdf');
+  const [downloadFormat, setDownloadFormat] = useState('pdf');
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
@@ -129,7 +128,7 @@ const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateState
         endDate: endDate ? format(endDate, 'yyyy-MM-dd') : undefined,
         financialYear,
         language,
-        format
+        format: downloadFormat
       };
 
       // Simulate statement generation
@@ -153,7 +152,7 @@ const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateState
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `SIP_Brewery_${selectedStatementData?.name.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd')}.${format}`;
+        a.download = `SIP_Brewery_${selectedStatementData?.name.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd')}.${downloadFormat}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -318,7 +317,7 @@ const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateState
               </div>
               <div>
                 <Label>Download Format</Label>
-                <Select value={format} onValueChange={setFormat}>
+                <Select value={downloadFormat} onValueChange={setDownloadFormat}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
