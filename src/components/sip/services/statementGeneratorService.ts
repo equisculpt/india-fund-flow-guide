@@ -1,15 +1,7 @@
 
-import { useToast } from '@/hooks/use-toast';
-import { statementDataService } from '@/services/statement/statementDataService';
 import { format } from 'date-fns';
 
 export class StatementGeneratorService {
-  private toast: ReturnType<typeof useToast>['toast'];
-
-  constructor(toast: ReturnType<typeof useToast>['toast']) {
-    this.toast = toast;
-  }
-
   private generateDownloadableStatement(statementName: string, statementData: any): string {
     return `SIP BREWERY - ${statementName}
 Generated: ${format(new Date(), 'dd MMM yyyy, HH:mm')}
@@ -115,67 +107,11 @@ AMFI Registration: ARN-XXXXX | BSE Member ID: XXXXX
     URL.revokeObjectURL(url);
   }
 
-  async handleDownloadStatement(type: string, params?: any): Promise<void> {
-    try {
-      console.log('Generating SIP Brewery Statement via BSE STAR MF API:', type, params);
-      
-      this.toast({
-        title: "Generating Your Statement... 📄",
-        description: "Fetching live data from BSE STAR MF API and preparing your beautifully designed statement.",
-      });
-      
-      const mockClientCode = 'SB123456';
-      const statementData = await statementDataService.getStatementData(mockClientCode, type);
-      
-      console.log('BSE STAR MF API Data:', statementData);
-      
-      const statementTypes: Record<string, string> = {
-        'sip-details': 'SIP Details Statement',
-        'comprehensive': 'Comprehensive Portfolio Statement',
-        'tax': 'Tax Statement',
-        'portfolio': 'Portfolio Summary',
-        'performance': 'Performance Report',
-        'portfolio-summary': 'Portfolio Summary Statement',
-        'holdings-statement': 'Holdings Statement',
-        'transaction-statement': 'Transaction Statement',
-        'capital-gains': 'Capital Gains Statement',
-        'sip-statement': 'SIP Statement',
-        'annual-returns': 'Annual Returns Statement',
-        'rewards-statement': 'Rewards Statement',
-        'tax-proof-elss': 'Tax Proof Statement',
-        'referral-statement': 'Referral Statement',
-        'custom-statement': 'Custom Statement',
-        'ai-summary-report': 'AI Summary Report'
-      };
-      
-      const statementName = statementTypes[type] || 'Investment Statement';
-      
-      this.toast({
-        title: "Statement Ready for Download! 🎉",
-        description: `Your ${statementName} has been generated with live BSE STAR MF data and SIP Brewery branding.`,
-      });
-      
-      setTimeout(() => {
-        const content = this.generateDownloadableStatement(statementName, statementData);
-        const filename = `SIP_Brewery_${statementName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd')}.txt`;
-        
-        this.downloadFile(content, filename);
-        
-        this.toast({
-          title: "Download Complete! 📁",
-          description: `${statementName} has been downloaded to your device.`,
-        });
-        
-        console.log(`Downloaded: ${statementName} with BSE STAR MF API data`);
-      }, 1000);
-      
-    } catch (error) {
-      console.error('BSE STAR MF API Error:', error);
-      this.toast({
-        title: "Statement Generation Failed",
-        description: "Unable to generate statement with BSE STAR MF data. Please try again or contact support.",
-        variant: "destructive"
-      });
-    }
+  generateAndDownloadStatement(statementName: string, statementData: any): void {
+    const content = this.generateDownloadableStatement(statementName, statementData);
+    const filename = `SIP_Brewery_${statementName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd')}.txt`;
+    this.downloadFile(content, filename);
   }
 }
+
+export const statementGeneratorService = new StatementGeneratorService();
