@@ -6,14 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Copy, Share2, Gift, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { TEST_USER_DATA } from '@/services/testData';
-import { useBranding } from '@/contexts/BrandingContext';
 
 const ReferralBanner = () => {
   const [isVisible, setIsVisible] = useState(true);
   const { toast } = useToast();
-  const { brandConfig } = useBranding();
   
-  const referralLink = `https://${brandConfig.domain}?ref=${TEST_USER_DATA.profile.referral_code}`;
+  // Use sipbrewery.com as the domain
+  const referralLink = `https://sipbrewery.com?ref=${TEST_USER_DATA.profile.referral_code}`;
   
   const copyReferralLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -24,17 +23,17 @@ const ReferralBanner = () => {
   };
 
   const shareOnWhatsApp = () => {
-    const message = `🚀 Join ${brandConfig.companyName} and start your investment journey! Get started with mutual funds and SIPs. Use my referral link to get special benefits: ${referralLink}`;
+    const message = `🚀 Join SIP Brewery and start your investment journey! Get started with mutual funds and SIPs. Use my referral link to get special benefits: ${referralLink}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const shareReferralLink = () => {
-    const message = `🚀 Join ${brandConfig.companyName} - Your Investment Partner! Start investing in mutual funds with my referral link: ${referralLink}`;
+    const message = `🚀 Join SIP Brewery - Your Investment Partner! Start investing in mutual funds with my referral link: ${referralLink}`;
     
     if (navigator.share) {
       navigator.share({
-        title: `Join ${brandConfig.companyName}`,
+        title: `Join SIP Brewery`,
         text: message,
         url: referralLink
       });
