@@ -20,10 +20,14 @@ import {
   Target,
   Zap
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { TEST_USER_DATA } from '@/services/testData';
 
 const SIPCenter = () => {
   const [selectedSIP, setSelectedSIP] = useState<string | null>(null);
+  const [sipStatuses, setSipStatuses] = useState<Record<string, string>>({});
+  const [isProcessing, setIsProcessing] = useState<Record<string, boolean>>({});
+  const { toast } = useToast();
   
   // Mock SIP data - will be replaced with BSE STAR MF API
   const activeSIPs = [
@@ -40,10 +44,10 @@ const SIPCenter = () => {
       currentValue: 78500,
       returns: 30.8,
       xirr: 22.5,
-      status: 'Active',
+      status: sipStatuses['sip-1'] || 'Active',
       consistencyScore: 95,
       missedPayments: 0,
-      bseOrderId: 'BSE123456789', // BSE STAR MF reference
+      bseOrderId: 'BSE123456789',
       mandateId: 'MANDATE001'
     },
     {
@@ -59,7 +63,7 @@ const SIPCenter = () => {
       currentValue: 35250,
       returns: 17.5,
       xirr: 19.8,
-      status: 'Active',
+      status: sipStatuses['sip-2'] || 'Active',
       consistencyScore: 90,
       missedPayments: 1,
       bseOrderId: 'BSE123456790',
@@ -78,7 +82,7 @@ const SIPCenter = () => {
       currentValue: 23120,
       returns: 15.6,
       xirr: 14.2,
-      status: 'Paused',
+      status: sipStatuses['sip-3'] || 'Paused',
       consistencyScore: 100,
       missedPayments: 0,
       bseOrderId: 'BSE123456791',
@@ -112,25 +116,130 @@ const SIPCenter = () => {
     return { label: 'Poor', color: 'bg-red-100 text-red-800' };
   };
 
-  // BSE STAR MF API placeholder functions
+  const setProcessingState = (sipId: string, processing: boolean) => {
+    setIsProcessing(prev => ({ ...prev, [sipId]: processing }));
+  };
+
+  // BSE STAR MF API functions with proper UI feedback
   const handlePauseSIP = async (sipId: string) => {
-    console.log('BSE STAR MF API: Pause SIP', sipId);
-    // Placeholder for: POST /api/bse/sip/pause
+    setProcessingState(sipId, true);
+    try {
+      console.log('BSE STAR MF API: Pause SIP', sipId);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const currentStatus = sipStatuses[sipId] || activeSIPs.find(s => s.id === sipId)?.status || 'Active';
+      const newStatus = currentStatus === 'Active' ? 'Paused' : 'Active';
+      
+      setSipStatuses(prev => ({ ...prev, [sipId]: newStatus }));
+      
+      toast({
+        title: `SIP ${newStatus}`,
+        description: `SIP has been ${newStatus.toLowerCase()} successfully`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update SIP status",
+        variant: "destructive",
+      });
+    } finally {
+      setProcessingState(sipId, false);
+    }
   };
 
   const handleStopSIP = async (sipId: string) => {
-    console.log('BSE STAR MF API: Stop SIP', sipId);
-    // Placeholder for: POST /api/bse/sip/stop
+    setProcessingState(sipId, true);
+    try {
+      console.log('BSE STAR MF API: Stop SIP', sipId);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setSipStatuses(prev => ({ ...prev, [sipId]: 'Stopped' }));
+      
+      toast({
+        title: "SIP Stopped",
+        description: "SIP has been stopped successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to stop SIP",
+        variant: "destructive",
+      });
+    } finally {
+      setProcessingState(sipId, false);
+    }
   };
 
   const handleModifySIP = async (sipId: string, newAmount: number) => {
-    console.log('BSE STAR MF API: Modify SIP', sipId, newAmount);
-    // Placeholder for: PUT /api/bse/sip/modify
+    setProcessingState(sipId, true);
+    try {
+      console.log('BSE STAR MF API: Modify SIP', sipId, newAmount);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "SIP Amount Modified",
+        description: `SIP amount has been updated to ${formatCurrency(newAmount)}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to modify SIP amount",
+        variant: "destructive",
+      });
+    } finally {
+      setProcessingState(sipId, false);
+    }
   };
 
   const handleStartNewSIP = async () => {
-    console.log('BSE STAR MF API: Start new SIP');
-    // Placeholder for: POST /api/bse/sip/create
+    try {
+      console.log('BSE STAR MF API: Start new SIP');
+      
+      toast({
+        title: "New SIP",
+        description: "Redirecting to SIP creation form...",
+      });
+      
+      // Simulate navigation to SIP creation
+      await new Promise(resolve => setTimeout(resolve, 500));
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to start new SIP",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDownloadStatement = async (type: string) => {
+    try {
+      console.log('BSE STAR MF API: Download Statement', type);
+      
+      toast({
+        title: "Downloading Statement",
+        description: "Your statement is being prepared...",
+      });
+      
+      // Simulate download
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      toast({
+        title: "Download Complete",
+        description: "Statement has been downloaded successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to download statement",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -304,38 +413,52 @@ const SIPCenter = () => {
                         variant="outline" 
                         size="sm"
                         onClick={() => handlePauseSIP(sip.id)}
+                        disabled={isProcessing[sip.id]}
                       >
                         <Pause className="h-4 w-4 mr-2" />
-                        Pause SIP
+                        {isProcessing[sip.id] ? 'Processing...' : 'Pause SIP'}
                       </Button>
-                    ) : (
+                    ) : sip.status === 'Paused' ? (
                       <Button 
                         variant="outline" 
                         size="sm"
                         onClick={() => handlePauseSIP(sip.id)}
+                        disabled={isProcessing[sip.id]}
                       >
                         <Play className="h-4 w-4 mr-2" />
-                        Resume SIP
+                        {isProcessing[sip.id] ? 'Processing...' : 'Resume SIP'}
+                      </Button>
+                    ) : null}
+                    
+                    {sip.status !== 'Stopped' && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleStopSIP(sip.id)}
+                        disabled={isProcessing[sip.id]}
+                      >
+                        <StopCircle className="h-4 w-4 mr-2" />
+                        {isProcessing[sip.id] ? 'Processing...' : 'Stop SIP'}
                       </Button>
                     )}
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleStopSIP(sip.id)}
-                    >
-                      <StopCircle className="h-4 w-4 mr-2" />
-                      Stop SIP
-                    </Button>
+                    
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => handleModifySIP(sip.id, sip.amount)}
+                      disabled={isProcessing[sip.id]}
                     >
                       <Edit className="h-4 w-4 mr-2" />
-                      Modify Amount
+                      {isProcessing[sip.id] ? 'Processing...' : 'Modify Amount'}
                     </Button>
-                    <Button variant="ghost" size="sm">
-                      View Details
+                    
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleDownloadStatement('sip-details')}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Download Statement
                     </Button>
                   </div>
 
@@ -427,6 +550,13 @@ const SIPCenter = () => {
                     <div className="text-2xl font-bold text-blue-900 mb-1">₹500</div>
                     <div className="text-sm text-blue-700">Consistency Reward Earned</div>
                   </div>
+                  <Button 
+                    className="w-full" 
+                    onClick={() => handleDownloadStatement('performance')}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Performance Report
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -466,32 +596,40 @@ const SIPCenter = () => {
                       <option>20% annually</option>
                     </select>
                   </div>
+                  <Button className="w-full">Save Settings</Button>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Notifications</CardTitle>
+                <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span>SIP due reminders</span>
-                    <input type="checkbox" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Failed SIP alerts</span>
-                    <input type="checkbox" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Performance updates</span>
-                    <input type="checkbox" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>AI recommendations</span>
-                    <input type="checkbox" defaultChecked />
-                  </div>
+                <div className="space-y-3">
+                  <Button 
+                    className="w-full" 
+                    onClick={() => handleDownloadStatement('comprehensive')}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Comprehensive Statement
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => handleDownloadStatement('tax')}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Tax Statement
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => handleDownloadStatement('portfolio')}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Portfolio Summary
+                  </Button>
                 </div>
               </CardContent>
             </Card>
