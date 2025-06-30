@@ -33,3 +33,40 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
     throw new Error('Failed to generate PDF statement');
   }
 };
+
+// Create a service class for PDF generation
+export class PDFStatementGeneratorService {
+  async generatePDF(statementType: string, statementData: StatementData): Promise<Blob> {
+    return generateStatementPDF({
+      statementType,
+      statementData,
+      generatedAt: new Date()
+    });
+  }
+
+  async downloadPDF(statementType: string, statementData: StatementData): Promise<void> {
+    try {
+      const pdfBlob = await this.generatePDF(statementType, statementData);
+      
+      // Create download link
+      const url = URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${statementType}-statement-${new Date().getTime()}.pdf`;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      throw error;
+    }
+  }
+}
+
+// Export the service instance
+export const pdfStatementGenerator = new PDFStatementGeneratorService();

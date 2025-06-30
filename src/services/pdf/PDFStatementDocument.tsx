@@ -45,5 +45,25 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
 
 // Export function that creates the Document element directly
 export const createPDFDocument = (props: PDFStatementDocumentProps) => {
-  return React.createElement(PDFStatementDocument, props);
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <PDFHeader generatedAt={props.generatedAt} />
+
+        <Text style={styles.statementTitle}>
+          {getStatementTitle(props.statementType)}
+        </Text>
+
+        <PDFUserInfo userInfo={props.statementData.userInfo} />
+
+        <PDFPortfolioSummary portfolio={props.statementData.portfolio} />
+
+        <AIInsightSection portfolio={props.statementData.portfolio} />
+
+        <PDFHoldingsTable holdings={props.statementData.holdings} />
+
+        <PDFFooter generatedAt={props.generatedAt} />
+      </Page>
+    </Document>
+  );
 };
