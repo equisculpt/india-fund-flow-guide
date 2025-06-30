@@ -35,7 +35,7 @@ export const PDFUserInfo: React.FC<PDFUserInfoProps> = ({ userInfo }) => (
       
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>PAN Number</Text>
-        <Text style={styles.userInfoValue}>{userInfo.pan}</Text>
+        <Text style={styles.userInfoValue}>{userInfo.panMasked}</Text>
       </View>
       
       <View style={styles.userInfoItem}>
