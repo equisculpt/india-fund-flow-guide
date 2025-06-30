@@ -35,16 +35,16 @@ export class StatementDataProcessor {
     };
   }
 
-  static processSIPData(sipsResponse: any[], processor: StatementDataProcessor) {
+  static processSIPData(sipsResponse: any[]) {
     return sipsResponse.map(sip => {
-      const monthsActive = processor.calculateMonthsBetween(sip.startDate, new Date().toISOString().split('T')[0]);
+      const monthsActive = StatementDataProcessor.calculateMonthsBetween(sip.startDate, new Date().toISOString().split('T')[0]);
       const totalInvested = sip.sipAmount * monthsActive;
       const currentValue = totalInvested * (1 + Math.random() * 0.3); // Mock growth
       
       return {
         sipId: sip.sipId,
         schemeCode: sip.schemeCode,
-        schemeName: processor.getSchemeNameByCode(sip.schemeCode),
+        schemeName: StatementDataProcessor.getSchemeNameByCode(sip.schemeCode),
         sipAmount: sip.sipAmount,
         frequency: sip.sipFrequency,
         startDate: sip.startDate,

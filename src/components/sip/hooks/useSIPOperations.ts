@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { bseStarMFService } from '@/services/bseStarMFService';
-import { statementDataService } from '@/services/statementDataService';
+import { statementDataService } from '@/services/statement/statementDataService';
 import { format } from 'date-fns';
 
 export const useSIPOperations = () => {

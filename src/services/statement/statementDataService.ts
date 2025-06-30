@@ -5,8 +5,6 @@ import { MockDataGenerator } from './mockDataGenerator';
 import { StatementDataProcessor } from './dataProcessor';
 
 class StatementDataService {
-  private processor = new StatementDataProcessor();
-
   async getStatementData(clientCode: string, statementType: string): Promise<StatementData> {
     console.log(`Fetching statement data for client: ${clientCode}, type: ${statementType}`);
     
@@ -25,7 +23,7 @@ class StatementDataService {
     const portfolio = StatementDataProcessor.processPortfolioData(holdings);
 
     // Process SIP data
-    const processedSIPs = StatementDataProcessor.processSIPData(sipsResponse, this.processor);
+    const processedSIPs = StatementDataProcessor.processSIPData(sipsResponse);
     portfolio.activeSIPs = sipsResponse.filter(s => s.sipStatus === 'ACTIVE').length;
 
     // Generate mock data
