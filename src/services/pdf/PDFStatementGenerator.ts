@@ -1,4 +1,3 @@
-
 import { pdf } from '@react-pdf/renderer';
 import { StatementData } from '../statement/types';
 import { createPDFDocument } from './PDFStatementDocument';
@@ -54,14 +53,8 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
 
     console.log('🔄 PDF document created, generating blob...');
     
-    // Generate the PDF with enhanced error handling
+    // Generate the PDF
     const pdfInstance = pdf(document);
-    
-    // Add event listeners for debugging
-    pdfInstance.on('render', () => {
-      console.log('📝 PDF render started');
-    });
-    
     const pdfBlob = await pdfInstance.toBlob();
     
     console.log('✅ PDF blob generated successfully:', {
