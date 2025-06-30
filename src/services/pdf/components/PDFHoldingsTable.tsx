@@ -13,18 +13,18 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
     <Text style={styles.sectionTitle}>PORTFOLIO HOLDINGS</Text>
     
     <View style={styles.tableHeader}>
-      <Text style={[styles.tableCell, { flex: 3 }]}>Fund Name</Text>
-      <Text style={[styles.tableCell, { flex: 1 }]}>Units</Text>
-      <Text style={[styles.tableCell, { flex: 1 }]}>NAV</Text>
-      <Text style={[styles.tableCell, { flex: 1 }]}>Value</Text>
+      <Text style={[styles.tableCell, { flex: 3, color: '#FFFFFF' }]}>Fund Name</Text>
+      <Text style={[styles.tableCell, { flex: 1, color: '#FFFFFF' }]}>Units</Text>
+      <Text style={[styles.tableCell, { flex: 1, color: '#FFFFFF' }]}>NAV</Text>
+      <Text style={[styles.tableCell, { flex: 1, color: '#FFFFFF' }]}>Value</Text>
     </View>
 
     {holdings.map((holding, index) => (
       <View key={index} style={styles.tableRow}>
-        <Text style={[styles.tableCell, { flex: 3 }]}>{holding.fundName}</Text>
+        <Text style={[styles.tableCell, { flex: 3 }]}>{holding.schemeName}</Text>
         <Text style={[styles.tableCell, { flex: 1 }]}>{holding.units.toFixed(3)}</Text>
-        <Text style={[styles.tableCell, { flex: 1 }]}>₹{holding.nav.toFixed(2)}</Text>
-        <Text style={[styles.tableCell, { flex: 1 }]}>₹{holding.currentValue.toLocaleString()}</Text>
+        <Text style={[styles.tableCell, { flex: 1 }]}>₹{holding.currentNav.toFixed(2)}</Text>
+        <Text style={[styles.tableCell, { flex: 1 }]}>₹{holding.marketValue.toLocaleString()}</Text>
       </View>
     ))}
   </View>
