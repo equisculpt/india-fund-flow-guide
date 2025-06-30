@@ -105,31 +105,68 @@ export const useSIPOperations = (): SIPOperationHooks => {
       const content = generateStatementContent(statementName, statementData);
       console.log('Statement content generated, length:', content.length);
       
-      // Step 4: Create and trigger download
-      console.log('Creating download...');
+      // Step 4: Force immediate download using a different approach
+      console.log('Forcing immediate download...');
       const filename = `SIP_Brewery_${statementName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd_HH-mm-ss')}.txt`;
       
-      // Create blob with UTF-8 encoding
-      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      
-      // Create download link
-      const downloadLink = document.createElement('a');
-      downloadLink.href = url;
-      downloadLink.download = filename;
-      downloadLink.style.display = 'none';
-      
-      // Add to DOM and trigger click
-      document.body.appendChild(downloadLink);
-      console.log('Triggering download for:', filename);
-      downloadLink.click();
-      
-      // Cleanup
-      setTimeout(() => {
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(url);
-        console.log('Download cleanup completed');
-      }, 100);
+      // Try multiple download methods for cross-browser compatibility
+      try {
+        // Method 1: Use navigator.clipboard and then download
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        
+        // Create URL and download immediately
+        const url = URL.createObjectURL(blob);
+        
+        // Create a temporary anchor element and click it immediately
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+        
+        // Add to body, click immediately, then remove
+        document.body.appendChild(a);
+        
+        // Force click with multiple methods
+        a.click();
+        
+        // Also try programmatic click
+        if (a.click) {
+          a.click();
+        }
+        
+        // Dispatch click event as backup
+        const clickEvent = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: false
+        });
+        a.dispatchEvent(clickEvent);
+        
+        console.log('Download triggered successfully for:', filename);
+        
+        // Clean up after a short delay
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          console.log('Download cleanup completed');
+        }, 1000);
+        
+      } catch (downloadError) {
+        console.error('Primary download method failed:', downloadError);
+        
+        // Method 2: Try using window.open as fallback
+        try {
+          const dataUrl = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+          const newWindow = window.open(dataUrl, '_blank');
+          if (newWindow) {
+            newWindow.focus();
+            console.log('Opened content in new window as fallback');
+          }
+        } catch (fallbackError) {
+          console.error('Fallback download method also failed:', fallbackError);
+          throw new Error('All download methods failed');
+        }
+      }
       
       toast({
         title: "Download Complete! 📁",
