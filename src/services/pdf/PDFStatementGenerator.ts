@@ -17,7 +17,12 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
   } = options;
 
   try {
-    console.log('Creating PDF document with options:', { statementType, generatedAt });
+    console.log('Creating PDF document with options:', { 
+      statementType, 
+      generatedAt,
+      holdingsCount: statementData.holdings?.length || 0,
+      portfolioValue: statementData.portfolio?.currentValue || 0
+    });
     
     // Create the PDF document using the factory function
     const document = createPDFDocument({
@@ -31,11 +36,16 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
     // Generate the PDF
     const pdfBlob = await pdf(document).toBlob();
     
-    console.log('PDF blob generated successfully, size:', pdfBlob.size);
+    console.log('PDF blob generated successfully, size:', pdfBlob.size, 'bytes');
     
     return pdfBlob;
   } catch (error) {
-    console.error('Error generating PDF statement:', error);
+    console.error('Detailed error generating PDF statement:', {
+      error: error.message,
+      stack: error.stack,
+      statementType,
+      dataKeys: Object.keys(statementData)
+    });
     throw new Error(`Failed to generate PDF statement: ${error.message}`);
   }
 };
@@ -43,7 +53,10 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
 // Create a service class for PDF generation
 export class PDFStatementGeneratorService {
   async generatePDF(statementType: string, statementData: StatementData): Promise<Blob> {
-    console.log('PDFStatementGeneratorService: generatePDF called with', { statementType });
+    console.log('PDFStatementGeneratorService: generatePDF called with', { 
+      statementType,
+      userInfo: statementData.userInfo?.name || 'Unknown'
+    });
     return generateStatementPDF({
       statementType,
       statementData,
@@ -53,11 +66,17 @@ export class PDFStatementGeneratorService {
 
   async downloadPDF(statementType: string, statementData: StatementData): Promise<void> {
     try {
-      console.log('PDFStatementGeneratorService: downloadPDF called with', { statementType });
+      console.log('PDFStatementGeneratorService: downloadPDF started for', { 
+        statementType,
+        clientCode: statementData.userInfo?.clientCode
+      });
       
       const pdfBlob = await this.generatePDF(statementType, statementData);
       
-      console.log('PDF blob generated, creating download link...');
+      console.log('PDF blob generated, creating download link...', {
+        blobSize: pdfBlob.size,
+        blobType: pdfBlob.type
+      });
       
       // Create download link
       const url = URL.createObjectURL(pdfBlob);
@@ -75,7 +94,11 @@ export class PDFStatementGeneratorService {
       
       console.log('PDF download completed successfully');
     } catch (error) {
-      console.error('Error downloading PDF:', error);
+      console.error('Error downloading PDF:', {
+        error: error.message,
+        stack: error.stack,
+        statementType
+      });
       throw error;
     }
   }
