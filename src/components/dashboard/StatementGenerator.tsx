@@ -111,6 +111,76 @@ const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateState
     ? statementTypes 
     : statementTypes.filter(s => s.category === selectedCategory);
 
+  const generateAndDownloadPDF = (statementName: string, data: any) => {
+    // Create a simple text-based content for PDF simulation
+    const pdfContent = `SIP BREWERY - ${statementName}
+Generated: ${format(new Date(), 'dd MMM yyyy, HH:mm')}
+
+Client: ${data.userInfo.name}
+Client Code: ${data.userInfo.clientCode}
+PAN: ${data.userInfo.panMasked}
+
+PORTFOLIO SUMMARY
+================
+Total Invested: ₹${data.portfolio.totalInvested.toLocaleString()}
+Current Value: ₹${data.portfolio.currentValue.toLocaleString()}
+Total Returns: ₹${data.portfolio.totalReturns.toLocaleString()} (${data.portfolio.returnsPercentage.toFixed(2)}%)
+XIRR: ${data.portfolio.xirr.toFixed(2)}%
+Active SIPs: ${data.portfolio.activeSIPs}
+
+HOLDINGS
+========
+${data.holdings.map((h: any, i: number) => 
+  `${i + 1}. ${h.schemeName}
+   Scheme Code: ${h.schemeCode} | Folio: ${h.folioNumber}
+   Units: ${h.units.toFixed(3)} | NAV: ₹${h.currentNav} | Value: ₹${h.marketValue.toLocaleString()}
+   P&L: ₹${h.pnl.toLocaleString()} (${h.pnlPercentage.toFixed(2)}%)
+`).join('\n')}
+
+ACTIVE SIPs
+===========
+${data.sips.map((sip: any, i: number) => 
+  `${i + 1}. ${sip.schemeName}
+   SIP Amount: ₹${sip.sipAmount.toLocaleString()} | Frequency: ${sip.frequency}
+   Status: ${sip.status} | Next Due: ${sip.nextDueDate || 'N/A'}
+   Total Invested: ₹${sip.totalInvested.toLocaleString()}
+   Current Value: ₹${sip.currentValue.toLocaleString()}
+`).join('\n')}
+
+RECENT TRANSACTIONS
+==================
+${data.transactions.slice(0, 5).map((txn: any, i: number) => 
+  `${i + 1}. ${txn.schemeName}
+   Date: ${txn.transactionDate} | Type: ${txn.transactionType}
+   Amount: ₹${txn.amount.toLocaleString()} | Units: ${txn.units.toFixed(3)}
+   NAV: ₹${txn.nav} | Order: ${txn.orderNumber}
+`).join('\n')}
+
+REWARDS & WALLET
+===============
+Total Earned: ₹${data.rewards.totalEarned.toLocaleString()}
+Referral Bonus: ₹${data.rewards.referralBonus.toLocaleString()}
+Loyalty Points: ${data.rewards.loyaltyPoints}
+Cashback: ₹${data.rewards.cashback.toLocaleString()}
+
+---
+This statement is generated using live BSE STAR MF API data.
+SIP Brewery - AMFI Registered Distributor | All transactions via BSE STAR MF
+Mutual fund investments are subject to market risk. Please read scheme documents carefully.
+`;
+
+    // Create and download the text file (simulating PDF)
+    const blob = new Blob([pdfContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `SIP_Brewery_${statementName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleGenerateStatement = async () => {
     if (!selectedStatement) {
       toast({
@@ -147,12 +217,9 @@ const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateState
 
       const selectedStatementData = statementTypes.find(s => s.id === selectedStatement);
       
-      // Generate branded PDF content
-      const pdfContent = generateBrandedPDF(selectedStatementData, statementData, params);
-      
       toast({
         title: "Statement Generated Successfully! 🎉",
-        description: `Your ${selectedStatementData?.name} has been generated with SIP Brewery branding.`,
+        description: `Your ${selectedStatementData?.name} is being downloaded with SIP Brewery branding.`,
       });
 
       // Call the provided callback if available
@@ -160,19 +227,16 @@ const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateState
         onGenerateStatement(selectedStatement, { ...params, data: statementData });
       }
 
-      // Generate and download the branded statement
+      // Generate and download the statement
       setTimeout(() => {
-        const blob = new Blob([pdfContent], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `SIP_Brewery_${selectedStatementData?.name.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd')}.${downloadFormat}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        generateAndDownloadPDF(selectedStatementData?.name || 'Investment Statement', statementData);
         
         console.log('Statement downloaded with BSE STAR MF data integration');
+        
+        toast({
+          title: "Download Complete! 📁",
+          description: "Your statement has been downloaded to your device.",
+        });
       }, 1000);
 
     } catch (error) {
@@ -185,101 +249,6 @@ const StatementGenerator: React.FC<StatementGeneratorProps> = ({ onGenerateState
     } finally {
       setIsGenerating(false);
     }
-  };
-
-  const generateBrandedPDF = (statementType: any, data: any, params: any): string => {
-    // Generate branded PDF content with BSE STAR MF data
-    return `%PDF-1.4
-1 0 obj
-<<
-/Type /Catalog
-/Pages 2 0 R
->>
-endobj
-2 0 obj
-<<
-/Type /Pages
-/Kids [3 0 R]
-/Count 1
->>
-endobj
-3 0 obj
-<<
-/Type /Page
-/Parent 2 0 R
-/MediaBox [0 0 612 792]
-/Contents 4 0 R
->>
-endobj
-4 0 obj
-<<
-/Length 800
->>
-stream
-BT
-/F1 20 Tf
-72 720 Td
-(SIP BREWERY) Tj
-0 -25 Td
-/F1 12 Tf
-(Brewing Wealth, One SIP at a Time) Tj
-0 -40 Td
-/F1 16 Tf
-(${statementType?.name || 'Investment Statement'}) Tj
-0 -30 Td
-/F1 10 Tf
-(Client: ${data.userInfo.name}) Tj
-0 -15 Td
-(Client Code: ${data.userInfo.clientCode}) Tj
-0 -15 Td
-(PAN: ${data.userInfo.panMasked}) Tj
-0 -15 Td
-(Generated: ${format(new Date(), 'dd MMM yyyy, HH:mm')}) Tj
-0 -30 Td
-/F1 12 Tf
-(PORTFOLIO SUMMARY) Tj
-0 -20 Td
-/F1 10 Tf
-(Total Invested: ₹${data.portfolio.totalInvested.toLocaleString()}) Tj
-0 -15 Td
-(Current Value: ₹${data.portfolio.currentValue.toLocaleString()}) Tj
-0 -15 Td
-(Total Returns: ₹${data.portfolio.totalReturns.toLocaleString()} (${data.portfolio.returnsPercentage.toFixed(2)}%)) Tj
-0 -15 Td
-(XIRR: ${data.portfolio.xirr.toFixed(2)}%) Tj
-0 -30 Td
-/F1 12 Tf
-(HOLDINGS DETAILS) Tj
-0 -20 Td
-/F1 10 Tf
-${data.holdings.map((h: any, i: number) => 
-  `(${i + 1}. ${h.schemeName}) Tj 0 -15 Td (   Folio: ${h.folioNumber} | Units: ${h.units.toFixed(3)} | Value: ₹${h.marketValue.toLocaleString()}) Tj 0 -15 Td`
-).join(' ')}
-0 -30 Td
-/F1 8 Tf
-(This statement is auto-generated by SIP Brewery, AMFI Registered Distributor.) Tj
-0 -12 Td
-(All transactions processed via BSE STAR MF. Data as per BSE API response.) Tj
-0 -12 Td
-(Mutual fund investments are subject to market risk. Please read scheme documents carefully.) Tj
-ET
-endstream
-endobj
-xref
-0 5
-0000000000 65535 f 
-0000000010 00000 n 
-0000000053 00000 n 
-0000000125 00000 n 
-0000000221 00000 n 
-trailer
-<<
-/Size 5
-/Root 1 0 R
->>
-startxref
-1073
-%%EOF`;
   };
 
   const selectedStatementData = statementTypes.find(s => s.id === selectedStatement);

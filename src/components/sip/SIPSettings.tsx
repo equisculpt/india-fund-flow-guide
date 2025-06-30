@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -37,6 +36,14 @@ const SIPSettings: React.FC<SIPSettingsProps> = ({ onDownload }) => {
       });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleQuickDownload = async (type: string) => {
+    try {
+      await onDownload(type);
+    } catch (error) {
+      console.error('Download error:', error);
     }
   };
 
@@ -127,7 +134,7 @@ const SIPSettings: React.FC<SIPSettingsProps> = ({ onDownload }) => {
           <div className="space-y-3">
             <Button 
               className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700" 
-              onClick={() => onDownload('comprehensive')}
+              onClick={() => handleQuickDownload('comprehensive')}
             >
               <Download className="h-4 w-4 mr-2" />
               Download Comprehensive Statement
@@ -136,7 +143,7 @@ const SIPSettings: React.FC<SIPSettingsProps> = ({ onDownload }) => {
             <Button 
               variant="outline" 
               className="w-full border-green-300 text-green-700 hover:bg-green-50"
-              onClick={() => onDownload('tax')}
+              onClick={() => handleQuickDownload('tax')}
             >
               <Download className="h-4 w-4 mr-2" />
               Download Tax Statement
@@ -145,7 +152,7 @@ const SIPSettings: React.FC<SIPSettingsProps> = ({ onDownload }) => {
             <Button 
               variant="outline" 
               className="w-full border-purple-300 text-purple-700 hover:bg-purple-50"
-              onClick={() => onDownload('portfolio')}
+              onClick={() => handleQuickDownload('portfolio')}
             >
               <Download className="h-4 w-4 mr-2" />
               Download Portfolio Summary
@@ -154,7 +161,7 @@ const SIPSettings: React.FC<SIPSettingsProps> = ({ onDownload }) => {
             <Button 
               variant="outline" 
               className="w-full border-orange-300 text-orange-700 hover:bg-orange-50"
-              onClick={() => onDownload('sip-statement')}
+              onClick={() => handleQuickDownload('sip-statement')}
             >
               <Download className="h-4 w-4 mr-2" />
               Download SIP Statement

@@ -9,6 +9,14 @@ interface SIPPerformanceProps {
 }
 
 const SIPPerformance: React.FC<SIPPerformanceProps> = ({ onDownload }) => {
+  const handlePerformanceDownload = async (type: string) => {
+    try {
+      await onDownload(type);
+    } catch (error) {
+      console.error('Download error:', error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-6">
@@ -84,7 +92,7 @@ const SIPPerformance: React.FC<SIPPerformanceProps> = ({ onDownload }) => {
           <div className="grid md:grid-cols-2 gap-4">
             <Button 
               className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700" 
-              onClick={() => onDownload('performance')}
+              onClick={() => handlePerformanceDownload('performance')}
             >
               <Download className="h-4 w-4 mr-2" />
               Detailed Performance Report
@@ -92,7 +100,7 @@ const SIPPerformance: React.FC<SIPPerformanceProps> = ({ onDownload }) => {
             
             <Button 
               className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700" 
-              onClick={() => onDownload('annual-returns')}
+              onClick={() => handlePerformanceDownload('annual-returns')}
             >
               <Download className="h-4 w-4 mr-2" />
               Annual Returns Statement
@@ -101,7 +109,7 @@ const SIPPerformance: React.FC<SIPPerformanceProps> = ({ onDownload }) => {
             <Button 
               variant="outline" 
               className="w-full border-purple-300 text-purple-700 hover:bg-purple-50"
-              onClick={() => onDownload('ai-summary-report')}
+              onClick={() => handlePerformanceDownload('ai-summary-report')}
             >
               <Download className="h-4 w-4 mr-2" />
               AI Performance Analysis
@@ -110,7 +118,7 @@ const SIPPerformance: React.FC<SIPPerformanceProps> = ({ onDownload }) => {
             <Button 
               variant="outline" 
               className="w-full border-orange-300 text-orange-700 hover:bg-orange-50"
-              onClick={() => onDownload('rewards-statement')}
+              onClick={() => handlePerformanceDownload('rewards-statement')}
             >
               <Download className="h-4 w-4 mr-2" />
               Rewards & Streak Report

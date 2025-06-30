@@ -1,8 +1,8 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { bseStarMFService } from '@/services/bseStarMFService';
 import { statementDataService } from '@/services/statementDataService';
+import { format } from 'date-fns';
 
 export const useSIPOperations = () => {
   const [sipStatuses, setSipStatuses] = useState<Record<string, string>>({});
@@ -139,6 +139,110 @@ export const useSIPOperations = () => {
     }
   };
 
+  const generateDownloadableStatement = (statementName: string, statementData: any) => {
+    const content = `SIP BREWERY - ${statementName}
+Generated: ${format(new Date(), 'dd MMM yyyy, HH:mm')}
+
+Client: ${statementData.userInfo.name}
+Client Code: ${statementData.userInfo.clientCode}
+PAN: ${statementData.userInfo.panMasked}
+
+PORTFOLIO SUMMARY
+================
+Total Invested: ₹${statementData.portfolio.totalInvested.toLocaleString()}
+Current Value: ₹${statementData.portfolio.currentValue.toLocaleString()}
+Total Returns: ₹${statementData.portfolio.totalReturns.toLocaleString()} (${statementData.portfolio.returnsPercentage.toFixed(2)}%)
+XIRR: ${statementData.portfolio.xirr.toFixed(2)}%
+Active SIPs: ${statementData.portfolio.activeSIPs}
+
+HOLDINGS DETAILS
+===============
+${statementData.holdings.map((h: any, i: number) => 
+  `${i + 1}. ${h.schemeName}
+   Scheme Code: ${h.schemeCode} | Folio: ${h.folioNumber}
+   Units: ${h.units.toFixed(3)} | Current NAV: ₹${h.currentNav}
+   Market Value: ₹${h.marketValue.toLocaleString()}
+   Invested Value: ₹${h.investedValue.toLocaleString()}
+   P&L: ₹${h.pnl.toLocaleString()} (${h.pnlPercentage.toFixed(2)}%)
+   Last Transaction: ${h.lastTransactionDate}
+`).join('\n')}
+
+ACTIVE SIP DETAILS
+==================
+${statementData.sips.filter((sip: any) => sip.status === 'ACTIVE').map((sip: any, i: number) => 
+  `${i + 1}. ${sip.schemeName}
+   SIP ID: ${sip.sipId}
+   Amount: ₹${sip.sipAmount.toLocaleString()} | Frequency: ${sip.frequency}
+   Start Date: ${sip.startDate} | Next Due: ${sip.nextDueDate || 'N/A'}
+   Completed Installments: ${sip.completedInstallments}/${sip.totalInstallments}
+   Total Invested: ₹${sip.totalInvested.toLocaleString()}
+   Current Value: ₹${sip.currentValue.toLocaleString()}
+   Returns: ${sip.returns.toFixed(2)}%
+`).join('\n')}
+
+RECENT TRANSACTIONS
+==================
+${statementData.transactions.slice(0, 10).map((txn: any, i: number) => 
+  `${i + 1}. ${txn.schemeName}
+   Order Number: ${txn.orderNumber}
+   Date: ${txn.transactionDate} | Settlement: ${txn.settlementDate}
+   Type: ${txn.transactionType} | Amount: ₹${txn.amount.toLocaleString()}
+   Units: ${txn.units.toFixed(3)} | NAV: ₹${txn.nav}
+   Folio: ${txn.folioNumber}
+`).join('\n')}
+
+CAPITAL GAINS SUMMARY
+====================
+Short Term Gains:
+${statementData.capitalGains.shortTerm.map((gain: any, i: number) => 
+  `${i + 1}. ${gain.schemeName}
+   Purchase: ${gain.purchaseDate} | Sale: ${gain.saleDate}
+   Purchase Value: ₹${gain.purchaseValue.toLocaleString()}
+   Sale Value: ₹${gain.saleValue.toLocaleString()}
+   Gain: ₹${gain.gain.toLocaleString()} | Tax Rate: ${gain.taxRate}%
+`).join('\n')}
+
+Long Term Gains:
+${statementData.capitalGains.longTerm.map((gain: any, i: number) => 
+  `${i + 1}. ${gain.schemeName}
+   Purchase: ${gain.purchaseDate} | Sale: ${gain.saleDate}
+   Purchase Value: ₹${gain.purchaseValue.toLocaleString()}
+   Sale Value: ₹${gain.saleValue.toLocaleString()}
+   Gain: ₹${gain.gain.toLocaleString()} | Tax Rate: ${gain.taxRate}%
+`).join('\n')}
+
+REWARDS & WALLET
+===============
+Total Earned: ₹${statementData.rewards.totalEarned.toLocaleString()}
+Referral Bonus: ₹${statementData.rewards.referralBonus.toLocaleString()}
+Loyalty Points: ${statementData.rewards.loyaltyPoints}
+Cashback: ₹${statementData.rewards.cashback.toLocaleString()}
+
+Recent Reward Transactions:
+${statementData.rewards.recentTransactions.map((reward: any, i: number) => 
+  `${i + 1}. ${reward.type} - ₹${reward.amount.toLocaleString()}
+   Date: ${reward.date} | ${reward.description}
+`).join('\n')}
+
+---
+This statement is generated using live BSE STAR MF API data.
+SIP Brewery - AMFI Registered Distributor | All transactions via BSE STAR MF
+Mutual fund investments are subject to market risk. Please read scheme documents carefully.
+AMFI Registration: ARN-XXXXX | BSE Member ID: XXXXX
+`;
+
+    // Create and download the file
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `SIP_Brewery_${statementName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleDownloadStatement = async (type: string, params?: any) => {
     try {
       console.log('Generating SIP Brewery Statement via BSE STAR MF API:', type, params);
@@ -182,25 +286,16 @@ export const useSIPOperations = () => {
         description: `Your ${statementName} has been generated with live BSE STAR MF data and SIP Brewery branding.`,
       });
       
-      // Generate branded PDF with BSE STAR MF data
+      // Generate and download the statement
       setTimeout(() => {
-        const today = new Date().toISOString().split('T')[0];
-        const filename = `SIP_Brewery_${type.replace('-', '_')}_${today}.pdf`;
+        generateDownloadableStatement(statementName, statementData);
         
-        // Generate branded PDF content with actual BSE STAR MF data
-        const pdfContent = generateBrandedPDF(statementName, statementData);
+        toast({
+          title: "Download Complete! 📁",
+          description: `${statementName} has been downloaded to your device.`,
+        });
         
-        const blob = new Blob([pdfContent], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        console.log(`Downloaded: ${filename} with BSE STAR MF API data`);
+        console.log(`Downloaded: ${statementName} with BSE STAR MF API data`);
       }, 1000);
       
     } catch (error) {
@@ -208,106 +303,9 @@ export const useSIPOperations = () => {
       toast({
         title: "Statement Generation Failed",
         description: "Unable to generate statement with BSE STAR MF data. Please try again or contact support.",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
-  };
-
-  const generateBrandedPDF = (statementName: string, data: any): string => {
-    // Generate branded PDF content with BSE STAR MF data
-    const currentDate = new Date().toISOString().split('T')[0];
-    
-    return `%PDF-1.4
-1 0 obj
-<<
-/Type /Catalog
-/Pages 2 0 R
->>
-endobj
-2 0 obj
-<<
-/Type /Pages
-/Kids [3 0 R]
-/Count 1
->>
-endobj
-3 0 obj
-<<
-/Type /Page
-/Parent 2 0 R
-/MediaBox [0 0 612 792]
-/Contents 4 0 R
->>
-endobj
-4 0 obj
-<<
-/Length 1200
->>
-stream
-BT
-/F1 24 Tf
-72 720 Td
-(SIP BREWERY) Tj
-0 -30 Td
-/F1 12 Tf
-(Brewing Wealth, One SIP at a Time) Tj
-0 -50 Td
-/F1 18 Tf
-(${statementName}) Tj
-0 -40 Td
-/F1 10 Tf
-(Generated: ${currentDate} | Powered by BSE STAR MF API) Tj
-0 -30 Td
-(Client: ${data.userInfo.name}) Tj
-0 -15 Td
-(Client Code: ${data.userInfo.clientCode}) Tj
-0 -15 Td
-(PAN: ${data.userInfo.panMasked}) Tj
-0 -30 Td
-/F1 14 Tf
-(PORTFOLIO SUMMARY) Tj
-0 -25 Td
-/F1 10 Tf
-(Total Invested: ₹${data.portfolio.totalInvested.toLocaleString()}) Tj
-0 -15 Td
-(Current Value: ₹${data.portfolio.currentValue.toLocaleString()}) Tj
-0 -15 Td
-(Total Returns: ₹${data.portfolio.totalReturns.toLocaleString()} (${data.portfolio.returnsPercentage.toFixed(2)}%)) Tj
-0 -15 Td
-(XIRR: ${data.portfolio.xirr.toFixed(2)}% | Active SIPs: ${data.portfolio.activeSIPs}) Tj
-0 -30 Td
-/F1 14 Tf
-(HOLDINGS (via BSE STAR MF)) Tj
-0 -25 Td
-/F1 10 Tf
-${data.holdings.slice(0, 3).map((h: any, i: number) => 
-  `(${i + 1}. ${h.schemeName.substring(0, 40)}...) Tj 0 -12 Td (   Scheme Code: ${h.schemeCode} | Folio: ${h.folioNumber}) Tj 0 -12 Td (   Units: ${h.units.toFixed(3)} | NAV: ₹${h.currentNav} | Value: ₹${h.marketValue.toLocaleString()}) Tj 0 -15 Td`
-).join(' ')}
-0 -30 Td
-/F1 8 Tf
-(This statement is generated using live BSE STAR MF API data.) Tj
-0 -12 Td
-(SIP Brewery - AMFI Registered Distributor | All transactions via BSE STAR MF) Tj
-0 -12 Td
-(Mutual fund investments are subject to market risk. Please read scheme documents carefully.) Tj
-ET
-endstream
-endobj
-xref
-0 5
-0000000000 65535 f 
-0000000010 00000 n 
-0000000053 00000 n 
-0000000125 00000 n 
-0000000221 00000 n 
-trailer
-<<
-/Size 5
-/Root 1 0 R
->>
-startxref
-1473
-%%EOF`;
   };
 
   return {
