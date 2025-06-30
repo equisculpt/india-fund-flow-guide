@@ -10,10 +10,10 @@ export class PDFStatementGenerator {
       console.log('Generating PDF for statement type:', statementType);
       
       // Dynamic import to avoid SSR issues
-      const { PDFStatementDocument } = await import('./PDFStatementDocument');
+      const { createPDFDocument } = await import('./PDFStatementDocument');
       
-      // Create the PDF document directly as expected by @react-pdf/renderer
-      const pdfDocument = React.createElement(PDFStatementDocument, {
+      // Create the PDF document directly as a Document element
+      const pdfDocument = createPDFDocument({
         statementType,
         statementData,
         generatedAt: new Date()

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { format } from 'date-fns';
@@ -343,6 +344,57 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
     </Page>
   </Document>
 );
+
+// Export function that creates the Document element directly
+export const createPDFDocument = (props: PDFStatementDocumentProps) => {
+  return React.createElement(Document, {}, 
+    React.createElement(Page, { size: "A4", style: styles.page },
+      // Header
+      React.createElement(View, { style: styles.header },
+        React.createElement(View, { style: styles.logoContainer },
+          React.createElement(Text, { style: styles.companyName }, "SIP BREWERY"),
+          React.createElement(Text, { style: styles.tagline }, "Brewing Wealth, One SIP at a Time")
+        ),
+        React.createElement(View, { style: styles.companyInfo },
+          React.createElement(Text, { style: { fontSize: 10, color: '#666666' } },
+            `Generated: ${format(props.generatedAt, 'dd MMM yyyy, HH:mm')}`
+          ),
+          React.createElement(Text, { style: { fontSize: 8, color: '#666666' } },
+            "AMFI Registered Distributor"
+          )
+        )
+      ),
+      
+      // Statement Title
+      React.createElement(Text, { style: styles.statementTitle }, getStatementTitle(props.statementType)),
+      
+      // User Information
+      React.createElement(View, { style: styles.userInfo },
+        React.createElement(Text, { style: styles.userInfoTitle }, "CLIENT INFORMATION"),
+        React.createElement(View, { style: styles.userInfoRow },
+          React.createElement(Text, { style: styles.userInfoLabel }, "Name:"),
+          React.createElement(Text, { style: styles.userInfoValue }, props.statementData.userInfo.name)
+        ),
+        React.createElement(View, { style: styles.userInfoRow },
+          React.createElement(Text, { style: styles.userInfoLabel }, "Client Code:"),
+          React.createElement(Text, { style: styles.userInfoValue }, props.statementData.userInfo.clientCode)
+        ),
+        React.createElement(View, { style: styles.userInfoRow },
+          React.createElement(Text, { style: styles.userInfoLabel }, "PAN:"),
+          React.createElement(Text, { style: styles.userInfoValue }, props.statementData.userInfo.panMasked)
+        ),
+        React.createElement(View, { style: styles.userInfoRow },
+          React.createElement(Text, { style: styles.userInfoLabel }, "Email:"),
+          React.createElement(Text, { style: styles.userInfoValue }, props.statementData.userInfo.email)
+        ),
+        React.createElement(View, { style: styles.userInfoRow },
+          React.createElement(Text, { style: styles.userInfoLabel }, "SIP Brewery ID:"),
+          React.createElement(Text, { style: styles.userInfoValue }, props.statementData.userInfo.sipBreweryId)
+        )
+      )
+    )
+  );
+};
 
 function getStatementTitle(statementType: string): string {
   const titles: Record<string, string> = {
