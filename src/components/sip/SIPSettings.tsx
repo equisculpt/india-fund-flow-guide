@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,9 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Download, Save, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { PDFDownloadService } from '@/services/pdf/PDFDownloadService';
 
 interface SIPSettingsProps {
-  onDownload: (type: string) => void;
+  onDownload?: (type: string) => void;
 }
 
 const SIPSettings: React.FC<SIPSettingsProps> = ({ onDownload }) => {
@@ -17,6 +19,7 @@ const SIPSettings: React.FC<SIPSettingsProps> = ({ onDownload }) => {
   const [autoIncrease, setAutoIncrease] = useState('disabled');
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const pdfDownloadService = new PDFDownloadService(toast);
 
   const handleSaveSettings = async () => {
     setIsSaving(true);
@@ -41,9 +44,21 @@ const SIPSettings: React.FC<SIPSettingsProps> = ({ onDownload }) => {
 
   const handleQuickDownload = async (type: string) => {
     try {
-      await onDownload(type);
+      console.log(`🎯 SIPSettings: Downloading ${type} statement`);
+      
+      // Use the callback if provided, otherwise use PDF service directly
+      if (onDownload) {
+        await onDownload(type);
+      } else {
+        await pdfDownloadService.downloadPDFStatement(type);
+      }
     } catch (error) {
       console.error('Download error:', error);
+      toast({
+        title: "Download Failed",
+        description: "Unable to generate the requested statement. Please try again.",
+        variant: "destructive"
+      });
     }
   };
 

@@ -11,7 +11,7 @@ interface PDFHeaderProps {
 export const PDFHeader: React.FC<PDFHeaderProps> = ({ generatedAt }) => (
   <View style={styles.header}>
     <View style={styles.logoContainer}>
-      <Text style={styles.companyName}>SIP BREWERY</Text>
+      <Text style={styles.companyName}>SIP Brewery</Text>
       <Text style={styles.tagline}>Brewing Wealth, One SIP at a Time</Text>
     </View>
     <View style={styles.companyInfo}>
