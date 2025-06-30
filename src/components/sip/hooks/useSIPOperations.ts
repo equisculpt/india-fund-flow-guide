@@ -1,9 +1,8 @@
-
 import { useToast } from '@/hooks/use-toast';
 import { useSIPStatusManager } from './useSIPStatusManager';
 import { SIPOperationService } from '../services/sipOperationService';
 import { statementDataService } from '@/services/statement/statementDataService';
-import { generateStatementContent, downloadStatementFile } from '@/components/dashboard/statement/statementFileGenerator';
+import { statementGeneratorService } from '../services/statementGeneratorService';
 import { statementTypes } from '@/components/dashboard/statement/statementTypes';
 import type { SIPOperationHooks, SIPData } from './types';
 
@@ -59,18 +58,20 @@ export const useSIPOperations = (): SIPOperationHooks => {
 
   const handleDownloadStatement = async (type: string, params?: any) => {
     try {
-      console.log('Generating SIP Brewery Statement via BSE STAR MF API:', type, params);
+      console.log('Starting statement download:', type, params);
       
       toast({
         title: "Generating Your Statement... 📄",
-        description: "Fetching live data from BSE STAR MF API and preparing your beautifully designed statement.",
+        description: "Fetching live data from BSE STAR MF API and preparing your statement.",
       });
       
       const mockClientCode = 'SB123456';
+      
+      // Fetch statement data
       const statementData = await statementDataService.getStatementData(mockClientCode, type);
+      console.log('BSE STAR MF API Data fetched:', statementData);
       
-      console.log('BSE STAR MF API Data:', statementData);
-      
+      // Get statement name
       const statementTypeNames: Record<string, string> = {
         'sip-details': 'SIP Details Statement',
         'comprehensive': 'Comprehensive Portfolio Statement',
@@ -93,36 +94,26 @@ export const useSIPOperations = (): SIPOperationHooks => {
       const statementName = statementTypeNames[type] || 'Investment Statement';
       
       toast({
-        title: "Statement Ready for Download! 🎉",
-        description: `Your ${statementName} has been generated with live BSE STAR MF data and SIP Brewery branding.`,
+        title: "Statement Ready! 🎉",
+        description: `Your ${statementName} has been generated with live BSE STAR MF data.`,
       });
       
-      setTimeout(() => {
-        try {
-          const content = generateStatementContent(statementName, statementData);
-          downloadStatementFile(statementName, content);
-          
-          toast({
-            title: "Download Complete! 📁",
-            description: `${statementName} has been downloaded to your device.`,
-          });
-          
-          console.log(`Downloaded: ${statementName} with BSE STAR MF API data`);
-        } catch (downloadError) {
-          console.error('Download error:', downloadError);
-          toast({
-            title: "Download Failed",
-            description: `Error downloading ${statementName}. Please try again.`,
-            variant: "destructive"
-          });
-        }
-      }, 1000);
+      // Generate and download immediately
+      console.log('Generating statement file...');
+      statementGeneratorService.generateAndDownloadStatement(statementName, statementData);
+      
+      toast({
+        title: "Download Complete! 📁",
+        description: `${statementName} has been downloaded to your device.`,
+      });
+      
+      console.log(`Successfully downloaded: ${statementName}`);
       
     } catch (error) {
-      console.error('BSE STAR MF API Error:', error);
+      console.error('Statement download error:', error);
       toast({
-        title: "Statement Generation Failed",
-        description: "Unable to generate statement with BSE STAR MF data. Please try again or contact support.",
+        title: "Download Failed",
+        description: "Unable to generate statement. Please try again or contact support.",
         variant: "destructive"
       });
     }
