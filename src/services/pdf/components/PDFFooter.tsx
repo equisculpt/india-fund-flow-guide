@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, Text } from '@react-pdf/renderer';
+import { View, Text, Image } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { styles } from '../styles/pdfStyles';
 
@@ -20,10 +20,13 @@ export const PDFFooter: React.FC<PDFFooterProps> = ({ generatedAt }) => (
       </Text>
     </View>
 
-    <View style={styles.footer}>
+    <View style={styles.footer} fixed>
       <View style={styles.footerContent}>
         <View style={styles.footerLeft}>
-          <Text style={styles.footerCompany}>SIP Brewery - Brewing Wealth, One SIP at a Time</Text>
+          <View style={styles.footerBranding}>
+            <Text style={styles.footerCompany}>SIP Brewery - Brewing Wealth, One SIP at a Time</Text>
+            <Text style={styles.footerTrademark}>A Trademark of Equisculpt Ventures</Text>
+          </View>
           <Text style={styles.footerContact}>
             📧 support@sipbrewery.com | 📱 +91-9876543210 | 🌐 www.sipbrewery.com
           </Text>

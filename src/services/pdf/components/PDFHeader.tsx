@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, Text } from '@react-pdf/renderer';
+import { View, Text, Image } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { styles } from '../styles/pdfStyles';
 
@@ -10,15 +10,33 @@ interface PDFHeaderProps {
 
 export const PDFHeader: React.FC<PDFHeaderProps> = ({ generatedAt }) => (
   <View style={styles.header}>
-    <View style={styles.logoContainer}>
-      <Text style={styles.companyName}>SIP Brewery</Text>
-      <Text style={styles.tagline}>Brewing Wealth, One SIP at a Time</Text>
+    <View style={styles.logoSection}>
+      <View style={styles.mainLogo}>
+        <Image 
+          src="/lovable-uploads/8099c86d-175f-43be-93ec-c6756cc0c0ed.png" 
+          style={styles.sipBreweryLogo}
+        />
+        <View style={styles.brandingText}>
+          <Text style={styles.companyName}>SIP Brewery</Text>
+          <Text style={styles.tagline}>Brewing Wealth, One SIP at a Time</Text>
+        </View>
+      </View>
+      <View style={styles.trademarkSection}>
+        <Text style={styles.trademarkText}>A Trademark of</Text>
+        <View style={styles.equisculptBrand}>
+          <Image 
+            src="/lovable-uploads/8099c86d-175f-43be-93ec-c6756cc0c0ed.png" 
+            style={styles.equisculptLogo}
+          />
+          <Text style={styles.equisculptText}>Equisculpt Ventures</Text>
+        </View>
+      </View>
     </View>
-    <View style={styles.companyInfo}>
-      <Text style={{ fontSize: 11, color: '#1A1F36', fontWeight: 'bold' }}>
+    <View style={styles.headerInfo}>
+      <Text style={styles.generatedDate}>
         Generated: {format(generatedAt, 'dd MMM yyyy, HH:mm')}
       </Text>
-      <Text style={{ fontSize: 9, color: '#6B7280', marginTop: 2 }}>
+      <Text style={styles.regulatoryInfo}>
         AMFI Reg: ARN-XXXXX | BSE Member
       </Text>
     </View>

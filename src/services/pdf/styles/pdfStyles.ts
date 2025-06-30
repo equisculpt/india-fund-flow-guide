@@ -8,57 +8,120 @@ export const styles = StyleSheet.create({
     padding: 20,
     fontFamily: 'Helvetica',
     fontSize: 10,
+    position: 'relative',
   },
   
-  // Header Section with Modern Design
+  // Enhanced Header Section
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 25,
-    paddingBottom: 20,
-    borderBottomWidth: 3,
+    marginBottom: 20,
+    paddingBottom: 15,
+    borderBottomWidth: 2,
     borderBottomColor: '#2E7DFF',
-    backgroundColor: '#F5F8FF',
+    backgroundColor: '#F8FAFF',
     padding: 15,
     borderRadius: 8,
   },
-  logoContainer: {
+  
+  logoSection: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  
+  mainLogo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  
+  sipBreweryLogo: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+  },
+  
+  brandingText: {
     flexDirection: 'column',
   },
+  
   companyName: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#1A1F36',
-    marginBottom: 4,
+    marginBottom: 2,
   },
+  
   tagline: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#2E7DFF',
     fontStyle: 'italic',
   },
-  companyInfo: {
+  
+  trademarkSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  
+  trademarkText: {
+    fontSize: 9,
+    color: '#6B7280',
+    marginRight: 5,
+  },
+  
+  equisculptBrand: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  
+  equisculptLogo: {
+    width: 16,
+    height: 16,
+    marginRight: 4,
+  },
+  
+  equisculptText: {
+    fontSize: 10,
+    color: '#1A1F36',
+    fontWeight: 'bold',
+  },
+  
+  headerInfo: {
     flexDirection: 'column',
     alignItems: 'flex-end',
   },
   
+  generatedDate: {
+    fontSize: 11,
+    color: '#1A1F36',
+    fontWeight: 'bold',
+    marginBottom: 3,
+  },
+  
+  regulatoryInfo: {
+    fontSize: 9,
+    color: '#6B7280',
+  },
+  
   // Statement Title
   statementTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 25,
+    marginBottom: 20,
     color: '#1A1F36',
     backgroundColor: '#F5F8FF',
     padding: 12,
     borderRadius: 6,
   },
   
-  // User Info Card
+  // User Info Card - Enhanced
   userInfo: {
-    marginBottom: 25,
-    padding: 20,
-    backgroundColor: '#F5F8FF',
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#F8FAFF',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#2E7DFF',
@@ -66,7 +129,7 @@ export const styles = StyleSheet.create({
   userInfoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 12,
     color: '#1A1F36',
     textAlign: 'center',
   },
@@ -80,230 +143,81 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   userInfoLabel: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#6B7280',
     marginBottom: 2,
   },
   userInfoValue: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#1A1F36',
     fontWeight: 'bold',
   },
   
-  // Portfolio At a Glance Section
+  // Portfolio At a Glance Section - Enhanced
   portfolioGlance: {
-    marginBottom: 25,
-    padding: 20,
-    backgroundColor: '#FFF6E7',
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#FFF8E7',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#FFB800',
   },
   glanceTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 15,
     color: '#1A1F36',
   },
   glanceGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
+    marginBottom: 15,
   },
   glanceCard: {
     width: '23%',
     backgroundColor: '#FFFFFF',
-    padding: 15,
+    padding: 12,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#E5E7EB',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   glanceLabel: {
-    fontSize: 10,
+    fontSize: 9,
     color: '#6B7280',
-    marginBottom: 5,
+    marginBottom: 4,
     textAlign: 'center',
   },
   glanceValue: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#1A1F36',
     textAlign: 'center',
   },
   glanceSubtext: {
-    fontSize: 9,
+    fontSize: 8,
     color: '#00B47B',
     textAlign: 'center',
     marginTop: 2,
   },
   
-  // AI Insight Section - Modern Card
-  aiInsight: {
-    marginBottom: 25,
-    padding: 20,
-    backgroundColor: '#FFF6E7',
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#FFB800',
-    position: 'relative',
-  },
-  aiInsightHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  aiInsightIcon: {
-    width: 24,
-    height: 24,
-    backgroundColor: '#FFB800',
-    borderRadius: 12,
-    marginRight: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  aiInsightTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1A1F36',
-    flex: 1,
-  },
-  aiInsightContent: {
-    backgroundColor: '#FFFFFF',
-    padding: 15,
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: '#FFB800',
-  },
-  aiInsightText: {
-    fontSize: 12,
-    color: '#1A1F36',
-    lineHeight: 1.6,
-    marginBottom: 10,
-  },
-  aiInsightHighlight: {
-    fontSize: 11,
-    color: '#00B47B',
-    fontWeight: 'bold',
-  },
-  
-  // Holdings Table - Modern Design
-  section: {
-    marginBottom: 25,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#1A1F36',
-    backgroundColor: '#F5F8FF',
-    padding: 12,
-    borderRadius: 8,
-    textAlign: 'center',
-  },
-  tableContainer: {
-    borderRadius: 8,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#1A1F36',
-    padding: 12,
-  },
-  tableHeaderCell: {
-    fontSize: 11,
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    paddingHorizontal: 8,
-  },
-  tableRow: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
-  tableRowAlternate: {
-    flexDirection: 'row',
-    backgroundColor: '#F9FAFB',
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
-  tableCell: {
-    fontSize: 10,
-    color: '#1A1F36',
-    paddingHorizontal: 8,
-  },
-  tableCellBold: {
-    fontSize: 10,
-    color: '#1A1F36',
-    paddingHorizontal: 8,
-    fontWeight: 'bold',
-  },
-  tableCellGreen: {
-    fontSize: 10,
-    color: '#00B47B',
-    paddingHorizontal: 8,
-    fontWeight: 'bold',
-  },
-  
-  // Summary Cards
-  summaryGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    flexWrap: 'wrap',
-  },
-  summaryCard: {
-    width: '48%',
-    backgroundColor: '#FFFFFF',
-    padding: 15,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    marginBottom: 10,
-  },
-  summaryCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  summaryTitle: {
-    fontSize: 11,
-    color: '#6B7280',
-    marginBottom: 4,
-  },
-  summaryValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1A1F36',
-  },
-  summarySubtext: {
-    fontSize: 10,
-    color: '#00B47B',
-    marginTop: 2,
-  },
-  
-  // Performance Metrics
+  // Performance Section - Enhanced
   performanceSection: {
     backgroundColor: '#F0FDF4',
-    padding: 20,
+    padding: 15,
     borderRadius: 12,
-    marginBottom: 25,
     borderWidth: 2,
     borderColor: '#00B47B',
   },
   performanceTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#1A1F36',
     textAlign: 'center',
-    marginBottom: 15,
+    marginBottom: 12,
   },
   performanceGrid: {
     flexDirection: 'row',
@@ -313,25 +227,168 @@ export const styles = StyleSheet.create({
   performanceItem: {
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    padding: 12,
-    borderRadius: 8,
+    padding: 10,
+    borderRadius: 6,
     minWidth: '20%',
   },
   performanceLabel: {
-    fontSize: 10,
+    fontSize: 9,
     color: '#6B7280',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   performanceValue: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#00B47B',
   },
   
-  // Modern Disclaimer
-  disclaimer: {
-    marginTop: 30,
+  // AI Insight Section - Enhanced
+  aiInsight: {
+    marginBottom: 20,
     padding: 15,
+    backgroundColor: '#FFF8E7',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#FFB800',
+  },
+  aiInsightHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  aiInsightIcon: {
+    width: 20,
+    height: 20,
+    backgroundColor: '#FFB800',
+    borderRadius: 10,
+    marginRight: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  aiInsightTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#1A1F36',
+    flex: 1,
+  },
+  aiInsightContent: {
+    backgroundColor: '#FFFFFF',
+    padding: 12,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#FFB800',
+  },
+  aiInsightText: {
+    fontSize: 11,
+    color: '#1A1F36',
+    lineHeight: 1.5,
+    marginBottom: 8,
+  },
+  aiInsightHighlight: {
+    fontSize: 10,
+    color: '#00B47B',
+    fontWeight: 'bold',
+  },
+  
+  // Holdings Table - Enhanced
+  section: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#1A1F36',
+    backgroundColor: '#F5F8FF',
+    padding: 10,
+    borderRadius: 8,
+    textAlign: 'center',
+  },
+  tableContainer: {
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    marginBottom: 10,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#1A1F36',
+    padding: 10,
+  },
+  tableHeaderCell: {
+    fontSize: 10,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    paddingHorizontal: 6,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  tableRowAlternate: {
+    flexDirection: 'row',
+    backgroundColor: '#F9FAFB',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  tableCell: {
+    fontSize: 9,
+    color: '#1A1F36',
+    paddingHorizontal: 6,
+  },
+  tableCellBold: {
+    fontSize: 9,
+    color: '#1A1F36',
+    paddingHorizontal: 6,
+    fontWeight: 'bold',
+  },
+  tableCellGreen: {
+    fontSize: 9,
+    color: '#00B47B',
+    paddingHorizontal: 6,
+    fontWeight: 'bold',
+  },
+  
+  // Summary Cards - Enhanced
+  summaryGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+  summaryCard: {
+    width: '48%',
+    backgroundColor: '#FFFFFF',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    marginBottom: 8,
+  },
+  summaryTitle: {
+    fontSize: 10,
+    color: '#6B7280',
+    marginBottom: 3,
+  },
+  summaryValue: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#1A1F36',
+  },
+  summarySubtext: {
+    fontSize: 9,
+    color: '#00B47B',
+    marginTop: 2,
+  },
+  
+  // Disclaimer - Enhanced
+  disclaimer: {
+    marginTop: 20,
+    padding: 12,
     backgroundColor: '#FEF2F2',
     borderRadius: 8,
     borderWidth: 1,
@@ -340,25 +397,25 @@ export const styles = StyleSheet.create({
     borderLeftColor: '#EF4444',
   },
   disclaimerTitle: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#DC2626',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   disclaimerText: {
-    fontSize: 9,
+    fontSize: 8,
     color: '#7F1D1D',
-    lineHeight: 1.4,
+    lineHeight: 1.3,
   },
   
-  // Modern Footer
+  // Footer - Enhanced and Fixed
   footer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 15,
     left: 20,
     right: 20,
-    backgroundColor: '#F5F8FF',
-    padding: 15,
+    backgroundColor: '#F8FAFF',
+    padding: 12,
     borderRadius: 8,
     borderTopWidth: 2,
     borderTopColor: '#2E7DFF',
@@ -370,27 +427,36 @@ export const styles = StyleSheet.create({
   },
   footerLeft: {
     flexDirection: 'column',
+    flex: 1,
+  },
+  footerBranding: {
+    marginBottom: 3,
   },
   footerCompany: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#1A1F36',
-    marginBottom: 2,
+    marginBottom: 1,
+  },
+  footerTrademark: {
+    fontSize: 8,
+    color: '#6B7280',
+    fontStyle: 'italic',
   },
   footerContact: {
-    fontSize: 9,
+    fontSize: 8,
     color: '#6B7280',
   },
   footerRight: {
     alignItems: 'flex-end',
   },
   footerGenerated: {
-    fontSize: 9,
+    fontSize: 8,
     color: '#6B7280',
     marginBottom: 2,
   },
   footerPage: {
-    fontSize: 9,
+    fontSize: 8,
     color: '#2E7DFF',
     fontWeight: 'bold',
   },
