@@ -19,6 +19,7 @@ import HoldingsTab from './dashboard/HoldingsTab';
 import PerformanceTab from './dashboard/PerformanceTab';
 import AllocationTab from './dashboard/AllocationTab';
 import ReferralBanner from './dashboard/ReferralBanner';
+import PDFDebugger from './debug/PDFDebugger';
 
 const TestPortfolioDashboard = () => {
   const [hideBalance, setHideBalance] = useState(false);
@@ -58,7 +59,7 @@ const TestPortfolioDashboard = () => {
       <QuickActionCards handleInvestMore={handleInvestMore} />
 
       <Tabs defaultValue="holdings" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-10">
+        <TabsList className="grid w-full grid-cols-11">
           <TabsTrigger value="holdings">Holdings</TabsTrigger>
           <TabsTrigger value="sip-center">SIP Center</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
@@ -69,6 +70,7 @@ const TestPortfolioDashboard = () => {
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="fund-explorer">Explore</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsTrigger value="pdf-debug">PDF Debug</TabsTrigger>
         </TabsList>
 
         <TabsContent value="holdings">
@@ -109,6 +111,10 @@ const TestPortfolioDashboard = () => {
 
         <TabsContent value="settings">
           <UserSettings />
+        </TabsContent>
+
+        <TabsContent value="pdf-debug">
+          <PDFDebugger />
         </TabsContent>
 
         {/* Legacy tabs for backward compatibility */}
