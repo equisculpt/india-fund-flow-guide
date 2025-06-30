@@ -9,37 +9,73 @@ interface PDFPortfolioSummaryProps {
 }
 
 export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfolio }) => (
-  <View style={styles.section}>
-    <Text style={styles.sectionTitle}>PORTFOLIO SUMMARY</Text>
+  <View style={styles.portfolioGlance}>
+    <Text style={styles.glanceTitle}>📊 Portfolio At a Glance</Text>
     
-    <View style={{ flexDirection: 'row', marginBottom: 15 }}>
-      <View style={[styles.summaryCard, { marginRight: 10, flex: 1 }]}>
-        <Text style={styles.summaryTitle}>Total Invested</Text>
-        <Text style={styles.summaryValue}>
+    <View style={styles.glanceGrid}>
+      <View style={styles.glanceCard}>
+        <Text style={styles.glanceLabel}>Total Invested</Text>
+        <Text style={styles.glanceValue}>
           ₹{portfolio.totalInvested.toLocaleString()}
         </Text>
       </View>
-      <View style={[styles.summaryCard, { marginLeft: 10, flex: 1 }]}>
-        <Text style={styles.summaryTitle}>Current Value</Text>
-        <Text style={styles.summaryValue}>
+      
+      <View style={styles.glanceCard}>
+        <Text style={styles.glanceLabel}>Current Value</Text>
+        <Text style={styles.glanceValue}>
           ₹{portfolio.currentValue.toLocaleString()}
+        </Text>
+      </View>
+      
+      <View style={styles.glanceCard}>
+        <Text style={styles.glanceLabel}>Total Returns</Text>
+        <Text style={styles.glanceValue}>
+          ₹{portfolio.totalReturns.toLocaleString()}
+        </Text>
+        <Text style={styles.glanceSubtext}>
+          +{portfolio.returnsPercentage.toFixed(2)}%
+        </Text>
+      </View>
+      
+      <View style={styles.glanceCard}>
+        <Text style={styles.glanceLabel}>Portfolio XIRR</Text>
+        <Text style={styles.glanceValue}>
+          {portfolio.xirr.toFixed(2)}%
+        </Text>
+        <Text style={styles.glanceSubtext}>
+          Annualized
         </Text>
       </View>
     </View>
 
-    <View style={{ flexDirection: 'row', marginBottom: 15 }}>
-      <View style={[styles.summaryCard, { marginRight: 10, flex: 1 }]}>
-        <Text style={styles.summaryTitle}>Total Returns</Text>
-        <Text style={styles.summaryValue}>
-          ₹{portfolio.totalReturns.toLocaleString()} 
-          ({portfolio.returnsPercentage.toFixed(2)}%)
-        </Text>
-      </View>
-      <View style={[styles.summaryCard, { marginLeft: 10, flex: 1 }]}>
-        <Text style={styles.summaryTitle}>XIRR</Text>
-        <Text style={styles.summaryValue}>
-          {portfolio.xirr.toFixed(2)}%
-        </Text>
+    {/* Performance Section */}
+    <View style={styles.performanceSection}>
+      <Text style={styles.performanceTitle}>🎯 Performance Highlights</Text>
+      <View style={styles.performanceGrid}>
+        <View style={styles.performanceItem}>
+          <Text style={styles.performanceLabel}>Absolute Return</Text>
+          <Text style={styles.performanceValue}>
+            +{portfolio.returnsPercentage.toFixed(1)}%
+          </Text>
+        </View>
+        <View style={styles.performanceItem}>
+          <Text style={styles.performanceLabel}>Annualized Return</Text>
+          <Text style={styles.performanceValue}>
+            {portfolio.xirr.toFixed(1)}%
+          </Text>
+        </View>
+        <View style={styles.performanceItem}>
+          <Text style={styles.performanceLabel}>Portfolio Health</Text>
+          <Text style={styles.performanceValue}>
+            {portfolio.xirr > 15 ? 'Excellent' : portfolio.xirr > 12 ? 'Good' : 'Average'}
+          </Text>
+        </View>
+        <View style={styles.performanceItem}>
+          <Text style={styles.performanceLabel}>Risk Level</Text>
+          <Text style={styles.performanceValue}>
+            {portfolio.xirr > 18 ? 'High' : portfolio.xirr > 12 ? 'Moderate' : 'Low'}
+          </Text>
+        </View>
       </View>
     </View>
   </View>

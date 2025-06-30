@@ -15,11 +15,11 @@ export const PDFHeader: React.FC<PDFHeaderProps> = ({ generatedAt }) => (
       <Text style={styles.tagline}>Brewing Wealth, One SIP at a Time</Text>
     </View>
     <View style={styles.companyInfo}>
-      <Text style={{ fontSize: 10, color: '#666666' }}>
+      <Text style={{ fontSize: 11, color: '#1A1F36', fontWeight: 'bold' }}>
         Generated: {format(generatedAt, 'dd MMM yyyy, HH:mm')}
       </Text>
-      <Text style={{ fontSize: 8, color: '#666666' }}>
-        AMFI Registered Distributor
+      <Text style={{ fontSize: 9, color: '#6B7280', marginTop: 2 }}>
+        AMFI Reg: ARN-XXXXX | BSE Member
       </Text>
     </View>
   </View>

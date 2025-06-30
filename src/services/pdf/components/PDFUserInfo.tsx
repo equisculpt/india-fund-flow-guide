@@ -10,26 +10,38 @@ interface PDFUserInfoProps {
 
 export const PDFUserInfo: React.FC<PDFUserInfoProps> = ({ userInfo }) => (
   <View style={styles.userInfo}>
-    <Text style={styles.userInfoTitle}>CLIENT INFORMATION</Text>
-    <View style={styles.userInfoRow}>
-      <Text style={styles.userInfoLabel}>Name:</Text>
-      <Text style={styles.userInfoValue}>{userInfo.name}</Text>
-    </View>
-    <View style={styles.userInfoRow}>
-      <Text style={styles.userInfoLabel}>Client Code:</Text>
-      <Text style={styles.userInfoValue}>{userInfo.clientCode}</Text>
-    </View>
-    <View style={styles.userInfoRow}>
-      <Text style={styles.userInfoLabel}>PAN:</Text>
-      <Text style={styles.userInfoValue}>{userInfo.panMasked}</Text>
-    </View>
-    <View style={styles.userInfoRow}>
-      <Text style={styles.userInfoLabel}>Email:</Text>
-      <Text style={styles.userInfoValue}>{userInfo.email}</Text>
-    </View>
-    <View style={styles.userInfoRow}>
-      <Text style={styles.userInfoLabel}>SIP Brewery ID:</Text>
-      <Text style={styles.userInfoValue}>{userInfo.sipBreweryId}</Text>
+    <Text style={styles.userInfoTitle}>👤 Investor Information</Text>
+    
+    <View style={styles.userInfoGrid}>
+      <View style={styles.userInfoItem}>
+        <Text style={styles.userInfoLabel}>Full Name</Text>
+        <Text style={styles.userInfoValue}>{userInfo.name}</Text>
+      </View>
+      
+      <View style={styles.userInfoItem}>
+        <Text style={styles.userInfoLabel}>Client Code</Text>
+        <Text style={styles.userInfoValue}>{userInfo.clientCode}</Text>
+      </View>
+      
+      <View style={styles.userInfoItem}>
+        <Text style={styles.userInfoLabel}>Email Address</Text>
+        <Text style={styles.userInfoValue}>{userInfo.email}</Text>
+      </View>
+      
+      <View style={styles.userInfoItem}>
+        <Text style={styles.userInfoLabel}>Mobile Number</Text>
+        <Text style={styles.userInfoValue}>{userInfo.mobile}</Text>
+      </View>
+      
+      <View style={styles.userInfoItem}>
+        <Text style={styles.userInfoLabel}>PAN Number</Text>
+        <Text style={styles.userInfoValue}>{userInfo.pan}</Text>
+      </View>
+      
+      <View style={styles.userInfoItem}>
+        <Text style={styles.userInfoLabel}>Statement Period</Text>
+        <Text style={styles.userInfoValue}>01 Jan 2024 - Current</Text>
+      </View>
     </View>
   </View>
 );
