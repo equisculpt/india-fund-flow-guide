@@ -1,5 +1,4 @@
-
-import { pdf } from '@react-pdf/renderer';
+import { pdf, Document } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { StatementData } from '../statement/types';
 import React from 'react';
@@ -12,6 +11,7 @@ export class PDFStatementGenerator {
       // Dynamic import to avoid SSR issues
       const { PDFStatementDocument } = await import('./PDFStatementDocument');
       
+      // Create the PDF document with proper Document wrapper
       const pdfDocument = React.createElement(PDFStatementDocument, {
         statementType,
         statementData,
