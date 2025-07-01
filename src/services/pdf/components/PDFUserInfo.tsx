@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 import { styles } from '../styles/pdfStyles';
+import { UserAvatar } from './UserAvatar';
 import { StatementData } from '../../statement/types';
 
 interface PDFUserInfoProps {
@@ -10,19 +11,12 @@ interface PDFUserInfoProps {
 
 export const PDFUserInfo: React.FC<PDFUserInfoProps> = ({ userInfo }) => (
   <View style={styles.userInfo}>
-    <Text style={styles.userInfoTitle}>
-      Investor Information
-      {userInfo.isVerified && (
-        <Text style={[styles.userInfoTitle, { color: '#00B47B', fontSize: 12 }]}> ✓ VERIFIED</Text>
-      )}
-    </Text>
+    <Text style={styles.userInfoTitle}>Investor Information</Text>
     
+    {/* Avatar and Name with Verified Badge */}
+    <UserAvatar name={userInfo.name} isVerified={userInfo.isVerified} />
+
     <View style={styles.userInfoGrid}>
-      <View style={styles.userInfoItem}>
-        <Text style={styles.userInfoLabel}>Full Name</Text>
-        <Text style={styles.userInfoValue}>{userInfo.name}</Text>
-      </View>
-      
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>Client Code</Text>
         <Text style={styles.userInfoValue}>{userInfo.clientCode}</Text>

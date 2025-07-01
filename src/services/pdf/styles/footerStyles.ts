@@ -2,37 +2,17 @@
 import { StyleSheet } from '@react-pdf/renderer';
 
 export const footerStyles = StyleSheet.create({
-  // Disclaimer - Single Instance Only
-  disclaimer: {
-    marginTop: 40,
-    padding: 25,
-    backgroundColor: '#FEF2F2',
-    borderRadius: 18,
-    borderWidth: 4,
-    borderColor: '#FECACA',
-    borderLeftWidth: 8,
-    borderLeftColor: '#EF4444',
-  },
-  disclaimerTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#DC2626',
-    marginBottom: 15,
-  },
-  disclaimerText: {
-    fontSize: 12,
-    color: '#7F1D1D',
-    lineHeight: 1.6,
-  },
-  
-  // Footer - Single Instance Only, Premium Design
+  // Enhanced Footer with Page Numbers
   footer: {
-    marginTop: 30,
-    backgroundColor: '#F8FAFF',
-    padding: 25,
-    borderRadius: 18,
-    borderTopWidth: 5,
-    borderTopColor: '#2E7DFF',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#F8FAFC',
+    borderTopWidth: 2,
+    borderTopColor: '#E5E7EB',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
   },
   footerContent: {
     flexDirection: 'row',
@@ -40,39 +20,70 @@ export const footerStyles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   footerLeft: {
-    flexDirection: 'column',
+    flex: 2,
+  },
+  footerRight: {
     flex: 1,
+    alignItems: 'flex-end',
   },
   footerBranding: {
-    marginBottom: 10,
+    marginBottom: 8,
   },
   footerCompany: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#1A1F36',
-    marginBottom: 5,
+    color: '#2E7DFF',
+    marginBottom: 3,
   },
   footerTrademark: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#6B7280',
     fontStyle: 'italic',
   },
   footerContact: {
-    fontSize: 12,
+    fontSize: 9,
     color: '#6B7280',
-    marginBottom: 4,
-  },
-  footerRight: {
-    alignItems: 'flex-end',
+    marginBottom: 2,
   },
   footerGenerated: {
-    fontSize: 12,
+    fontSize: 9,
     color: '#6B7280',
-    marginBottom: 6,
+    textAlign: 'right',
   },
   footerConfidential: {
-    fontSize: 12,
-    color: '#2E7DFF',
+    fontSize: 10,
     fontWeight: 'bold',
+    color: '#EF4444',
+    textAlign: 'right',
+    marginTop: 3,
+  },
+  footerPage: {
+    fontSize: 10,
+    color: '#6B7280',
+    textAlign: 'right',
+    marginTop: 5,
+  },
+
+  // Enhanced Disclaimer Section
+  disclaimer: {
+    backgroundColor: '#FEF3C7',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 25,
+    borderLeftWidth: 4,
+    borderLeftColor: '#FFB800',
+  },
+  disclaimerTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#92400E',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  disclaimerText: {
+    fontSize: 10,
+    color: '#92400E',
+    lineHeight: 1.4,
+    textAlign: 'justify',
   },
 });
