@@ -25,6 +25,19 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
   generatedAt,
 }) => {
   // Validate required data before rendering
+  if (!statementData || typeof statementData !== 'object') {
+    return (
+      <Document>
+        <Page size="A4" style={styles.page}>
+          <Text style={styles.statementTitle}>Error: Invalid Statement Data</Text>
+          <Text style={{ textAlign: 'center', marginTop: 20, color: '#6B7280' }}>
+            Please contact support with error code: INVALID_DATA
+          </Text>
+        </Page>
+      </Document>
+    );
+  }
+
   if (!statementData.userInfo) {
     return (
       <Document>
@@ -52,6 +65,11 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
   }
 
   try {
+    // Ensure arrays are properly initialized
+    const safeHoldings = Array.isArray(statementData.holdings) ? statementData.holdings : [];
+    const hasCapitalGains = statementData.capitalGains && 
+      (Array.isArray(statementData.capitalGains.shortTerm) || Array.isArray(statementData.capitalGains.longTerm));
+
     return (
       <Document>
         <Page size="A4" style={styles.page}>
@@ -67,8 +85,8 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
 
           <AIInsightSection portfolio={statementData.portfolio} />
 
-          {statementData.holdings && statementData.holdings.length > 0 ? (
-            <PDFHoldingsTable holdings={statementData.holdings} />
+          {safeHoldings.length > 0 ? (
+            <PDFHoldingsTable holdings={safeHoldings} />
           ) : (
             <View style={{
               marginVertical: 40,
@@ -99,7 +117,7 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
             </View>
           )}
 
-          {(statementData.capitalGains?.shortTerm?.length || statementData.capitalGains?.longTerm?.length) && (
+          {hasCapitalGains && (
             <PDFCapitalGainsSection capitalGains={statementData.capitalGains} />
           )}
 
@@ -112,6 +130,7 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
       </Document>
     );
   } catch (renderError) {
+    console.error('PDF rendering error:', renderError);
     return (
       <Document>
         <Page size="A4" style={styles.page}>

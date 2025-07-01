@@ -9,7 +9,10 @@ interface PDFHoldingsTableProps {
 }
 
 export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) => {
-  if (!holdings || holdings.length === 0) {
+  // Ensure holdings is a valid array
+  const validHoldings = Array.isArray(holdings) ? holdings : [];
+  
+  if (validHoldings.length === 0) {
     return (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Portfolio Holdings Breakdown</Text>
@@ -20,8 +23,8 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
     );
   }
 
-  const totalPortfolioValue = holdings.reduce((sum, h) => sum + h.marketValue, 0);
-  const largestHoldingValue = Math.max(...holdings.map(h => h.marketValue));
+  const totalPortfolioValue = validHoldings.reduce((sum, h) => sum + (h.marketValue || 0), 0);
+  const largestHoldingValue = Math.max(...validHoldings.map(h => h.marketValue || 0));
 
   return (
     <View style={styles.section}>
@@ -37,23 +40,23 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>% Portfolio</Text>
         </View>
 
-        {holdings.map((holding, index) => {
+        {validHoldings.map((holding, index) => {
           const isAlternate = index % 2 === 1;
-          const isLargest = holding.marketValue === largestHoldingValue;
-          const portfolioPercent = (holding.marketValue / totalPortfolioValue) * 100;
+          const isLargest = (holding.marketValue || 0) === largestHoldingValue;
+          const portfolioPercent = totalPortfolioValue > 0 ? ((holding.marketValue || 0) / totalPortfolioValue) * 100 : 0;
           
           const rowStyle = isLargest ? styles.tableRowHighlight : 
                           isAlternate ? styles.tableRowAlternate : styles.tableRow;
           
           return (
-            <View key={index} style={rowStyle}>
+            <View key={`holding-${index}`} style={rowStyle}>
               <View style={{ flex: 3, paddingHorizontal: 15 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   {isLargest && (
                     <Text style={{ marginRight: 6, color: '#FFB800', fontSize: 12 }}>★</Text>
                   )}
                   <Text style={styles.tableCellBold}>
-                    {holding.schemeName}
+                    {holding.schemeName || 'N/A'}
                     {holding.isELSS && ' (ELSS)'}
                     {holding.isLiquid && ' (Liquid)'}
                   </Text>
@@ -68,11 +71,11 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
                   </Text>
                 )}
               </View>
-              <Text style={[styles.tableCell, { flex: 1 }]}>{holding.units.toFixed(3)}</Text>
-              <Text style={[styles.tableCell, { flex: 1 }]}>₹{holding.currentNav.toFixed(2)}</Text>
-              <Text style={[styles.tableCellBold, { flex: 1 }]}>₹{holding.marketValue.toLocaleString('en-IN')}</Text>
-              <Text style={[holding.pnl >= 0 ? styles.tableCellGreen : styles.tableCellRed, { flex: 1 }]}>
-                {holding.pnl >= 0 ? '+' : ''}{holding.pnlPercentage.toFixed(1)}%
+              <Text style={[styles.tableCell, { flex: 1 }]}>{(holding.units || 0).toFixed(3)}</Text>
+              <Text style={[styles.tableCell, { flex: 1 }]}>₹{(holding.currentNav || 0).toFixed(2)}</Text>
+              <Text style={[styles.tableCellBold, { flex: 1 }]}>₹{(holding.marketValue || 0).toLocaleString('en-IN')}</Text>
+              <Text style={[(holding.pnl || 0) >= 0 ? styles.tableCellGreen : styles.tableCellRed, { flex: 1 }]}>
+                {(holding.pnl || 0) >= 0 ? '+' : ''}{(holding.pnlPercentage || 0).toFixed(1)}%
               </Text>
               <Text style={[styles.tableCellBold, { flex: 1, color: isLargest ? '#FFB800' : '#1A1F36' }]}>
                 {portfolioPercent.toFixed(1)}%
@@ -90,7 +93,7 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
       <View style={styles.summaryGrid}>
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>Total Holdings</Text>
-          <Text style={styles.summaryValue}>{holdings.length} Funds</Text>
+          <Text style={styles.summaryValue}>{validHoldings.length} Funds</Text>
           <Text style={styles.summarySubtext}>Well Diversified Portfolio</Text>
         </View>
         <View style={styles.summaryCard}>
@@ -99,20 +102,23 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
             ₹{largestHoldingValue.toLocaleString('en-IN')}
           </Text>
           <Text style={styles.summarySubtext}>
-            {((largestHoldingValue / totalPortfolioValue) * 100).toFixed(1)}% of total portfolio
+            {totalPortfolioValue > 0 ? ((largestHoldingValue / totalPortfolioValue) * 100).toFixed(1) : '0'}% of total portfolio
           </Text>
         </View>
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>ELSS Holdings</Text>
           <Text style={styles.summaryValue}>
-            {holdings.filter(h => h.isELSS).length} Funds
+            {validHoldings.filter(h => h.isELSS).length} Funds
           </Text>
           <Text style={styles.summarySubtext}>Tax Saving Investments</Text>
         </View>
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>Average Expense Ratio</Text>
           <Text style={styles.summaryValue}>
-            {(holdings.reduce((sum, h) => sum + (h.expenseRatio || 0), 0) / holdings.length).toFixed(2)}%
+            {validHoldings.length > 0 ? 
+              (validHoldings.reduce((sum, h) => sum + (h.expenseRatio || 0), 0) / validHoldings.length).toFixed(2) : 
+              '0.00'
+            }%
           </Text>
           <Text style={styles.summarySubtext}>Cost Efficiency</Text>
         </View>
