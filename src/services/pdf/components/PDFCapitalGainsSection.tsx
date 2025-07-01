@@ -79,7 +79,7 @@ export const PDFCapitalGainsSection: React.FC<PDFCapitalGainsSectionProps> = ({ 
       {capitalGains.longTerm.length > 0 && (
         <View style={[styles.tableContainer, { marginTop: 30 }]}>
           <Text style={[styles.sectionTitle, { fontSize: 16, marginBottom: 15 }]}>
-            Long Term Capital Gains (Holding Period > 12 months)
+            Long Term Capital Gains (Holding Period {'>'} 12 months)
           </Text>
           <View style={styles.tableHeader}>
             <Text style={[styles.tableHeaderCell, { flex: 2 }]}>Scheme Name</Text>
