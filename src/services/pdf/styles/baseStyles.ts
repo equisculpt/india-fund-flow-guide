@@ -7,7 +7,7 @@ export const baseStyles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 20,
     fontFamily: 'Helvetica',
-    fontSize: 10,
+    fontSize: 11,
     position: 'relative',
   },
   
@@ -22,34 +22,55 @@ export const baseStyles = StyleSheet.create({
     color: '#00B47B',
   },
   
-  // Typography
+  // Typography - Enhanced
   heading1: {
-    fontSize: 24,
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#1A1F36',
+    marginBottom: 20,
+  },
+  heading2: {
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#1A1F36',
     marginBottom: 15,
   },
-  heading2: {
-    fontSize: 18,
+  heading3: {
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#1A1F36',
     marginBottom: 12,
   },
-  heading3: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#1A1F36',
-    marginBottom: 8,
-  },
   
-  // Spacing
+  // Enhanced Spacing
   sectionSpacing: {
-    marginBottom: 20,
+    marginBottom: 35,
   },
   
-  // Currency
-  rupeeSymbol: {
-    fontSize: 10,
+  // Currency - Fixed to use proper Rupee symbol
+  rupeeText: {
+    fontSize: 11,
     color: '#1A1F36',
+  },
+  rupeeSymbol: {
+    fontSize: 11,
+    color: '#1A1F36',
+  },
+  
+  // Watermark
+  watermark: {
+    position: 'absolute',
+    top: 200,
+    left: 100,
+    right: 100,
+    bottom: 200,
+    opacity: 0.08,
+    transform: 'rotate(-45deg)',
+    fontSize: 48,
+    color: '#2E7DFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    alignSelf: 'center',
+    zIndex: -1,
   },
 });

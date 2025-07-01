@@ -2,78 +2,76 @@
 import { StyleSheet } from '@react-pdf/renderer';
 
 export const footerStyles = StyleSheet.create({
-  // Disclaimer - Enhanced
+  // Disclaimer - Enhanced but Single Instance
   disclaimer: {
-    marginTop: 30,
-    padding: 18,
+    marginTop: 35,
+    padding: 22,
     backgroundColor: '#FEF2F2',
-    borderRadius: 12,
-    borderWidth: 2,
+    borderRadius: 15,
+    borderWidth: 3,
     borderColor: '#FECACA',
-    borderLeftWidth: 5,
+    borderLeftWidth: 6,
     borderLeftColor: '#EF4444',
   },
   disclaimerTitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#DC2626',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   disclaimerText: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#7F1D1D',
     lineHeight: 1.5,
   },
   
-  // Footer - Enhanced and Fixed (Single Instance)
+  // Footer - Single Instance Only, Enhanced Design
   footer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
+    marginTop: 25,
     backgroundColor: '#F8FAFF',
-    padding: 18,
-    borderRadius: 12,
-    borderTopWidth: 3,
+    padding: 22,
+    borderRadius: 15,
+    borderTopWidth: 4,
     borderTopColor: '#2E7DFF',
   },
   footerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   footerLeft: {
     flexDirection: 'column',
     flex: 1,
   },
   footerBranding: {
-    marginBottom: 5,
+    marginBottom: 8,
   },
   footerCompany: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#1A1F36',
-    marginBottom: 3,
+    marginBottom: 4,
   },
   footerTrademark: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#6B7280',
     fontStyle: 'italic',
   },
   footerContact: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#6B7280',
+    marginBottom: 3,
   },
   footerRight: {
     alignItems: 'flex-end',
   },
   footerGenerated: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#6B7280',
-    marginBottom: 4,
+    marginBottom: 5,
   },
-  footerPage: {
-    fontSize: 10,
+  footerConfidential: {
+    fontSize: 11,
     color: '#2E7DFF',
     fontWeight: 'bold',
   },

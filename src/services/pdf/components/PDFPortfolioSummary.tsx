@@ -15,25 +15,31 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
     <View style={styles.glanceGrid}>
       <View style={styles.glanceCard}>
         <Text style={styles.glanceLabel}>Total Invested</Text>
-        <Text style={styles.glanceValue}>₹{portfolio.totalInvested.toLocaleString()}</Text>
+        <Text style={styles.glanceValue}>₹{portfolio.totalInvested.toLocaleString('en-IN')}</Text>
         <Text style={styles.glanceSubtext}>Principal Amount</Text>
       </View>
       
       <View style={styles.glanceCard}>
         <Text style={styles.glanceLabel}>Current Value</Text>
-        <Text style={styles.glanceValue}>₹{portfolio.currentValue.toLocaleString()}</Text>
+        <Text style={styles.glanceValue}>₹{portfolio.currentValue.toLocaleString('en-IN')}</Text>
         <Text style={styles.glanceSubtext}>Market Value</Text>
       </View>
       
       <View style={styles.glanceCard}>
         <Text style={styles.glanceLabel}>Total Returns</Text>
-        <Text style={styles.glanceValue}>₹{portfolio.totalReturns.toLocaleString()}</Text>
-        <Text style={styles.glanceSubtext}>{portfolio.returnsPercentage.toFixed(1)}% Gain</Text>
+        <Text style={[styles.glanceValue, { color: portfolio.totalReturns >= 0 ? '#00B47B' : '#EF4444' }]}>
+          ₹{portfolio.totalReturns.toLocaleString('en-IN')}
+        </Text>
+        <Text style={styles.glanceSubtext}>
+          {portfolio.totalReturns >= 0 ? '+' : ''}{portfolio.returnsPercentage.toFixed(1)}% Gain
+        </Text>
       </View>
       
       <View style={styles.glanceCard}>
         <Text style={styles.glanceLabel}>XIRR</Text>
-        <Text style={styles.glanceValue}>{portfolio.xirr.toFixed(2)}%</Text>
+        <Text style={[styles.glanceValue, { color: '#2E7DFF' }]}>
+          {portfolio.xirr.toFixed(2)}%
+        </Text>
         <Text style={styles.glanceSubtext}>Annualized Return</Text>
       </View>
     </View>
