@@ -23,7 +23,7 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
     } else if (xirr > 12) {
       return {
         title: "✅ Strong Portfolio Performance",
-        insight: `Your ${xirr.toFixed(1)}% XIRR shows good investment discipline and fund selection across your ${portfolio.totalInvested.toLocaleString()} investment.`,
+        insight: `Your ${xirr.toFixed(1)}% XIRR shows good investment discipline and fund selection across your ₹${portfolio.totalInvested.toLocaleString()} investment.`,
         recommendation: "Explore adding international diversification or increasing allocation to small-cap funds for potential alpha generation.",
         highlight: `Your returns are ${(xirr - 10).toFixed(1)}% above market average!`
       };
@@ -43,13 +43,13 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
     <View style={styles.aiInsight}>
       <View style={styles.aiInsightHeader}>
         <View style={styles.aiInsightIcon}>
-          <Text style={{ fontSize: 14, color: 'white' }}>🤖</Text>
+          <Text style={{ fontSize: 16, color: 'white' }}>🤖</Text>
         </View>
         <Text style={styles.aiInsightTitle}>AI-Powered Portfolio Analysis</Text>
       </View>
       
       <View style={styles.aiInsightContent}>
-        <Text style={[styles.aiInsightText, { fontWeight: 'bold', marginBottom: 12 }]}>
+        <Text style={[styles.aiInsightText, { fontWeight: 'bold', marginBottom: 15 }]}>
           {insight.title}
         </Text>
         
@@ -57,17 +57,17 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
           {insight.insight}
         </Text>
         
-        <Text style={[styles.aiInsightText, { marginTop: 10 }]}>
+        <Text style={[styles.aiInsightText, { marginTop: 12 }]}>
           <Text style={{ fontWeight: 'bold' }}>💡 Recommendation: </Text>
           {insight.recommendation}
         </Text>
         
         <View style={{ 
           backgroundColor: '#F0FDF4', 
-          padding: 10, 
-          borderRadius: 6, 
-          marginTop: 12,
-          borderLeftWidth: 3,
+          padding: 12, 
+          borderRadius: 8, 
+          marginTop: 15,
+          borderLeftWidth: 4,
           borderLeftColor: '#00B47B'
         }}>
           <Text style={styles.aiInsightHighlight}>

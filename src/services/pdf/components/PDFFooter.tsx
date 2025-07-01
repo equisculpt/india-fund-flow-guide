@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, Text, Image } from '@react-pdf/renderer';
+import { View, Text } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { styles } from '../styles/pdfStyles';
 
@@ -30,7 +30,7 @@ export const PDFFooter: React.FC<PDFFooterProps> = ({ generatedAt }) => (
           <Text style={styles.footerContact}>
             📧 support@sipbrewery.com | 📱 +91-9876543210 | 🌐 www.sipbrewery.com
           </Text>
-          <Text style={[styles.footerContact, { marginTop: 2 }]}>
+          <Text style={[styles.footerContact, { marginTop: 3 }]}>
             AMFI Reg: ARN-XXXXX | BSE Member ID: XXXXX
           </Text>
         </View>

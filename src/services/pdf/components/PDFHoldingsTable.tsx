@@ -27,9 +27,9 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
         
         return (
           <View key={index} style={isAlternate ? styles.tableRowAlternate : styles.tableRow}>
-            <View style={{ flex: 3, paddingHorizontal: 8 }}>
+            <View style={{ flex: 3, paddingHorizontal: 10 }}>
               <Text style={styles.tableCellBold}>{holding.schemeName}</Text>
-              <Text style={[styles.tableCell, { fontSize: 9, color: '#6B7280', marginTop: 2 }]}>
+              <Text style={[styles.tableCell, { fontSize: 9, color: '#6B7280', marginTop: 3 }]}>
                 {holding.schemeName.includes('Direct') ? '🔹 Direct Plan' : '🔸 Regular Plan'} • 
                 {holding.schemeName.includes('Growth') ? ' Growth Option' : ' Dividend Option'}
               </Text>
