@@ -32,12 +32,12 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
         <Text style={styles.glanceLabel}>Total Returns</Text>
         <Text style={[
           styles.glanceValue, 
-          { color: portfolio.totalGains >= 0 ? '#00B47B' : '#EF4444' }
+          { color: portfolio.totalReturns >= 0 ? '#00B47B' : '#EF4444' }
         ]}>
-          {portfolio.totalGains >= 0 ? '+' : ''}₹{portfolio.totalGains.toLocaleString('en-IN')}
+          {portfolio.totalReturns >= 0 ? '+' : ''}₹{portfolio.totalReturns.toLocaleString('en-IN')}
         </Text>
         <Text style={styles.glanceSubtext}>
-          {portfolio.totalGainsPercentage >= 0 ? '+' : ''}{portfolio.totalGainsPercentage.toFixed(2)}%
+          {portfolio.returnsPercentage >= 0 ? '+' : ''}{portfolio.returnsPercentage.toFixed(2)}%
         </Text>
       </View>
       <View style={styles.glanceCard}>
@@ -65,15 +65,17 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
         <View style={styles.goalProgressContent}>
           <View style={styles.goalProgressItem}>
             <Text style={styles.goalProgressLabel}>Target Amount</Text>
-            <Text style={styles.goalProgressValue}>₹{portfolio.goalTargetAmount?.toLocaleString('en-IN') || 'Not Set'}</Text>
+            <Text style={styles.goalProgressValue}>₹{portfolio.goalTarget?.toLocaleString('en-IN') || 'Not Set'}</Text>
           </View>
           <View style={styles.goalProgressItem}>
-            <Text style={styles.goalProgressLabel}>Time to Goal</Text>
-            <Text style={styles.goalProgressValue}>{portfolio.timeToGoal || 'Calculating'}</Text>
+            <Text style={styles.goalProgressLabel}>Goal Status</Text>
+            <Text style={styles.goalProgressValue}>In Progress</Text>
           </View>
           <View style={styles.goalProgressItem}>
-            <Text style={styles.goalProgressLabel}>Completion</Text>
-            <Text style={styles.goalProgressValue}>{portfolio.goalCompletionPercentage || 0}%</Text>
+            <Text style={styles.goalProgressLabel}>Achievement</Text>
+            <Text style={styles.goalProgressValue}>
+              {portfolio.goalAchieved ? `₹${portfolio.goalAchieved.toLocaleString('en-IN')}` : '₹0'}
+            </Text>
           </View>
         </View>
       </View>
