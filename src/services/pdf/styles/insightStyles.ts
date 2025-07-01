@@ -56,6 +56,7 @@ export const insightStyles = StyleSheet.create({
     color: '#065F46',
     fontWeight: 'bold',
     lineHeight: 1.5,
+    flex: 1,
   },
   percentileBadge: {
     backgroundColor: '#EBF8FF',
@@ -70,5 +71,18 @@ export const insightStyles = StyleSheet.create({
     color: '#1E40AF',
     fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 8,
+  },
+  progressBarContainer: {
+    height: 8,
+    borderRadius: 5,
+    backgroundColor: '#E5E7EB',
+    overflow: 'hidden',
+    width: '100%',
+  },
+  progressBarFill: {
+    height: 8,
+    backgroundColor: '#00B47B',
+    borderRadius: 5,
   },
 });

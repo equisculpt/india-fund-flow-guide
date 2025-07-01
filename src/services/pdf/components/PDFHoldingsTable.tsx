@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, Text } from '@react-pdf/renderer';
+import { View, Text, Svg, Path } from '@react-pdf/renderer';
 import { styles } from '../styles/pdfStyles';
 import { StatementData } from '../../statement/types';
 
@@ -9,6 +9,17 @@ interface PDFHoldingsTableProps {
 }
 
 export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) => {
+  if (!holdings || holdings.length === 0) {
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Portfolio Holdings Breakdown</Text>
+        <Text style={{ textAlign: 'center', margin: 30, color: '#6B7280' }}>
+          No holdings data available.
+        </Text>
+      </View>
+    );
+  }
+
   const totalPortfolioValue = holdings.reduce((sum, h) => sum + h.marketValue, 0);
   const largestHoldingValue = Math.max(...holdings.map(h => h.marketValue));
 
@@ -37,11 +48,21 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
           return (
             <View key={index} style={rowStyle}>
               <View style={{ flex: 3, paddingHorizontal: 15 }}>
-                <Text style={styles.tableCellBold}>
-                  {isLargest && '⭐ '}{holding.schemeName}
-                  {holding.isELSS && ' 🛡️'}
-                  {holding.isLiquid && ' 💧'}
-                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {isLargest && (
+                    <Svg width={12} height={12} style={{ marginRight: 6 }}>
+                      <Path 
+                        d="M6 0L7.755 3.85l4.245.617-3.06 2.983.722 4.21L6 9.75 3.338 11.66l.722-4.21-3.06-2.983 4.245-.617z" 
+                        fill="#FFB800"
+                      />
+                    </Svg>
+                  )}
+                  <Text style={styles.tableCellBold}>
+                    {holding.schemeName}
+                    {holding.isELSS && ' 🛡️'}
+                    {holding.isLiquid && ' 💧'}
+                  </Text>
+                </View>
                 <Text style={[styles.tableCell, { fontSize: 10, color: '#6B7280', marginTop: 3 }]}>
                   {holding.amcName || 'AMC'} • {holding.category || 'Equity'} • 
                   {holding.expenseRatio && ` ER: ${holding.expenseRatio}%`}
@@ -65,6 +86,10 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
           );
         })}
       </View>
+
+      <Text style={{ fontSize: 9, color: '#6B7280', marginVertical: 8, textAlign: 'center' }}>
+        *Returns calculated based on current market value vs invested amount
+      </Text>
 
       {/* Holdings Summary with Enhanced Data */}
       <View style={styles.summaryGrid}>
