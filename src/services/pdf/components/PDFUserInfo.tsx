@@ -10,7 +10,7 @@ interface PDFUserInfoProps {
 
 export const PDFUserInfo: React.FC<PDFUserInfoProps> = ({ userInfo }) => (
   <View style={styles.userInfo}>
-    <Text style={styles.userInfoTitle}>👤 Investor Information</Text>
+    <Text style={styles.userInfoTitle}>Investor Information</Text>
     
     <View style={styles.userInfoGrid}>
       <View style={styles.userInfoItem}>

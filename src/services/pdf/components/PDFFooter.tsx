@@ -11,7 +11,7 @@ interface PDFFooterProps {
 export const PDFFooter: React.FC<PDFFooterProps> = ({ generatedAt }) => (
   <>
     <View style={styles.disclaimer}>
-      <Text style={styles.disclaimerTitle}>⚠️ Important Disclaimer & Risk Information</Text>
+      <Text style={styles.disclaimerTitle}>Important Disclaimer & Risk Information</Text>
       <Text style={styles.disclaimerText}>
         This statement is generated using live BSE STAR MF API data. SIP Brewery is an AMFI Registered Mutual Fund Distributor (ARN-XXXXX). 
         All transactions are executed via BSE STAR MF platform. Mutual fund investments are subject to market risks. 
@@ -28,7 +28,7 @@ export const PDFFooter: React.FC<PDFFooterProps> = ({ generatedAt }) => (
             <Text style={styles.footerTrademark}>A Trademark of Equisculpt Ventures</Text>
           </View>
           <Text style={styles.footerContact}>
-            📧 support@sipbrewery.com | 📱 +91-9876543210 | 🌐 www.sipbrewery.com
+            Email: support@sipbrewery.com | Mobile: +91-9876543210 | Web: www.sipbrewery.com
           </Text>
           <Text style={[styles.footerContact, { marginTop: 3 }]}>
             AMFI Reg: ARN-XXXXX | BSE Member ID: XXXXX

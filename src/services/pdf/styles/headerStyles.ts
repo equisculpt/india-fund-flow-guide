@@ -7,7 +7,7 @@ export const headerStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 25,
+    marginBottom: 30,
     paddingBottom: 20,
     borderBottomWidth: 3,
     borderBottomColor: '#2E7DFF',
@@ -24,13 +24,13 @@ export const headerStyles = StyleSheet.create({
   mainLogo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   
   sipBreweryLogo: {
-    width: 45,
-    height: 45,
-    marginRight: 12,
+    width: 50,
+    height: 50,
+    marginRight: 15,
   },
   
   brandingText: {
@@ -38,14 +38,14 @@ export const headerStyles = StyleSheet.create({
   },
   
   companyName: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#1A1F36',
-    marginBottom: 3,
+    marginBottom: 4,
   },
   
   tagline: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#2E7DFF',
     fontStyle: 'italic',
     fontWeight: 'bold',
@@ -54,13 +54,13 @@ export const headerStyles = StyleSheet.create({
   trademarkSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 10,
   },
   
   trademarkText: {
-    fontSize: 9,
+    fontSize: 10,
     color: '#6B7280',
-    marginRight: 6,
+    marginRight: 8,
   },
   
   equisculptBrand: {
@@ -69,13 +69,13 @@ export const headerStyles = StyleSheet.create({
   },
   
   equisculptLogo: {
-    width: 18,
-    height: 18,
-    marginRight: 5,
+    width: 20,
+    height: 20,
+    marginRight: 6,
   },
   
   equisculptText: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#1A1F36',
     fontWeight: 'bold',
   },
@@ -86,27 +86,27 @@ export const headerStyles = StyleSheet.create({
   },
   
   generatedDate: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#1A1F36',
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: 5,
   },
   
   regulatoryInfo: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#6B7280',
   },
   
   // Statement Title
   statementTitle: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 25,
+    marginBottom: 30,
     color: '#1A1F36',
     backgroundColor: '#F5F8FF',
-    padding: 15,
-    borderRadius: 8,
+    padding: 18,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: '#2E7DFF',
   },
