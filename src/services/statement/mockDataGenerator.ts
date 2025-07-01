@@ -1,206 +1,306 @@
 
-import { format, subMonths, subYears, addDays } from 'date-fns';
-import { StatementData } from './types';
+import { StatementData, UserInfo, Portfolio, Holding, Transaction, CapitalGains, SIP, Rewards } from './types';
 
 export class MockDataGenerator {
-  static generateMockUserInfo(clientCode: string) {
+  static generateCompleteStatementData(clientCode: string): StatementData {
     return {
-      name: 'Rajesh Kumar',
-      clientCode,
-      panMasked: 'ABCDE****F',
-      email: 'rajesh.kumar@email.com',
-      mobile: '+91-98765*****',
-      sipBreweryId: 'SB' + clientCode.slice(-6)
+      userInfo: this.generateUserInfo(clientCode),
+      portfolio: this.generatePortfolio(),
+      holdings: this.generateHoldings(),
+      transactions: this.generateTransactions(),
+      capitalGains: this.generateCapitalGains(),
+      sips: this.generateSIPs(),
+      rewards: this.generateRewards()
     };
   }
 
-  static generateMockHoldings() {
+  private static generateUserInfo(clientCode: string): UserInfo {
+    const names = ['Rajesh Kumar', 'Priya Sharma', 'Amit Patel', 'Sneha Gupta', 'Vikram Singh'];
+    const randomName = names[Math.floor(Math.random() * names.length)];
+    
+    return {
+      name: randomName,
+      clientCode: clientCode,
+      panMasked: 'ABC**1234L',
+      email: `${randomName.toLowerCase().replace(' ', '.')}@email.com`,
+      mobile: '+91-98765-43210',
+      sipBreweryId: `SB-${clientCode}`,
+      isVerified: true,
+      avatarUrl: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
+      address: '123, MG Road, Bangalore, Karnataka - 560001',
+      kycStatus: 'VERIFIED',
+      role: 'USER',
+      segment: 'DIRECT'
+    };
+  }
+
+  private static generatePortfolio(): Portfolio {
+    const totalInvested = 85000;
+    const currentValue = 102450;
+    const totalReturns = currentValue - totalInvested;
+    
+    return {
+      totalInvested,
+      currentValue,
+      totalReturns,
+      returnsPercentage: (totalReturns / totalInvested) * 100,
+      xirr: 14.5,
+      activeSIPs: 4,
+      completedSIPs: 2,
+      goalName: 'Wealth Creation Goal',
+      goalTarget: 1000000,
+      goalAchieved: currentValue,
+      lastUpdated: new Date().toISOString()
+    };
+  }
+
+  private static generateHoldings(): Holding[] {
     return [
       {
-        schemeCode: '120503',
-        schemeName: 'SBI Small Cap Fund - Direct Plan - Growth',
-        folioNumber: 'SB12345678',
-        units: 245.863,
-        averageNav: 185.45,
-        currentNav: 198.73,
-        marketValue: 48856,
-        investedValue: 45600,
-        pnl: 3256,
-        pnlPercentage: 7.14,
-        lastTransactionDate: format(subMonths(new Date(), 1), 'yyyy-MM-dd'),
-        sipStatus: 'ACTIVE' as const,
-        sipAmount: 2000,
-        nextSIPDate: format(addDays(new Date(), 15), 'yyyy-MM-dd')
+        schemeCode: 'HDFC-SC-001',
+        schemeName: 'HDFC Small Cap Fund - Direct Growth',
+        folioNumber: 'HDG0123456',
+        units: 450.234,
+        averageNav: 89.45,
+        currentNav: 95.20,
+        marketValue: 42867,
+        investedValue: 40256,
+        pnl: 2611,
+        pnlPercentage: 6.49,
+        lastTransactionDate: '2024-06-15',
+        sipStatus: 'ACTIVE',
+        sipAmount: 5000,
+        nextSIPDate: '2024-07-15',
+        category: 'Small Cap',
+        subCategory: 'Equity',
+        amcName: 'HDFC Mutual Fund',
+        isELSS: false,
+        isLiquid: false,
+        expenseRatio: 1.85
       },
       {
-        schemeCode: '120305',
-        schemeName: 'HDFC Top 100 Fund - Direct Plan - Growth',
-        folioNumber: 'HD87654321',
-        units: 156.234,
-        averageNav: 892.15,
-        currentNav: 945.67,
-        marketValue: 147789,
-        investedValue: 139400,
-        pnl: 8389,
-        pnlPercentage: 6.02,
-        lastTransactionDate: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
-        sipStatus: 'ACTIVE' as const,
+        schemeCode: 'SBI-LC-002',
+        schemeName: 'SBI Large Cap Fund - Direct Growth',
+        folioNumber: 'SBI9876543',
+        units: 320.567,
+        averageNav: 67.80,
+        currentNav: 71.15,
+        marketValue: 22798,
+        investedValue: 21734,
+        pnl: 1064,
+        pnlPercentage: 4.90,
+        lastTransactionDate: '2024-06-15',
+        sipStatus: 'ACTIVE',
         sipAmount: 3000,
-        nextSIPDate: format(addDays(new Date(), 10), 'yyyy-MM-dd')
+        nextSIPDate: '2024-07-15',
+        category: 'Large Cap',
+        subCategory: 'Equity',
+        amcName: 'SBI Mutual Fund',
+        isELSS: false,
+        isLiquid: false,
+        expenseRatio: 1.25
       },
       {
-        schemeCode: '120102',
-        schemeName: 'Axis Bluechip Fund - Direct Plan - Growth',
-        folioNumber: 'AX11223344',
-        units: 89.456,
-        averageNav: 567.89,
-        currentNav: 612.45,
-        marketValue: 54789,
-        investedValue: 50800,
-        pnl: 3989,
-        pnlPercentage: 7.85,
-        lastTransactionDate: format(subMonths(new Date(), 3), 'yyyy-MM-dd'),
-        sipStatus: 'PAUSED' as const,
-        sipAmount: 1500
+        schemeCode: 'AXIS-ELSS-003',
+        schemeName: 'Axis Long Term Equity Fund - Direct Growth',
+        folioNumber: 'AXS1122334',
+        units: 280.123,
+        averageNav: 45.30,
+        currentNav: 48.90,
+        marketValue: 13698,
+        investedValue: 12686,
+        pnl: 1012,
+        pnlPercentage: 7.98,
+        lastTransactionDate: '2024-05-10',
+        sipStatus: 'ACTIVE',
+        sipAmount: 2000,
+        nextSIPDate: '2024-07-10',
+        category: 'ELSS',
+        subCategory: 'Tax Saver',
+        amcName: 'Axis Mutual Fund',
+        isELSS: true,
+        isLiquid: false,
+        lockinEndDate: '2027-05-10',
+        expenseRatio: 1.75
+      },
+      {
+        schemeCode: 'ICICI-LIQ-004',
+        schemeName: 'ICICI Prudential Liquid Fund - Direct Growth',
+        folioNumber: 'ICP5566778',
+        units: 5234.789,
+        averageNav: 4.35,
+        currentNav: 4.38,
+        marketValue: 22928,
+        investedValue: 22771,
+        pnl: 157,
+        pnlPercentage: 0.69,
+        lastTransactionDate: '2024-06-20',
+        sipStatus: 'PAUSED',
+        category: 'Liquid',
+        subCategory: 'Debt',
+        amcName: 'ICICI Prudential Mutual Fund',
+        isELSS: false,
+        isLiquid: true,
+        expenseRatio: 0.25
       }
     ];
   }
 
-  static generateMockTransactions() {
+  private static generateTransactions(): Transaction[] {
     return [
       {
-        orderNumber: 'ORD123456789',
-        transactionDate: format(subMonths(new Date(), 1), 'yyyy-MM-dd'),
-        schemeCode: '120503',
-        schemeName: 'SBI Small Cap Fund - Direct Plan - Growth',
-        transactionType: 'SIP' as const,
-        amount: 2000,
-        units: 10.067,
-        nav: 198.67,
-        folioNumber: 'SB12345678',
-        settlementDate: format(subMonths(new Date(), 1), 'yyyy-MM-dd')
+        orderNumber: 'ORD-2024-001',
+        transactionDate: '2024-06-15',
+        schemeCode: 'HDFC-SC-001',
+        schemeName: 'HDFC Small Cap Fund - Direct Growth',
+        transactionType: 'SIP',
+        amount: 5000,
+        units: 52.356,
+        nav: 95.50,
+        folioNumber: 'HDG0123456',
+        settlementDate: '2024-06-17',
+        status: 'SUCCESS',
+        paymentMode: 'Auto Debit',
+        referenceId: 'REF-HD-001'
       },
       {
-        orderNumber: 'ORD987654321',
-        transactionDate: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
-        schemeCode: '120305',
-        schemeName: 'HDFC Top 100 Fund - Direct Plan - Growth',
-        transactionType: 'SIP' as const,
+        orderNumber: 'ORD-2024-002',
+        transactionDate: '2024-06-15',
+        schemeCode: 'SBI-LC-002',
+        schemeName: 'SBI Large Cap Fund - Direct Growth',
+        transactionType: 'SIP',
         amount: 3000,
-        units: 3.173,
-        nav: 945.23,
-        folioNumber: 'HD87654321',
-        settlementDate: format(subMonths(new Date(), 2), 'yyyy-MM-dd')
-      }
-    ];
-  }
-
-  static generateMockPortfolio() {
-    return {
-      totalInvested: 235800,
-      currentValue: 251434,
-      totalReturns: 15634,
-      returnsPercentage: 6.63,
-      xirr: 14.25,
-      activeSIPs: 2,
-      completedSIPs: 0
-    };
-  }
-
-  static generateMockSIPs() {
-    return [
-      {
-        sipId: 'SIP001',
-        schemeCode: '120503',
-        schemeName: 'SBI Small Cap Fund - Direct Plan - Growth',
-        sipAmount: 2000,
-        frequency: 'Monthly',
-        startDate: format(subYears(new Date(), 1), 'yyyy-MM-dd'),
-        status: 'ACTIVE' as const,
-        nextDueDate: format(addDays(new Date(), 15), 'yyyy-MM-dd'),
-        totalInstallments: 12,
-        completedInstallments: 12,
-        totalInvested: 24000,
-        currentValue: 26500,
-        returns: 2500
+        units: 42.145,
+        nav: 71.20,
+        folioNumber: 'SBI9876543',
+        settlementDate: '2024-06-17',
+        status: 'SUCCESS',
+        paymentMode: 'UPI',
+        referenceId: 'REF-SBI-002'
       },
       {
-        sipId: 'SIP002',
-        schemeCode: '120305',
-        schemeName: 'HDFC Top 100 Fund - Direct Plan - Growth',
-        sipAmount: 3000,
-        frequency: 'Monthly',
-        startDate: format(subMonths(new Date(), 8), 'yyyy-MM-dd'),
-        status: 'ACTIVE' as const,
-        nextDueDate: format(addDays(new Date(), 10), 'yyyy-MM-dd'),
-        totalInstallments: 12,
-        completedInstallments: 8,
-        totalInvested: 24000,
-        currentValue: 25800,
-        returns: 1800
+        orderNumber: 'ORD-2024-003',
+        transactionDate: '2024-05-20',
+        schemeCode: 'ICICI-LIQ-004',
+        schemeName: 'ICICI Prudential Liquid Fund - Direct Growth',
+        transactionType: 'LUMPSUM',
+        amount: 25000,
+        units: 5712.33,
+        nav: 4.38,
+        folioNumber: 'ICP5566778',
+        settlementDate: '2024-05-20',
+        status: 'SUCCESS',
+        paymentMode: 'Net Banking',
+        referenceId: 'REF-ICP-003'
       }
     ];
   }
 
-  static generateMockCapitalGains() {
+  private static generateCapitalGains(): CapitalGains {
     return {
       shortTerm: [
         {
-          schemeName: 'HDFC Top 100 Fund-Direct Plan-Growth',
-          purchaseDate: format(subMonths(new Date(), 8), 'yyyy-MM-dd'),
-          saleDate: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
-          purchaseValue: 25000,
-          saleValue: 28500,
-          gain: 3500,
-          taxRate: 15
+          schemeName: 'ICICI Prudential Liquid Fund - Direct Growth',
+          purchaseDate: '2023-12-15',
+          saleDate: '2024-05-20',
+          purchaseValue: 15000,
+          saleValue: 15450,
+          gain: 450,
+          taxRate: 30,
+          gainType: 'ShortTerm'
         }
       ],
       longTerm: [
         {
-          schemeName: 'Axis Bluechip Fund-Direct Plan-Growth',
-          purchaseDate: format(subYears(new Date(), 2), 'yyyy-MM-dd'),
-          saleDate: format(subMonths(new Date(), 3), 'yyyy-MM-dd'),
-          purchaseValue: 50000,
-          saleValue: 68000,
-          gain: 18000,
-          taxRate: 10
+          schemeName: 'SBI Large Cap Fund - Direct Growth',
+          purchaseDate: '2022-01-15',
+          saleDate: '2024-03-20',
+          purchaseValue: 20000,
+          saleValue: 24500,
+          gain: 4500,
+          taxRate: 10,
+          gainType: 'LongTerm'
         }
       ]
     };
   }
 
-  static generateMockRewards() {
+  private static generateSIPs(): SIP[] {
+    return [
+      {
+        sipId: 'SIP-001',
+        schemeCode: 'HDFC-SC-001',
+        schemeName: 'HDFC Small Cap Fund - Direct Growth',
+        sipAmount: 5000,
+        frequency: 'MONTHLY',
+        startDate: '2023-01-15',
+        status: 'ACTIVE',
+        nextDueDate: '2024-07-15',
+        totalInstallments: 60,
+        completedInstallments: 18,
+        totalInvested: 90000,
+        currentValue: 105450,
+        returns: 15450,
+        amcName: 'HDFC Mutual Fund',
+        endDate: '2028-01-15',
+        isTaxSaver: false,
+        goalName: 'Wealth Creation Goal',
+        sipType: 'BSE',
+        mandateStatus: 'ACTIVE'
+      },
+      {
+        sipId: 'SIP-002',
+        schemeCode: 'AXIS-ELSS-003',
+        schemeName: 'Axis Long Term Equity Fund - Direct Growth',
+        sipAmount: 2000,
+        frequency: 'MONTHLY',
+        startDate: '2023-04-10',
+        status: 'ACTIVE',
+        nextDueDate: '2024-07-10',
+        totalInstallments: 36,
+        completedInstallments: 15,
+        totalInvested: 30000,
+        currentValue: 34200,
+        returns: 4200,
+        amcName: 'Axis Mutual Fund',
+        endDate: '2026-04-10',
+        isTaxSaver: true,
+        goalName: 'Tax Saving Goal',
+        sipType: 'BSE',
+        mandateStatus: 'ACTIVE'
+      }
+    ];
+  }
+
+  private static generateRewards(): Rewards {
     return {
-      totalEarned: 2850,
+      totalEarned: 2450,
       referralBonus: 1200,
-      loyaltyPoints: 450,
-      cashback: 1200,
+      loyaltyPoints: 850,
+      cashback: 400,
       recentTransactions: [
         {
-          date: format(subMonths(new Date(), 1), 'yyyy-MM-dd'),
-          type: 'SIP Streak Bonus',
-          amount: 250,
-          description: '12-month SIP completion bonus'
+          date: '2024-06-15',
+          type: 'Referral Bonus',
+          amount: 500,
+          description: 'Friend joined via your referral link'
         },
         {
-          date: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
-          type: 'Referral Reward',
-          amount: 500,
-          description: 'Friend joined via your referral'
+          date: '2024-06-01',
+          type: 'Loyalty Points',
+          amount: 150,
+          description: 'Monthly investment milestone achieved'
+        },
+        {
+          date: '2024-05-20',
+          type: 'Cashback',
+          amount: 100,
+          description: 'First-time lumpsum investment bonus'
         }
-      ]
-    };
-  }
-
-  static generateCompleteStatementData(clientCode: string): StatementData {
-    return {
-      userInfo: this.generateMockUserInfo(clientCode),
-      portfolio: this.generateMockPortfolio(),
-      holdings: this.generateMockHoldings(),
-      transactions: this.generateMockTransactions(),
-      capitalGains: this.generateMockCapitalGains(),
-      sips: this.generateMockSIPs(),
-      rewards: this.generateMockRewards()
+      ],
+      pendingPayouts: 320,
+      lastCreditedDate: '2024-06-15',
+      tier: 'Gold'
     };
   }
 }

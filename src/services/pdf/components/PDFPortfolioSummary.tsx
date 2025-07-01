@@ -10,7 +10,14 @@ interface PDFPortfolioSummaryProps {
 
 export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfolio }) => (
   <View style={styles.portfolioGlance}>
-    <Text style={styles.glanceTitle}>Portfolio at a Glance</Text>
+    <Text style={styles.glanceTitle}>
+      Portfolio at a Glance
+      {portfolio.goalName && (
+        <Text style={[styles.glanceTitle, { fontSize: 14, color: '#2E7DFF' }]}>
+          {' '}• {portfolio.goalName}
+        </Text>
+      )}
+    </Text>
     
     <View style={styles.glanceGrid}>
       <View style={styles.glanceCard}>
@@ -44,6 +51,35 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
       </View>
     </View>
 
+    {/* Goal Progress Section */}
+    {portfolio.goalTarget && portfolio.goalAchieved && (
+      <View style={styles.goalProgress}>
+        <Text style={styles.goalProgressTitle}>Goal Progress Tracker</Text>
+        <View style={styles.goalProgressContent}>
+          <View style={styles.goalProgressItem}>
+            <Text style={styles.goalProgressLabel}>Target Amount</Text>
+            <Text style={styles.goalProgressValue}>₹{portfolio.goalTarget.toLocaleString('en-IN')}</Text>
+          </View>
+          <View style={styles.goalProgressItem}>
+            <Text style={styles.goalProgressLabel}>Achieved</Text>
+            <Text style={styles.goalProgressValue}>₹{portfolio.goalAchieved.toLocaleString('en-IN')}</Text>
+          </View>
+          <View style={styles.goalProgressItem}>
+            <Text style={styles.goalProgressLabel}>Progress</Text>
+            <Text style={[styles.goalProgressValue, { color: '#00B47B' }]}>
+              {((portfolio.goalAchieved / portfolio.goalTarget) * 100).toFixed(1)}%
+            </Text>
+          </View>
+          <View style={styles.goalProgressItem}>
+            <Text style={styles.goalProgressLabel}>Remaining</Text>
+            <Text style={styles.goalProgressValue}>
+              ₹{(portfolio.goalTarget - portfolio.goalAchieved).toLocaleString('en-IN')}
+            </Text>
+          </View>
+        </View>
+      </View>
+    )}
+
     <View style={styles.performanceSection}>
       <Text style={styles.performanceTitle}>Performance Highlights</Text>
       <View style={styles.performanceGrid}>
@@ -52,16 +88,20 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
           <Text style={styles.performanceValue}>{portfolio.activeSIPs}</Text>
         </View>
         <View style={styles.performanceItem}>
-          <Text style={styles.performanceLabel}>Investment Journey</Text>
-          <Text style={styles.performanceValue}>2+ Years</Text>
+          <Text style={styles.performanceLabel}>Completed SIPs</Text>
+          <Text style={styles.performanceValue}>{portfolio.completedSIPs}</Text>
         </View>
         <View style={styles.performanceItem}>
           <Text style={styles.performanceLabel}>Portfolio Health</Text>
-          <Text style={styles.performanceValue}>Excellent</Text>
+          <Text style={[styles.performanceValue, { 
+            color: portfolio.xirr > 15 ? '#00B47B' : portfolio.xirr > 12 ? '#FFB800' : '#EF4444' 
+          }]}>
+            {portfolio.xirr > 15 ? 'Excellent' : portfolio.xirr > 12 ? 'Good' : 'Average'}
+          </Text>
         </View>
         <View style={styles.performanceItem}>
-          <Text style={styles.performanceLabel}>Goal Progress</Text>
-          <Text style={styles.performanceValue}>78%</Text>
+          <Text style={styles.performanceLabel}>Investment Journey</Text>
+          <Text style={styles.performanceValue}>2+ Years</Text>
         </View>
       </View>
     </View>

@@ -10,7 +10,12 @@ interface PDFUserInfoProps {
 
 export const PDFUserInfo: React.FC<PDFUserInfoProps> = ({ userInfo }) => (
   <View style={styles.userInfo}>
-    <Text style={styles.userInfoTitle}>Investor Information</Text>
+    <Text style={styles.userInfoTitle}>
+      Investor Information
+      {userInfo.isVerified && (
+        <Text style={[styles.userInfoTitle, { color: '#00B47B', fontSize: 12 }]}> ✓ VERIFIED</Text>
+      )}
+    </Text>
     
     <View style={styles.userInfoGrid}>
       <View style={styles.userInfoItem}>
@@ -37,6 +42,33 @@ export const PDFUserInfo: React.FC<PDFUserInfoProps> = ({ userInfo }) => (
         <Text style={styles.userInfoLabel}>PAN Number</Text>
         <Text style={styles.userInfoValue}>{userInfo.panMasked}</Text>
       </View>
+      
+      <View style={styles.userInfoItem}>
+        <Text style={styles.userInfoLabel}>KYC Status</Text>
+        <Text style={[styles.userInfoValue, { 
+          color: userInfo.kycStatus === 'VERIFIED' ? '#00B47B' : 
+                userInfo.kycStatus === 'PENDING' ? '#FFB800' : '#EF4444' 
+        }]}>
+          {userInfo.kycStatus || 'VERIFIED'}
+        </Text>
+      </View>
+
+      {userInfo.segment && (
+        <View style={styles.userInfoItem}>
+          <Text style={styles.userInfoLabel}>Investment Plan</Text>
+          <Text style={styles.userInfoValue}>
+            {userInfo.segment === 'DIRECT' ? 'Direct Plan' : 
+             userInfo.segment === 'REGULAR' ? 'Regular Plan' : 'IFA Client'}
+          </Text>
+        </View>
+      )}
+
+      {userInfo.address && (
+        <View style={[styles.userInfoItem, { flex: 2 }]}>
+          <Text style={styles.userInfoLabel}>Registered Address</Text>
+          <Text style={styles.userInfoValue}>{userInfo.address}</Text>
+        </View>
+      )}
       
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>Statement Period</Text>

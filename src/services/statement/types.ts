@@ -6,6 +6,12 @@ export interface UserInfo {
   email: string;
   mobile: string;
   sipBreweryId: string;
+  isVerified?: boolean;
+  avatarUrl?: string;
+  address?: string;
+  kycStatus?: 'VERIFIED' | 'PENDING' | 'FAILED';
+  role?: 'USER' | 'AGENT' | 'ADMIN';
+  segment?: 'DIRECT' | 'REGULAR' | 'IFA_CLIENT';
 }
 
 export interface Portfolio {
@@ -16,6 +22,10 @@ export interface Portfolio {
   xirr: number;
   activeSIPs: number;
   completedSIPs: number;
+  goalName?: string;
+  goalTarget?: number;
+  goalAchieved?: number;
+  lastUpdated?: string;
 }
 
 export interface Holding {
@@ -33,6 +43,13 @@ export interface Holding {
   sipStatus: 'ACTIVE' | 'PAUSED' | 'STOPPED';
   sipAmount?: number;
   nextSIPDate?: string;
+  category?: string;
+  subCategory?: string;
+  amcName?: string;
+  isELSS?: boolean;
+  isLiquid?: boolean;
+  lockinEndDate?: string;
+  expenseRatio?: number;
 }
 
 export interface Transaction {
@@ -46,6 +63,9 @@ export interface Transaction {
   nav: number;
   folioNumber: string;
   settlementDate: string;
+  status?: 'SUCCESS' | 'FAILED' | 'PENDING';
+  paymentMode?: string;
+  referenceId?: string;
 }
 
 export interface CapitalGain {
@@ -56,6 +76,7 @@ export interface CapitalGain {
   saleValue: number;
   gain: number;
   taxRate: number;
+  gainType?: 'ShortTerm' | 'LongTerm';
 }
 
 export interface CapitalGains {
@@ -77,6 +98,12 @@ export interface SIP {
   totalInvested: number;
   currentValue: number;
   returns: number;
+  amcName?: string;
+  endDate?: string;
+  isTaxSaver?: boolean;
+  goalName?: string;
+  sipType?: 'ONLINE' | 'OFFLINE' | 'ECS' | 'BSE';
+  mandateStatus?: string;
 }
 
 export interface RewardTransaction {
@@ -92,6 +119,9 @@ export interface Rewards {
   loyaltyPoints: number;
   cashback: number;
   recentTransactions: RewardTransaction[];
+  pendingPayouts?: number;
+  lastCreditedDate?: string;
+  tier?: string;
 }
 
 export interface StatementData {

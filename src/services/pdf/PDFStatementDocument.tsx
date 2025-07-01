@@ -9,6 +9,8 @@ import { PDFUserInfo } from './components/PDFUserInfo';
 import { PDFPortfolioSummary } from './components/PDFPortfolioSummary';
 import { AIInsightSection } from './components/AIInsightSection';
 import { PDFHoldingsTable } from './components/PDFHoldingsTable';
+import { PDFCapitalGainsSection } from './components/PDFCapitalGainsSection';
+import { PDFRewardsSection } from './components/PDFRewardsSection';
 import { PDFFooter } from './components/PDFFooter';
 
 interface PDFStatementDocumentProps {
@@ -22,12 +24,16 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
   statementData,
   generatedAt,
 }) => {
-  console.log('Creating PDFStatementDocument with props:', {
+  console.log('Creating Enhanced PDFStatementDocument with props:', {
     statementType,
     generatedAt: generatedAt.toISOString(),
     hasUserInfo: !!statementData.userInfo,
     hasPortfolio: !!statementData.portfolio,
-    holdingsCount: statementData.holdings?.length || 0
+    holdingsCount: statementData.holdings?.length || 0,
+    hasCapitalGains: !!(statementData.capitalGains?.shortTerm?.length || statementData.capitalGains?.longTerm?.length),
+    hasRewards: !!statementData.rewards,
+    userSegment: statementData.userInfo?.segment,
+    goalName: statementData.portfolio?.goalName
   });
 
   // Validate required data before rendering
@@ -73,12 +79,20 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
             <PDFHoldingsTable holdings={statementData.holdings} />
           )}
 
+          {(statementData.capitalGains?.shortTerm?.length || statementData.capitalGains?.longTerm?.length) && (
+            <PDFCapitalGainsSection capitalGains={statementData.capitalGains} />
+          )}
+
+          {statementData.rewards && (
+            <PDFRewardsSection rewards={statementData.rewards} />
+          )}
+
           <PDFFooter generatedAt={generatedAt} />
         </Page>
       </Document>
     );
   } catch (renderError) {
-    console.error('PDF Document render error:', renderError);
+    console.error('Enhanced PDF Document render error:', renderError);
     return (
       <Document>
         <Page size="A4" style={styles.page}>
@@ -92,9 +106,15 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
 
 // Export function that creates the Document element directly
 export const createPDFDocument = (props: PDFStatementDocumentProps) => {
-  console.log('createPDFDocument factory called with:', {
+  console.log('Enhanced createPDFDocument factory called with:', {
     statementType: props.statementType,
-    hasData: !!(props.statementData?.userInfo && props.statementData?.portfolio)
+    hasData: !!(props.statementData?.userInfo && props.statementData?.portfolio),
+    enhancedFeatures: {
+      goalTracking: !!props.statementData?.portfolio?.goalName,
+      verifiedUser: !!props.statementData?.userInfo?.isVerified,
+      rewardsTier: props.statementData?.rewards?.tier,
+      capitalGains: !!(props.statementData?.capitalGains?.shortTerm?.length || props.statementData?.capitalGains?.longTerm?.length)
+    }
   });
   
   return <PDFStatementDocument {...props} />;

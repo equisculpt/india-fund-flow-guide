@@ -18,18 +18,17 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
       
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
-          <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Fund Name & Category</Text>
+          <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Fund Details</Text>
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Units</Text>
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>NAV (₹)</Text>
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Current Value</Text>
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Returns</Text>
-          <Text style={[styles.tableHeaderCell, { flex: 1 }]}>% of Portfolio</Text>
+          <Text style={[styles.tableHeaderCell, { flex: 1 }]}>% Portfolio</Text>
         </View>
 
         {holdings.map((holding, index) => {
           const isAlternate = index % 2 === 1;
           const isLargest = holding.marketValue === largestHoldingValue;
-          const returns = ((holding.marketValue - (holding.units * 50)) / (holding.units * 50)) * 100;
           const portfolioPercent = (holding.marketValue / totalPortfolioValue) * 100;
           
           const rowStyle = isLargest ? styles.tableRowHighlight : 
@@ -39,18 +38,25 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
             <View key={index} style={rowStyle}>
               <View style={{ flex: 3, paddingHorizontal: 15 }}>
                 <Text style={styles.tableCellBold}>
-                  {isLargest && 'STAR '}{holding.schemeName}
+                  {isLargest && '⭐ '}{holding.schemeName}
+                  {holding.isELSS && ' 🛡️'}
+                  {holding.isLiquid && ' 💧'}
                 </Text>
-                <Text style={[styles.tableCell, { fontSize: 11, color: '#6B7280', marginTop: 5 }]}>
-                  {holding.schemeName.includes('Direct') ? 'Direct Plan' : 'Regular Plan'} • 
-                  {holding.schemeName.includes('Growth') ? ' Growth' : ' Dividend'}
+                <Text style={[styles.tableCell, { fontSize: 10, color: '#6B7280', marginTop: 3 }]}>
+                  {holding.amcName || 'AMC'} • {holding.category || 'Equity'} • 
+                  {holding.expenseRatio && ` ER: ${holding.expenseRatio}%`}
                 </Text>
+                {holding.isELSS && holding.lockinEndDate && (
+                  <Text style={[styles.tableCell, { fontSize: 9, color: '#EF4444', marginTop: 2 }]}>
+                    Lock-in till: {holding.lockinEndDate}
+                  </Text>
+                )}
               </View>
               <Text style={[styles.tableCell, { flex: 1 }]}>{holding.units.toFixed(3)}</Text>
               <Text style={[styles.tableCell, { flex: 1 }]}>₹{holding.currentNav.toFixed(2)}</Text>
               <Text style={[styles.tableCellBold, { flex: 1 }]}>₹{holding.marketValue.toLocaleString('en-IN')}</Text>
-              <Text style={[returns >= 0 ? styles.tableCellGreen : styles.tableCellRed, { flex: 1 }]}>
-                {returns >= 0 ? '+' : ''}{returns.toFixed(1)}%
+              <Text style={[holding.pnl >= 0 ? styles.tableCellGreen : styles.tableCellRed, { flex: 1 }]}>
+                {holding.pnl >= 0 ? '+' : ''}{holding.pnlPercentage.toFixed(1)}%
               </Text>
               <Text style={[styles.tableCellBold, { flex: 1, color: isLargest ? '#FFB800' : '#1A1F36' }]}>
                 {portfolioPercent.toFixed(1)}%
@@ -60,57 +66,7 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
         })}
       </View>
 
-      {/* Recent Transactions Section */}
-      <View style={styles.transactionSection}>
-        <Text style={styles.transactionTitle}>Recent Transactions (Last 5)</Text>
-        <View style={styles.transactionTable}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableHeaderCell, { flex: 2 }]}>Date</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Fund</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Type</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Amount</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Units</Text>
-          </View>
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, { flex: 2 }]}>15 Jun 2024</Text>
-            <Text style={[styles.tableCell, { flex: 3 }]}>HDFC Small Cap Fund</Text>
-            <Text style={[styles.tableCellGreen, { flex: 1 }]}>SIP</Text>
-            <Text style={[styles.tableCell, { flex: 1 }]}>₹5,000</Text>
-            <Text style={[styles.tableCell, { flex: 1 }]}>65.32</Text>
-          </View>
-          <View style={styles.tableRowAlternate}>
-            <Text style={[styles.tableCell, { flex: 2 }]}>15 Jun 2024</Text>
-            <Text style={[styles.tableCell, { flex: 3 }]}>SBI Large Cap Fund</Text>
-            <Text style={[styles.tableCellGreen, { flex: 1 }]}>SIP</Text>
-            <Text style={[styles.tableCell, { flex: 1 }]}>₹3,000</Text>
-            <Text style={[styles.tableCell, { flex: 1 }]}>45.21</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Upcoming SIPs Section */}
-      <View style={styles.upcomingSipSection}>
-        <Text style={styles.upcomingSipTitle}>Upcoming SIPs</Text>
-        <View style={styles.transactionTable}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Fund Name</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 2 }]}>Next SIP Date</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Amount</Text>
-          </View>
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, { flex: 3 }]}>HDFC Small Cap Fund - Direct Growth</Text>
-            <Text style={[styles.tableCellBold, { flex: 2 }]}>15 Jul 2024</Text>
-            <Text style={[styles.tableCellGreen, { flex: 1 }]}>₹5,000</Text>
-          </View>
-          <View style={styles.tableRowAlternate}>
-            <Text style={[styles.tableCell, { flex: 3 }]}>SBI Large Cap Fund - Direct Growth</Text>
-            <Text style={[styles.tableCellBold, { flex: 2 }]}>15 Jul 2024</Text>
-            <Text style={[styles.tableCellGreen, { flex: 1 }]}>₹3,000</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Holdings Summary */}
+      {/* Holdings Summary with Enhanced Data */}
       <View style={styles.summaryGrid}>
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>Total Holdings</Text>
@@ -125,6 +81,20 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
           <Text style={styles.summarySubtext}>
             {((largestHoldingValue / totalPortfolioValue) * 100).toFixed(1)}% of total portfolio
           </Text>
+        </View>
+        <View style={styles.summaryCard}>
+          <Text style={styles.summaryTitle}>ELSS Holdings</Text>
+          <Text style={styles.summaryValue}>
+            {holdings.filter(h => h.isELSS).length} Funds
+          </Text>
+          <Text style={styles.summarySubtext}>Tax Saving Investments</Text>
+        </View>
+        <View style={styles.summaryCard}>
+          <Text style={styles.summaryTitle}>Average Expense Ratio</Text>
+          <Text style={styles.summaryValue}>
+            {(holdings.reduce((sum, h) => sum + (h.expenseRatio || 0), 0) / holdings.length).toFixed(2)}%
+          </Text>
+          <Text style={styles.summarySubtext}>Cost Efficiency</Text>
         </View>
       </View>
     </View>
