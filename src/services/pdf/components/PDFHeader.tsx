@@ -6,12 +6,45 @@ import { styles } from '../styles/pdfStyles';
 
 interface PDFHeaderProps {
   generatedAt: Date;
+  amfiReg?: string;
+  bseMember?: string;
+  sebiReg?: string;
 }
 
-export const PDFHeader: React.FC<PDFHeaderProps> = ({ generatedAt }) => (
+// Watermark as absolutely positioned View
+const Watermark = () => (
+  <View
+    style={{
+      position: 'absolute',
+      top: '30%',
+      left: '10%',
+      transform: 'rotate(-25deg)',
+      zIndex: 0,
+      width: '80%',
+      textAlign: 'center',
+    }}
+    fixed
+  >
+    <Text style={{ 
+      fontSize: 80, 
+      color: '#F0F4FF', 
+      fontWeight: 'bold', 
+      letterSpacing: 12,
+      opacity: 0.15
+    }}>
+      SIP BREWERY
+    </Text>
+  </View>
+);
+
+export const PDFHeader: React.FC<PDFHeaderProps> = ({ 
+  generatedAt,
+  amfiReg = 'ARN-XXXXX',
+  bseMember = 'XXXXX',
+  sebiReg = 'INZ000XXXXXX'
+}) => (
   <>
-    {/* Watermark */}
-    <Text style={styles.watermark}>SIP BREWERY</Text>
+    <Watermark />
     
     <View style={styles.header}>
       <View style={styles.logoSection}>
@@ -40,9 +73,11 @@ export const PDFHeader: React.FC<PDFHeaderProps> = ({ generatedAt }) => (
         <Text style={styles.generatedDate}>
           Generated: {format(generatedAt, 'dd MMM yyyy, HH:mm')}
         </Text>
-        <Text style={styles.regulatoryInfo}>
-          AMFI Reg: ARN-XXXXX | BSE Member
-        </Text>
+        <View style={styles.regulatoryBadge}>
+          <Text style={styles.regulatoryBadgeText}>
+            AMFI: {amfiReg} | BSE: {bseMember} | SEBI: {sebiReg}
+          </Text>
+        </View>
       </View>
     </View>
   </>

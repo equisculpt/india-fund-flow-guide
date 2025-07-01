@@ -16,6 +16,7 @@ export const headerStyles = StyleSheet.create({
     borderRadius: 18,
     borderWidth: 2,
     borderColor: '#E5E7EB',
+    zIndex: 1,
   },
   
   logoSection: {
@@ -91,7 +92,23 @@ export const headerStyles = StyleSheet.create({
     fontSize: 16,
     color: '#1A1F36',
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  
+  regulatoryBadge: {
+    backgroundColor: '#2E7DFF',
+    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  
+  regulatoryBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
   
   regulatoryInfo: {
@@ -111,5 +128,20 @@ export const headerStyles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 4,
     borderColor: '#1E40AF',
+    zIndex: 1,
+  },
+  
+  // Watermark styles
+  watermark: {
+    position: 'absolute',
+    top: '30%',
+    left: '10%',
+    transform: 'rotate(-25deg)',
+    fontSize: 80,
+    color: '#F0F4FF',
+    fontWeight: 'bold',
+    letterSpacing: 12,
+    opacity: 0.15,
+    zIndex: 0,
   },
 });
