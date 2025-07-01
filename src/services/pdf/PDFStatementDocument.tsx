@@ -24,22 +24,8 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
   statementData,
   generatedAt,
 }) => {
-  // Debug log commented out for production
-  // console.log('Creating Enhanced PDFStatementDocument with props:', {
-  //   statementType,
-  //   generatedAt: generatedAt.toISOString(),
-  //   hasUserInfo: !!statementData.userInfo,
-  //   hasPortfolio: !!statementData.portfolio,
-  //   holdingsCount: statementData.holdings?.length || 0,
-  //   hasCapitalGains: !!(statementData.capitalGains?.shortTerm?.length || statementData.capitalGains?.longTerm?.length),
-  //   hasRewards: !!statementData.rewards,
-  //   userSegment: statementData.userInfo?.segment,
-  //   goalName: statementData.portfolio?.goalName
-  // });
-
   // Validate required data before rendering
   if (!statementData.userInfo) {
-    // console.error('Cannot render PDF: Missing user info');
     return (
       <Document>
         <Page size="A4" style={styles.page}>
@@ -53,7 +39,6 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
   }
 
   if (!statementData.portfolio) {
-    // console.error('Cannot render PDF: Missing portfolio info');
     return (
       <Document>
         <Page size="A4" style={styles.page}>
@@ -100,7 +85,7 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
                 color: '#1A1F36',
                 marginBottom: 8
               }}>
-                🌟 Ready to Start Your Investment Journey?
+                Ready to Start Your Investment Journey?
               </Text>
               <Text style={{
                 fontSize: 13,
@@ -122,20 +107,11 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
             <PDFRewardsSection rewards={statementData.rewards} />
           )}
 
-          {/* 
-          // Future sections ready for implementation:
-          // <PDFRecentTransactions transactions={statementData.recentTransactions} />
-          // <PDFUpcomingSIPs upcomingSIPs={statementData.upcomingSIPs} />
-          // <PDFGoalTracking goals={statementData.goals} />
-          // <PDFTaxSummary taxData={statementData.taxSummary} />
-          */}
-
           <PDFFooter generatedAt={generatedAt} />
         </Page>
       </Document>
     );
   } catch (renderError) {
-    // console.error('Enhanced PDF Document render error:', renderError);
     return (
       <Document>
         <Page size="A4" style={styles.page}>
@@ -153,19 +129,6 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
   }
 };
 
-// Export function that creates the Document element directly
 export const createPDFDocument = (props: PDFStatementDocumentProps) => {
-  // Debug log commented out for production
-  // console.log('Enhanced createPDFDocument factory called with:', {
-  //   statementType: props.statementType,
-  //   hasData: !!(props.statementData?.userInfo && props.statementData?.portfolio),
-  //   enhancedFeatures: {
-  //     goalTracking: !!props.statementData?.portfolio?.goalName,
-  //     verifiedUser: !!props.statementData?.userInfo?.isVerified,
-  //     rewardsTier: props.statementData?.rewards?.tier,
-  //     capitalGains: !!(props.statementData?.capitalGains?.shortTerm?.length || props.statementData?.capitalGains?.longTerm?.length)
-  //   }
-  // });
-  
   return <PDFStatementDocument {...props} />;
 };

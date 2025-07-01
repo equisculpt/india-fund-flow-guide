@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, Text, Svg, Path } from '@react-pdf/renderer';
+import { View, Text } from '@react-pdf/renderer';
 import { styles } from '../styles/pdfStyles';
 import { StatementData } from '../../statement/types';
 
@@ -50,17 +50,12 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
               <View style={{ flex: 3, paddingHorizontal: 15 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   {isLargest && (
-                    <Svg width={12} height={12} style={{ marginRight: 6 }}>
-                      <Path 
-                        d="M6 0L7.755 3.85l4.245.617-3.06 2.983.722 4.21L6 9.75 3.338 11.66l.722-4.21-3.06-2.983 4.245-.617z" 
-                        fill="#FFB800"
-                      />
-                    </Svg>
+                    <Text style={{ marginRight: 6, color: '#FFB800', fontSize: 12 }}>★</Text>
                   )}
                   <Text style={styles.tableCellBold}>
                     {holding.schemeName}
-                    {holding.isELSS && ' 🛡️'}
-                    {holding.isLiquid && ' 💧'}
+                    {holding.isELSS && ' (ELSS)'}
+                    {holding.isLiquid && ' (Liquid)'}
                   </Text>
                 </View>
                 <Text style={[styles.tableCell, { fontSize: 10, color: '#6B7280', marginTop: 3 }]}>
@@ -88,10 +83,10 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
       </View>
 
       <Text style={{ fontSize: 9, color: '#6B7280', marginVertical: 8, textAlign: 'center' }}>
-        *Returns calculated based on current market value vs invested amount
+        Returns calculated based on current market value vs invested amount
       </Text>
 
-      {/* Holdings Summary with Enhanced Data */}
+      {/* Holdings Summary */}
       <View style={styles.summaryGrid}>
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>Total Holdings</Text>

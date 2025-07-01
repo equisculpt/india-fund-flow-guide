@@ -11,26 +11,26 @@ interface PDFHeaderProps {
   sebiReg?: string;
 }
 
-// Watermark as absolutely positioned View
+// Subtle watermark that doesn't interfere with content
 const Watermark = () => (
   <View
     style={{
       position: 'absolute',
-      top: '30%',
-      left: '10%',
+      top: '35%',
+      left: '15%',
       transform: 'rotate(-25deg)',
-      zIndex: 0,
-      width: '80%',
+      zIndex: -1,
+      width: '70%',
       textAlign: 'center',
     }}
     fixed
   >
     <Text style={{ 
-      fontSize: 80, 
-      color: '#F0F4FF', 
+      fontSize: 60, 
+      color: '#F8FAFF', 
       fontWeight: 'bold', 
-      letterSpacing: 12,
-      opacity: 0.15
+      letterSpacing: 8,
+      opacity: 0.3
     }}>
       SIP BREWERY
     </Text>
