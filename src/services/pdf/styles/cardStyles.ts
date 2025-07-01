@@ -1,0 +1,216 @@
+
+import { StyleSheet } from '@react-pdf/renderer';
+
+export const cardStyles = StyleSheet.create({
+  // User Info Card - Enhanced
+  userInfo: {
+    marginBottom: 25,
+    padding: 20,
+    backgroundColor: '#F8FAFF',
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: '#2E7DFF',
+  },
+  userInfoTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: '#1A1F36',
+    textAlign: 'center',
+  },
+  userInfoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  userInfoItem: {
+    width: '48%',
+    marginBottom: 10,
+  },
+  userInfoLabel: {
+    fontSize: 10,
+    color: '#6B7280',
+    marginBottom: 3,
+    fontWeight: 'bold',
+  },
+  userInfoValue: {
+    fontSize: 12,
+    color: '#1A1F36',
+    fontWeight: 'bold',
+  },
+  
+  // Portfolio At a Glance - Horizontal Cards
+  portfolioGlance: {
+    marginBottom: 25,
+    padding: 20,
+    backgroundColor: '#FFF8E7',
+    borderRadius: 15,
+    borderWidth: 3,
+    borderColor: '#FFB800',
+  },
+  glanceTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#1A1F36',
+  },
+  glanceGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    marginBottom: 20,
+  },
+  glanceCard: {
+    width: '23%',
+    backgroundColor: '#FFFFFF',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  glanceLabel: {
+    fontSize: 10,
+    color: '#6B7280',
+    marginBottom: 5,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  glanceValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1A1F36',
+    textAlign: 'center',
+  },
+  glanceSubtext: {
+    fontSize: 9,
+    color: '#00B47B',
+    textAlign: 'center',
+    marginTop: 3,
+    fontWeight: 'bold',
+  },
+  
+  // Performance Section - Enhanced
+  performanceSection: {
+    backgroundColor: '#F0FDF4',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 3,
+    borderColor: '#00B47B',
+  },
+  performanceTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1A1F36',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  performanceGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  performanceItem: {
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 12,
+    borderRadius: 8,
+    minWidth: '22%',
+    borderWidth: 1,
+    borderColor: '#00B47B',
+  },
+  performanceLabel: {
+    fontSize: 9,
+    color: '#6B7280',
+    marginBottom: 4,
+    fontWeight: 'bold',
+  },
+  performanceValue: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#00B47B',
+  },
+  
+  // AI Insight Section - Enhanced
+  aiInsight: {
+    marginBottom: 25,
+    padding: 20,
+    backgroundColor: '#FFF8E7',
+    borderRadius: 15,
+    borderWidth: 3,
+    borderColor: '#FFB800',
+  },
+  aiInsightHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  aiInsightIcon: {
+    width: 24,
+    height: 24,
+    backgroundColor: '#FFB800',
+    borderRadius: 12,
+    marginRight: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  aiInsightTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1A1F36',
+    flex: 1,
+  },
+  aiInsightContent: {
+    backgroundColor: '#FFFFFF',
+    padding: 15,
+    borderRadius: 10,
+    borderLeftWidth: 5,
+    borderLeftColor: '#FFB800',
+  },
+  aiInsightText: {
+    fontSize: 12,
+    color: '#1A1F36',
+    lineHeight: 1.6,
+    marginBottom: 10,
+  },
+  aiInsightHighlight: {
+    fontSize: 11,
+    color: '#00B47B',
+    fontWeight: 'bold',
+  },
+  
+  // Summary Cards - Enhanced
+  summaryGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+  summaryCard: {
+    width: '48%',
+    backgroundColor: '#FFFFFF',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    marginBottom: 10,
+  },
+  summaryTitle: {
+    fontSize: 11,
+    color: '#6B7280',
+    marginBottom: 4,
+    fontWeight: 'bold',
+  },
+  summaryValue: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#1A1F36',
+  },
+  summarySubtext: {
+    fontSize: 10,
+    color: '#00B47B',
+    marginTop: 3,
+    fontWeight: 'bold',
+  },
+});
