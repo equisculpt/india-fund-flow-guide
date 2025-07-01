@@ -14,7 +14,7 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
     
     if (xirr > 15) {
       return {
-        title: "🚀 Excellent Performance Detected",
+        title: "Excellent Performance Detected",
         insight: `Your portfolio is delivering outstanding returns with ${xirr.toFixed(1)}% XIRR, placing you in the top 20% of investors on our platform.`,
         recommendation: "Consider systematic step-ups in your SIPs to accelerate wealth creation while maintaining this momentum.",
         highlight: `You're beating inflation by ${(xirr - 6).toFixed(1)}% annually!`,
@@ -22,7 +22,7 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
       };
     } else if (xirr > 12) {
       return {
-        title: "💪 Strong Portfolio Performance",
+        title: "Strong Portfolio Performance",
         insight: `Your ${xirr.toFixed(1)}% XIRR shows good investment discipline and fund selection across your ₹${portfolio.totalInvested.toLocaleString('en-IN')} investment.`,
         recommendation: "Explore adding international diversification or increasing allocation to small-cap funds for potential alpha generation.",
         highlight: `Your returns are ${(xirr - 10).toFixed(1)}% above market average!`,
@@ -30,7 +30,7 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
       };
     } else {
       return {
-        title: "📈 Growth Opportunity Identified",
+        title: "Growth Opportunity Identified",
         insight: `Your current ${xirr.toFixed(1)}% XIRR indicates potential for optimization in fund selection and asset allocation.`,
         recommendation: "Consider reviewing your fund choices and increasing exposure to growth-oriented equity funds for better long-term returns.",
         highlight: `Small changes could boost your returns by 2-4% annually.`,
@@ -51,7 +51,7 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
       </View>
       
       <View style={styles.aiInsightContent}>
-        <Text style={[styles.aiInsightText, { fontWeight: 'bold', marginBottom: 18, fontSize: 15 }]}>
+        <Text style={[styles.aiInsightText, { fontWeight: 'bold', marginBottom: 20, fontSize: 16 }]}>
           {insight.title}
         </Text>
         
@@ -59,27 +59,27 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
           {insight.insight}
         </Text>
         
-        <Text style={[styles.aiInsightText, { marginTop: 15 }]}>
-          <Text style={{ fontWeight: 'bold' }}>💡 Next Best Action: </Text>
+        <Text style={[styles.aiInsightText, { marginTop: 18 }]}>
+          <Text style={{ fontWeight: 'bold' }}>Next Best Action: </Text>
           {insight.recommendation}
         </Text>
         
         <View style={{ 
           backgroundColor: '#F0FDF4', 
-          padding: 15, 
-          borderRadius: 10, 
-          marginTop: 18,
-          borderLeftWidth: 5,
+          padding: 18, 
+          borderRadius: 12, 
+          marginTop: 20,
+          borderLeftWidth: 6,
           borderLeftColor: '#00B47B'
         }}>
           <Text style={styles.aiInsightHighlight}>
-            🎯 Key Insight: {insight.highlight}
+            Key Insight: {insight.highlight}
           </Text>
         </View>
         
         <View style={styles.percentileBadge}>
           <Text style={styles.percentileBadgeText}>
-            🏆 Your XIRR Performance: {insight.percentile}
+            Your XIRR Performance: {insight.percentile}
           </Text>
         </View>
       </View>

@@ -47,7 +47,7 @@ export const baseStyles = StyleSheet.create({
     marginBottom: 35,
   },
   
-  // Currency - Fixed to use proper Rupee symbol
+  // Currency - Using proper Unicode Rupee symbol
   rupeeText: {
     fontSize: 11,
     color: '#1A1F36',
@@ -57,16 +57,16 @@ export const baseStyles = StyleSheet.create({
     color: '#1A1F36',
   },
   
-  // Watermark
+  // Watermark - Enhanced and Subtle
   watermark: {
     position: 'absolute',
-    top: 200,
-    left: 100,
-    right: 100,
-    bottom: 200,
-    opacity: 0.08,
+    top: 300,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.05,
     transform: 'rotate(-45deg)',
-    fontSize: 48,
+    fontSize: 60,
     color: '#2E7DFF',
     fontWeight: 'bold',
     textAlign: 'center',

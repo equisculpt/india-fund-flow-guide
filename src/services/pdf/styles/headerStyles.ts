@@ -2,18 +2,20 @@
 import { StyleSheet } from '@react-pdf/renderer';
 
 export const headerStyles = StyleSheet.create({
-  // Enhanced Header Section with Larger Logo
+  // Enhanced Header Section with Professional Layout
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 35,
-    paddingBottom: 25,
-    borderBottomWidth: 3,
+    marginBottom: 40,
+    paddingBottom: 30,
+    borderBottomWidth: 4,
     borderBottomColor: '#2E7DFF',
     backgroundColor: '#F8FAFF',
-    padding: 25,
-    borderRadius: 15,
+    padding: 30,
+    borderRadius: 18,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
   },
   
   logoSection: {
@@ -24,13 +26,13 @@ export const headerStyles = StyleSheet.create({
   mainLogo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 15,
   },
   
   sipBreweryLogo: {
-    width: 65,
-    height: 65,
-    marginRight: 20,
+    width: 75,
+    height: 75,
+    marginRight: 25,
   },
   
   brandingText: {
@@ -38,14 +40,14 @@ export const headerStyles = StyleSheet.create({
   },
   
   companyName: {
-    fontSize: 36,
+    fontSize: 42,
     fontWeight: 'bold',
     color: '#1A1F36',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   
   tagline: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#2E7DFF',
     fontStyle: 'italic',
     fontWeight: 'bold',
@@ -54,13 +56,13 @@ export const headerStyles = StyleSheet.create({
   trademarkSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 12,
+    marginTop: 15,
   },
   
   trademarkText: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#6B7280',
-    marginRight: 10,
+    marginRight: 12,
   },
   
   equisculptBrand: {
@@ -69,13 +71,13 @@ export const headerStyles = StyleSheet.create({
   },
   
   equisculptLogo: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
+    width: 28,
+    height: 28,
+    marginRight: 10,
   },
   
   equisculptText: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#1A1F36',
     fontWeight: 'bold',
   },
@@ -86,28 +88,28 @@ export const headerStyles = StyleSheet.create({
   },
   
   generatedDate: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#1A1F36',
     fontWeight: 'bold',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   
   regulatoryInfo: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#6B7280',
   },
   
-  // Statement Title - Enhanced
+  // Statement Title - Professional Enhancement
   statementTitle: {
-    fontSize: 30,
+    fontSize: 36,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 35,
-    color: '#1A1F36',
-    backgroundColor: '#F5F8FF',
-    padding: 22,
-    borderRadius: 12,
-    borderWidth: 3,
-    borderColor: '#2E7DFF',
+    marginBottom: 40,
+    color: '#FFFFFF',
+    backgroundColor: '#2E7DFF',
+    padding: 25,
+    borderRadius: 15,
+    borderWidth: 4,
+    borderColor: '#1E40AF',
   },
 });

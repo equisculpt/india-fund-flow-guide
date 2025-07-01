@@ -22,8 +22,7 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
   statementData,
   generatedAt,
 }) => {
-  // Add debug logging for PDF document creation
-  console.log('📋 Creating PDFStatementDocument with props:', {
+  console.log('Creating PDFStatementDocument with props:', {
     statementType,
     generatedAt: generatedAt.toISOString(),
     hasUserInfo: !!statementData.userInfo,
@@ -33,7 +32,7 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
 
   // Validate required data before rendering
   if (!statementData.userInfo) {
-    console.error('❌ Cannot render PDF: Missing user info');
+    console.error('Cannot render PDF: Missing user info');
     return (
       <Document>
         <Page size="A4" style={styles.page}>
@@ -44,7 +43,7 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
   }
 
   if (!statementData.portfolio) {
-    console.error('❌ Cannot render PDF: Missing portfolio info');
+    console.error('Cannot render PDF: Missing portfolio info');
     return (
       <Document>
         <Page size="A4" style={styles.page}>
@@ -79,7 +78,7 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
       </Document>
     );
   } catch (renderError) {
-    console.error('❌ PDF Document render error:', renderError);
+    console.error('PDF Document render error:', renderError);
     return (
       <Document>
         <Page size="A4" style={styles.page}>
@@ -93,7 +92,7 @@ export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = ({
 
 // Export function that creates the Document element directly
 export const createPDFDocument = (props: PDFStatementDocumentProps) => {
-  console.log('🏭 createPDFDocument factory called with:', {
+  console.log('createPDFDocument factory called with:', {
     statementType: props.statementType,
     hasData: !!(props.statementData?.userInfo && props.statementData?.portfolio)
   });

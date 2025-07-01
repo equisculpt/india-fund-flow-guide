@@ -2,36 +2,36 @@
 import { StyleSheet } from '@react-pdf/renderer';
 
 export const footerStyles = StyleSheet.create({
-  // Disclaimer - Enhanced but Single Instance
+  // Disclaimer - Single Instance Only
   disclaimer: {
-    marginTop: 35,
-    padding: 22,
+    marginTop: 40,
+    padding: 25,
     backgroundColor: '#FEF2F2',
-    borderRadius: 15,
-    borderWidth: 3,
+    borderRadius: 18,
+    borderWidth: 4,
     borderColor: '#FECACA',
-    borderLeftWidth: 6,
+    borderLeftWidth: 8,
     borderLeftColor: '#EF4444',
   },
   disclaimerTitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#DC2626',
-    marginBottom: 12,
+    marginBottom: 15,
   },
   disclaimerText: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#7F1D1D',
-    lineHeight: 1.5,
+    lineHeight: 1.6,
   },
   
-  // Footer - Single Instance Only, Enhanced Design
+  // Footer - Single Instance Only, Premium Design
   footer: {
-    marginTop: 25,
+    marginTop: 30,
     backgroundColor: '#F8FAFF',
-    padding: 22,
-    borderRadius: 15,
-    borderTopWidth: 4,
+    padding: 25,
+    borderRadius: 18,
+    borderTopWidth: 5,
     borderTopColor: '#2E7DFF',
   },
   footerContent: {
@@ -44,34 +44,34 @@ export const footerStyles = StyleSheet.create({
     flex: 1,
   },
   footerBranding: {
-    marginBottom: 8,
+    marginBottom: 10,
   },
   footerCompany: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#1A1F36',
-    marginBottom: 4,
+    marginBottom: 5,
   },
   footerTrademark: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#6B7280',
     fontStyle: 'italic',
   },
   footerContact: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#6B7280',
-    marginBottom: 3,
+    marginBottom: 4,
   },
   footerRight: {
     alignItems: 'flex-end',
   },
   footerGenerated: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#6B7280',
-    marginBottom: 5,
+    marginBottom: 6,
   },
   footerConfidential: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#2E7DFF',
     fontWeight: 'bold',
   },

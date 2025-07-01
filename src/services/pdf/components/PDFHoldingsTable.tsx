@@ -14,7 +14,7 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>📊 Portfolio Holdings Breakdown</Text>
+      <Text style={styles.sectionTitle}>Portfolio Holdings Breakdown</Text>
       
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
@@ -37,13 +37,13 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
           
           return (
             <View key={index} style={rowStyle}>
-              <View style={{ flex: 3, paddingHorizontal: 12 }}>
+              <View style={{ flex: 3, paddingHorizontal: 15 }}>
                 <Text style={styles.tableCellBold}>
-                  {isLargest && '⭐ '}{holding.schemeName}
+                  {isLargest && 'STAR '}{holding.schemeName}
                 </Text>
-                <Text style={[styles.tableCell, { fontSize: 10, color: '#6B7280', marginTop: 4 }]}>
-                  {holding.schemeName.includes('Direct') ? '🎯 Direct Plan' : '📊 Regular Plan'} • 
-                  {holding.schemeName.includes('Growth') ? ' 📈 Growth' : ' 💰 Dividend'}
+                <Text style={[styles.tableCell, { fontSize: 11, color: '#6B7280', marginTop: 5 }]}>
+                  {holding.schemeName.includes('Direct') ? 'Direct Plan' : 'Regular Plan'} • 
+                  {holding.schemeName.includes('Growth') ? ' Growth' : ' Dividend'}
                 </Text>
               </View>
               <Text style={[styles.tableCell, { flex: 1 }]}>{holding.units.toFixed(3)}</Text>
@@ -62,7 +62,7 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
 
       {/* Recent Transactions Section */}
       <View style={styles.transactionSection}>
-        <Text style={styles.transactionTitle}>📋 Recent Transactions (Last 5)</Text>
+        <Text style={styles.transactionTitle}>Recent Transactions (Last 5)</Text>
         <View style={styles.transactionTable}>
           <View style={styles.tableHeader}>
             <Text style={[styles.tableHeaderCell, { flex: 2 }]}>Date</Text>
@@ -71,7 +71,6 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
             <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Amount</Text>
             <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Units</Text>
           </View>
-          {/* Sample recent transactions */}
           <View style={styles.tableRow}>
             <Text style={[styles.tableCell, { flex: 2 }]}>15 Jun 2024</Text>
             <Text style={[styles.tableCell, { flex: 3 }]}>HDFC Small Cap Fund</Text>
@@ -91,7 +90,7 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
 
       {/* Upcoming SIPs Section */}
       <View style={styles.upcomingSipSection}>
-        <Text style={styles.upcomingSipTitle}>📅 Upcoming SIPs</Text>
+        <Text style={styles.upcomingSipTitle}>Upcoming SIPs</Text>
         <View style={styles.transactionTable}>
           <View style={styles.tableHeader}>
             <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Fund Name</Text>
@@ -114,12 +113,12 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
       {/* Holdings Summary */}
       <View style={styles.summaryGrid}>
         <View style={styles.summaryCard}>
-          <Text style={styles.summaryTitle}>📈 Total Holdings</Text>
+          <Text style={styles.summaryTitle}>Total Holdings</Text>
           <Text style={styles.summaryValue}>{holdings.length} Funds</Text>
           <Text style={styles.summarySubtext}>Well Diversified Portfolio</Text>
         </View>
         <View style={styles.summaryCard}>
-          <Text style={styles.summaryTitle}>⭐ Largest Holding</Text>
+          <Text style={styles.summaryTitle}>Largest Holding</Text>
           <Text style={styles.summaryValue}>
             ₹{largestHoldingValue.toLocaleString('en-IN')}
           </Text>

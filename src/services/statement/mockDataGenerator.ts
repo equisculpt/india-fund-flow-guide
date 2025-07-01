@@ -153,15 +153,6 @@ export class MockDataGenerator {
           saleValue: 28500,
           gain: 3500,
           taxRate: 15
-        },
-        {
-          schemeName: 'SBI Small Cap Fund-Direct Plan-Growth',
-          purchaseDate: format(subMonths(new Date(), 6), 'yyyy-MM-dd'),
-          saleDate: format(subMonths(new Date(), 1), 'yyyy-MM-dd'),
-          purchaseValue: 15000,
-          saleValue: 16800,
-          gain: 1800,
-          taxRate: 15
         }
       ],
       longTerm: [
@@ -196,12 +187,6 @@ export class MockDataGenerator {
           type: 'Referral Reward',
           amount: 500,
           description: 'Friend joined via your referral'
-        },
-        {
-          date: format(subMonths(new Date(), 3), 'yyyy-MM-dd'),
-          type: 'Cashback',
-          amount: 150,
-          description: 'Investment milestone reward'
         }
       ]
     };

@@ -11,7 +11,7 @@ export class PDFDownloadService {
     let loadingToastId: string | undefined;
     
     try {
-      console.log('🚀 PDFDownloadService: Starting PDF download process', {
+      console.log('PDFDownloadService: Starting PDF download process', {
         statementType,
         params,
         timestamp: new Date().toISOString()
@@ -25,11 +25,11 @@ export class PDFDownloadService {
 
       // Step 1: Fetch statement data with enhanced logging
       const mockClientCode = 'SB123456';
-      console.log('📊 Step 1: Fetching statement data for client:', mockClientCode);
+      console.log('Step 1: Fetching statement data for client:', mockClientCode);
       
       const statementData = await statementDataService.getStatementData(mockClientCode, statementType);
       
-      console.log('✅ Step 1 Complete: Statement data fetched successfully:', {
+      console.log('Step 1 Complete: Statement data fetched successfully:', {
         holdingsCount: statementData.holdings?.length || 0,
         totalValue: statementData.portfolio?.currentValue || 0,
         userName: statementData.userInfo?.name || 'Unknown',
@@ -48,7 +48,7 @@ export class PDFDownloadService {
       }
 
       // Step 3: Generate and download PDF with enhanced error handling
-      console.log('🔄 Step 2: Starting PDF generation and download...');
+      console.log('Step 2: Starting PDF generation and download...');
       await pdfStatementGenerator.downloadPDF(statementType, statementData);
 
       // Step 4: Show success toast
@@ -57,10 +57,10 @@ export class PDFDownloadService {
         description: `Your ${statementType} statement has been downloaded. Check your Downloads folder.`,
       });
 
-      console.log('🎊 PDF statement download completed successfully');
+      console.log('PDF statement download completed successfully');
       
     } catch (error) {
-      console.error('💥 PDF download service error:', {
+      console.error('PDF download service error:', {
         error: error.message,
         stack: error.stack,
         statementType,
@@ -96,13 +96,13 @@ export class PDFDownloadService {
   // New method for testing PDF generation without download
   async testPDFGeneration(statementType: string): Promise<boolean> {
     try {
-      console.log('🧪 Testing PDF generation for:', statementType);
+      console.log('Testing PDF generation for:', statementType);
       
       const mockClientCode = 'TEST123';
       const statementData = await statementDataService.getStatementData(mockClientCode, statementType);
       const pdfBlob = await pdfStatementGenerator.generatePDF(statementType, statementData);
       
-      console.log('✅ PDF generation test successful:', {
+      console.log('PDF generation test successful:', {
         blobSize: pdfBlob.size,
         blobType: pdfBlob.type,
         isValidBlob: pdfBlob instanceof Blob
@@ -110,7 +110,7 @@ export class PDFDownloadService {
       
       return true;
     } catch (error) {
-      console.error('❌ PDF generation test failed:', error);
+      console.error('PDF generation test failed:', error);
       return false;
     }
   }

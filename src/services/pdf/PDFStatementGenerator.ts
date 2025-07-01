@@ -17,7 +17,7 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
   } = options;
 
   try {
-    console.log('🚀 Starting PDF generation with options:', { 
+    console.log('Starting PDF generation with options:', { 
       statementType, 
       generatedAt: generatedAt.toISOString(),
       dataValidation: {
@@ -40,10 +40,10 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
     }
     
     if (!statementData.holdings || statementData.holdings.length === 0) {
-      console.warn('⚠️ No holdings found in statement data');
+      console.warn('No holdings found in statement data');
     }
     
-    console.log('📄 Creating PDF document with validated data...');
+    console.log('Creating PDF document with validated data...');
     
     // Create the PDF document using the factory function
     const document = createPDFDocument({
@@ -52,19 +52,19 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
       generatedAt,
     });
 
-    console.log('🔄 PDF document created, generating blob...');
+    console.log('PDF document created, generating blob...');
     
     // Generate the PDF
     const pdfInstance = pdf(document);
     const pdfBlob = await pdfInstance.toBlob();
     
-    console.log('✅ PDF blob generated successfully:', {
+    console.log('PDF blob generated successfully:', {
       blob: pdfBlob,
       size: pdfBlob?.size || 0,
       type: pdfBlob?.type || 'unknown',
       sizeInKB: pdfBlob ? Math.round(pdfBlob.size / 1024) : 0,
       isValidBlob: pdfBlob instanceof Blob,
-      isValidSize: pdfBlob && pdfBlob.size > 1000 // Should be at least 1KB for a valid PDF
+      isValidSize: pdfBlob && pdfBlob.size > 1000
     });
     
     // Enhanced blob validation
@@ -85,12 +85,12 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
     }
     
     if (pdfBlob.type !== 'application/pdf') {
-      console.warn(`⚠️ PDF blob has unexpected MIME type: ${pdfBlob.type}`);
+      console.warn(`PDF blob has unexpected MIME type: ${pdfBlob.type}`);
     }
     
     return pdfBlob;
   } catch (error) {
-    console.error('❌ Detailed PDF generation error:', {
+    console.error('Detailed PDF generation error:', {
       error: error.message,
       stack: error.stack,
       statementType,
@@ -121,7 +121,7 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
 // Create a service class for PDF generation
 export class PDFStatementGeneratorService {
   async generatePDF(statementType: string, statementData: StatementData): Promise<Blob> {
-    console.log('🎯 PDFStatementGeneratorService: generatePDF called', { 
+    console.log('PDFStatementGeneratorService: generatePDF called', { 
       statementType,
       userInfo: statementData.userInfo?.name || 'Unknown',
       timestamp: new Date().toISOString()
@@ -135,7 +135,7 @@ export class PDFStatementGeneratorService {
 
   async downloadPDF(statementType: string, statementData: StatementData): Promise<void> {
     try {
-      console.log('🔽 PDFStatementGeneratorService: Starting download process', { 
+      console.log('PDFStatementGeneratorService: Starting download process', { 
         statementType,
         clientCode: statementData.userInfo?.clientCode,
         timestamp: new Date().toISOString()
@@ -143,7 +143,7 @@ export class PDFStatementGeneratorService {
       
       const pdfBlob = await this.generatePDF(statementType, statementData);
       
-      console.log('📦 PDF blob ready for download:', {
+      console.log('PDF blob ready for download:', {
         blobSize: pdfBlob.size,
         blobType: pdfBlob.type,
         sizeInKB: Math.round(pdfBlob.size / 1024),
@@ -154,9 +154,9 @@ export class PDFStatementGeneratorService {
       let url: string;
       try {
         url = URL.createObjectURL(pdfBlob);
-        console.log('🔗 Object URL created successfully:', url.substring(0, 50) + '...');
+        console.log('Object URL created successfully:', url.substring(0, 50) + '...');
       } catch (urlError) {
-        console.error('❌ Failed to create object URL:', urlError);
+        console.error('Failed to create object URL:', urlError);
         throw new Error(`Failed to create download URL: ${urlError.message}`);
       }
       
@@ -165,7 +165,7 @@ export class PDFStatementGeneratorService {
       const clientCode = statementData.userInfo?.clientCode || 'UNKNOWN';
       const filename = `SIPBrewery-${statementType}-${clientCode}-${timestamp}.pdf`;
       
-      console.log('📄 Preparing download with filename:', filename);
+      console.log('Preparing download with filename:', filename);
       
       // Enhanced download mechanism
       try {
@@ -178,7 +178,7 @@ export class PDFStatementGeneratorService {
         // Add to DOM temporarily
         document.body.appendChild(link);
         
-        console.log('🖱️ Triggering download click...');
+        console.log('Triggering download click...');
         
         // Trigger download
         link.click();
@@ -190,34 +190,34 @@ export class PDFStatementGeneratorService {
               document.body.removeChild(link);
             }
             URL.revokeObjectURL(url);
-            console.log('✅ Download cleanup completed successfully');
+            console.log('Download cleanup completed successfully');
           } catch (cleanupError) {
-            console.warn('⚠️ Download cleanup warning:', cleanupError);
+            console.warn('Download cleanup warning:', cleanupError);
           }
         }, 1000);
         
-        console.log('🎉 PDF download process completed successfully');
+        console.log('PDF download process completed successfully');
         
       } catch (downloadError) {
-        console.error('❌ Download mechanism failed:', downloadError);
+        console.error('Download mechanism failed:', downloadError);
         
         // Fallback: Try opening in new window
         try {
-          console.log('🔄 Attempting fallback: opening PDF in new window...');
+          console.log('Attempting fallback: opening PDF in new window...');
           const newWindow = window.open(url, '_blank');
           if (!newWindow) {
             throw new Error('Popup blocked or failed to open');
           }
-          console.log('✅ PDF opened in new window as fallback');
+          console.log('PDF opened in new window as fallback');
         } catch (fallbackError) {
-          console.error('❌ Fallback method also failed:', fallbackError);
+          console.error('Fallback method also failed:', fallbackError);
           URL.revokeObjectURL(url);
           throw new Error(`All download methods failed. Last error: ${fallbackError.message}`);
         }
       }
       
     } catch (error) {
-      console.error('💥 Critical error in PDF download process:', {
+      console.error('Critical error in PDF download process:', {
         error: error.message,
         stack: error.stack,
         statementType,
