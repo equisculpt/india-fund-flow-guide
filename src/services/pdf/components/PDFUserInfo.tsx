@@ -19,22 +19,22 @@ export const PDFUserInfo: React.FC<PDFUserInfoProps> = ({ userInfo }) => (
     <View style={styles.userInfoGrid}>
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>Client Code</Text>
-        <Text style={styles.userInfoValue}>{userInfo.clientCode}</Text>
+        <Text style={styles.userInfoValue}>{userInfo.clientCode || '—'}</Text>
       </View>
       
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>Email Address</Text>
-        <Text style={styles.userInfoValue}>{userInfo.email}</Text>
+        <Text style={styles.userInfoValue}>{userInfo.email || '—'}</Text>
       </View>
       
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>Mobile Number</Text>
-        <Text style={styles.userInfoValue}>{userInfo.mobile}</Text>
+        <Text style={styles.userInfoValue}>{userInfo.mobile || '—'}</Text>
       </View>
       
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>PAN Number</Text>
-        <Text style={styles.userInfoValue}>{userInfo.panMasked}</Text>
+        <Text style={styles.userInfoValue}>{userInfo.panMasked || '—'}</Text>
       </View>
       
       <View style={styles.userInfoItem}>

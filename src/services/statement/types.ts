@@ -1,4 +1,3 @@
-
 export interface UserInfo {
   name: string;
   clientCode: string;
@@ -12,6 +11,10 @@ export interface UserInfo {
   kycStatus?: 'VERIFIED' | 'PENDING' | 'FAILED';
   role?: 'USER' | 'AGENT' | 'ADMIN';
   segment?: 'DIRECT' | 'REGULAR' | 'IFA_CLIENT';
+  dateOfBirth?: string;
+  riskProfile?: 'CONSERVATIVE' | 'MODERATE' | 'AGGRESSIVE';
+  nomineeDetails?: string;
+  statementPeriod?: string;
 }
 
 export interface Portfolio {

@@ -11,6 +11,11 @@ export const avatarStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    shadowColor: '#2E7DFF',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   avatarInitials: {
     color: '#fff',
@@ -26,6 +31,8 @@ export const avatarStyles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: 12,
     marginTop: 2,
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
   },
   verifiedBadgeText: {
     color: '#fff',
