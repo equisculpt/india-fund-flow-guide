@@ -16,15 +16,6 @@ serve(async (req) => {
     
     console.log('PDF Shift generation request:', { reportType, clientCode, category, reportName });
     
-    // Get the PDF Shift API key
-    const pdfShiftApiKey = Deno.env.get('PDFSHIFT_API_KEY');
-    if (!pdfShiftApiKey) {
-      throw new Error('PDF Shift API key not configured');
-    }
-
-    // Debug: log the request to understand what's happening
-    console.log('PDF Shift request:', { reportType, clientCode, category, reportName });
-    
     // Get the PDF Shift API key and validate it
     const pdfShiftApiKey = Deno.env.get('PDFSHIFT_API_KEY');
     if (!pdfShiftApiKey) {
@@ -32,6 +23,9 @@ serve(async (req) => {
       throw new Error('PDF Shift API key not configured');
     }
     console.log('PDF Shift API key found:', pdfShiftApiKey.substring(0, 8) + '...');
+
+    // Debug: log the request to understand what's happening
+    console.log('PDF Shift request:', { reportType, clientCode, category, reportName });
 
     // Create comprehensive HTML content for better PDF generation
     const htmlContent = `
