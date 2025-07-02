@@ -370,46 +370,100 @@ const StatementPreviewPage: React.FC = () => {
           width: 100%;
           border-collapse: collapse;
           background: white;
-          border-radius: 0 0 8px 8px;
+          border-radius: 0 0 12px 12px;
           overflow: hidden;
-          border: 1px solid #E5E7EB;
+          border: 2px solid #E5E7EB;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          margin-top: 0;
         }
         
         .holdings-table th {
-          background: #F9FAFB;
-          padding: 12px 8px;
-          font-size: 11px;
-          font-weight: 600;
-          color: #374151;
+          background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+          padding: 16px 12px;
+          font-size: 12px;
+          font-weight: 700;
+          color: #1F2937;
           text-align: left;
-          border-bottom: 2px solid #E5E7EB;
+          border-bottom: 3px solid #D1D5DB;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
         
         .holdings-table td {
-          padding: 10px 8px;
-          font-size: 10px;
-          border-bottom: 1px solid #F3F4F6;
-          vertical-align: top;
+          padding: 14px 12px;
+          font-size: 11px;
+          border-bottom: 1px solid #E5E7EB;
+          vertical-align: middle;
+          background: white;
         }
         
-        .holdings-table tr:nth-child(even) {
-          background: #F9FAFB;
+        .holdings-table tr:nth-child(even) td {
+          background: #FAFBFC;
+        }
+        
+        .holdings-table tr:hover td {
+          background: #F0F9FF;
         }
         
         .fund-name {
-          font-weight: 600;
+          font-weight: 700;
           color: #1F2937;
-          font-size: 11px;
-          margin-bottom: 2px;
+          font-size: 12px;
+          margin-bottom: 4px;
+          line-height: 1.3;
         }
         
         .fund-details {
-          font-size: 9px;
+          font-size: 10px;
           color: #6B7280;
+          line-height: 1.2;
         }
         
-        .positive-return { color: #16A34A; font-weight: 600; }
-        .negative-return { color: #DC2626; font-weight: 600; }
+        .positive-return { 
+          color: #059669; 
+          font-weight: 700;
+          background: #ECFDF5;
+          padding: 2px 6px;
+          border-radius: 4px;
+          display: inline-block;
+        }
+        
+        .negative-return { 
+          color: #DC2626; 
+          font-weight: 700;
+          background: #FEF2F2;
+          padding: 2px 6px;
+          border-radius: 4px;
+          display: inline-block;
+        }
+        
+        .risk-badge {
+          padding: 4px 8px;
+          border-radius: 6px;
+          font-size: 10px;
+          font-weight: 700;
+          text-align: center;
+          display: inline-block;
+          min-width: 50px;
+        }
+        
+        .risk-high {
+          background: #FEE2E2;
+          color: #DC2626;
+          border: 1px solid #FECACA;
+        }
+        
+        .risk-medium {
+          background: #FEF3C7;
+          color: #D97706;
+          border: 1px solid #FDE68A;
+        }
+        
+        .risk-low {
+          background: #DCFCE7;
+          color: #059669;
+          border: 1px solid #BBF7D0;
+        }
         
         .footer {
           margin-top: 50px;
@@ -683,23 +737,18 @@ const StatementPreviewPage: React.FC = () => {
                     ₹{holding.marketValue.toLocaleString('en-IN')}
                   </td>
                   <td style={{ textAlign: 'right' }} className={holding.pnlPercentage >= 0 ? 'positive-return' : 'negative-return'}>
-                    {holding.pnlPercentage >= 0 ? '↑' : '↓'} {Math.abs(holding.pnlPercentage).toFixed(1)}%
+                    {holding.pnlPercentage >= 0 ? '↗' : '↘'} {Math.abs(holding.pnlPercentage).toFixed(1)}%
                   </td>
-                  <td style={{ textAlign: 'right', fontWeight: '600' }}>
+                  <td style={{ textAlign: 'right', fontWeight: '700', fontSize: '11px' }}>
                     {portfolioPercent.toFixed(1)}%
                   </td>
-                  <td style={{ textAlign: 'center', fontSize: '9px' }}>
-                    <span style={{ 
-                      background: holding.category?.includes('Large') ? '#DCFCE7' : 
-                                 holding.category?.includes('Mid') ? '#FEF3C7' : '#FEE2E2',
-                      color: holding.category?.includes('Large') ? '#16A34A' : 
-                             holding.category?.includes('Mid') ? '#CA8A04' : '#DC2626',
-                      padding: '2px 6px',
-                      borderRadius: '3px',
-                      fontWeight: '600'
-                    }}>
+                  <td style={{ textAlign: 'center' }}>
+                    <span className={`risk-badge ${
+                      holding.category?.includes('Large') ? 'risk-low' : 
+                      holding.category?.includes('Mid') ? 'risk-medium' : 'risk-high'
+                    }`}>
                       {holding.category?.includes('Large') ? 'Low' : 
-                       holding.category?.includes('Mid') ? 'Med' : 'High'}
+                       holding.category?.includes('Mid') ? 'Medium' : 'High'}
                     </span>
                   </td>
                 </tr>
