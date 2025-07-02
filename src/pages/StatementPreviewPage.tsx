@@ -119,10 +119,86 @@ const StatementPreviewPage: React.FC = () => {
       {/* Print-specific styles */}
       <style>{`
         @media print {
-          .page-break { page-break-before: always; }
-          .no-print { display: none; }
-          body { margin: 0; padding: 0; }
-          .statement-container { margin: 0; padding: 20px; }
+          @page {
+            size: A4;
+            margin: 15mm 15mm 20mm 15mm;
+            @bottom-center {
+              content: "Page " counter(page) " of " counter(pages);
+              font-size: 10px;
+              color: #666;
+            }
+            @bottom-left {
+              content: "SIP Brewery - Confidential";
+              font-size: 8px;
+              color: #999;
+            }
+            @bottom-right {
+              content: "Generated: " attr(data-date);
+              font-size: 8px;
+              color: #999;
+            }
+          }
+          
+          .page-break { 
+            page-break-before: always; 
+            break-before: page;
+          }
+          .no-print { display: none !important; }
+          .avoid-break { 
+            page-break-inside: avoid; 
+            break-inside: avoid;
+          }
+          
+          body { 
+            margin: 0; 
+            padding: 0; 
+            font-size: 11px;
+            line-height: 1.3;
+          }
+          .statement-container { 
+            margin: 0; 
+            padding: 0; 
+            max-width: none;
+            width: 100%;
+          }
+          
+          /* Ensure header doesn't break */
+          .header {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+          
+          /* Force table rows to stay together */
+          .holdings-table tr {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+          
+          /* Keep sections together */
+          .section {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-bottom: 25px;
+          }
+          
+          .metrics-grid {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+          
+          .ai-insights {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+          
+          /* Page counter */
+          body {
+            counter-reset: page;
+          }
+          
+          .print-page-number::after {
+            content: "Page " counter(page);
+          }
         }
         
         .statement-container {
@@ -702,11 +778,11 @@ const StatementPreviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Page Break */}
+      {/* Page Break - Force new page for holdings table */}
       <div className="page-break"></div>
 
       {/* Holdings Table */}
-      <div className="section">
+      <div className="section avoid-break">
         <div className="section-header">
           <div className="section-title">Portfolio Holdings Breakdown</div>
         </div>
@@ -728,7 +804,7 @@ const StatementPreviewPage: React.FC = () => {
               const portfolioPercent = totalValue > 0 ? (holding.marketValue / totalValue) * 100 : 0;
               
               return (
-                <tr key={index}>
+                <tr key={index} className="avoid-break">
                   <td>
                     <div className="fund-name">{holding.schemeName}</div>
                     <div className="fund-details">
@@ -763,8 +839,8 @@ const StatementPreviewPage: React.FC = () => {
         </table>
       </div>
 
-      {/* Footer */}
-      <div className="footer">
+      {/* Footer - Will appear on each page in print */}
+      <div className="footer avoid-break">
         <div className="footer-grid">
           <div>
             <strong>SIP Brewery Pvt. Ltd.</strong><br />
@@ -777,7 +853,7 @@ const StatementPreviewPage: React.FC = () => {
             SEBI Registration No: INH000000000
           </div>
           <div style={{ textAlign: 'right' }}>
-            Page 1 of 1<br />
+            <span className="print-page-number"></span><br />
             {new Date().toLocaleDateString('en-IN')}<br />
             Client: {statementData.userInfo.clientCode}
           </div>
