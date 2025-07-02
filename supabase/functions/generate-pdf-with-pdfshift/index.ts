@@ -36,68 +36,27 @@ serve(async (req) => {
     const sourceUrl = `${baseUrl}/statement-preview?${params.toString()}`;
     console.log('Source URL for PDF generation:', sourceUrl);
 
-    // Configure PDF Shift options for high-quality output
+    // Configure PDF Shift options - using only basic supported parameters
     const pdfShiftOptions = {
       source: sourceUrl,
       landscape: false,
       format: 'A4',
       margin: '15mm',
       zoom: 1.0,
-      delay: 2000, // Wait 2 seconds for content to load
+      delay: 3000, // Wait 3 seconds for content to load
       footer: {
-        height: '15mm',
-        content: `
-          <div style="font-size: 8px; color: #666; text-align: center; width: 100%; padding: 5px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span>SIP Brewery - Confidential</span>
-              <span>Page {{page}} of {{total}}</span>
-              <span>Generated: ${new Date().toLocaleDateString('en-IN')}</span>
-            </div>
-          </div>
-        `
+        height: '10mm',
+        content: '<div style="font-size: 8px; text-align: center; color: #666;">Page {{page}} of {{total}} | SIP Brewery - Confidential | Generated: ' + new Date().toLocaleDateString('en-IN') + '</div>'
       },
       css: `
-        @page {
-          margin: 15mm 15mm 20mm 15mm;
-        }
-        
-        /* Ensure proper page breaks */
-        .page-break { 
-          page-break-before: always !important; 
-        }
-        .avoid-break { 
-          page-break-inside: avoid !important; 
-        }
-        .no-print { 
-          display: none !important; 
-        }
-        
-        /* Optimize for print */
-        body {
-          -webkit-print-color-adjust: exact !important;
-          color-adjust: exact !important;
-          print-color-adjust: exact !important;
-        }
-        
-        /* Ensure tables don't break awkwardly */
-        .holdings-table tr {
-          page-break-inside: avoid !important;
-        }
-        
-        /* Keep sections together */
-        .section {
-          page-break-inside: avoid !important;
-        }
-        
-        .ai-insights {
-          page-break-inside: avoid !important;
-        }
-        
-        .metrics-grid {
-          page-break-inside: avoid !important;
-        }
-      `,
-      sandbox: false
+        @page { margin: 15mm; }
+        .no-print { display: none !important; }
+        .page-break { page-break-before: always !important; }
+        .avoid-break { page-break-inside: avoid !important; }
+        .section { page-break-inside: avoid !important; }
+        .holdings-table tr { page-break-inside: avoid !important; }
+        body { -webkit-print-color-adjust: exact !important; }
+      `
     };
 
     console.log('Calling PDF Shift API...');
