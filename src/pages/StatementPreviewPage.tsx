@@ -701,55 +701,104 @@ const StatementPreviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Portfolio Metrics */}
-      <div className="metrics-grid">
-        <div className="metric-card neutral">
-          <div className="metric-icon neutral">₹</div>
-          <div className="metric-label">Total Invested</div>
-          <div className="metric-value neutral">
-            ₹{statementData.portfolio.totalInvested.toLocaleString('en-IN')}
+      {/* Dynamic Portfolio Metrics Based on Report Category */}
+      {reportCategory === 'tax' ? (
+        /* Tax-specific metrics */
+        <div className="metrics-grid">
+          <div className="metric-card neutral">
+            <div className="metric-icon neutral">📋</div>
+            <div className="metric-label">80C Investment</div>
+            <div className="metric-value neutral">
+              ₹{Math.min(statementData.portfolio.totalInvested, 150000).toLocaleString('en-IN')}
+            </div>
+            <div className="metric-subtext">Out of ₹1,50,000 limit</div>
           </div>
-          <div className="metric-subtext">Principal Amount</div>
-        </div>
 
-        <div className="metric-card neutral">
-          <div className="metric-icon neutral">📊</div>
-          <div className="metric-label">Current Value</div>
-          <div className="metric-value neutral">
-            ₹{statementData.portfolio.currentValue.toLocaleString('en-IN')}
+          <div className="metric-card positive">
+            <div className="metric-icon positive">💰</div>
+            <div className="metric-label">Tax Saved</div>
+            <div className="metric-value positive">
+              ₹{Math.floor(Math.min(statementData.portfolio.totalInvested, 150000) * 0.3).toLocaleString('en-IN')}
+            </div>
+            <div className="metric-subtext">30% Tax Benefit</div>
           </div>
-          <div className="metric-subtext">Market Value</div>
-        </div>
 
-        <div className={`metric-card ${statementData.portfolio.totalReturns >= 0 ? 'positive' : 'negative'}`}>
-          <div className={`metric-icon ${statementData.portfolio.totalReturns >= 0 ? 'positive' : 'negative'}`}>
-            {statementData.portfolio.totalReturns >= 0 ? '📈' : '📉'}
+          <div className={`metric-card ${statementData.portfolio.totalReturns >= 0 ? 'positive' : 'negative'}`}>
+            <div className={`metric-icon ${statementData.portfolio.totalReturns >= 0 ? 'positive' : 'negative'}`}>
+              {statementData.portfolio.totalReturns >= 0 ? '📈' : '📉'}
+            </div>
+            <div className="metric-label">ELSS Returns</div>
+            <div className={`metric-value ${statementData.portfolio.totalReturns >= 0 ? 'positive' : 'negative'}`}>
+              {statementData.portfolio.totalReturns >= 0 ? '+' : ''}₹{Math.abs(statementData.portfolio.totalReturns).toLocaleString('en-IN')}
+            </div>
+            <div className="metric-subtext">
+              {statementData.portfolio.returnsPercentage >= 0 ? '+' : ''}{statementData.portfolio.returnsPercentage.toFixed(2)}%
+            </div>
           </div>
-          <div className="metric-label">Total Returns</div>
-          <div className={`metric-value ${statementData.portfolio.totalReturns >= 0 ? 'positive' : 'negative'}`}>
-            {statementData.portfolio.totalReturns >= 0 ? '+' : ''}₹{Math.abs(statementData.portfolio.totalReturns).toLocaleString('en-IN')}
-          </div>
-          <div className="metric-subtext">
-            {statementData.portfolio.returnsPercentage >= 0 ? '+' : ''}{statementData.portfolio.returnsPercentage.toFixed(2)}%
-          </div>
-        </div>
 
-        <div className={`metric-card ${statementData.portfolio.xirr >= 0 ? 'positive' : 'negative'}`}>
-          <div className={`metric-icon ${statementData.portfolio.xirr >= 0 ? 'positive' : 'negative'}`}>🎯</div>
-          <div className="metric-label">XIRR</div>
-          <div className={`metric-value ${statementData.portfolio.xirr >= 0 ? 'positive' : 'negative'}`}>
-            {statementData.portfolio.xirr >= 0 ? '+' : ''}{statementData.portfolio.xirr.toFixed(2)}%
-          </div>
-          <div className="metric-subtext">
-            Annualized Return
-            <span className="performance-badge">
-              {statementData.portfolio.xirr >= 15 ? 'Excellent ★★★' : 
-               statementData.portfolio.xirr >= 12 ? 'Good ★★' : 
-               statementData.portfolio.xirr >= 8 ? 'Average ★' : 'Below Avg'}
-            </span>
+          <div className="metric-card neutral">
+            <div className="metric-icon neutral">🔒</div>
+            <div className="metric-label">Lock-in Status</div>
+            <div className="metric-value neutral">
+              {Math.floor(150000 - Math.min(statementData.portfolio.totalInvested, 150000)).toLocaleString('en-IN')}
+            </div>
+            <div className="metric-subtext">
+              {150000 - Math.min(statementData.portfolio.totalInvested, 150000) > 0 ? 
+                'Remaining 80C Limit' : 'Completed ✓'}
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        /* Default Portfolio Metrics */
+        <div className="metrics-grid">
+          <div className="metric-card neutral">
+            <div className="metric-icon neutral">₹</div>
+            <div className="metric-label">Total Invested</div>
+            <div className="metric-value neutral">
+              ₹{statementData.portfolio.totalInvested.toLocaleString('en-IN')}
+            </div>
+            <div className="metric-subtext">Principal Amount</div>
+          </div>
+
+          <div className="metric-card neutral">
+            <div className="metric-icon neutral">📊</div>
+            <div className="metric-label">Current Value</div>
+            <div className="metric-value neutral">
+              ₹{statementData.portfolio.currentValue.toLocaleString('en-IN')}
+            </div>
+            <div className="metric-subtext">Market Value</div>
+          </div>
+
+          <div className={`metric-card ${statementData.portfolio.totalReturns >= 0 ? 'positive' : 'negative'}`}>
+            <div className={`metric-icon ${statementData.portfolio.totalReturns >= 0 ? 'positive' : 'negative'}`}>
+              {statementData.portfolio.totalReturns >= 0 ? '📈' : '📉'}
+            </div>
+            <div className="metric-label">Total Returns</div>
+            <div className={`metric-value ${statementData.portfolio.totalReturns >= 0 ? 'positive' : 'negative'}`}>
+              {statementData.portfolio.totalReturns >= 0 ? '+' : ''}₹{Math.abs(statementData.portfolio.totalReturns).toLocaleString('en-IN')}
+            </div>
+            <div className="metric-subtext">
+              {statementData.portfolio.returnsPercentage >= 0 ? '+' : ''}{statementData.portfolio.returnsPercentage.toFixed(2)}%
+            </div>
+          </div>
+
+          <div className={`metric-card ${statementData.portfolio.xirr >= 0 ? 'positive' : 'negative'}`}>
+            <div className={`metric-icon ${statementData.portfolio.xirr >= 0 ? 'positive' : 'negative'}`}>🎯</div>
+            <div className="metric-label">XIRR</div>
+            <div className={`metric-value ${statementData.portfolio.xirr >= 0 ? 'positive' : 'negative'}`}>
+              {statementData.portfolio.xirr >= 0 ? '+' : ''}{statementData.portfolio.xirr.toFixed(2)}%
+            </div>
+            <div className="metric-subtext">
+              Annualized Return
+              <span className="performance-badge">
+                {statementData.portfolio.xirr >= 15 ? 'Excellent ★★★' : 
+                 statementData.portfolio.xirr >= 12 ? 'Good ★★' : 
+                 statementData.portfolio.xirr >= 8 ? 'Average ★' : 'Below Avg'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* AI Insights Section */}
       <div className="ai-insights">
