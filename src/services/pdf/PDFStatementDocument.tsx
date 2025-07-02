@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { StatementData } from '../statement/types';
-import { ModernPDFDocument } from './components/modern/ModernPDFDocument';
+import { ComprehensivePDFDocument } from './components/modern/ComprehensivePDFDocument';
 
 interface PDFStatementDocumentProps {
   statementType: string;
@@ -10,7 +10,7 @@ interface PDFStatementDocumentProps {
 }
 
 export const PDFStatementDocument: React.FC<PDFStatementDocumentProps> = (props) => {
-  return <ModernPDFDocument {...props} />;
+  return <ComprehensivePDFDocument {...props} />;
 };
 
 export const createPDFDocument = (props: PDFStatementDocumentProps) => {
