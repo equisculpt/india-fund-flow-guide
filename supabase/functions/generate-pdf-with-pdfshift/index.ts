@@ -22,38 +22,30 @@ serve(async (req) => {
       throw new Error('PDF Shift API key not configured');
     }
 
-    // Construct the source URL for the HTML report
-    const baseUrl = req.headers.get('origin') || 'https://pvtrwvvcgkppjlbyvflv.supabase.co';
+    // Construct a simple, fast-loading source URL for the HTML report
+    const baseUrl = req.headers.get('origin') || 'https://fda643ee-be23-498f-9eb0-809d67236773.lovableproject.com';
     const params = new URLSearchParams({
       type: reportType,
       client: clientCode,
-      format: 'html',
       category: category,
-      reportName: reportName,
-      autoCapture: 'false' // Disable auto-capture for PDF Shift
+      reportName: reportName
     });
     
     const sourceUrl = `${baseUrl}/statement-preview?${params.toString()}`;
     console.log('Source URL for PDF generation:', sourceUrl);
 
-    // Configure PDF Shift options using correct API parameters from documentation
+    // Configure PDF Shift with extended timeout and simplified options
     const pdfShiftOptions = {
       source: sourceUrl,
       landscape: false,
       format: 'A4',
       margin: '15mm',
-      delay: 3000,
-      footer: {
-        source: '<div style="font-size: 8px; text-align: center; color: #666; width: 100%; padding: 5px;">Page {{page}} of {{total}} | SIP Brewery - Confidential | Generated: ' + new Date().toLocaleDateString('en-IN') + '</div>',
-        height: '10mm'
-      },
+      delay: 5000, // Wait 5 seconds for content to load
+      timeout: 30, // 30 second timeout for page loading
       css: `
-        @page { margin: 15mm; }
         .no-print { display: none !important; }
         .page-break { page-break-before: always !important; }
         .avoid-break { page-break-inside: avoid !important; }
-        .section { page-break-inside: avoid !important; }
-        .holdings-table tr { page-break-inside: avoid !important; }
         body { -webkit-print-color-adjust: exact !important; }
       `
     };
