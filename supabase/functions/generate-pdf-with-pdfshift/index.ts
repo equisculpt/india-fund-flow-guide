@@ -22,32 +22,31 @@ serve(async (req) => {
       throw new Error('PDF Shift API key not configured');
     }
 
-    // Construct a simple, fast-loading source URL for the HTML report
-    const baseUrl = req.headers.get('origin') || 'https://fda643ee-be23-498f-9eb0-809d67236773.lovableproject.com';
-    const params = new URLSearchParams({
-      type: reportType,
-      client: clientCode,
-      category: category,
-      reportName: reportName
-    });
+    // Test with a simple, guaranteed-working URL first
+    const testMode = true; // Set to false once working
     
-    const sourceUrl = `${baseUrl}/statement-preview?${params.toString()}`;
-    console.log('Source URL for PDF generation:', sourceUrl);
+    let sourceUrl;
+    if (testMode) {
+      // Use a simple HTML string for testing
+      sourceUrl = `<html><body><h1>Test PDF Report</h1><p>Category: ${category}</p><p>Report: ${reportName}</p><p>Client: ${clientCode}</p><p>Generated: ${new Date().toLocaleDateString()}</p></body></html>`;
+    } else {
+      // Use the actual report URL
+      const baseUrl = 'https://fda643ee-be23-498f-9eb0-809d67236773.lovableproject.com';
+      const params = new URLSearchParams({
+        type: reportType,
+        client: clientCode,
+        category: category,
+        reportName: reportName
+      });
+      sourceUrl = `${baseUrl}/statement-preview?${params.toString()}`;
+    }
+    
+    console.log('PDF Source:', testMode ? 'HTML String' : sourceUrl);
 
-    // Configure PDF Shift with extended timeout and simplified options
+    // Minimal PDF Shift configuration for testing
     const pdfShiftOptions = {
       source: sourceUrl,
-      landscape: false,
-      format: 'A4',
-      margin: '15mm',
-      delay: 5000, // Wait 5 seconds for content to load
-      timeout: 30, // 30 second timeout for page loading
-      css: `
-        .no-print { display: none !important; }
-        .page-break { page-break-before: always !important; }
-        .avoid-break { page-break-inside: avoid !important; }
-        body { -webkit-print-color-adjust: exact !important; }
-      `
+      format: 'A4'
     };
 
     console.log('Calling PDF Shift API...');
