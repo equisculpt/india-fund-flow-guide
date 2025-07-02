@@ -36,13 +36,26 @@ serve(async (req) => {
     const sourceUrl = `${baseUrl}/statement-preview?${params.toString()}`;
     console.log('Source URL for PDF generation:', sourceUrl);
 
-    // Configure PDF Shift options - minimal, guaranteed-working configuration
+    // Configure PDF Shift options using correct API parameters from documentation
     const pdfShiftOptions = {
       source: sourceUrl,
       landscape: false,
       format: 'A4',
       margin: '15mm',
-      delay: 3000
+      delay: 3000,
+      footer: {
+        source: '<div style="font-size: 8px; text-align: center; color: #666; width: 100%; padding: 5px;">Page {{page}} of {{total}} | SIP Brewery - Confidential | Generated: ' + new Date().toLocaleDateString('en-IN') + '</div>',
+        height: '10mm'
+      },
+      css: `
+        @page { margin: 15mm; }
+        .no-print { display: none !important; }
+        .page-break { page-break-before: always !important; }
+        .avoid-break { page-break-inside: avoid !important; }
+        .section { page-break-inside: avoid !important; }
+        .holdings-table tr { page-break-inside: avoid !important; }
+        body { -webkit-print-color-adjust: exact !important; }
+      `
     };
 
     console.log('Calling PDF Shift API...');
