@@ -11,48 +11,34 @@ export class WebToPDFService {
   }
 
   /**
-   * Generate PDF from a web page URL using Puppeteer
+   * Generate PDF from a web page URL - opens the beautiful statement preview
    */
   async generatePDFFromURL(
     statementUrl: string, 
     fileName: string = 'statement.pdf'
   ): Promise<void> {
     try {
-      console.log('WebToPDFService: Using direct PDF generation instead of web URL');
+      console.log('WebToPDFService: Opening beautiful statement preview at:', statementUrl);
 
       this.toast({
-        title: "Generating PDF...",
-        description: "Creating your statement using our PDF engine.",
+        title: "Opening Statement Preview",
+        description: "Your beautiful statement is ready! Use the Download PDF button on the preview page.",
       });
 
-      // Extract statement type and client code from URL parameters
-      const url = new URL(statementUrl);
-      const statementType = url.searchParams.get('type') || 'comprehensive';
-      
-      // Use our existing PDF generation system directly
-      await this.pdfDownloadService.downloadPDFStatement(statementType);
+      // Open the beautiful statement preview in a new tab
+      // This shows the new web-based design with download button
+      window.open(statementUrl, '_blank');
 
-      console.log('WebToPDFService: PDF downloaded successfully via direct generation');
+      console.log('WebToPDFService: Statement preview opened successfully');
 
     } catch (error) {
-      console.error('WebToPDFService: Error generating PDF:', error);
+      console.error('WebToPDFService: Error opening statement preview:', error);
       
       this.toast({
-        title: "PDF Generation Failed",
-        description: error instanceof Error ? error.message : "Unable to generate PDF. Opening preview instead.",
+        title: "Error Opening Preview",
+        description: error instanceof Error ? error.message : "Unable to open statement preview.",
         variant: "destructive"
       });
-
-      // Fallback: Open preview for manual print-to-PDF
-      this.toast({
-        title: "Alternative Option",
-        description: "Opening statement preview. Use the Download PDF button on the preview page.",
-      });
-      
-      // Get the base URL and create the statement URL
-      const baseUrl = window.location.origin;
-      const previewUrl = statementUrl.startsWith('http') ? statementUrl : `${baseUrl}${statementUrl}`;
-      window.open(previewUrl, '_blank');
     }
   }
 

@@ -87,9 +87,15 @@ const PDFDebugger: React.FC = () => {
     setIsTestingWebPDF(true);
     try {
       console.log('🧪 Testing new Web-to-PDF system...');
+      
+      // This should open the beautiful statement preview, not generate legacy PDF
       await webToPDFService.generateStatementPDF('comprehensive', 'TEST123');
       
-      const result = { success: true, message: 'Web-to-PDF completed successfully' };
+      const result = { 
+        success: true, 
+        message: 'Web-to-PDF completed - statement preview opened with new design',
+        note: 'This opens the beautiful web statement, not the legacy PDF'
+      };
       setTestResults(prev => ({ ...prev, webToPDF: result }));
     } catch (error) {
       const result = { success: false, error: error.message };
