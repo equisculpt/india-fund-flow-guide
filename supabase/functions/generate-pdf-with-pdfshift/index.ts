@@ -175,8 +175,7 @@ serve(async (req) => {
       margin: '15mm',
       landscape: false,
       timeout: 120000, // 120 seconds timeout
-      wait_for: 3000,  // Wait 3 seconds for content to fully load
-      emulate_media: 'print' // Use print media for better PDF output
+      wait: 3000  // Wait 3 seconds for content to fully load
     };
 
     console.log('Calling PDF Shift API with options:', JSON.stringify(pdfShiftOptions, null, 2));
