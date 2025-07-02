@@ -1,13 +1,13 @@
 import { useToast } from '@/hooks/use-toast';
-import { AutoPDFService } from './AutoPDFService';
+import { DirectPDFService } from './DirectPDFService';
 
 export class WebToPDFService {
   private toast: any;
-  private autoPDFService: AutoPDFService;
+  private directPDFService: DirectPDFService;
 
   constructor(toast: any) {
     this.toast = toast;
-    this.autoPDFService = new AutoPDFService(toast);
+    this.directPDFService = new DirectPDFService(toast);
   }
 
   /**
@@ -50,10 +50,10 @@ export class WebToPDFService {
     clientCode: string,
     additionalParams: Record<string, string> = {}
   ): Promise<void> {
-    console.log('WebToPDFService: Using automatic background PDF generation');
+    console.log('WebToPDFService: Using direct PDF capture and download');
     
-    // Use the new automatic PDF service that generates PDF in background
-    await this.autoPDFService.generateStatementPDF(statementType, clientCode, additionalParams);
+    // Use the new direct PDF service that captures and downloads automatically
+    await this.directPDFService.generateDirectPDF(statementType, clientCode, additionalParams);
   }
 
   /**

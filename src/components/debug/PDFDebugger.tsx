@@ -144,36 +144,36 @@ const PDFDebugger: React.FC = () => {
           </div>
 
           <div className="border-t pt-4">
-            <h4 className="font-medium text-primary mb-4">🎨 Beautiful Web Statement → PDF System</h4>
+            <h4 className="font-medium text-primary mb-4">🚀 DIRECT PDF DOWNLOAD (No Manual Steps!)</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Button 
                 onClick={openStatementPreview} 
                 variant="outline"
               >
-                🎨 Preview New Design
+                🎨 Preview Beautiful Design
               </Button>
               
               <Button 
                 onClick={testWebToPDF} 
                 disabled={isTestingWebPDF}
                 variant="default"
-                className="bg-purple-600 hover:bg-purple-700"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold"
               >
-                {isTestingWebPDF ? 'Converting...' : '✨ Convert Beautiful Design to PDF'}
+                {isTestingWebPDF ? 'Capturing & Converting...' : '⚡ DIRECT PDF DOWNLOAD'}
               </Button>
               
               <Button 
                 onClick={() => webToPDFService.openStatementPreview('comprehensive', 'TEST123')} 
                 variant="outline"
               >
-                📄 Manual Download
+                📄 Manual Preview
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground mt-2">
-              ✨ <strong>NEW:</strong> Converts the beautiful web statement (with emojis, charts, modern design) to PDF!
+            <p className="text-sm text-green-600 font-medium mt-2">
+              ✅ <strong>FULLY AUTOMATIC:</strong> Captures beautiful web statement → Downloads PDF directly!
             </p>
-            <p className="text-sm text-yellow-600 mt-1">
-              📝 <strong>Note:</strong> Opens print dialog for the beautiful statement - save as PDF from there
+            <p className="text-sm text-muted-foreground mt-1">
+              🎯 <strong>Zero manual steps:</strong> Beautiful design with emojis, charts, AI insights → Perfect PDF
             </p>
           </div>
         </div>
