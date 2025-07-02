@@ -27,19 +27,18 @@ serve(async (req) => {
     // Debug: log the request to understand what's happening
     console.log('PDF Shift request:', { reportType, clientCode, category, reportName });
 
-    // Create ultra-simple HTML that should definitely render
+    // Create minimal HTML with just logo and basic text
     const htmlContent = `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Statement</title>
+    <title>Test</title>
 </head>
-<body style="font-family: Arial; margin: 20px; font-size: 14px;">
-    <h1 style="color: blue;">SIP Brewery Statement</h1>
-    <p><strong>Report:</strong> ${reportName}</p>
-    <p><strong>Client:</strong> ${clientCode}</p>
-    <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-    <p>This is a test PDF document.</p>
+<body style="padding: 20px; font-family: Arial;">
+    <img src="https://via.placeholder.com/200x100/2563eb/ffffff?text=SIP+BREWERY" alt="SIP Brewery Logo" style="display: block; margin: 0 auto 20px;">
+    <h1 style="text-align: center; color: #2563eb;">SIP Brewery</h1>
+    <p style="text-align: center;">Test PDF Document</p>
+    <p style="text-align: center;">Generated: ${new Date().toLocaleString()}</p>
 </body>
 </html>`;
     
