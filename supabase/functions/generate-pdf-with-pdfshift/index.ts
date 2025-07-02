@@ -168,23 +168,23 @@ serve(async (req) => {
     
     console.log('Using HTML content for PDF generation');
 
-    // PDF Shift configuration with HTML content and extended timeout
+    // PDF Shift configuration with correct API options
     const pdfShiftOptions = {
       source: htmlContent,
       format: 'A4',
       margin: '15mm',
       landscape: false,
-      timeout: 120000, // 120 seconds timeout
-      wait: 3000  // Wait 3 seconds for content to fully load
+      timeout: 120, // 120 seconds timeout (in seconds, not milliseconds)
+      delay: 3000   // Wait 3 seconds for content to fully load (in milliseconds)
     };
 
     console.log('Calling PDF Shift API with options:', JSON.stringify(pdfShiftOptions, null, 2));
     
-    // Make request to PDF Shift API
+    // Make request to PDF Shift API with correct authentication
     const pdfShiftResponse = await fetch('https://api.pdfshift.io/v3/convert/pdf', {
       method: 'POST',
       headers: {
-        'Authorization': `Basic ${btoa(`api:${pdfShiftApiKey}`)}`,
+        'X-API-Key': pdfShiftApiKey,  // Correct authentication method
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(pdfShiftOptions),
