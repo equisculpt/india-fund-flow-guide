@@ -199,6 +199,11 @@ const StatementPreviewPage: React.FC = () => {
           opacity: 0.7;
         }
         
+        .beer-icon {
+          font-size: 24px;
+          filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+        
         .company-info h1 {
           font-size: 32px;
           font-weight: 700;
@@ -564,7 +569,7 @@ const StatementPreviewPage: React.FC = () => {
       <div className="header">
         <div className="logo-section">
           <div className="logo">
-            <span style={{ position: 'relative', zIndex: 2 }}>🍺</span>
+            <span className="beer-icon" style={{ position: 'relative', zIndex: 2 }}>🍺</span>
           </div>
           <div className="company-info">
             <h1>SIP BREWERY</h1>

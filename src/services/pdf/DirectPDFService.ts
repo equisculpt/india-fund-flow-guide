@@ -106,104 +106,47 @@ export class DirectPDFService {
   }
 
   /**
-   * Capture the current page as PDF (called from statement preview page)
+   * Capture the current page as PDF using browser's print-to-PDF (preserves text selection)
    */
   async captureCurrentPageAsPDF(): Promise<void> {
     try {
-      console.log('DirectPDFService: Capturing current page as PDF');
+      console.log('DirectPDFService: Using browser print-to-PDF for text-selectable PDF');
 
       this.toast({
-        title: "Capturing Beautiful Statement...",
-        description: "Converting your statement to PDF automatically.",
+        title: "Opening Print Dialog...",
+        description: "Use browser's Save as PDF for text-selectable PDF.",
       });
 
-      // Find the statement container
-      const statementContainer = document.querySelector('.statement-container');
-      if (!statementContainer) {
-        throw new Error('Statement container not found');
-      }
-
-      // Hide the floating buttons during capture
+      // Hide the floating buttons during print
       const floatingButtons = document.querySelectorAll('.no-print');
       floatingButtons.forEach(btn => {
         (btn as HTMLElement).style.display = 'none';
       });
 
-      // Wait a moment for any dynamic content
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Wait a moment for UI updates
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      this.toast({
-        title: "Creating PDF...",
-        description: "Generating high-quality PDF from your statement.",
-      });
+      // Use browser's native print which creates text-selectable PDFs
+      window.print();
 
-      // Capture the statement as canvas
-      const canvas = await html2canvas(statementContainer as HTMLElement, {
-        useCORS: true,
-        allowTaint: true,
-        scale: 1.5, // Good quality without being too large
-        backgroundColor: '#ffffff',
-        height: statementContainer.scrollHeight,
-        width: statementContainer.scrollWidth
-      });
-
-      // Create PDF from canvas
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      
-      // Calculate dimensions to fit the page
-      const imgWidth = pdfWidth;
-      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      // Add the image to PDF, splitting across pages if needed
-      if (imgHeight > pdfHeight) {
-        let position = 0;
-        let pageHeight = pdfHeight;
-
-        while (position < imgHeight) {
-          if (position > 0) {
-            pdf.addPage();
-          }
-
-          pdf.addImage(imgData, 'PNG', 0, -position, imgWidth, imgHeight);
-          position += pageHeight;
-        }
-      } else {
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      }
-
-      // Download the PDF
-      const fileName = `SIPBrewery-Beautiful-Statement-${new Date().toISOString().split('T')[0]}.pdf`;
-      pdf.save(fileName);
-
-      // Show floating buttons again
-      floatingButtons.forEach(btn => {
-        (btn as HTMLElement).style.display = '';
-      });
-
-      this.toast({
-        title: "PDF Downloaded! 🎉",
-        description: "Your beautiful statement has been downloaded as PDF successfully!",
-      });
-
-      // Close the window after successful download
+      // Show floating buttons again after print dialog closes
       setTimeout(() => {
-        window.close();
-      }, 2000);
+        floatingButtons.forEach(btn => {
+          (btn as HTMLElement).style.display = '';
+        });
+      }, 1000);
+
+      this.toast({
+        title: "PDF Print Dialog Opened! 📄",
+        description: "Choose 'Save as PDF' in destination to get text-selectable PDF.",
+      });
 
     } catch (error) {
-      console.error('DirectPDFService: Capture error:', error);
+      console.error('DirectPDFService: Print error:', error);
       
       this.toast({
-        title: "Auto-capture failed",
-        description: "Please use the Download PDF button manually.",
+        title: "Print dialog failed",
+        description: "Please use Ctrl+P to print manually.",
         variant: "destructive"
       });
 
