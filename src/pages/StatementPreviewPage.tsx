@@ -20,6 +20,8 @@ const StatementPreviewPage: React.FC = () => {
   
   const statementType = searchParams.get('type') || 'comprehensive';
   const clientCode = searchParams.get('client') || 'SB123456';
+  const reportCategory = searchParams.get('category') || 'portfolio';
+  const reportName = searchParams.get('reportName') || 'comprehensive';
   
   useEffect(() => {
     // Generate mock data for preview
@@ -653,11 +655,17 @@ const StatementPreviewPage: React.FC = () => {
           </div>
         </div>
         <div className="document-meta">
-          <h2>Portfolio Statement</h2>
+          <h2>{
+            reportCategory === 'tax' ? 'Tax Statement' :
+            reportCategory === 'sip' ? 'SIP Statement' :
+            reportCategory === 'transaction' ? 'Transaction Statement' :
+            reportCategory === 'performance' ? 'Performance Report' :
+            'Portfolio Statement'
+          }</h2>
           <p>Generated: {new Date().toLocaleDateString('en-IN', { 
             year: 'numeric', month: 'long', day: 'numeric' 
           })}</p>
-          <p>Type: Comprehensive Analysis</p>
+          <p>Type: {reportName.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
           <div className="ai-badge">AI POWERED</div>
         </div>
       </div>
