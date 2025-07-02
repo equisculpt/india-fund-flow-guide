@@ -156,10 +156,17 @@ const TransactionHistory = () => {
     return `${units.toFixed(3)} units`;
   };
 
-  // BSE STAR MF API placeholder functions
+  // Updated to use DirectPDFService for statement downloads
   const handleDownloadStatement = async (type: string) => {
-    console.log('BSE STAR MF API: Download Statement', type);
-    // Placeholder for: GET /api/bse/statements/download
+    try {
+      console.log('Generating transaction statement:', type);
+      const { DirectPDFService } = await import('@/services/pdf/DirectPDFService');
+      const { useToast } = await import('@/hooks/use-toast');
+      const directPDFService = new DirectPDFService((data: any) => console.log('Toast:', data));
+      await directPDFService.generateDirectPDF(type, 'TXN123', { statementType: type });
+    } catch (error) {
+      console.error('Transaction statement download failed:', error);
+    }
   };
 
   const handleRefreshTransactions = async () => {

@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { DirectPDFService } from '@/services/pdf/DirectPDFService';
 import { 
   Receipt, 
   Download, 
@@ -21,6 +23,8 @@ import {
 
 const TaxCenter = () => {
   const [selectedFinancialYear, setSelectedFinancialYear] = useState('2024-25');
+  const { toast } = useToast();
+  const directPDFService = new DirectPDFService(toast);
 
   // Mock tax data
   const taxData = {
@@ -63,6 +67,20 @@ const TaxCenter = () => {
     return `₹${amount.toLocaleString()}`;
   };
 
+  const handleDownloadTaxStatement = async (type: string) => {
+    try {
+      console.log('Generating tax statement:', type);
+      await directPDFService.generateDirectPDF(type, 'TAX123', { statementType: type });
+    } catch (error) {
+      console.error('Tax statement download failed:', error);
+      toast({
+        title: "Download Failed",
+        description: "Unable to generate tax statement. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -76,7 +94,7 @@ const TaxCenter = () => {
             <Calculator className="h-4 w-4 mr-2" />
             Tax Calculator
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => handleDownloadTaxStatement('tax-comprehensive')}>
             <Download className="h-4 w-4 mr-2" />
             Download Reports
           </Button>
@@ -251,19 +269,19 @@ const TaxCenter = () => {
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-4">
-                <Button variant="outline" className="h-20 flex-col">
+                <Button variant="outline" className="h-20 flex-col" onClick={() => handleDownloadTaxStatement('form-16')}>
                   <FileText className="h-6 w-6 mb-2" />
                   Form 16 (TDS Certificate)
                 </Button>
-                <Button variant="outline" className="h-20 flex-col">
+                <Button variant="outline" className="h-20 flex-col" onClick={() => handleDownloadTaxStatement('80c-certificate')}>
                   <Receipt className="h-6 w-6 mb-2" />
                   80C Investment Certificate
                 </Button>
-                <Button variant="outline" className="h-20 flex-col">
+                <Button variant="outline" className="h-20 flex-col" onClick={() => handleDownloadTaxStatement('capital-gains')}>
                   <PieChart className="h-6 w-6 mb-2" />
                   Capital Gains Statement
                 </Button>
-                <Button variant="outline" className="h-20 flex-col">
+                <Button variant="outline" className="h-20 flex-col" onClick={() => handleDownloadTaxStatement('annual-investment')}>
                   <Download className="h-6 w-6 mb-2" />
                   Annual Investment Statement
                 </Button>
