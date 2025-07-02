@@ -10,52 +10,51 @@ interface PDFUserInfoProps {
 }
 
 export const PDFUserInfo: React.FC<PDFUserInfoProps> = ({ userInfo }) => (
-  <View style={styles.userInfo}>
+  <View style={styles.userInfo} wrap={false}>
     <Text style={styles.userInfoTitle}>Investor Information</Text>
     
-    {/* Avatar and Name with Verified Badge */}
-    <UserAvatar name={userInfo.name} isVerified={userInfo.isVerified} />
-
     <View style={styles.userInfoGrid}>
       <View style={styles.userInfoItem}>
+        <Text style={styles.userInfoLabel}>Full Name</Text>
+        <Text style={styles.userInfoValue}>{userInfo.name || 'N/A'}</Text>
+      </View>
+      
+      <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>Client Code</Text>
-        <Text style={styles.userInfoValue}>{userInfo.clientCode || '—'}</Text>
+        <Text style={styles.userInfoValue}>{userInfo.clientCode || 'N/A'}</Text>
       </View>
       
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>Email Address</Text>
-        <Text style={styles.userInfoValue}>{userInfo.email || '—'}</Text>
+        <Text style={styles.userInfoValue}>{userInfo.email || 'N/A'}</Text>
       </View>
       
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>Mobile Number</Text>
-        <Text style={styles.userInfoValue}>{userInfo.mobile || '—'}</Text>
+        <Text style={styles.userInfoValue}>{userInfo.mobile || 'N/A'}</Text>
       </View>
       
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>PAN Number</Text>
-        <Text style={styles.userInfoValue}>{userInfo.panMasked || '—'}</Text>
+        <Text style={styles.userInfoValue}>{userInfo.panMasked || 'N/A'}</Text>
       </View>
       
       <View style={styles.userInfoItem}>
         <Text style={styles.userInfoLabel}>KYC Status</Text>
         <Text style={[styles.userInfoValue, { 
-          color: userInfo.kycStatus === 'VERIFIED' ? '#00B47B' : 
+          color: (userInfo.kycStatus === 'VERIFIED' || userInfo.isVerified) ? '#00B47B' : 
                 userInfo.kycStatus === 'PENDING' ? '#FFB800' : '#EF4444' 
         }]}>
-          {userInfo.kycStatus || 'VERIFIED'}
+          {userInfo.kycStatus || (userInfo.isVerified ? 'VERIFIED' : 'PENDING')}
         </Text>
       </View>
 
-      {userInfo.segment && (
-        <View style={styles.userInfoItem}>
-          <Text style={styles.userInfoLabel}>Investment Plan</Text>
-          <Text style={styles.userInfoValue}>
-            {userInfo.segment === 'DIRECT' ? 'Direct Plan' : 
-             userInfo.segment === 'REGULAR' ? 'Regular Plan' : 'IFA Client'}
-          </Text>
-        </View>
-      )}
+      <View style={styles.userInfoItem}>
+        <Text style={styles.userInfoLabel}>Investment Plan</Text>
+        <Text style={styles.userInfoValue}>
+          {userInfo.segment === 'DIRECT' ? 'Direct Plan' : 'Regular Plan'}
+        </Text>
+      </View>
 
       {userInfo.address && (
         <View style={[styles.userInfoItem, { flex: 2 }]}>

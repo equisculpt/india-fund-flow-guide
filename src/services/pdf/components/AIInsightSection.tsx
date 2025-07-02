@@ -15,27 +15,27 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
     if (xirr > 15) {
       return {
         title: "Excellent Performance Detected",
-        insight: `Your portfolio is delivering outstanding returns with ${xirr.toFixed(1)}% XIRR, placing you in the top 20% of investors on our platform.`,
+        insight: 'Your portfolio is delivering outstanding returns with ' + xirr.toFixed(1) + '% XIRR, placing you in the top 20% of investors on our platform.',
         recommendation: "Consider systematic step-ups in your SIPs to accelerate wealth creation while maintaining this momentum.",
-        highlight: `You're beating inflation by ${(xirr - 6).toFixed(1)}% annually!`,
+        highlight: 'You are beating inflation by ' + (xirr - 6).toFixed(1) + '% annually!',
         percentile: "Top 20%",
         percentileValue: 80
       };
     } else if (xirr > 12) {
       return {
         title: "Strong Portfolio Performance",
-        insight: `Your ${xirr.toFixed(1)}% XIRR shows good investment discipline and fund selection across your ₹${portfolio.totalInvested.toLocaleString('en-IN')} investment.`,
+        insight: 'Your ' + xirr.toFixed(1) + '% XIRR shows good investment discipline and fund selection across your ₹' + portfolio.totalInvested.toLocaleString('en-IN', { maximumFractionDigits: 0 }) + ' investment.',
         recommendation: "Explore adding international diversification or increasing allocation to small-cap funds for potential alpha generation.",
-        highlight: `Your returns are ${(xirr - 10).toFixed(1)}% above market average!`,
+        highlight: 'Your returns are ' + (xirr - 10).toFixed(1) + '% above market average!',
         percentile: "Top 35%",
         percentileValue: 65
       };
     } else {
       return {
         title: "Growth Opportunity Identified",
-        insight: `Your current ${xirr.toFixed(1)}% XIRR indicates potential for optimization in fund selection and asset allocation.`,
+        insight: 'Your current ' + xirr.toFixed(1) + '% XIRR indicates potential for optimization in fund selection and asset allocation.',
         recommendation: "Consider reviewing your fund choices and increasing exposure to growth-oriented equity funds for better long-term returns.",
-        highlight: `Small changes could boost your returns by 2-4% annually.`,
+        highlight: 'Small changes could boost your returns by 2-4% annually.',
         percentile: "Top 60%",
         percentileValue: 40
       };
@@ -88,7 +88,7 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
             Your XIRR Performance: {insight.percentile}
           </Text>
           <View style={styles.progressBarContainer}>
-            <View style={[styles.progressBarFill, { width: `${insight.percentileValue}%` }]} />
+            <View style={[styles.progressBarFill, { width: insight.percentileValue + '%' }]} />
           </View>
         </View>
       </View>

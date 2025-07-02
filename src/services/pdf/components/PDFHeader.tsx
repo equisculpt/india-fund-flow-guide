@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { View, Text, Image } from '@react-pdf/renderer';
+import { View, Text } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { styles } from '../styles/pdfStyles';
 
@@ -47,10 +46,9 @@ export const PDFHeader: React.FC<PDFHeaderProps> = ({
     <View style={styles.header}>
       <View style={styles.logoSection}>
         <View style={styles.mainLogo}>
-          <Image 
-            src="/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png" 
-            style={styles.sipBreweryLogo}
-          />
+          <View style={[styles.sipBreweryLogo, { backgroundColor: '#FFB800', borderRadius: 8, justifyContent: 'center', alignItems: 'center' }]}>
+            <Text style={{ color: '#FFFFFF', fontSize: 20, fontWeight: 'bold' }}>SB</Text>
+          </View>
           <View style={styles.brandingText}>
             <Text style={styles.companyName}>SIP Brewery</Text>
             <Text style={styles.tagline}>Brewing Wealth, One SIP at a Time</Text>
@@ -59,10 +57,9 @@ export const PDFHeader: React.FC<PDFHeaderProps> = ({
         <View style={styles.trademarkSection}>
           <Text style={styles.trademarkText}>A Trademark of</Text>
           <View style={styles.equisculptBrand}>
-          <Image 
-            src="/lovable-uploads/d0cc5477-61a2-4b56-86ed-121ba801e938.png" 
-            style={styles.equisculptLogo}
-          />
+            <View style={[styles.equisculptLogo, { backgroundColor: '#00B47B', borderRadius: 4, justifyContent: 'center', alignItems: 'center' }]}>
+              <Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 'bold' }}>EV</Text>
+            </View>
             <Text style={styles.equisculptText}>Equisculpt Ventures</Text>
           </View>
         </View>
@@ -73,13 +70,14 @@ export const PDFHeader: React.FC<PDFHeaderProps> = ({
         </Text>
         <View style={styles.regulatoryBadge}>
           <Text style={styles.regulatoryBadgeText}>
-            AMFI: {amfiReg}{'\n'}BSE: {bseMember}{'\n'}SEBI: {sebiReg}
+            AMFI: {amfiReg}
+            {'\n'}BSE: {bseMember}
+            {'\n'}SEBI: {sebiReg}
           </Text>
         </View>
       </View>
     </View>
     
-    {/* Statement Period - Professional Display */}
     <View style={styles.statementPeriod}>
       <Text>Statement Period: {format(generatedAt, 'MMMM yyyy')} | Generated on {format(generatedAt, 'dd MMM yyyy at HH:mm')}</Text>
     </View>
