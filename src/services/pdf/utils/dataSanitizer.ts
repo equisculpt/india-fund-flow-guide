@@ -8,8 +8,10 @@ export class PDFDataSanitizer {
     return text
       // Remove all emojis and unicode symbols
       .replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
-      // Remove special symbols that might cause issues
-      .replace(/[💰📈📊📉🎯👥⭐🎁]/g, '')
+      // Remove specific problematic symbols
+      .replace(/[💰📈📊📉🎯👥⭐🎁🤖💡★=°=È<‾]/g, '')
+      // Remove currency symbols that cause issues
+      .replace(/[₹]/g, 'Rs.')
       // Remove other problematic unicode characters
       .replace(/[\u2000-\u206F\u2E00-\u2E7F]/g, ' ')
       // Clean up multiple spaces

@@ -23,7 +23,7 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
       <View style={styles.glanceHeader}>
         <Text style={styles.glanceTitle}>Portfolio Dashboard</Text>
         <View style={styles.aiBadge}>
-          <Text style={styles.aiBadgeIcon}>🤖</Text>
+          <Text style={styles.aiBadgeIcon}>AI</Text>
           <Text style={styles.aiBadgeText}>AI POWERED</Text>
         </View>
       </View>
@@ -31,21 +31,21 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
       {/* Horizontal Dashboard Cards */}
       <View style={styles.glanceGrid}>
         <View style={[styles.glanceCard, styles.glanceCardPrimary]}>
-          <Text style={styles.glanceIcon}>💰</Text>
+          <Text style={styles.glanceIcon}>Rs</Text>
           <Text style={styles.glanceLabel}>Total Invested</Text>
           <Text style={styles.glanceValue}>Rs.{totalInvested.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</Text>
           <Text style={styles.glanceSubtext}>Principal Amount</Text>
         </View>
         
         <View style={[styles.glanceCard, styles.glanceCardSuccess]}>
-          <Text style={styles.glanceIcon}>📈</Text>
+          <Text style={styles.glanceIcon}>^</Text>
           <Text style={styles.glanceLabel}>Current Value</Text>
           <Text style={styles.glanceValue}>Rs.{currentValue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</Text>
           <Text style={styles.glanceSubtext}>Market Value</Text>
         </View>
         
         <View style={[styles.glanceCard, totalReturns >= 0 ? styles.glanceCardSuccess : styles.glanceCardWarning]}>
-          <Text style={styles.glanceIcon}>{totalReturns >= 0 ? '📊' : '📉'}</Text>
+          <Text style={styles.glanceIcon}>{totalReturns >= 0 ? '+' : '-'}</Text>
           <Text style={styles.glanceLabel}>Total Returns</Text>
           <Text style={[
             styles.glanceValue, 
@@ -62,7 +62,7 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
         </View>
         
         <View style={[styles.glanceCard, xirr >= 0 ? styles.glanceCardSuccess : styles.glanceCardWarning]}>
-          <Text style={styles.glanceIcon}>🎯</Text>
+          <Text style={styles.glanceIcon}>%</Text>
           <Text style={styles.glanceLabel}>XIRR</Text>
           <Text style={[
             styles.glanceValue, 
@@ -77,7 +77,7 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
       {/* Enhanced XIRR Explanation */}
       <View style={styles.xirrExplanation}>
         <Text style={styles.xirrNote}>
-          💡 XIRR (Extended Internal Rate of Return) calculates your annualized return considering the timing and amount of each investment, 
+          NOTE: XIRR (Extended Internal Rate of Return) calculates your annualized return considering the timing and amount of each investment, 
           providing the most accurate measure of your portfolio performance.
         </Text>
       </View>
@@ -85,7 +85,7 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
       {/* Goal Progress Section - Enhanced */}
       {portfolio.goalName && (
         <View style={styles.goalProgress}>
-          <Text style={styles.goalProgressTitle}>🎯 Goal Progress: {portfolio.goalName}</Text>
+          <Text style={styles.goalProgressTitle}>Goal Progress: {portfolio.goalName}</Text>
           <View style={styles.goalProgressContent}>
             <View style={styles.goalProgressItem}>
               <Text style={styles.goalProgressLabel}>Target Amount</Text>
