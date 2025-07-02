@@ -1,17 +1,17 @@
 import React from 'react';
-import { Document, Page, Text } from '@react-pdf/renderer';
+import { Document, Page, Text, View } from '@react-pdf/renderer';
 import { styles } from './styles/pdfStyles';
 import { PDFDataSanitizer } from './utils/dataSanitizer';
-import { PDFHeader } from './components/PDFHeader';
+import { ProfessionalPDFHeader } from './components/ProfessionalPDFHeader';
+import { ProfessionalPDFFooter } from './components/ProfessionalPDFFooter';
+import { ProfessionalPDFPortfolioSummary } from './components/ProfessionalPDFPortfolioSummary';
+import { ProfessionalPDFHoldingsTable } from './components/ProfessionalPDFHoldingsTable';
 import { PDFUserInfo } from './components/PDFUserInfo';
-import { PDFPortfolioSummary } from './components/PDFPortfolioSummary';
 import { AIInsightSection } from './components/AIInsightSection';
-import { PDFHoldingsTable } from './components/PDFHoldingsTable';
 import { PDFRecentTransactions } from './components/PDFRecentTransactions';
 import { PDFUpcomingSIPs } from './components/PDFUpcomingSIPs';
 import { PDFRewards } from './components/PDFRewards';
 import { PDFCapitalGains } from './components/PDFCapitalGains';
-import { PDFFooter } from './components/PDFFooter';
 import { PDFCharts } from './components/PDFCharts';
 
 export const PDFStatementDocument = ({
@@ -24,37 +24,47 @@ export const PDFStatementDocument = ({
   return (
   <Document>
     <Page size="A4" style={styles.page}>
-      <PDFHeader generatedAt={generatedAt} />
-      <Text style={styles.watermark} fixed>SIP BREWERY</Text>
+      <ProfessionalPDFHeader 
+        generatedAt={generatedAt} 
+        statementType="Comprehensive Portfolio Statement"
+        documentTitle="Portfolio Statement"
+      />
 
       <PDFUserInfo userInfo={cleanData.userInfo} />
-      <Text break />
+      
+      <View break />
 
-      <PDFPortfolioSummary portfolio={cleanData.portfolio} />
-      <Text break />
+      <ProfessionalPDFPortfolioSummary portfolio={cleanData.portfolio} />
+      
+      <View break />
 
       <AIInsightSection portfolio={cleanData.portfolio} />
-      <Text break />
+      
+      <View break />
 
-      <PDFCharts chartsData={cleanData.chartsData} />
-      <Text break />
-
-      <PDFHoldingsTable holdings={cleanData.holdings} />
-      <Text break />
+      <ProfessionalPDFHoldingsTable holdings={cleanData.holdings} />
+      
+      <View break />
 
       <PDFRecentTransactions transactions={cleanData.transactions} />
-      <Text break />
+      
+      <View break />
 
       <PDFUpcomingSIPs sips={cleanData.sips} />
-      <Text break />
+      
+      <View break />
 
       <PDFRewards rewards={cleanData.rewards} />
-      <Text break />
+      
+      <View break />
 
       <PDFCapitalGains capitalGains={cleanData.capitalGains} />
-      <Text break />
 
-      <PDFFooter generatedAt={generatedAt} />
+      <ProfessionalPDFFooter 
+        generatedAt={generatedAt}
+        pageNumber={1}
+        totalPages={1}
+      />
     </Page>
   </Document>
   );
