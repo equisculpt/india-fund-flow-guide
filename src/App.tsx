@@ -35,6 +35,7 @@ import SIPManagement from "./pages/SIPManagement";
 import ReferralPage from "./pages/ReferralPage";
 import TestLogin from "./pages/TestLogin";
 import TestDashboard from "./pages/TestDashboard";
+import StatementPreviewPage from "./pages/StatementPreviewPage";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
                 {/* Test Routes */}
                 <Route path="/test-login" element={<TestLogin />} />
                 <Route path="/test-dashboard" element={<TestDashboard />} />
+                <Route path="/statement-preview" element={<StatementPreviewPage />} />
                 
                 {/* Keep existing routes */}
                 <Route path="/" element={<Index />} />

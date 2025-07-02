@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
-import { PDFDownloadService } from '@/services/pdf/PDFDownloadService';
+import { WebToPDFService } from '@/services/pdf/WebToPDFService';
 import { StatementFormData } from './types';
 
 export const useStatementGenerator = (onGenerateStatement?: (type: string, params: any) => void) => {
@@ -15,7 +15,7 @@ export const useStatementGenerator = (onGenerateStatement?: (type: string, param
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
-  const pdfDownloadService = new PDFDownloadService(toast);
+  const webToPDFService = new WebToPDFService(toast);
 
   const updateFormData = (field: keyof StatementFormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -49,8 +49,17 @@ export const useStatementGenerator = (onGenerateStatement?: (type: string, param
         onGenerateStatement(formData.selectedStatement, params);
       }
 
-      // Generate PDF statement
-      await pdfDownloadService.downloadPDFStatement(formData.selectedStatement, params);
+      // Generate PDF using web-to-PDF approach
+      await webToPDFService.generateStatementPDF(
+        formData.selectedStatement, 
+        'SB123456', // In real app, get from user context
+        {
+          startDate: params.startDate || '',
+          endDate: params.endDate || '',
+          financialYear: params.financialYear || '',
+          language: params.language || 'english'
+        }
+      );
 
     } catch (error) {
       console.error('Statement generation error:', error);
