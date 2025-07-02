@@ -33,14 +33,14 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
         <View style={[styles.glanceCard, styles.glanceCardPrimary]}>
           <Text style={styles.glanceIcon}>💰</Text>
           <Text style={styles.glanceLabel}>Total Invested</Text>
-          <Text style={styles.glanceValue}>{`₹${totalInvested.toLocaleString('en-IN')}`}</Text>
+          <Text style={styles.glanceValue}>₹{totalInvested.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</Text>
           <Text style={styles.glanceSubtext}>Principal Amount</Text>
         </View>
         
         <View style={[styles.glanceCard, styles.glanceCardSuccess]}>
           <Text style={styles.glanceIcon}>📈</Text>
           <Text style={styles.glanceLabel}>Current Value</Text>
-          <Text style={styles.glanceValue}>{`₹${currentValue.toLocaleString('en-IN')}`}</Text>
+          <Text style={styles.glanceValue}>₹{currentValue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</Text>
           <Text style={styles.glanceSubtext}>Market Value</Text>
         </View>
         
@@ -51,7 +51,7 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
             styles.glanceValue, 
             { color: totalReturns >= 0 ? '#00B47B' : '#EF4444' }
           ]}>
-            {`${totalReturns >= 0 ? '+' : ''}₹${totalReturns.toLocaleString('en-IN')}`}
+            {totalReturns >= 0 ? '+' : ''}₹{totalReturns.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
           </Text>
           <Text style={[
             styles.glanceSubtext,
@@ -90,13 +90,13 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
             <View style={styles.goalProgressItem}>
               <Text style={styles.goalProgressLabel}>Target Amount</Text>
               <Text style={styles.goalProgressValue}>
-                 {goalTarget > 0 ? `₹${goalTarget.toLocaleString('en-IN')}` : 'Not Set'}
+                 {goalTarget > 0 ? '₹' + goalTarget.toLocaleString('en-IN', { maximumFractionDigits: 0 }) : 'Not Set'}
               </Text>
             </View>
             <View style={styles.goalProgressItem}>
               <Text style={styles.goalProgressLabel}>Current Achievement</Text>
               <Text style={styles.goalProgressValue}>
-                {`₹${goalAchieved.toLocaleString('en-IN')}`}
+                ₹{goalAchieved.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
               </Text>
             </View>
             <View style={styles.goalProgressItem}>

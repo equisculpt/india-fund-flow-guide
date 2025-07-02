@@ -9,9 +9,9 @@ export const footerStyles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: '#F8FAFC',
-    borderTopWidth: 3,
+    borderTopWidth: 2,
     borderTopColor: '#2E7DFF',
-    paddingVertical: 15,
+    paddingVertical: 12,
     paddingHorizontal: 20,
   },
   footerContent: {
@@ -74,9 +74,9 @@ export const footerStyles = StyleSheet.create({
   // Enhanced Disclaimer Section - Fixed positioning
   disclaimer: {
     backgroundColor: '#FEF2F2',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 6,
     borderLeftWidth: 3,
     borderLeftColor: '#EF4444',
     borderWidth: 1,

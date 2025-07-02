@@ -59,10 +59,10 @@ export const PDFHeader: React.FC<PDFHeaderProps> = ({
         <View style={styles.trademarkSection}>
           <Text style={styles.trademarkText}>A Trademark of</Text>
           <View style={styles.equisculptBrand}>
-            <Image 
-              src="/lovable-uploads/b16468ef-9745-48f9-a26e-c8c3869b2a13.png" 
-              style={styles.equisculptLogo}
-            />
+          <Image 
+            src="/lovable-uploads/d0cc5477-61a2-4b56-86ed-121ba801e938.png" 
+            style={styles.equisculptLogo}
+          />
             <Text style={styles.equisculptText}>Equisculpt Ventures</Text>
           </View>
         </View>

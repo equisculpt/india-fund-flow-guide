@@ -4,7 +4,8 @@ import { StyleSheet } from '@react-pdf/renderer';
 export const tableStyles = StyleSheet.create({
   // Professional Table Section
   section: {
-    marginBottom: 32,
+    marginBottom: 25,
+    breakInside: 'avoid',
   },
   
   sectionTitle: {
@@ -25,8 +26,9 @@ export const tableStyles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#E5E7EB',
-    marginBottom: 24,
+    marginBottom: 20,
     backgroundColor: '#FFFFFF',
+    breakInside: 'avoid',
   },
   
   tableHeader: {

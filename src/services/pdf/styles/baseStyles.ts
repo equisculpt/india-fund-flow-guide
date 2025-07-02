@@ -5,8 +5,8 @@ export const baseStyles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
-    padding: 25,
-    paddingBottom: 150, // More space for disclaimer + footer
+    padding: 30,
+    paddingBottom: 120,
     fontFamily: 'Helvetica',
     fontSize: 12,
     position: 'relative',
