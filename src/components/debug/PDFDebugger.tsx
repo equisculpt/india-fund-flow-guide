@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { PDFDownloadService } from '@/services/pdf/PDFDownloadService';
+import { WebToPDFService } from '@/services/pdf/WebToPDFService';
 import { statementDataService } from '@/services/statement/statementDataService';
 import { pdfStatementGenerator } from '@/services/pdf/PDFStatementGenerator';
 
@@ -12,8 +13,10 @@ const PDFDebugger: React.FC = () => {
   const [isTestingData, setIsTestingData] = useState(false);
   const [isTestingPDF, setIsTestingPDF] = useState(false);
   const [isTestingDownload, setIsTestingDownload] = useState(false);
+  const [isTestingWebPDF, setIsTestingWebPDF] = useState(false);
   const { toast } = useToast();
   const pdfDownloadService = new PDFDownloadService(toast);
+  const webToPDFService = new WebToPDFService(toast);
 
   const testDataFetch = async () => {
     setIsTestingData(true);
@@ -80,36 +83,86 @@ const PDFDebugger: React.FC = () => {
     setIsTestingDownload(false);
   };
 
+  const testWebToPDF = async () => {
+    setIsTestingWebPDF(true);
+    try {
+      console.log('🧪 Testing new Web-to-PDF system...');
+      await webToPDFService.generateStatementPDF('comprehensive', 'TEST123');
+      
+      const result = { success: true, message: 'Web-to-PDF completed successfully' };
+      setTestResults(prev => ({ ...prev, webToPDF: result }));
+    } catch (error) {
+      const result = { success: false, error: error.message };
+      setTestResults(prev => ({ ...prev, webToPDF: result }));
+    }
+    setIsTestingWebPDF(false);
+  };
+
+  const openStatementPreview = () => {
+    const url = `/statement-preview?type=comprehensive&client=TEST123`;
+    window.open(url, '_blank');
+  };
+
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
         <CardTitle>PDF Generation Debugger</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Button 
-            onClick={testDataFetch} 
-            disabled={isTestingData}
-            variant="outline"
-          >
-            {isTestingData ? 'Testing...' : 'Test Data Fetch'}
-          </Button>
-          
-          <Button 
-            onClick={testPDFGeneration} 
-            disabled={isTestingPDF}
-            variant="outline"
-          >
-            {isTestingPDF ? 'Testing...' : 'Test PDF Generation'}
-          </Button>
-          
-          <Button 
-            onClick={testFullDownload} 
-            disabled={isTestingDownload}
-            variant="outline"
-          >
-            {isTestingDownload ? 'Testing...' : 'Test Full Download'}
-          </Button>
+        <div className="space-y-4">
+          <h4 className="font-medium text-primary">Legacy PDF System (@react-pdf/renderer)</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button 
+              onClick={testDataFetch} 
+              disabled={isTestingData}
+              variant="outline"
+            >
+              {isTestingData ? 'Testing...' : 'Test Data Fetch'}
+            </Button>
+            
+            <Button 
+              onClick={testPDFGeneration} 
+              disabled={isTestingPDF}
+              variant="outline"
+            >
+              {isTestingPDF ? 'Testing...' : 'Test PDF Generation'}
+            </Button>
+            
+            <Button 
+              onClick={testFullDownload} 
+              disabled={isTestingDownload}
+              variant="outline"
+            >
+              {isTestingDownload ? 'Testing...' : 'Test Full Download'}
+            </Button>
+          </div>
+
+          <div className="border-t pt-4">
+            <h4 className="font-medium text-primary mb-4">🆕 New Web-to-PDF System (Puppeteer)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button 
+                onClick={openStatementPreview} 
+                variant="default"
+              >
+                📄 Preview Statement
+              </Button>
+              
+              <Button 
+                onClick={testWebToPDF} 
+                disabled={isTestingWebPDF}
+                variant="default"
+              >
+                {isTestingWebPDF ? 'Generating...' : '🚀 Test Web-to-PDF'}
+              </Button>
+              
+              <Button 
+                onClick={() => webToPDFService.openStatementPreview('comprehensive', 'TEST123')} 
+                variant="outline"
+              >
+                🔗 Open Preview Tab
+              </Button>
+            </div>
+          </div>
         </div>
 
         {Object.keys(testResults).length > 0 && (
@@ -139,6 +192,15 @@ const PDFDebugger: React.FC = () => {
                 <h4 className="font-medium">Full Download Test</h4>
                 <pre className="text-sm mt-2 overflow-x-auto">
                   {JSON.stringify(testResults.fullDownload, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            {testResults.webToPDF && (
+              <div className={`p-4 rounded-lg ${testResults.webToPDF.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                <h4 className="font-medium">🆕 Web-to-PDF Test</h4>
+                <pre className="text-sm mt-2 overflow-x-auto">
+                  {JSON.stringify(testResults.webToPDF, null, 2)}
                 </pre>
               </div>
             )}
