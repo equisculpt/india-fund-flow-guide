@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { StatementData } from '@/services/statement/types';
 import { MockDataGenerator } from '@/services/statement/mockDataGenerator';
 import { PDFDownloadService } from '@/services/pdf/PDFDownloadService';
+import { DirectPDFService } from '@/services/pdf/DirectPDFService';
 
 // Statement Preview Page - This is what gets converted to PDF
 const StatementPreviewPage: React.FC = () => {
@@ -15,6 +16,7 @@ const StatementPreviewPage: React.FC = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const { toast } = useToast();
   const pdfDownloadService = new PDFDownloadService(toast);
+  const directPDFService = new DirectPDFService(toast);
   
   const statementType = searchParams.get('type') || 'comprehensive';
   const clientCode = searchParams.get('client') || 'SB123456';
@@ -24,16 +26,44 @@ const StatementPreviewPage: React.FC = () => {
     const mockData = MockDataGenerator.generateCompleteStatementData(clientCode);
     setStatementData(mockData);
     setLoading(false);
-  }, [clientCode]);
+
+    // Check if this page was opened for auto-capture
+    const autoCapture = searchParams.get('autoCapture');
+    if (autoCapture === 'true') {
+      // Listen for capture command from parent window
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data.action === 'startCapture') {
+          setTimeout(() => {
+            directPDFService.captureCurrentPageAsPDF();
+          }, 1000);
+        }
+      };
+      
+      window.addEventListener('message', handleMessage);
+      
+      // Cleanup listener on unmount
+      return () => {
+        window.removeEventListener('message', handleMessage);
+      };
+    }
+  }, [clientCode, searchParams, directPDFService]);
 
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
     try {
-      await pdfDownloadService.downloadPDFStatement(statementType);
-      toast({
-        title: "PDF Downloaded!",
-        description: "Your statement has been generated and downloaded successfully.",
-      });
+      // Check if we should use direct capture or legacy system
+      const autoCapture = searchParams.get('autoCapture');
+      if (autoCapture === 'true') {
+        // Use direct capture for auto-opened windows
+        await directPDFService.captureCurrentPageAsPDF();
+      } else {
+        // Use legacy system for manual downloads
+        await pdfDownloadService.downloadPDFStatement(statementType);
+        toast({
+          title: "PDF Downloaded!",
+          description: "Your statement has been generated and downloaded successfully.",
+        });
+      }
     } catch (error) {
       toast({
         title: "Download Failed",
