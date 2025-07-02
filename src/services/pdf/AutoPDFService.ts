@@ -1,16 +1,12 @@
-import { PDFDownloadService } from './PDFDownloadService';
-
 export class AutoPDFService {
   private toast: any;
-  private pdfDownloadService: PDFDownloadService;
 
   constructor(toast: any) {
     this.toast = toast;
-    this.pdfDownloadService = new PDFDownloadService(toast);
   }
 
   /**
-   * Generate PDF automatically using our reliable existing system
+   * Generate PDF from the beautiful web statement automatically
    */
   async generateStatementPDF(
     statementType: string,
@@ -18,29 +14,14 @@ export class AutoPDFService {
     additionalParams: Record<string, string> = {}
   ): Promise<void> {
     try {
-      console.log('AutoPDFService: Using reliable existing PDF system for automatic download');
+      console.log('AutoPDFService: Converting beautiful web statement to PDF automatically');
 
       this.toast({
-        title: "Generating PDF...",
-        description: "Creating your statement automatically using our proven PDF engine.",
+        title: "Generating Beautiful PDF...",
+        description: "Converting your modern statement design to PDF automatically.",
       });
 
-      // Use our existing reliable PDF generation system
-      // This system works perfectly and generates high-quality PDFs
-      await this.pdfDownloadService.downloadPDFStatement(statementType);
-
-      console.log('AutoPDFService: PDF generated and downloaded successfully');
-
-    } catch (error) {
-      console.error('AutoPDFService: Error:', error);
-      
-      this.toast({
-        title: "Automatic PDF Failed",
-        description: error instanceof Error ? error.message : "Unable to generate PDF automatically.",
-        variant: "destructive"
-      });
-
-      // Fallback: Open beautiful preview with download button
+      // Step 1: Open the beautiful statement in a hidden iframe
       const params = new URLSearchParams({
         type: statementType,
         client: clientCode,
@@ -50,10 +31,56 @@ export class AutoPDFService {
       const baseUrl = window.location.origin;
       const statementUrl = `${baseUrl}/statement-preview?${params.toString()}`;
       
+      console.log('Opening beautiful statement for PDF conversion:', statementUrl);
+
+      // Step 2: Create hidden iframe to load the statement
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'absolute';
+      iframe.style.left = '-9999px';
+      iframe.style.width = '210mm'; // A4 width
+      iframe.style.height = '297mm'; // A4 height
+      iframe.src = statementUrl;
+      
+      document.body.appendChild(iframe);
+
+      // Step 3: Wait for iframe to load then trigger print
+      iframe.onload = () => {
+        setTimeout(() => {
+          // Trigger browser's print-to-PDF from the iframe
+          iframe.contentWindow?.print();
+          
+          // Clean up
+          setTimeout(() => {
+            document.body.removeChild(iframe);
+          }, 1000);
+
+          this.toast({
+            title: "PDF Ready!",
+            description: "Your beautiful statement is ready to save as PDF. Use Ctrl+P → Save as PDF.",
+          });
+
+          console.log('AutoPDFService: Print dialog opened for beautiful statement');
+        }, 2000); // Wait for content to fully load
+      };
+
+    } catch (error) {
+      console.error('AutoPDFService: Error:', error);
+      
       this.toast({
-        title: "Opening Beautiful Preview",
-        description: "Use the Download PDF button on the preview page for the new design.",
+        title: "Opening Beautiful Statement",
+        description: "Opening the modern statement design. Use the Download PDF button on the page.",
+        variant: "default"
       });
+
+      // Fallback: Open beautiful preview directly
+      const params = new URLSearchParams({
+        type: statementType,
+        client: clientCode,
+        ...additionalParams
+      });
+
+      const baseUrl = window.location.origin;
+      const statementUrl = `${baseUrl}/statement-preview?${params.toString()}`;
       
       window.open(statementUrl, '_blank');
     }
