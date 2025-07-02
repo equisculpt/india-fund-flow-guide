@@ -44,42 +44,60 @@ export class DirectPDFService {
 
       // Step 3: Wait for window to load, then send capture command
       let captureAttempts = 0;
-      const maxAttempts = 10;
+      const maxAttempts = 30; // Increased from 10 to 30 (30 seconds total)
 
       const checkAndCapture = () => {
         captureAttempts++;
         
         if (captureAttempts > maxAttempts) {
           this.toast({
-            title: "Manual Download Available",
-            description: "Auto-capture timed out. Use the Download PDF button on the opened page.",
+            title: "Auto-Capture Timeout",
+            description: "The page is taking longer than expected. Use the Download PDF button on the opened page.",
+            variant: "destructive"
           });
           return;
         }
 
         try {
           if (newWindow.document && newWindow.document.readyState === 'complete') {
-            // Send message to the opened window to trigger capture
-            newWindow.postMessage({ action: 'startCapture' }, '*');
+            // Additional check - wait for content to be fully rendered
+            const hasContent = newWindow.document.querySelector('.statement-container');
             
-            this.toast({
-              title: "Capturing Statement...",
-              description: "Converting your beautiful statement to PDF automatically.",
-            });
+            if (hasContent) {
+              // Send message to the opened window to trigger capture
+              newWindow.postMessage({ action: 'startCapture' }, '*');
+              
+              this.toast({
+                title: "Auto-Capturing Statement...",
+                description: "Converting your statement to PDF automatically.",
+              });
+
+              // Give it extra time to process
+              setTimeout(() => {
+                this.toast({
+                  title: "PDF Ready!",
+                  description: "Your statement should be downloading now.",
+                });
+              }, 3000);
+            } else {
+              // Content not ready yet, continue waiting
+              setTimeout(checkAndCapture, 1000);
+            }
           } else {
             setTimeout(checkAndCapture, 1000);
           }
         } catch (error) {
           // Cross-origin issues - fallback to manual
+          console.log('Auto-capture failed, falling back to manual:', error);
           this.toast({
             title: "Manual Download Available",
-            description: "Use the Download PDF button on the opened statement page.",
+            description: "Auto-capture failed. Use the Download PDF button on the opened page.",
           });
         }
       };
 
-      // Start checking after a short delay
-      setTimeout(checkAndCapture, 2000);
+      // Start checking after a longer initial delay for complex reports
+      setTimeout(checkAndCapture, 3000); // Increased from 2000 to 3000
 
     } catch (error) {
       console.error('DirectPDFService: Error:', error);
