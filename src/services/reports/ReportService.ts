@@ -1,4 +1,5 @@
 import { DirectPDFService } from '@/services/pdf/DirectPDFService';
+import { PDFShiftService } from '@/services/pdf/PDFShiftService';
 
 export interface ReportConfig {
   type: 'html' | 'pdf';
@@ -10,9 +11,11 @@ export interface ReportConfig {
 
 export class ReportService {
   private directPDFService: DirectPDFService;
+  private pdfShiftService: PDFShiftService;
   
   constructor(toast: any) {
     this.directPDFService = new DirectPDFService(toast);
+    this.pdfShiftService = new PDFShiftService(toast);
   }
 
   async generateReport(config: ReportConfig): Promise<void> {
@@ -31,13 +34,12 @@ export class ReportService {
   }
 
   private async generatePDFReport(config: ReportConfig): Promise<void> {
-    const reportType = `${config.category}-${config.reportName}`;
-    const clientCode = config.clientCode || this.generateClientCode(config.category);
-    
-    await this.directPDFService.generateDirectPDF(reportType, clientCode, {
-      reportCategory: config.category,
-      reportName: config.reportName,
-      ...config.data
+    // Use PDF Shift for high-quality PDF generation
+    await this.pdfShiftService.generatePDF({
+      reportType: `${config.category}-${config.reportName}`,
+      clientCode: config.clientCode || this.generateClientCode(config.category),
+      category: config.category,
+      reportName: config.reportName
     });
   }
 
