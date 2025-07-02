@@ -32,6 +32,9 @@ export class PDFShiftService {
           category: config.category,
           reportName: config.reportName,
           format: config.format || 'pdf'
+        },
+        headers: {
+          'Content-Type': 'application/json'
         }
       });
 
@@ -40,8 +43,8 @@ export class PDFShiftService {
         throw new Error(error.message || 'Failed to generate PDF');
       }
 
-      // The response should be a PDF blob
-      if (data) {
+      // The response should be binary PDF data
+      if (data && data instanceof ArrayBuffer) {
         // Create blob and download
         const blob = new Blob([data], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
@@ -64,8 +67,11 @@ export class PDFShiftService {
 
         this.toast({
           title: "PDF Generated Successfully!",
-          description: `Your ${categoryName.toLowerCase()} statement has been downloaded using PDF Shift.`,
+          description: `Your ${categoryName.toLowerCase()} statement has been downloaded.`,
         });
+      } else {
+        console.error('Invalid PDF data received:', data);
+        throw new Error('Invalid PDF data received from server');
       }
 
     } catch (error) {

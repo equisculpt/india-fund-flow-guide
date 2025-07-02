@@ -49,7 +49,7 @@ serve(async (req) => {
       format: 'A4'
     };
 
-    console.log('Calling PDF Shift API...');
+    console.log('Calling PDF Shift API with options:', JSON.stringify(pdfShiftOptions, null, 2));
     
     // Make request to PDF Shift API
     const pdfShiftResponse = await fetch('https://api.pdfshift.io/v3/convert/pdf', {
@@ -61,6 +61,9 @@ serve(async (req) => {
       body: JSON.stringify(pdfShiftOptions),
     });
 
+    console.log('PDF Shift response status:', pdfShiftResponse.status);
+    console.log('PDF Shift response headers:', Object.fromEntries(pdfShiftResponse.headers.entries()));
+
     if (!pdfShiftResponse.ok) {
       const errorText = await pdfShiftResponse.text();
       console.error('PDF Shift API error:', pdfShiftResponse.status, errorText);
@@ -68,8 +71,9 @@ serve(async (req) => {
     }
 
     // Get the PDF as binary data
-    const pdfBuffer = await pdfShiftResponse.arrayBuffer();
-    console.log('PDF generated successfully, size:', pdfBuffer.byteLength);
+    const pdfArrayBuffer = await pdfShiftResponse.arrayBuffer();
+    const pdfBytes = new Uint8Array(pdfArrayBuffer);
+    console.log('PDF generated successfully, size:', pdfBytes.length, 'bytes');
 
     // Generate filename
     const timestamp = new Date().toISOString().slice(0, 10);
@@ -77,12 +81,12 @@ serve(async (req) => {
     const filename = `${categoryName}_Statement_${clientCode}_${timestamp}.pdf`;
 
     // Return the PDF with proper headers
-    return new Response(pdfBuffer, {
+    return new Response(pdfBytes, {
       headers: {
         ...corsHeaders,
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,
-        'Content-Length': pdfBuffer.byteLength.toString(),
+        'Content-Length': pdfBytes.length.toString(),
       },
     });
 
