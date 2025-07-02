@@ -1,11 +1,13 @@
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { PDFDownloadService } from './PDFDownloadService';
 
 export class WebToPDFService {
   private toast: any;
+  private pdfDownloadService: PDFDownloadService;
 
   constructor(toast: any) {
     this.toast = toast;
+    this.pdfDownloadService = new PDFDownloadService(toast);
   }
 
   /**
@@ -16,70 +18,21 @@ export class WebToPDFService {
     fileName: string = 'statement.pdf'
   ): Promise<void> {
     try {
-      console.log('WebToPDFService: Starting PDF generation from URL:', statementUrl);
+      console.log('WebToPDFService: Using direct PDF generation instead of web URL');
 
       this.toast({
         title: "Generating PDF...",
-        description: "Creating your statement using Puppeteer. This may take a few moments.",
+        description: "Creating your statement using our PDF engine.",
       });
 
-      const { data, error } = await supabase.functions.invoke('generate-pdf-statement', {
-        body: { 
-          statementUrl,
-          fileName 
-        }
-      });
+      // Extract statement type and client code from URL parameters
+      const url = new URL(statementUrl);
+      const statementType = url.searchParams.get('type') || 'comprehensive';
+      
+      // Use our existing PDF generation system directly
+      await this.pdfDownloadService.downloadPDFStatement(statementType);
 
-      if (error) {
-        throw new Error(`PDF generation failed: ${error.message}`);
-      }
-
-      // Check if we got an error response instead of PDF data
-      if (data && typeof data === 'object' && data.error) {
-        // This means the backend couldn't generate PDF automatically
-        console.log('Backend PDF generation not available, opening preview for manual print');
-        
-        this.toast({
-          title: "Opening Statement Preview",
-          description: "Please use Ctrl+P (Cmd+P) and 'Save as PDF' to download your statement.",
-          variant: "default"
-        });
-
-        // Open the statement preview in a new tab for manual print-to-PDF
-        window.open(statementUrl, '_blank');
-        return;
-      }
-
-      // If we get here, we should have PDF binary data
-      if (data instanceof ArrayBuffer || data instanceof Uint8Array) {
-        // Create blob and download
-        const blob = new Blob([data], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        window.URL.revokeObjectURL(url);
-
-        this.toast({
-          title: "PDF Downloaded!",
-          description: "Your statement has been generated and downloaded successfully.",
-          variant: "default"
-        });
-
-        console.log('WebToPDFService: PDF downloaded successfully');
-      } else {
-        // Fallback to opening preview
-        this.toast({
-          title: "Opening Preview",
-          description: "PDF generation not available. Opening preview for manual download.",
-        });
-        window.open(statementUrl, '_blank');
-      }
+      console.log('WebToPDFService: PDF downloaded successfully via direct generation');
 
     } catch (error) {
       console.error('WebToPDFService: Error generating PDF:', error);
@@ -93,7 +46,7 @@ export class WebToPDFService {
       // Fallback: Open preview for manual print-to-PDF
       this.toast({
         title: "Alternative Option",
-        description: "Opening statement preview. Use Ctrl+P (Cmd+P) → Save as PDF",
+        description: "Opening statement preview. Use the Download PDF button on the preview page.",
       });
       
       // Get the base URL and create the statement URL

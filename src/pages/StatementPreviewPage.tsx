@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Download, Printer } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { StatementData } from '@/services/statement/types';
 import { MockDataGenerator } from '@/services/statement/mockDataGenerator';
+import { PDFDownloadService } from '@/services/pdf/PDFDownloadService';
 
 // Statement Preview Page - This is what gets converted to PDF
 const StatementPreviewPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [statementData, setStatementData] = useState<StatementData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const { toast } = useToast();
+  const pdfDownloadService = new PDFDownloadService(toast);
   
   const statementType = searchParams.get('type') || 'comprehensive';
   const clientCode = searchParams.get('client') || 'SB123456';
@@ -18,6 +25,29 @@ const StatementPreviewPage: React.FC = () => {
     setStatementData(mockData);
     setLoading(false);
   }, [clientCode]);
+
+  const handleDownloadPDF = async () => {
+    setIsDownloading(true);
+    try {
+      await pdfDownloadService.downloadPDFStatement(statementType);
+      toast({
+        title: "PDF Downloaded!",
+        description: "Your statement has been generated and downloaded successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "There was an error generating your PDF. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
 
   if (loading || !statementData) {
     return (
@@ -35,6 +65,27 @@ const StatementPreviewPage: React.FC = () => {
 
   return (
     <div className="statement-container">
+      {/* Floating Action Buttons - Hidden in print */}
+      <div className="no-print fixed top-4 right-4 z-50 flex gap-2">
+        <Button
+          onClick={handleDownloadPDF}
+          disabled={isDownloading}
+          className="bg-primary hover:bg-primary/90 text-white shadow-lg"
+          size="sm"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          {isDownloading ? 'Generating...' : 'Download PDF'}
+        </Button>
+        <Button
+          onClick={handlePrint}
+          variant="outline"
+          className="bg-white hover:bg-gray-50 shadow-lg"
+          size="sm"
+        >
+          <Printer className="w-4 h-4 mr-2" />
+          Print
+        </Button>
+      </div>
       {/* Print-specific styles */}
       <style>{`
         @media print {
