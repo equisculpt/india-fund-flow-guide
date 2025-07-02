@@ -21,24 +21,31 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
   return (
     <View style={styles.portfolioGlance}>
       <View style={styles.glanceHeader}>
-        <Text style={styles.glanceTitle}>Portfolio at a Glance</Text>
+        <Text style={styles.glanceTitle}>Portfolio Dashboard</Text>
         <View style={styles.aiBadge}>
+          <Text style={styles.aiBadgeIcon}>🤖</Text>
           <Text style={styles.aiBadgeText}>AI POWERED</Text>
         </View>
       </View>
 
+      {/* Horizontal Dashboard Cards */}
       <View style={styles.glanceGrid}>
-        <View style={styles.glanceCard}>
+        <View style={[styles.glanceCard, styles.glanceCardPrimary]}>
+          <Text style={styles.glanceIcon}>💰</Text>
           <Text style={styles.glanceLabel}>Total Invested</Text>
           <Text style={styles.glanceValue}>₹{totalInvested.toLocaleString('en-IN')}</Text>
           <Text style={styles.glanceSubtext}>Principal Amount</Text>
         </View>
-        <View style={styles.glanceCard}>
+        
+        <View style={[styles.glanceCard, styles.glanceCardSuccess]}>
+          <Text style={styles.glanceIcon}>📈</Text>
           <Text style={styles.glanceLabel}>Current Value</Text>
           <Text style={styles.glanceValue}>₹{currentValue.toLocaleString('en-IN')}</Text>
           <Text style={styles.glanceSubtext}>Market Value</Text>
         </View>
-        <View style={styles.glanceCard}>
+        
+        <View style={[styles.glanceCard, totalReturns >= 0 ? styles.glanceCardSuccess : styles.glanceCardWarning]}>
+          <Text style={styles.glanceIcon}>{totalReturns >= 0 ? '📊' : '📉'}</Text>
           <Text style={styles.glanceLabel}>Total Returns</Text>
           <Text style={[
             styles.glanceValue, 
@@ -46,11 +53,16 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
           ]}>
             {totalReturns >= 0 ? '+' : ''}₹{totalReturns.toLocaleString('en-IN')}
           </Text>
-          <Text style={styles.glanceSubtext}>
+          <Text style={[
+            styles.glanceSubtext,
+            { color: totalReturns >= 0 ? '#00B47B' : '#EF4444', fontWeight: 'bold' }
+          ]}>
             {returnsPercentage >= 0 ? '+' : ''}{returnsPercentage.toFixed(2)}%
           </Text>
         </View>
-        <View style={styles.glanceCard}>
+        
+        <View style={[styles.glanceCard, xirr >= 0 ? styles.glanceCardSuccess : styles.glanceCardWarning]}>
+          <Text style={styles.glanceIcon}>🎯</Text>
           <Text style={styles.glanceLabel}>XIRR</Text>
           <Text style={[
             styles.glanceValue, 
@@ -62,16 +74,18 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
         </View>
       </View>
 
+      {/* Enhanced XIRR Explanation */}
       <View style={styles.xirrExplanation}>
         <Text style={styles.xirrNote}>
-          XIRR (Extended Internal Rate of Return) calculates your annualized return considering the timing and amount of each investment, 
+          💡 XIRR (Extended Internal Rate of Return) calculates your annualized return considering the timing and amount of each investment, 
           providing the most accurate measure of your portfolio performance.
         </Text>
       </View>
 
+      {/* Goal Progress Section - Enhanced */}
       {portfolio.goalName && (
         <View style={styles.goalProgress}>
-          <Text style={styles.goalProgressTitle}>Goal Progress: {portfolio.goalName}</Text>
+          <Text style={styles.goalProgressTitle}>🎯 Goal Progress: {portfolio.goalName}</Text>
           <View style={styles.goalProgressContent}>
             <View style={styles.goalProgressItem}>
               <Text style={styles.goalProgressLabel}>Target Amount</Text>
@@ -80,13 +94,15 @@ export const PDFPortfolioSummary: React.FC<PDFPortfolioSummaryProps> = ({ portfo
               </Text>
             </View>
             <View style={styles.goalProgressItem}>
-              <Text style={styles.goalProgressLabel}>Goal Status</Text>
-              <Text style={styles.goalProgressValue}>In Progress</Text>
-            </View>
-            <View style={styles.goalProgressItem}>
-              <Text style={styles.goalProgressLabel}>Achievement</Text>
+              <Text style={styles.goalProgressLabel}>Current Achievement</Text>
               <Text style={styles.goalProgressValue}>
                 ₹{goalAchieved.toLocaleString('en-IN')}
+              </Text>
+            </View>
+            <View style={styles.goalProgressItem}>
+              <Text style={styles.goalProgressLabel}>Progress</Text>
+              <Text style={[styles.goalProgressValue, { color: '#00B47B' }]}>
+                {goalTarget > 0 ? `${((goalAchieved / goalTarget) * 100).toFixed(1)}%` : 'N/A'}
               </Text>
             </View>
           </View>

@@ -2,38 +2,38 @@
 import { StyleSheet } from '@react-pdf/renderer';
 
 export const headerStyles = StyleSheet.create({
-  // Enhanced Header Section with Professional Layout
+  // Professional Header Section
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 40,
-    paddingBottom: 30,
-    borderBottomWidth: 4,
+    alignItems: 'flex-start',
+    marginBottom: 32,
+    paddingBottom: 24,
+    borderBottomWidth: 3,
     borderBottomColor: '#2E7DFF',
-    backgroundColor: '#F8FAFF',
-    padding: 30,
-    borderRadius: 18,
-    borderWidth: 2,
+    backgroundColor: '#FAFBFF',
+    padding: 24,
+    borderRadius: 12,
+    borderWidth: 1,
     borderColor: '#E5E7EB',
-    zIndex: 1,
   },
   
   logoSection: {
     flexDirection: 'column',
     alignItems: 'flex-start',
+    flex: 2,
   },
   
   mainLogo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 12,
   },
   
   sipBreweryLogo: {
-    width: 75,
-    height: 75,
-    marginRight: 25,
+    width: 64,
+    height: 64,
+    marginRight: 16,
   },
   
   brandingText: {
@@ -41,29 +41,31 @@ export const headerStyles = StyleSheet.create({
   },
   
   companyName: {
-    fontSize: 42,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#1A1F36',
-    marginBottom: 8,
+    marginBottom: 4,
+    whiteSpace: 'nowrap', // Prevent breaking
   },
   
   tagline: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#2E7DFF',
     fontStyle: 'italic',
-    fontWeight: 'bold',
+    fontWeight: 'semibold',
+    whiteSpace: 'nowrap', // Prevent breaking
   },
   
   trademarkSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 8,
   },
   
   trademarkText: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#6B7280',
-    marginRight: 12,
+    marginRight: 8,
   },
   
   equisculptBrand: {
@@ -72,76 +74,86 @@ export const headerStyles = StyleSheet.create({
   },
   
   equisculptLogo: {
-    width: 28,
-    height: 28,
-    marginRight: 10,
+    width: 20,
+    height: 20,
+    marginRight: 6,
   },
   
   equisculptText: {
-    fontSize: 14,
-    color: '#1A1F36',
+    fontSize: 12,
+    color: '#374151',
     fontWeight: 'bold',
   },
   
   headerInfo: {
     flexDirection: 'column',
     alignItems: 'flex-end',
+    flex: 1,
   },
   
   generatedDate: {
-    fontSize: 16,
-    color: '#1A1F36',
-    fontWeight: 'bold',
-    marginBottom: 12,
+    fontSize: 12,
+    color: '#374151',
+    fontWeight: 'semibold',
+    marginBottom: 8,
+    textAlign: 'right',
   },
   
   regulatoryBadge: {
     backgroundColor: '#2E7DFF',
-    borderRadius: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderRadius: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    maxWidth: 200,
   },
   
   regulatoryBadgeText: {
     color: '#FFFFFF',
-    fontSize: 11,
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
-  },
-  
-  regulatoryInfo: {
-    fontSize: 13,
-    color: '#6B7280',
-  },
-  
-  // Statement Title - Professional Enhancement
-  statementTitle: {
-    fontSize: 36,
+    fontSize: 9,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 40,
-    color: '#FFFFFF',
-    backgroundColor: '#2E7DFF',
-    padding: 25,
-    borderRadius: 15,
-    borderWidth: 4,
-    borderColor: '#1E40AF',
-    zIndex: 1,
+    lineHeight: 1.2,
   },
   
-  // Watermark styles
+  // Enhanced Statement Title
+  statementTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 32,
+    color: '#FFFFFF',
+    backgroundColor: '#2E7DFF',
+    padding: 20,
+    borderRadius: 12,
+    letterSpacing: 0.5,
+    whiteSpace: 'nowrap', // Prevent title breaking
+  },
+  
+  // Fixed Watermark - Single Line, Subtle
   watermark: {
     position: 'absolute',
-    top: '30%',
-    left: '10%',
-    transform: 'rotate(-25deg)',
-    fontSize: 80,
-    color: '#F0F4FF',
+    top: '40%',
+    left: '50%',
+    transform: 'translate(-50%, -50%) rotate(-25deg)',
+    fontSize: 48,
+    color: '#F8FAFF',
     fontWeight: 'bold',
-    letterSpacing: 12,
-    opacity: 0.15,
-    zIndex: 0,
+    opacity: 0.08,
+    zIndex: -1,
+    whiteSpace: 'nowrap', // Critical: Never break watermark
+    pointerEvents: 'none',
+  },
+  
+  // Professional Statement Period
+  statementPeriod: {
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: 24,
+    backgroundColor: '#F9FAFB',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
 });

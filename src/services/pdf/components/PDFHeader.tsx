@@ -11,26 +11,24 @@ interface PDFHeaderProps {
   sebiReg?: string;
 }
 
-// Subtle watermark that doesn't interfere with content
+// Professional watermark - single line, never breaks
 const Watermark = () => (
   <View
     style={{
       position: 'absolute',
-      top: '35%',
-      left: '15%',
-      transform: 'rotate(-25deg)',
+      top: '45%',
+      left: '50%',
+      transform: 'translate(-50%, -50%) rotate(-20deg)',
       zIndex: -1,
-      width: '70%',
-      textAlign: 'center',
     }}
     fixed
   >
     <Text style={{ 
-      fontSize: 60, 
+      fontSize: 42, 
       color: '#F8FAFF', 
       fontWeight: 'bold', 
-      letterSpacing: 8,
-      opacity: 0.3
+      letterSpacing: 6,
+      opacity: 0.08,
     }}>
       SIP BREWERY
     </Text>
@@ -75,10 +73,15 @@ export const PDFHeader: React.FC<PDFHeaderProps> = ({
         </Text>
         <View style={styles.regulatoryBadge}>
           <Text style={styles.regulatoryBadgeText}>
-            AMFI: {amfiReg} | BSE: {bseMember} | SEBI: {sebiReg}
+            AMFI: {amfiReg}{'\n'}BSE: {bseMember}{'\n'}SEBI: {sebiReg}
           </Text>
         </View>
       </View>
+    </View>
+    
+    {/* Statement Period - Professional Display */}
+    <View style={styles.statementPeriod}>
+      <Text>Statement Period: {format(generatedAt, 'MMMM yyyy')} | Generated on {format(generatedAt, 'dd MMM yyyy at HH:mm')}</Text>
     </View>
   </>
 );

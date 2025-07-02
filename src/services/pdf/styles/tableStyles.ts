@@ -2,85 +2,129 @@
 import { StyleSheet } from '@react-pdf/renderer';
 
 export const tableStyles = StyleSheet.create({
-  // Holdings Table - Premium Design
+  // Professional Table Section
   section: {
-    marginBottom: 40,
+    marginBottom: 32,
   },
+  
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
     color: '#FFFFFF',
     backgroundColor: '#2E7DFF',
-    padding: 25,
-    borderRadius: 18,
+    padding: 16,
+    borderRadius: 12,
     textAlign: 'center',
-    borderWidth: 4,
-    borderColor: '#1E40AF',
+    letterSpacing: 0.3,
   },
+  
+  // Enhanced Table Container
   tableContainer: {
-    borderRadius: 18,
+    borderRadius: 12,
     overflow: 'hidden',
-    borderWidth: 4,
+    borderWidth: 1,
     borderColor: '#E5E7EB',
-    marginBottom: 30,
+    marginBottom: 24,
+    backgroundColor: '#FFFFFF',
   },
+  
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: '#1A1F36',
-    padding: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: '#2E7DFF',
   },
+  
   tableHeaderCell: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#FFFFFF',
     fontWeight: 'bold',
-    paddingHorizontal: 15,
+    paddingHorizontal: 8,
+    textAlign: 'center',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
+  
+  // Enhanced Table Rows
   tableRow: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
+    alignItems: 'center',
   },
+  
   tableRowAlternate: {
     flexDirection: 'row',
     backgroundColor: '#F9FAFB',
-    padding: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
+    alignItems: 'center',
   },
+  
   tableRowHighlight: {
     flexDirection: 'row',
     backgroundColor: '#FEF3C7',
-    padding: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
-    borderLeftWidth: 6,
+    borderLeftWidth: 4,
     borderLeftColor: '#FFB800',
+    alignItems: 'center',
   },
+  
+  // Professional Table Cells
   tableCell: {
-    fontSize: 13,
-    color: '#1A1F36',
-    paddingHorizontal: 15,
+    fontSize: 10,
+    color: '#374151',
+    paddingHorizontal: 8,
+    textAlign: 'center',
+    lineHeight: 1.3,
   },
+  
   tableCellBold: {
-    fontSize: 13,
+    fontSize: 10,
     color: '#1A1F36',
-    paddingHorizontal: 15,
+    paddingHorizontal: 8,
     fontWeight: 'bold',
+    textAlign: 'center',
+    lineHeight: 1.3,
   },
+  
   tableCellGreen: {
-    fontSize: 13,
+    fontSize: 10,
     color: '#00B47B',
-    paddingHorizontal: 15,
+    paddingHorizontal: 8,
     fontWeight: 'bold',
+    textAlign: 'center',
+    lineHeight: 1.3,
   },
+  
   tableCellRed: {
-    fontSize: 13,
+    fontSize: 10,
     color: '#EF4444',
-    paddingHorizontal: 15,
+    paddingHorizontal: 8,
     fontWeight: 'bold',
+    textAlign: 'center',
+    lineHeight: 1.3,
+  },
+  
+  // Fund Name Cell (Left Aligned)
+  tableCellFund: {
+    fontSize: 10,
+    color: '#1A1F36',
+    paddingHorizontal: 8,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    lineHeight: 1.3,
   },
   
   // Recent Transactions Section - Enhanced

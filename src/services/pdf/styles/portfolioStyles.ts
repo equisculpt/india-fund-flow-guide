@@ -2,77 +2,113 @@
 import { StyleSheet } from '@react-pdf/renderer';
 
 export const portfolioStyles = StyleSheet.create({
-  // Enhanced Portfolio Glance Section
+  // Portfolio Dashboard - Horizontal Layout
   portfolioGlance: {
-    backgroundColor: '#F0FDF4',
-    padding: 35,
-    borderRadius: 20,
-    marginBottom: 40,
-    borderWidth: 4,
-    borderColor: '#00B47B',
-    borderLeftWidth: 8,
-    borderLeftColor: '#2E7DFF',
+    backgroundColor: '#FAFBFF',
+    padding: 24,
+    borderRadius: 16,
+    marginBottom: 32,
+    borderWidth: 2,
+    borderColor: '#2E7DFF',
+    borderTopWidth: 4,
+    borderTopColor: '#2E7DFF',
   },
+  
   glanceHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
   },
+  
   glanceTitle: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#1A1F36',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
+  
   aiBadge: {
     backgroundColor: '#2E7DFF',
-    borderRadius: 12,
+    borderRadius: 20,
     paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
+    paddingVertical: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
+  
   aiBadgeText: {
     color: '#FFFFFF',
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: 'bold',
     letterSpacing: 0.5,
   },
+  
+  aiBadgeIcon: {
+    marginRight: 6,
+    color: '#FFFFFF',
+    fontSize: 12,
+  },
+  
+  // Horizontal Dashboard Cards
   glanceGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 25,
+    marginBottom: 16,
+    gap: 12,
   },
+  
   glanceCard: {
     backgroundColor: '#FFFFFF',
-    padding: 25,
-    borderRadius: 15,
+    padding: 20,
+    borderRadius: 12,
     flex: 1,
-    marginHorizontal: 8,
-    borderWidth: 2,
+    marginHorizontal: 4,
+    borderWidth: 1,
     borderColor: '#E5E7EB',
     alignItems: 'center',
-    shadowColor: '#000000',
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    minHeight: 100,
+    justifyContent: 'center',
   },
+  
+  glanceCardPrimary: {
+    backgroundColor: '#F0F9FF',
+    borderColor: '#2E7DFF',
+    borderLeftWidth: 4,
+    borderLeftColor: '#2E7DFF',
+  },
+  
+  glanceCardSuccess: {
+    backgroundColor: '#F0FDF4',
+    borderColor: '#00B47B',
+    borderLeftWidth: 4,
+    borderLeftColor: '#00B47B',
+  },
+  
+  glanceCardWarning: {
+    backgroundColor: '#FFFBEB',
+    borderColor: '#FFB800',
+    borderLeftWidth: 4,
+    borderLeftColor: '#FFB800',
+  },
+  
   glanceLabel: {
-    fontSize: 13,
+    fontSize: 11,
     color: '#6B7280',
-    marginBottom: 12,
+    marginBottom: 8,
     textAlign: 'center',
     fontWeight: 'bold',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  
   glanceValue: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#1A1F36',
-    marginBottom: 8,
+    marginBottom: 4,
     textAlign: 'center',
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   },
   trendIndicator: {
     fontSize: 16,
@@ -84,21 +120,29 @@ export const portfolioStyles = StyleSheet.create({
     marginVertical: 4,
   },
   glanceSubtext: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#9CA3AF',
     textAlign: 'center',
     fontStyle: 'italic',
   },
+  
+  glanceIcon: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  
+  // Enhanced XIRR Explanation
   xirrExplanation: {
-    backgroundColor: '#EBF8FF',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 25,
+    backgroundColor: '#F0F9FF',
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 16,
     borderLeftWidth: 4,
     borderLeftColor: '#2E7DFF',
   },
+  
   xirrNote: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#1E40AF',
     lineHeight: 1.4,
     textAlign: 'center',
