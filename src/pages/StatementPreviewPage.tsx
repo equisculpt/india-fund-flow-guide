@@ -131,6 +131,10 @@ const StatementPreviewPage: React.FC = () => {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
           color: #1F2937;
           line-height: 1.4;
+          max-width: 210mm;
+          margin: 0 auto;
+          padding: 15mm 15mm 20mm 15mm;
+          box-sizing: border-box;
         }
         
         .watermark {
@@ -151,7 +155,7 @@ const StatementPreviewPage: React.FC = () => {
           align-items: center;
           padding-bottom: 20px;
           margin-bottom: 30px;
-          border-bottom: 3px solid #2563EB;
+          border-bottom: 3px solid #F59E0B;
         }
         
         .logo-section {
@@ -163,29 +167,51 @@ const StatementPreviewPage: React.FC = () => {
         .logo {
           width: 60px;
           height: 60px;
-          background: linear-gradient(135deg, #2563EB, #1D4ED8);
+          background: linear-gradient(135deg, #F59E0B, #EA580C);
           border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
           color: white;
           font-weight: bold;
-          font-size: 20px;
+          font-size: 18px;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        
+        .logo::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, #EA580C, transparent);
+          opacity: 0.5;
+        }
+        
+        .logo::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: linear-gradient(to right, #FCD34D, #F59E0B);
+          opacity: 0.7;
         }
         
         .company-info h1 {
           font-size: 32px;
           font-weight: 700;
-          color: #2563EB;
+          color: #1F2937;
           margin: 0;
           letter-spacing: 1px;
         }
         
         .company-info p {
           font-size: 14px;
-          color: #6B7280;
+          color: #F59E0B;
           margin: 4px 0 0 0;
-          font-style: italic;
+          font-weight: 600;
         }
         
         .document-meta {
@@ -483,10 +509,12 @@ const StatementPreviewPage: React.FC = () => {
       {/* Header */}
       <div className="header">
         <div className="logo-section">
-          <div className="logo">SB</div>
+          <div className="logo">
+            <span style={{ position: 'relative', zIndex: 2 }}>🍺</span>
+          </div>
           <div className="company-info">
             <h1>SIP BREWERY</h1>
-            <p>Smart Investing Made Simple</p>
+            <p>Brewing Wealth</p>
           </div>
         </div>
         <div className="document-meta">
