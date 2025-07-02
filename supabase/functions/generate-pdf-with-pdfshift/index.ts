@@ -43,10 +43,10 @@ serve(async (req) => {
       format: 'A4',
       margin: '15mm',
       zoom: 1.0,
-      wait_for: 2000, // Wait 2 seconds for content to load
+      delay: 2000, // Wait 2 seconds for content to load
       footer: {
         height: '15mm',
-        template: `
+        content: `
           <div style="font-size: 8px; color: #666; text-align: center; width: 100%; padding: 5px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span>SIP Brewery - Confidential</span>
@@ -55,9 +55,6 @@ serve(async (req) => {
             </div>
           </div>
         `
-      },
-      header: {
-        height: '0mm' // No header to avoid conflicts with existing header
       },
       css: `
         @page {
@@ -100,22 +97,7 @@ serve(async (req) => {
           page-break-inside: avoid !important;
         }
       `,
-      javascript: `
-        // Wait for fonts and images to load
-        document.fonts.ready.then(() => {
-          console.log('Fonts loaded');
-        });
-        
-        // Remove any loading states
-        const loadingElements = document.querySelectorAll('[data-loading="true"]');
-        loadingElements.forEach(el => el.remove());
-        
-        // Mark as ready for PDF generation
-        window.pdfReady = true;
-      `,
-      wait_for_selector: '.statement-container',
-      sandbox: false,
-      user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      sandbox: false
     };
 
     console.log('Calling PDF Shift API...');
