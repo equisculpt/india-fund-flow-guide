@@ -1,91 +1,30 @@
 
 import { useToast } from '@/hooks/use-toast';
-import { pdfStatementGenerator } from './PDFStatementGenerator';
-import { statementDataService } from '../statement/statementDataService';
-import type { StatementData } from '../statement/types';
+import { DirectPDFService } from './DirectPDFService';
 
 export class PDFDownloadService {
-  constructor(private toast: ReturnType<typeof useToast>['toast']) {}
+  private directPDFService: DirectPDFService;
+
+  constructor(private toast: ReturnType<typeof useToast>['toast']) {
+    this.directPDFService = new DirectPDFService(toast);
+  }
 
   async downloadPDFStatement(statementType: string, params?: any): Promise<void> {
-    let loadingToastId: string | undefined;
-    
     try {
-      console.log('PDFDownloadService: Starting PDF download process', {
-        statementType,
-        params,
-        timestamp: new Date().toISOString()
-      });
+      console.log('PDFDownloadService: Using browser print-to-PDF method for', statementType);
       
-      // Show enhanced loading toast
-      loadingToastId = this.toast({
-        title: "Generating PDF Statement... 📄",
-        description: "Please wait while we create your statement with detailed insights.",
-      }).id;
-
-      // Step 1: Fetch statement data with enhanced logging
+      // Use DirectPDFService for text-selectable PDF generation
       const mockClientCode = 'SB123456';
-      console.log('Step 1: Fetching statement data for client:', mockClientCode);
+      await this.directPDFService.generateDirectPDF(statementType, mockClientCode, params || {});
       
-      const statementData = await statementDataService.getStatementData(mockClientCode, statementType);
-      
-      console.log('Step 1 Complete: Statement data fetched successfully:', {
-        holdingsCount: statementData.holdings?.length || 0,
-        totalValue: statementData.portfolio?.currentValue || 0,
-        userName: statementData.userInfo?.name || 'Unknown',
-        hasAllRequiredData: !!(statementData.userInfo && statementData.portfolio && statementData.holdings),
-        dataStructure: {
-          userInfo: !!statementData.userInfo,
-          portfolio: !!statementData.portfolio,
-          holdings: !!statementData.holdings,
-          transactions: !!statementData.transactions
-        }
-      });
-
-      // Step 2: Additional data validation before PDF generation
-      if (!statementData.userInfo || !statementData.portfolio) {
-        throw new Error('Statement data is incomplete - missing user info or portfolio data');
-      }
-
-      // Step 3: Generate and download PDF with enhanced error handling
-      console.log('Step 2: Starting PDF generation and download...');
-      await pdfStatementGenerator.downloadPDF(statementType, statementData);
-
-      // Step 4: Show success toast
-      this.toast({
-        title: "PDF Downloaded Successfully! 🎉",
-        description: `Your ${statementType} statement has been downloaded. Check your Downloads folder.`,
-      });
-
-      console.log('PDF statement download completed successfully');
+      console.log('PDF statement generation completed successfully');
       
     } catch (error) {
-      console.error('PDF download service error:', {
-        error: error.message,
-        stack: error.stack,
-        statementType,
-        params,
-        timestamp: new Date().toISOString()
-      });
-      
-      // Provide more specific error messages to users
-      let userMessage = `Unable to generate ${statementType} statement.`;
-      
-      if (error.message.includes('blob')) {
-        userMessage += ' PDF generation failed - please try again.';
-      } else if (error.message.includes('download')) {
-        userMessage += ' PDF was generated but download failed - please check your browser settings.';
-      } else if (error.message.includes('data')) {
-        userMessage += ' Required data is missing - please contact support.';
-      } else if (error.message.includes('URL')) {
-        userMessage += ' Browser download issue - please try refreshing the page.';
-      } else {
-        userMessage += ` Error: ${error.message}`;
-      }
+      console.error('PDF download service error:', error);
       
       this.toast({
-        title: "PDF Generation Failed ❌",
-        description: userMessage,
+        title: "PDF Generation Failed",
+        description: error instanceof Error ? error.message : "Unable to generate statement. Please try again.",
         variant: "destructive"
       });
       
@@ -93,24 +32,18 @@ export class PDFDownloadService {
     }
   }
 
-  // New method for testing PDF generation without download
+  // Test method using browser print-to-PDF
   async testPDFGeneration(statementType: string): Promise<boolean> {
     try {
-      console.log('Testing PDF generation for:', statementType);
+      console.log('Testing browser print-to-PDF generation for:', statementType);
       
       const mockClientCode = 'TEST123';
-      const statementData = await statementDataService.getStatementData(mockClientCode, statementType);
-      const pdfBlob = await pdfStatementGenerator.generatePDF(statementType, statementData);
+      await this.directPDFService.generateDirectPDF(statementType, mockClientCode, {});
       
-      console.log('PDF generation test successful:', {
-        blobSize: pdfBlob.size,
-        blobType: pdfBlob.type,
-        isValidBlob: pdfBlob instanceof Blob
-      });
-      
+      console.log('Browser print-to-PDF test successful');
       return true;
     } catch (error) {
-      console.error('PDF generation test failed:', error);
+      console.error('Browser print-to-PDF test failed:', error);
       return false;
     }
   }

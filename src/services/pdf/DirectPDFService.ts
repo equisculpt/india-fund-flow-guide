@@ -1,5 +1,4 @@
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+// DirectPDFService - Browser print-to-PDF for text-selectable documents
 
 export class DirectPDFService {
   private toast: any;

@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { PDFDownloadService } from '@/services/pdf/PDFDownloadService';
 import { WebToPDFService } from '@/services/pdf/WebToPDFService';
+import { DirectPDFService } from '@/services/pdf/DirectPDFService';
 import { statementDataService } from '@/services/statement/statementDataService';
-import { pdfStatementGenerator } from '@/services/pdf/PDFStatementGenerator';
 
 const PDFDebugger: React.FC = () => {
   const [testResults, setTestResults] = useState<any>({});
@@ -16,6 +16,7 @@ const PDFDebugger: React.FC = () => {
   const [isTestingWebPDF, setIsTestingWebPDF] = useState(false);
   const { toast } = useToast();
   const pdfDownloadService = new PDFDownloadService(toast);
+  const directPDFService = new DirectPDFService(toast);
   const webToPDFService = new WebToPDFService(toast);
 
   const testDataFetch = async () => {
@@ -46,20 +47,17 @@ const PDFDebugger: React.FC = () => {
   const testPDFGeneration = async () => {
     setIsTestingPDF(true);
     try {
-      console.log('🧪 Testing PDF generation...');
-      const statementData = await statementDataService.getStatementData('TEST123', 'comprehensive');
-      const pdfBlob = await pdfStatementGenerator.generatePDF('comprehensive', statementData);
+      console.log('🧪 Testing browser print-to-PDF generation...');
+      await directPDFService.generateDirectPDF('comprehensive', 'TEST123', {});
       
       const result = {
         success: true,
-        blobSize: pdfBlob.size,
-        blobType: pdfBlob.type,
-        sizeInKB: Math.round(pdfBlob.size / 1024),
-        isValidBlob: pdfBlob instanceof Blob
+        method: 'Browser Print-to-PDF',
+        description: 'Uses browser native print dialog for text-selectable PDFs'
       };
       
       setTestResults(prev => ({ ...prev, pdfGeneration: result }));
-      toast({ title: "PDF generation test passed ✅", description: `Generated ${result.sizeInKB}KB PDF` });
+      toast({ title: "PDF generation test passed ✅", description: "Browser print-to-PDF method works" });
     } catch (error) {
       const result = { success: false, error: error.message };
       setTestResults(prev => ({ ...prev, pdfGeneration: result }));
