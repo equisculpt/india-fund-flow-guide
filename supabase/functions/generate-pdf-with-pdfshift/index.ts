@@ -27,129 +27,183 @@ serve(async (req) => {
     // Debug: log the request to understand what's happening
     console.log('PDF Shift request:', { reportType, clientCode, category, reportName });
 
-    // Create comprehensive HTML content for better PDF generation
-    const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>${category.toUpperCase()} Statement - ${reportName}</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { 
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-                line-height: 1.6; 
-                color: #333; 
-                background: white;
-                padding: 20px;
-                min-height: 100vh;
-            }
-            .header { 
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                color: white; 
-                padding: 30px; 
-                border-radius: 10px; 
-                margin-bottom: 30px; 
-                text-align: center;
-            }
-            .header h1 { font-size: 28px; margin-bottom: 10px; font-weight: 600; }
-            .header p { font-size: 16px; opacity: 0.9; margin: 5px 0; }
-            .content { 
-                padding: 30px; 
-                background: #f8f9fa; 
-                border-radius: 10px; 
-                margin-bottom: 30px;
-                min-height: 400px;
-            }
-            .content h2 { 
-                color: #2d3748; 
-                font-size: 24px; 
-                margin-bottom: 20px; 
-                border-bottom: 2px solid #667eea;
-                padding-bottom: 10px;
-            }
-            .content p { font-size: 16px; margin-bottom: 15px; }
-            .stats-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 20px;
-                margin: 20px 0;
-            }
-            .stat-card {
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                text-align: center;
-            }
-            .stat-value { font-size: 24px; font-weight: bold; color: #667eea; }
-            .stat-label { font-size: 14px; color: #666; margin-top: 5px; }
-            .footer { 
-                text-align: center; 
-                margin-top: 40px; 
-                padding: 20px;
-                border-top: 1px solid #e2e8f0;
-                font-size: 12px; 
-                color: #666; 
-            }
-            .disclaimer {
-                background: #fff3cd;
-                border: 1px solid #ffeaa7;
-                padding: 15px;
-                border-radius: 5px;
-                margin: 20px 0;
-                font-size: 12px;
-            }
-            @media print {
-                body { margin: 0; padding: 20px; }
-                .header { break-inside: avoid; }
-                .content { break-inside: avoid; }
-            }
-        </style>
-    </head>
-    <body>
+    // Create simple, reliable HTML content that will definitely render
+    const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${category.toUpperCase()} Statement - ${reportName}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            padding: 20px;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+        }
+        
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        
+        .content {
+            padding: 20px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 30px;
+        }
+        
+        .content h2 {
+            color: #1f2937;
+            font-size: 20px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 5px;
+        }
+        
+        .content p {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .stats {
+            display: table;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .stat-row {
+            display: table-row;
+        }
+        
+        .stat-cell {
+            display: table-cell;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            background: white;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            color: #2563eb;
+            font-weight: bold;
+        }
+        
+        .highlights {
+            margin: 20px 0;
+        }
+        
+        .highlights ul {
+            margin-left: 20px;
+        }
+        
+        .highlights li {
+            margin-bottom: 8px;
+        }
+        
+        .disclaimer {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        @media print {
+            body { margin: 0; }
+            .container { max-width: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
         <div class="header">
-            <h1>SIP Brewery - ${category.toUpperCase()} Statement</h1>
+            <h1>SIP Brewery - ${category.charAt(0).toUpperCase() + category.slice(1)} Statement</h1>
             <p><strong>Report:</strong> ${reportName}</p>
             <p><strong>Client Code:</strong> ${clientCode}</p>
-            <p><strong>Generated:</strong> ${new Date().toLocaleDateString('en-IN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            })}</p>
+            <p><strong>Generated:</strong> ${new Date().toLocaleDateString('en-IN')}</p>
         </div>
         
         <div class="content">
             <h2>${category.charAt(0).toUpperCase() + category.slice(1)} Portfolio Summary</h2>
             <p>This comprehensive ${category} report provides detailed insights into your investment portfolio performance and analysis.</p>
             
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">₹2,45,000</div>
-                    <div class="stat-label">Total Investment</div>
+            <div class="stats">
+                <div class="stat-row">
+                    <div class="stat-cell">
+                        <div class="stat-label">Total Investment</div>
+                        <div class="stat-value">₹2,45,000</div>
+                    </div>
+                    <div class="stat-cell">
+                        <div class="stat-label">Current Value</div>
+                        <div class="stat-value">₹2,89,500</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value">₹2,89,500</div>
-                    <div class="stat-label">Current Value</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">+18.16%</div>
-                    <div class="stat-label">Total Returns</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">15.2%</div>
-                    <div class="stat-label">Annualized Return</div>
+                <div class="stat-row">
+                    <div class="stat-cell">
+                        <div class="stat-label">Total Returns</div>
+                        <div class="stat-value">+18.16%</div>
+                    </div>
+                    <div class="stat-cell">
+                        <div class="stat-label">Annualized Return</div>
+                        <div class="stat-value">15.2%</div>
+                    </div>
                 </div>
             </div>
             
-            <h3 style="margin: 30px 0 15px 0; color: #2d3748;">Key Highlights:</h3>
-            <ul style="margin-left: 20px; line-height: 1.8;">
-                <li>Portfolio performance exceeds benchmark by 3.2%</li>
-                <li>Well-diversified across ${category === 'equity' ? 'multiple sectors' : 'asset classes'}</li>
-                <li>Consistent SIP investments showing rupee cost averaging benefits</li>
-                <li>Risk-adjusted returns within acceptable parameters</li>
-            </ul>
+            <div class="highlights">
+                <h3 style="margin-bottom: 10px; color: #1f2937;">Key Highlights:</h3>
+                <ul>
+                    <li>Portfolio performance exceeds benchmark by 3.2%</li>
+                    <li>Well-diversified across multiple asset classes</li>
+                    <li>Consistent SIP investments showing rupee cost averaging benefits</li>
+                    <li>Risk-adjusted returns within acceptable parameters</li>
+                </ul>
+            </div>
             
             <div class="disclaimer">
                 <strong>Disclaimer:</strong> This is a sample ${category} report generated for demonstration purposes. 
@@ -162,9 +216,9 @@ serve(async (req) => {
             <p>Generated on ${new Date().toISOString().split('T')[0]} at ${new Date().toLocaleTimeString('en-IN')}</p>
             <p>For support, contact: support@sipbrewery.com | +91-XXXX-XXXXXX</p>
         </div>
-    </body>
-    </html>
-    `;
+    </div>
+</body>
+</html>`;
     
     console.log('Using HTML content for PDF generation');
 
