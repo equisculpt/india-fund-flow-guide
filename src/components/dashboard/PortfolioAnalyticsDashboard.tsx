@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Download, TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
+import { ReportButtons } from '@/components/shared/ReportButtons';
 import { usePortfolioAnalytics, useAIInsights, useCalculatePortfolioAnalytics } from '@/hooks/usePortfolioAnalytics';
 import { format } from 'date-fns';
 
@@ -157,22 +158,24 @@ const PortfolioAnalyticsDashboard = () => {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button variant="outline" className="w-full justify-start">
-              <Download className="h-4 w-4 mr-2" />
-              Download Tax Saving Statement
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Download className="h-4 w-4 mr-2" />
-              Download SIP Statement
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Download className="h-4 w-4 mr-2" />
-              Download Portfolio Report
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Download className="h-4 w-4 mr-2" />
-              Download Transaction Statement
-            </Button>
+            <div className="space-y-3">
+              <div>
+                <h4 className="font-semibold mb-2">📊 Tax Saving Statement</h4>
+                <ReportButtons reportName="tax-comprehensive" category="tax" variant="compact" />
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">💰 SIP Statement</h4>
+                <ReportButtons reportName="sip-comprehensive" category="sip" variant="compact" />
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">📈 Portfolio Report</h4>
+                <ReportButtons reportName="portfolio-comprehensive" category="portfolio" variant="compact" />
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">📋 Transaction Statement</h4>
+                <ReportButtons reportName="transaction-comprehensive" category="transaction" variant="compact" />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

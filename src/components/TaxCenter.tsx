@@ -4,8 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import { DirectPDFService } from '@/services/pdf/DirectPDFService';
+import { ReportButtons } from '@/components/shared/ReportButtons';
 import { 
   Receipt, 
   Download, 
@@ -23,8 +22,6 @@ import {
 
 const TaxCenter = () => {
   const [selectedFinancialYear, setSelectedFinancialYear] = useState('2024-25');
-  const { toast } = useToast();
-  const directPDFService = new DirectPDFService(toast);
 
   // Mock tax data
   const taxData = {
@@ -67,20 +64,6 @@ const TaxCenter = () => {
     return `₹${amount.toLocaleString()}`;
   };
 
-  const handleDownloadTaxStatement = async (type: string) => {
-    try {
-      console.log('Generating tax statement:', type);
-      await directPDFService.generateDirectPDF(type, 'TAX123', { statementType: type });
-    } catch (error) {
-      console.error('Tax statement download failed:', error);
-      toast({
-        title: "Download Failed",
-        description: "Unable to generate tax statement. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -94,10 +77,11 @@ const TaxCenter = () => {
             <Calculator className="h-4 w-4 mr-2" />
             Tax Calculator
           </Button>
-          <Button variant="outline" size="sm" onClick={() => handleDownloadTaxStatement('tax-comprehensive')}>
-            <Download className="h-4 w-4 mr-2" />
-            Download Reports
-          </Button>
+          <ReportButtons 
+            reportName="tax-comprehensive" 
+            category="tax" 
+            variant="compact" 
+          />
         </div>
       </div>
 
@@ -269,22 +253,47 @@ const TaxCenter = () => {
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-4">
-                <Button variant="outline" className="h-20 flex-col" onClick={() => handleDownloadTaxStatement('form-16')}>
-                  <FileText className="h-6 w-6 mb-2" />
-                  Form 16 (TDS Certificate)
-                </Button>
-                <Button variant="outline" className="h-20 flex-col" onClick={() => handleDownloadTaxStatement('80c-certificate')}>
-                  <Receipt className="h-6 w-6 mb-2" />
-                  80C Investment Certificate
-                </Button>
-                <Button variant="outline" className="h-20 flex-col" onClick={() => handleDownloadTaxStatement('capital-gains')}>
-                  <PieChart className="h-6 w-6 mb-2" />
-                  Capital Gains Statement
-                </Button>
-                <Button variant="outline" className="h-20 flex-col" onClick={() => handleDownloadTaxStatement('annual-investment')}>
-                  <Download className="h-6 w-6 mb-2" />
-                  Annual Investment Statement
-                </Button>
+                <div className="space-y-4">
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">📋 Form 16 (TDS Certificate)</h4>
+                    <ReportButtons reportName="form-16" category="tax" variant="compact" />
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">🎯 80C Investment Certificate</h4>
+                    <ReportButtons reportName="80c-certificate" category="tax" variant="compact" />
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">📊 Capital Gains Statement</h4>
+                    <ReportButtons reportName="capital-gains" category="tax" variant="compact" />
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">📄 Annual Investment Statement</h4>
+                    <ReportButtons reportName="annual-investment" category="tax" variant="compact" />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 space-y-4">
+                <h4 className="font-semibold">Tax-Specific Reports</h4>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2 text-green-700">🌱 ELSS Investment Report</h4>
+                    <p className="text-sm text-gray-600 mb-3">Complete ELSS holdings and tax benefits</p>
+                    <ReportButtons reportName="elss" category="tax" variant="compact" />
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2 text-red-700">📈 Short Term Capital Gains</h4>
+                    <p className="text-sm text-gray-600 mb-3">STCG analysis and tax implications</p>
+                    <ReportButtons reportName="stcg" category="tax" variant="compact" />
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2 text-blue-700">📉 Long Term Capital Gains</h4>
+                    <p className="text-sm text-gray-600 mb-3">LTCG analysis and exemptions</p>
+                    <ReportButtons reportName="ltcg" category="tax" variant="compact" />
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

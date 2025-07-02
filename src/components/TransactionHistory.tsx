@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ReportButtons } from '@/components/shared/ReportButtons';
 import { 
   Search, 
   Filter, 
@@ -156,18 +157,6 @@ const TransactionHistory = () => {
     return `${units.toFixed(3)} units`;
   };
 
-  // Updated to use DirectPDFService for statement downloads
-  const handleDownloadStatement = async (type: string) => {
-    try {
-      console.log('Generating transaction statement:', type);
-      const { DirectPDFService } = await import('@/services/pdf/DirectPDFService');
-      const { useToast } = await import('@/hooks/use-toast');
-      const directPDFService = new DirectPDFService((data: any) => console.log('Toast:', data));
-      await directPDFService.generateDirectPDF(type, 'TXN123', { statementType: type });
-    } catch (error) {
-      console.error('Transaction statement download failed:', error);
-    }
-  };
 
   const handleRefreshTransactions = async () => {
     console.log('BSE STAR MF API: Refresh Transactions');
@@ -219,10 +208,11 @@ const TransactionHistory = () => {
             <Clock className="h-4 w-4 mr-2" />
             Refresh
           </Button>
-          <Button variant="outline" size="sm" onClick={() => handleDownloadStatement('comprehensive')}>
-            <Download className="h-4 w-4 mr-2" />
-            Download Statement
-          </Button>
+          <ReportButtons 
+            reportName="transaction-comprehensive" 
+            category="transaction" 
+            variant="compact" 
+          />
         </div>
       </div>
 
@@ -514,42 +504,30 @@ const TransactionHistory = () => {
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Download Statements</CardTitle>
+                <CardTitle>Download Transaction Statements</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <Button 
-                    className="w-full justify-start" 
-                    variant="outline"
-                    onClick={() => handleDownloadStatement('cams')}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    CAMS Statement
-                  </Button>
-                  <Button 
-                    className="w-full justify-start" 
-                    variant="outline"
-                    onClick={() => handleDownloadStatement('karvy')}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    KARVY Statement
-                  </Button>
-                  <Button 
-                    className="w-full justify-start" 
-                    variant="outline"
-                    onClick={() => handleDownloadStatement('consolidated')}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Consolidated Statement
-                  </Button>
-                  <Button 
-                    className="w-full justify-start" 
-                    variant="outline"
-                    onClick={() => handleDownloadStatement('capital-gains')}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Capital Gains Statement
-                  </Button>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">📋 CAMS Statement</h4>
+                    <p className="text-sm text-gray-600 mb-3">Computer Age Management Services</p>
+                    <ReportButtons reportName="cams" category="transaction" variant="compact" />
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">📋 Karvy Statement</h4>
+                    <p className="text-sm text-gray-600 mb-3">Karvy Fintech Services</p>
+                    <ReportButtons reportName="karvy" category="transaction" variant="compact" />
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">📊 Consolidated Report</h4>
+                    <p className="text-sm text-gray-600 mb-3">All registrars combined</p>
+                    <ReportButtons reportName="consolidated" category="transaction" variant="compact" />
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">📈 Recent Transactions</h4>
+                    <p className="text-sm text-gray-600 mb-3">Last 30 days activity</p>
+                    <ReportButtons reportName="recent-transactions" category="transaction" variant="compact" />
+                  </div>
                 </div>
               </CardContent>
             </Card>

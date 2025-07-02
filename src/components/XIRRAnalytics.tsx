@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { ReportButtons } from '@/components/shared/ReportButtons';
 import { 
   TrendingUp, 
   Info, 
@@ -79,10 +80,11 @@ const XIRRAnalytics = () => {
             </DialogContent>
           </Dialog>
         </div>
-        <Button variant="outline" size="sm">
-          <Download className="h-4 w-4 mr-2" />
-          Download Report
-        </Button>
+        <ReportButtons 
+          reportName="xirr-analysis" 
+          category="performance" 
+          variant="compact" 
+        />
       </div>
 
       {/* Main XIRR Display */}
