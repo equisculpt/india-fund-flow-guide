@@ -33,34 +33,140 @@ serve(async (req) => {
     }
     console.log('PDF Shift API key found:', pdfShiftApiKey.substring(0, 8) + '...');
 
-    // Create simple test HTML instead of loading complex URL
+    // Create comprehensive HTML content for better PDF generation
     const htmlContent = `
     <!DOCTYPE html>
     <html>
     <head>
-        <title>${category.toUpperCase()} Statement</title>
+        <title>${category.toUpperCase()} Statement - ${reportName}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            .header { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-            .content { padding: 20px; }
-            .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; }
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                line-height: 1.6; 
+                color: #333; 
+                background: white;
+                padding: 20px;
+                min-height: 100vh;
+            }
+            .header { 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                color: white; 
+                padding: 30px; 
+                border-radius: 10px; 
+                margin-bottom: 30px; 
+                text-align: center;
+            }
+            .header h1 { font-size: 28px; margin-bottom: 10px; font-weight: 600; }
+            .header p { font-size: 16px; opacity: 0.9; margin: 5px 0; }
+            .content { 
+                padding: 30px; 
+                background: #f8f9fa; 
+                border-radius: 10px; 
+                margin-bottom: 30px;
+                min-height: 400px;
+            }
+            .content h2 { 
+                color: #2d3748; 
+                font-size: 24px; 
+                margin-bottom: 20px; 
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 10px;
+            }
+            .content p { font-size: 16px; margin-bottom: 15px; }
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin: 20px 0;
+            }
+            .stat-card {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                text-align: center;
+            }
+            .stat-value { font-size: 24px; font-weight: bold; color: #667eea; }
+            .stat-label { font-size: 14px; color: #666; margin-top: 5px; }
+            .footer { 
+                text-align: center; 
+                margin-top: 40px; 
+                padding: 20px;
+                border-top: 1px solid #e2e8f0;
+                font-size: 12px; 
+                color: #666; 
+            }
+            .disclaimer {
+                background: #fff3cd;
+                border: 1px solid #ffeaa7;
+                padding: 15px;
+                border-radius: 5px;
+                margin: 20px 0;
+                font-size: 12px;
+            }
+            @media print {
+                body { margin: 0; padding: 20px; }
+                .header { break-inside: avoid; }
+                .content { break-inside: avoid; }
+            }
         </style>
     </head>
     <body>
         <div class="header">
             <h1>SIP Brewery - ${category.toUpperCase()} Statement</h1>
-            <p>Report: ${reportName}</p>
-            <p>Client: ${clientCode}</p>
-            <p>Generated: ${new Date().toLocaleDateString('en-IN')}</p>
+            <p><strong>Report:</strong> ${reportName}</p>
+            <p><strong>Client Code:</strong> ${clientCode}</p>
+            <p><strong>Generated:</strong> ${new Date().toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            })}</p>
         </div>
+        
         <div class="content">
-            <h2>Portfolio Summary</h2>
-            <p>This is a test ${category} report generated using PDF Shift API.</p>
-            <p>The integration is working successfully!</p>
+            <h2>${category.charAt(0).toUpperCase() + category.slice(1)} Portfolio Summary</h2>
+            <p>This comprehensive ${category} report provides detailed insights into your investment portfolio performance and analysis.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">₹2,45,000</div>
+                    <div class="stat-label">Total Investment</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">₹2,89,500</div>
+                    <div class="stat-label">Current Value</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">+18.16%</div>
+                    <div class="stat-label">Total Returns</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">15.2%</div>
+                    <div class="stat-label">Annualized Return</div>
+                </div>
+            </div>
+            
+            <h3 style="margin: 30px 0 15px 0; color: #2d3748;">Key Highlights:</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>Portfolio performance exceeds benchmark by 3.2%</li>
+                <li>Well-diversified across ${category === 'equity' ? 'multiple sectors' : 'asset classes'}</li>
+                <li>Consistent SIP investments showing rupee cost averaging benefits</li>
+                <li>Risk-adjusted returns within acceptable parameters</li>
+            </ul>
+            
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> This is a sample ${category} report generated for demonstration purposes. 
+                Actual investment values and returns may vary. Past performance does not guarantee future results.
+            </div>
         </div>
+        
         <div class="footer">
-            <p>SIP Brewery - Professional Investment Platform</p>
-            <p>Generated on ${new Date().toISOString()}</p>
+            <p><strong>SIP Brewery</strong> - Professional Investment Platform</p>
+            <p>Generated on ${new Date().toISOString().split('T')[0]} at ${new Date().toLocaleTimeString('en-IN')}</p>
+            <p>For support, contact: support@sipbrewery.com | +91-XXXX-XXXXXX</p>
         </div>
     </body>
     </html>
@@ -68,12 +174,15 @@ serve(async (req) => {
     
     console.log('Using HTML content for PDF generation');
 
-    // PDF Shift configuration with HTML content
+    // PDF Shift configuration with HTML content and extended timeout
     const pdfShiftOptions = {
       source: htmlContent,
       format: 'A4',
       margin: '15mm',
-      landscape: false
+      landscape: false,
+      timeout: 120000, // 120 seconds timeout
+      wait_for: 3000,  // Wait 3 seconds for content to fully load
+      emulate_media: 'print' // Use print media for better PDF output
     };
 
     console.log('Calling PDF Shift API with options:', JSON.stringify(pdfShiftOptions, null, 2));
