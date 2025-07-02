@@ -7,6 +7,9 @@ import { StatementData } from '@/services/statement/types';
 import { MockDataGenerator } from '@/services/statement/mockDataGenerator';
 import { PDFDownloadService } from '@/services/pdf/PDFDownloadService';
 import { DirectPDFService } from '@/services/pdf/DirectPDFService';
+import { MetricBoxes } from '@/components/reports/MetricBoxes';
+import { AIAnalysisSection } from '@/components/reports/AIAnalysisSection';
+import { ReportContentSections } from '@/components/reports/ReportContentSections';
 
 // Statement Preview Page - This is what gets converted to PDF
 const StatementPreviewPage: React.FC = () => {
