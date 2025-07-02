@@ -71,28 +71,28 @@ export const footerStyles = StyleSheet.create({
     marginTop: 5,
   },
 
-  // Enhanced Disclaimer Section
+  // Enhanced Disclaimer Section - Fixed positioning
   disclaimer: {
     backgroundColor: '#FEF2F2',
-    padding: 20,
-    borderRadius: 12,
-    marginBottom: 25,
-    borderLeftWidth: 5,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+    borderLeftWidth: 3,
     borderLeftColor: '#EF4444',
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#FECACA',
   },
   disclaimerTitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#DC2626',
-    marginBottom: 12,
+    marginBottom: 6,
     textAlign: 'center',
   },
   disclaimerText: {
-    fontSize: 10,
+    fontSize: 8,
     color: '#7F1D1D',
-    lineHeight: 1.4,
+    lineHeight: 1.2,
     textAlign: 'justify',
   },
 });

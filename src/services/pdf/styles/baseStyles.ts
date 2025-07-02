@@ -5,12 +5,12 @@ export const baseStyles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
-    padding: 30,
-    paddingBottom: 100, // Space for footer
+    padding: 25,
+    paddingBottom: 150, // More space for disclaimer + footer
     fontFamily: 'Helvetica',
     fontSize: 12,
     position: 'relative',
-    lineHeight: 1.4,
+    lineHeight: 1.5,
   },
   
   // Enhanced Brand Colors with HSL values
