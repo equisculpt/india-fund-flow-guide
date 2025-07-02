@@ -52,13 +52,11 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
             <View key={`holding-${index}`} style={rowStyle}>
               <View style={{ flex: 3, paddingHorizontal: 15 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  {isLargest && (
-                    <Text style={{ marginRight: 6, color: '#FFB800', fontSize: 12 }}>*</Text>
-                  )}
                   <Text style={styles.tableCellBold}>
                     {holding.schemeName || 'N/A'}
                     {holding.isELSS && ' (ELSS)'}
                     {holding.isLiquid && ' (Liquid)'}
+                    {isLargest && ' [Largest]'}
                   </Text>
                 </View>
                 <Text style={[styles.tableCell, { fontSize: 10, color: '#6B7280', marginTop: 3 }]}>
