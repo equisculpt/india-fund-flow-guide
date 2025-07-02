@@ -174,8 +174,8 @@ serve(async (req) => {
       format: 'A4',
       margin: '15mm',
       landscape: false,
-      timeout: 120, // 120 seconds timeout (in seconds, not milliseconds)
-      delay: 3000   // Wait 3 seconds for content to fully load (in milliseconds)
+      timeout: 30, // Maximum allowed timeout is 30 seconds
+      delay: 3000  // Wait 3 seconds for content to fully load (in milliseconds)
     };
 
     console.log('Calling PDF Shift API with options:', JSON.stringify(pdfShiftOptions, null, 2));
