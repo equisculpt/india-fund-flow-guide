@@ -1,6 +1,7 @@
 import React from 'react';
 import { Document, Page, Text } from '@react-pdf/renderer';
 import { styles } from './styles/pdfStyles';
+import { PDFDataSanitizer } from './utils/dataSanitizer';
 import { PDFHeader } from './components/PDFHeader';
 import { PDFUserInfo } from './components/PDFUserInfo';
 import { PDFPortfolioSummary } from './components/PDFPortfolioSummary';
@@ -16,43 +17,48 @@ import { PDFCharts } from './components/PDFCharts';
 export const PDFStatementDocument = ({
   statementData,
   generatedAt,
-}: any) => (
+}: any) => {
+  // Sanitize all data before rendering
+  const cleanData = PDFDataSanitizer.sanitizeStatementData(statementData);
+  
+  return (
   <Document>
     <Page size="A4" style={styles.page}>
       <PDFHeader generatedAt={generatedAt} />
       <Text style={styles.watermark} fixed>SIP BREWERY</Text>
 
-      <PDFUserInfo userInfo={statementData.userInfo} />
+      <PDFUserInfo userInfo={cleanData.userInfo} />
       <Text break />
 
-      <PDFPortfolioSummary portfolio={statementData.portfolio} />
+      <PDFPortfolioSummary portfolio={cleanData.portfolio} />
       <Text break />
 
-      <AIInsightSection portfolio={statementData.portfolio} />
+      <AIInsightSection portfolio={cleanData.portfolio} />
       <Text break />
 
-      <PDFCharts chartsData={statementData.chartsData} />
+      <PDFCharts chartsData={cleanData.chartsData} />
       <Text break />
 
-      <PDFHoldingsTable holdings={statementData.holdings} />
+      <PDFHoldingsTable holdings={cleanData.holdings} />
       <Text break />
 
-      <PDFRecentTransactions transactions={statementData.transactions} />
+      <PDFRecentTransactions transactions={cleanData.transactions} />
       <Text break />
 
-      <PDFUpcomingSIPs sips={statementData.sips} />
+      <PDFUpcomingSIPs sips={cleanData.sips} />
       <Text break />
 
-      <PDFRewards rewards={statementData.rewards} />
+      <PDFRewards rewards={cleanData.rewards} />
       <Text break />
 
-      <PDFCapitalGains capitalGains={statementData.capitalGains} />
+      <PDFCapitalGains capitalGains={cleanData.capitalGains} />
       <Text break />
 
       <PDFFooter generatedAt={generatedAt} />
     </Page>
   </Document>
-);
+  );
+};
 
 export const createPDFDocument = (props: any) => {
   return <PDFStatementDocument {...props} />;

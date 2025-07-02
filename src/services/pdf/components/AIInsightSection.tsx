@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 import { styles } from '../styles/pdfStyles';
 import { StatementData } from '../../statement/types';
+import { PDFDataSanitizer } from '../utils/dataSanitizer';
 
 interface AIInsightSectionProps {
   portfolio: StatementData['portfolio'];
@@ -43,6 +44,7 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
   };
 
   const insight = generateInsight();
+  const sanitizedInsight = PDFDataSanitizer.sanitizeAIInsight(insight);
 
   return (
     <View style={styles.aiInsight}>
@@ -60,16 +62,16 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
           marginBottom: 20,
           color: '#1A1F36'
         }}>
-          {insight.title}
+          {sanitizedInsight.title}
         </Text>
         
         <Text style={styles.aiInsightText}>
-          {insight.insight}
+          {sanitizedInsight.insight}
         </Text>
         
         <Text style={[styles.aiInsightText, { marginTop: 18 }]}>
           <Text style={{ fontWeight: 700 }}>Next Best Action: </Text>
-          {insight.recommendation}
+          {sanitizedInsight.recommendation}
         </Text>
         
         <View style={{ 
@@ -82,18 +84,18 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
           borderLeftWidth: 6,
           borderLeftColor: '#00B47B'
         }}>
-          <Text style={{ marginRight: 10, color: '#00B47B', fontSize: 16 }}>💡</Text>
+          <Text style={{ marginRight: 10, color: '#00B47B', fontSize: 16 }}>●</Text>
           <Text style={styles.aiInsightHighlight}>
-            Key Insight: {insight.highlight}
+            Key Insight: {sanitizedInsight.highlight}
           </Text>
         </View>
         
         <View style={styles.percentileBadge}>
           <Text style={styles.percentileBadgeText}>
-            Your XIRR Performance: {insight.percentile}
+            Your XIRR Performance: {sanitizedInsight.percentile}
           </Text>
           <View style={styles.progressBarContainer}>
-            <View style={[styles.progressBarFill, { width: insight.percentileValue + '%' }]} />
+            <View style={[styles.progressBarFill, { width: sanitizedInsight.percentileValue + '%' }]} />
           </View>
         </View>
       </View>
