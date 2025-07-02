@@ -1,13 +1,13 @@
 import { useToast } from '@/hooks/use-toast';
-import { PDFDownloadService } from './PDFDownloadService';
+import { AutoPDFService } from './AutoPDFService';
 
 export class WebToPDFService {
   private toast: any;
-  private pdfDownloadService: PDFDownloadService;
+  private autoPDFService: AutoPDFService;
 
   constructor(toast: any) {
     this.toast = toast;
-    this.pdfDownloadService = new PDFDownloadService(toast);
+    this.autoPDFService = new AutoPDFService(toast);
   }
 
   /**
@@ -50,17 +50,10 @@ export class WebToPDFService {
     clientCode: string,
     additionalParams: Record<string, string> = {}
   ): Promise<void> {
-    const params = new URLSearchParams({
-      type: statementType,
-      client: clientCode,
-      ...additionalParams
-    });
-
-    const baseUrl = window.location.origin;
-    const statementUrl = `${baseUrl}/statement-preview?${params.toString()}`;
-    const fileName = `SIPBrewery-${statementType}-${clientCode}-${new Date().toISOString().split('T')[0]}.pdf`;
-
-    await this.generatePDFFromURL(statementUrl, fileName);
+    console.log('WebToPDFService: Using automatic background PDF generation');
+    
+    // Use the new automatic PDF service that generates PDF in background
+    await this.autoPDFService.generateStatementPDF(statementType, clientCode, additionalParams);
   }
 
   /**
