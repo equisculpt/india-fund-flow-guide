@@ -20,34 +20,41 @@ export class PDFShiftService {
       console.log('Generating PDF with PDF Shift:', config);
       
       this.toast({
-        title: "Generating PDF...",
-        description: "Creating your professional report using PDF Shift. This may take a moment.",
+        title: "Generating Professional PDF...",
+        description: "Creating your report using PDF Shift API. This may take a moment.",
       });
 
       // Call the PDF Shift edge function
-      const { data, error } = await supabase.functions.invoke('generate-pdf-with-pdfshift', {
+      const response = await supabase.functions.invoke('generate-pdf-with-pdfshift', {
         body: {
           reportType: config.reportType,
           clientCode: config.clientCode,
           category: config.category,
           reportName: config.reportName,
           format: config.format || 'pdf'
-        },
-        headers: {
-          'Content-Type': 'application/json'
         }
       });
 
-      if (error) {
-        console.error('PDF Shift function error:', error);
-        throw new Error(error.message || 'Failed to generate PDF');
+      console.log('PDF Shift response:', response);
+
+      if (response.error) {
+        console.error('PDF Shift function error:', response.error);
+        throw new Error(response.error.message || 'Failed to generate PDF');
       }
 
       // The response should be binary PDF data
-      if (data && data instanceof ArrayBuffer) {
-        // Create blob and download
-        const blob = new Blob([data], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
+      if (response.data) {
+        // Handle the response based on its type
+        let pdfBlob;
+        
+        if (response.data instanceof ArrayBuffer) {
+          pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        } else if (response.data instanceof Uint8Array) {
+          pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        } else {
+          // Assume it's already blob-like data
+          pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        }
         
         // Generate filename
         const timestamp = new Date().toISOString().slice(0, 10);
@@ -55,6 +62,7 @@ export class PDFShiftService {
         const filename = `${categoryName}_Statement_${config.clientCode}_${timestamp}.pdf`;
         
         // Create download link
+        const url = URL.createObjectURL(pdfBlob);
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
@@ -67,11 +75,11 @@ export class PDFShiftService {
 
         this.toast({
           title: "PDF Generated Successfully!",
-          description: `Your ${categoryName.toLowerCase()} statement has been downloaded.`,
+          description: `Your professional ${categoryName.toLowerCase()} statement has been downloaded.`,
         });
       } else {
-        console.error('Invalid PDF data received:', data);
-        throw new Error('Invalid PDF data received from server');
+        console.error('No data received from PDF Shift');
+        throw new Error('No PDF data received from server');
       }
 
     } catch (error) {

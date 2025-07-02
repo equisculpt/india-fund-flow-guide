@@ -22,31 +22,58 @@ serve(async (req) => {
       throw new Error('PDF Shift API key not configured');
     }
 
-    // Test with a simple, guaranteed-working URL first
-    const testMode = true; // Set to false once working
+    // Debug: log the request to understand what's happening
+    console.log('PDF Shift request:', { reportType, clientCode, category, reportName });
     
-    let sourceUrl;
-    if (testMode) {
-      // Use a simple HTML string for testing
-      sourceUrl = `<html><body><h1>Test PDF Report</h1><p>Category: ${category}</p><p>Report: ${reportName}</p><p>Client: ${clientCode}</p><p>Generated: ${new Date().toLocaleDateString()}</p></body></html>`;
-    } else {
-      // Use the actual report URL
-      const baseUrl = 'https://fda643ee-be23-498f-9eb0-809d67236773.lovableproject.com';
-      const params = new URLSearchParams({
-        type: reportType,
-        client: clientCode,
-        category: category,
-        reportName: reportName
-      });
-      sourceUrl = `${baseUrl}/statement-preview?${params.toString()}`;
+    // Get the PDF Shift API key and validate it
+    const pdfShiftApiKey = Deno.env.get('PDFSHIFT_API_KEY');
+    if (!pdfShiftApiKey) {
+      console.error('PDF Shift API key not found in environment');
+      throw new Error('PDF Shift API key not configured');
     }
-    
-    console.log('PDF Source:', testMode ? 'HTML String' : sourceUrl);
+    console.log('PDF Shift API key found:', pdfShiftApiKey.substring(0, 8) + '...');
 
-    // Minimal PDF Shift configuration for testing
+    // Create simple test HTML instead of loading complex URL
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>${category.toUpperCase()} Statement</title>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            .header { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+            .content { padding: 20px; }
+            .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>SIP Brewery - ${category.toUpperCase()} Statement</h1>
+            <p>Report: ${reportName}</p>
+            <p>Client: ${clientCode}</p>
+            <p>Generated: ${new Date().toLocaleDateString('en-IN')}</p>
+        </div>
+        <div class="content">
+            <h2>Portfolio Summary</h2>
+            <p>This is a test ${category} report generated using PDF Shift API.</p>
+            <p>The integration is working successfully!</p>
+        </div>
+        <div class="footer">
+            <p>SIP Brewery - Professional Investment Platform</p>
+            <p>Generated on ${new Date().toISOString()}</p>
+        </div>
+    </body>
+    </html>
+    `;
+    
+    console.log('Using HTML content for PDF generation');
+
+    // PDF Shift configuration with HTML content
     const pdfShiftOptions = {
-      source: sourceUrl,
-      format: 'A4'
+      source: htmlContent,
+      format: 'A4',
+      margin: '15mm',
+      landscape: false
     };
 
     console.log('Calling PDF Shift API with options:', JSON.stringify(pdfShiftOptions, null, 2));

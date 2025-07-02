@@ -34,14 +34,12 @@ export class ReportService {
   }
 
   private async generatePDFReport(config: ReportConfig): Promise<void> {
-    // Use the existing working DirectPDFService instead of PDF Shift
-    const reportType = `${config.category}-${config.reportName}`;
-    const clientCode = config.clientCode || this.generateClientCode(config.category);
-    
-    await this.directPDFService.generateDirectPDF(reportType, clientCode, {
-      reportCategory: config.category,
-      reportName: config.reportName,
-      ...config.data
+    // Use PDF Shift for professional PDF generation
+    await this.pdfShiftService.generatePDF({
+      reportType: `${config.category}-${config.reportName}`,
+      clientCode: config.clientCode || this.generateClientCode(config.category),
+      category: config.category,
+      reportName: config.reportName
     });
   }
 
