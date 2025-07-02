@@ -144,13 +144,13 @@ const PDFDebugger: React.FC = () => {
           </div>
 
           <div className="border-t pt-4">
-            <h4 className="font-medium text-primary mb-4">🆕 New Automatic PDF System (Background Generation)</h4>
+            <h4 className="font-medium text-primary mb-4">🚀 Automatic PDF Download System (No Manual Steps)</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Button 
                 onClick={openStatementPreview} 
                 variant="outline"
               >
-                📄 Preview Statement
+                📄 Preview New Design
               </Button>
               
               <Button 
@@ -159,18 +159,18 @@ const PDFDebugger: React.FC = () => {
                 variant="default"
                 className="bg-green-600 hover:bg-green-700"
               >
-                {isTestingWebPDF ? 'Generating...' : '🚀 Auto-Generate PDF'}
+                {isTestingWebPDF ? 'Downloading...' : '⚡ Auto-Download PDF'}
               </Button>
               
               <Button 
                 onClick={() => webToPDFService.openStatementPreview('comprehensive', 'TEST123')} 
                 variant="outline"
               >
-                🔗 Manual Preview
+                🎨 Manual Preview
               </Button>
             </div>
             <p className="text-sm text-muted-foreground mt-2">
-              ⚡ The new system generates PDFs automatically in the background - no manual printing required!
+              ⚡ <strong>NEW:</strong> Automatically downloads high-quality PDF with no manual steps required!
             </p>
           </div>
         </div>
