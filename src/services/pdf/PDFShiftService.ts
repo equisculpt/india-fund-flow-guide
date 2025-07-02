@@ -39,6 +39,12 @@ export class PDFShiftService {
 
       if (response.error) {
         console.error('PDF Shift function error:', response.error);
+        
+        // Check if it's a missing API key error
+        if (response.error.message?.includes('API key not configured')) {
+          throw new Error('PDF Shift API key is not configured. Please add your PDFSHIFT_API_KEY in Supabase secrets.');
+        }
+        
         throw new Error(response.error.message || 'Failed to generate PDF');
       }
 
