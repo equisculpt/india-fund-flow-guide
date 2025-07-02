@@ -500,6 +500,9 @@ export const styles = StyleSheet.create({
   glanceCardWarning: {
     borderColor: '#FFB800',
   },
+  glanceCardInfo: {
+    borderColor: '#2E7DFF',
+  },
   glanceIcon: {
     fontSize: 16,
     marginBottom: 8,

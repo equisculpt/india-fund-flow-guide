@@ -34,7 +34,7 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
         <View style={styles.tableHeader}>
           <Text style={[styles.tableHeaderCell, { flex: 3 }]}>Fund Details</Text>
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Units</Text>
-          <Text style={[styles.tableHeaderCell, { flex: 1 }]}>NAV (₹)</Text>
+          <Text style={[styles.tableHeaderCell, { flex: 1 }]}>NAV (Rs.)</Text>
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Current Value</Text>
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Returns</Text>
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>% Portfolio</Text>
@@ -72,8 +72,8 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
                 )}
               </View>
               <Text style={[styles.tableCell, { flex: 1 }]}>{(holding.units || 0).toFixed(3)}</Text>
-              <Text style={[styles.tableCell, { flex: 1 }]}>₹{(holding.currentNav || 0).toFixed(2)}</Text>
-              <Text style={[styles.tableCellBold, { flex: 1 }]}>₹{(holding.marketValue || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</Text>
+              <Text style={[styles.tableCell, { flex: 1 }]}>Rs.{(holding.currentNav || 0).toFixed(2)}</Text>
+              <Text style={[styles.tableCellBold, { flex: 1 }]}>Rs.{(holding.marketValue || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</Text>
               <Text style={[(holding.pnl || 0) >= 0 ? styles.tableCellGreen : styles.tableCellRed, { flex: 1 }]}>
                 {(holding.pnl || 0) >= 0 ? '+' : ''}{(holding.pnlPercentage || 0).toFixed(1)}%
               </Text>
@@ -99,7 +99,7 @@ export const PDFHoldingsTable: React.FC<PDFHoldingsTableProps> = ({ holdings }) 
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>Largest Holding</Text>
           <Text style={styles.summaryValue}>
-            ₹{largestHoldingValue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+            Rs.{largestHoldingValue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
           </Text>
           <Text style={styles.summarySubtext}>
             {totalPortfolioValue > 0 ? ((largestHoldingValue / totalPortfolioValue) * 100).toFixed(1) : '0'}% of total portfolio

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 import { styles } from '../styles/pdfStyles';
@@ -10,7 +9,8 @@ interface AIInsightSectionProps {
 
 export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio }) => {
   const generateInsight = () => {
-    const xirr = portfolio.xirr;
+    const xirr = portfolio?.xirr || 0;
+    const totalInvested = portfolio?.totalInvested || 0;
     
     if (xirr > 15) {
       return {
@@ -24,7 +24,7 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
     } else if (xirr > 12) {
       return {
         title: "Strong Portfolio Performance",
-        insight: 'Your ' + xirr.toFixed(1) + '% XIRR shows good investment discipline and fund selection across your ₹' + portfolio.totalInvested.toLocaleString('en-IN', { maximumFractionDigits: 0 }) + ' investment.',
+        insight: 'Your ' + xirr.toFixed(1) + '% XIRR shows good investment discipline and fund selection across your Rs.' + totalInvested.toLocaleString('en-IN', { maximumFractionDigits: 0 }) + ' investment.',
         recommendation: "Explore adding international diversification or increasing allocation to small-cap funds for potential alpha generation.",
         highlight: 'Your returns are ' + (xirr - 10).toFixed(1) + '% above market average!',
         percentile: "Top 35%",
@@ -54,7 +54,12 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
       </View>
       
       <View style={styles.aiInsightContent}>
-        <Text style={[styles.aiInsightText, { fontWeight: 'bold', marginBottom: 20, fontSize: 16 }]}>
+        <Text style={{
+          fontSize: 16,
+          fontWeight: 700,
+          marginBottom: 20,
+          color: '#1A1F36'
+        }}>
           {insight.title}
         </Text>
         
@@ -63,7 +68,7 @@ export const AIInsightSection: React.FC<AIInsightSectionProps> = ({ portfolio })
         </Text>
         
         <Text style={[styles.aiInsightText, { marginTop: 18 }]}>
-          <Text style={{ fontWeight: 'bold' }}>Next Best Action: </Text>
+          <Text style={{ fontWeight: 700 }}>Next Best Action: </Text>
           {insight.recommendation}
         </Text>
         
