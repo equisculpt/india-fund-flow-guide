@@ -145,13 +145,11 @@ const StatementPDF: React.FC<Props> = ({
           {/* Header */}
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-4 mb-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-                <img 
-                  src={sipBreweryIcon} 
-                  alt="SIP Brewery Logo" 
-                  className="w-10 h-10 object-contain"
-                />
-              </div>
+              <img 
+                src={sipBreweryIcon} 
+                alt="SIP Brewery Logo" 
+                className="w-16 h-16 object-contain"
+              />
               <div className="text-left">
                 <h1 className="text-3xl font-bold text-gray-800">SIP Brewery</h1>
                 <p className="text-lg font-medium text-orange-500">Brewing Wealth</p>
@@ -214,13 +212,11 @@ const StatementPDF: React.FC<Props> = ({
           {/* Header */}
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-4 mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-                <img 
-                  src={sipBreweryIcon} 
-                  alt="SIP Brewery Logo" 
-                  className="w-8 h-8 object-contain"
-                />
-              </div>
+              <img 
+                src={sipBreweryIcon} 
+                alt="SIP Brewery Logo" 
+                className="w-12 h-12 object-contain"
+              />
               <div className="text-left">
                 <h1 className="text-2xl font-bold text-gray-800">SIP Brewery</h1>
                 <p className="text-base font-medium text-orange-500">Brewing Wealth</p>
@@ -292,13 +288,11 @@ const StatementPDF: React.FC<Props> = ({
           {/* Header */}
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-4 mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-                <img 
-                  src={sipBreweryIcon} 
-                  alt="SIP Brewery Logo" 
-                  className="w-8 h-8 object-contain"
-                />
-              </div>
+              <img 
+                src={sipBreweryIcon} 
+                alt="SIP Brewery Logo" 
+                className="w-12 h-12 object-contain"
+              />
               <div className="text-left">
                 <h1 className="text-2xl font-bold text-gray-800">SIP Brewery</h1>
                 <p className="text-base font-medium text-orange-500">Brewing Wealth</p>
