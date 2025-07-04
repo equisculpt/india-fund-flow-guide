@@ -1,5 +1,3 @@
-import { SharedPDFTemplate } from './SharedPDFTemplate';
-
 export class AutoPDFService {
   private toast: any;
 

@@ -1,5 +1,4 @@
 import { supabase } from '@/integrations/supabase/client';
-import { SharedPDFTemplate } from './SharedPDFTemplate';
 
 export interface PDFShiftConfig {
   reportType: string;
@@ -63,9 +62,10 @@ export class PDFShiftService {
           pdfBlob = new Blob([response.data], { type: 'application/pdf' });
         }
         
-        // Generate consistent filename
+        // Generate filename
         const timestamp = new Date().toISOString().slice(0, 10);
-        const filename = `SIP-Brewery-Statement-${config.clientCode}-${timestamp}.pdf`;
+        const categoryName = config.category.charAt(0).toUpperCase() + config.category.slice(1);
+        const filename = `${categoryName}_Statement_${config.clientCode}_${timestamp}.pdf`;
         
         // Create download link
         const url = URL.createObjectURL(pdfBlob);
@@ -81,7 +81,7 @@ export class PDFShiftService {
 
         this.toast({
           title: "PDF Generated Successfully!",
-          description: `Your professional ${config.category} statement has been downloaded.`,
+          description: `Your professional ${categoryName.toLowerCase()} statement has been downloaded.`,
         });
       } else {
         console.error('No data received from PDF Shift');

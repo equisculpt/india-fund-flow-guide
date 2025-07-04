@@ -699,9 +699,9 @@ serve(async (req) => {
       const pdf = new jsPDF();
       console.log('📄 Created new jsPDF instance');
       
-      // Add SIP Brewery header with beer icon
+      // Add page content programmatically
       pdf.setFontSize(20);
-      pdf.text('🍺 SIP Brewery Portfolio Statement', 20, 30);
+      pdf.text('SIP Brewery Portfolio Statement', 20, 30);
       
       pdf.setFontSize(12);
       pdf.text(`Investor: ${name}`, 20, 50);

@@ -35,14 +35,9 @@ serve(async (req) => {
     <title>Test</title>
 </head>
 <body style="padding: 20px; font-family: Arial;">
-    <div style="display: flex; align-items: center; gap: 15px; margin: 0 auto 20px; justify-content: center;">
-        <div style="width: 60px; height: 60px; background: url('/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png') center/contain no-repeat;"></div>
-        <div>
-            <h1 style="margin: 0; color: #1f2937;">SIP Brewery</h1>
-            <p style="margin: 0; color: #f59e0b;">Brewing Wealth</p>
-        </div>
-    </div>
-    <h2 style="text-align: center;">Portfolio Statement</h2>
+    <img src="https://via.placeholder.com/200x100/2563eb/ffffff?text=SIP+BREWERY" alt="SIP Brewery Logo" style="display: block; margin: 0 auto 20px;">
+    <h1 style="text-align: center; color: #2563eb;">SIP Brewery</h1>
+    <p style="text-align: center;">Test PDF Document</p>
     <p style="text-align: center;">Generated: ${new Date().toLocaleString()}</p>
 </body>
 </html>`;
