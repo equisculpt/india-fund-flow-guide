@@ -3,7 +3,8 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Title, C
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import BreweryLogo from './BreweryLogo';
-import sipBreweryIcon from '/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png';
+
+// Use the beer icon directly via public path
 
 // Register Chart.js components
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale);
@@ -146,7 +147,7 @@ const StatementPDF: React.FC<Props> = ({
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-4 mb-2">
               <img 
-                src={sipBreweryIcon} 
+                  src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png"
                 alt="SIP Brewery Logo" 
                 className="w-16 h-16 object-contain"
               />
@@ -213,7 +214,7 @@ const StatementPDF: React.FC<Props> = ({
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-4 mb-2">
               <img 
-                src={sipBreweryIcon} 
+                  src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png"
                 alt="SIP Brewery Logo" 
                 className="w-12 h-12 object-contain"
               />
@@ -289,7 +290,7 @@ const StatementPDF: React.FC<Props> = ({
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-4 mb-2">
               <img 
-                src={sipBreweryIcon} 
+                src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png" 
                 alt="SIP Brewery Logo" 
                 className="w-12 h-12 object-contain"
               />
