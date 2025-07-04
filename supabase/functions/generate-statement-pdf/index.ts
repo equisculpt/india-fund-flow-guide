@@ -692,9 +692,12 @@ serve(async (req) => {
     // Let's use jsPDF for server-side generation as a reliable alternative
     try {
       // Import jsPDF for server-side generation
+      console.log('🔧 Importing jsPDF...');
       const { default: jsPDF } = await import('https://esm.sh/jspdf@2.5.1');
+      console.log('✅ jsPDF imported successfully');
       
       const pdf = new jsPDF();
+      console.log('📄 Created new jsPDF instance');
       
       // Add page content programmatically
       pdf.setFontSize(20);
@@ -712,6 +715,7 @@ serve(async (req) => {
       pdf.text(`${insight.title}: ${insight.comment}`, 20, 120);
       
       // Add page 2 - Holdings
+      console.log('📋 Adding page 2 - Holdings');
       pdf.addPage();
       pdf.setFontSize(16);
       pdf.text('Portfolio Holdings', 20, 30);
@@ -742,6 +746,7 @@ serve(async (req) => {
       });
       
       // Add page 3 - Recommendations
+      console.log('💡 Adding page 3 - Recommendations');
       pdf.addPage();
       pdf.setFontSize(16);
       pdf.text('Investment Recommendations', 20, 30);
@@ -751,9 +756,11 @@ serve(async (req) => {
       pdf.text('Consider increasing SIP amounts by 10% annually to combat inflation.', 20, 60);
       pdf.text('Review ELSS funds for tax benefits in the next financial year.', 20, 70);
       
+      console.log('🔨 Generating PDF buffer...');
       const pdfBuffer = pdf.output('arraybuffer');
       
-      console.log('PDF generated successfully using jsPDF, size:', pdfBuffer.byteLength, 'bytes');
+      console.log('📊 PDF generated successfully using jsPDF, size:', pdfBuffer.byteLength, 'bytes');
+      console.log('📃 PDF should have 3 pages with holdings and recommendations');
 
       // Generate filename
       const timestamp = new Date().toISOString().slice(0, 10);
