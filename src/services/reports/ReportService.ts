@@ -119,29 +119,6 @@ export class ReportService {
     return `${prefix}${timestamp}`;
   }
 
-  // Tax-specific report methods
-  async generateTaxReport(reportName: string, type: 'html' | 'pdf'): Promise<void> {
-    const taxReports = {
-      'elss': 'ELSS Investment Summary',
-      'stcg': 'Short Term Capital Gains',
-      'ltcg': 'Long Term Capital Gains',
-      '80c-certificate': '80C Investment Certificate',
-      'form-16': 'Form 16 TDS Certificate',
-      'capital-gains': 'Capital Gains Statement',
-      'annual-investment': 'Annual Investment Statement',
-      'tax-comprehensive': 'Comprehensive Tax Report'
-    };
-
-    await this.generateReport({
-      type,
-      category: 'tax',
-      reportName,
-      data: {
-        reportTitle: taxReports[reportName as keyof typeof taxReports] || reportName,
-        financialYear: '2024-25'
-      }
-    });
-  }
 
   // SIP-specific report methods
   async generateSIPReport(reportName: string, type: 'html' | 'pdf'): Promise<void> {
@@ -183,8 +160,17 @@ export class ReportService {
     });
   }
 
-  // Transaction-specific report methods
-  async generateTransactionReport(reportName: string, type: 'html' | 'pdf'): Promise<void> {
+  // Transaction-specific report methods with date filtering
+  async generateTransactionReport(
+    reportName: string, 
+    type: 'html' | 'pdf',
+    filters?: {
+      startDate?: Date;
+      endDate?: Date;
+      financialYear?: string;
+      reportType?: 'custom' | 'financial_year' | 'all_time';
+    }
+  ): Promise<void> {
     const transactionReports = {
       'transaction-comprehensive': 'Comprehensive Transaction Report',
       'cams': 'CAMS Transaction Statement',
@@ -198,7 +184,52 @@ export class ReportService {
       category: 'transaction',
       reportName,
       data: {
-        reportTitle: transactionReports[reportName as keyof typeof transactionReports] || reportName
+        reportTitle: transactionReports[reportName as keyof typeof transactionReports] || reportName,
+        transactionData: {
+          ...this.getStatementSpecificData('transaction', reportName).transactionData,
+          startDate: filters?.startDate?.toLocaleDateString('en-IN'),
+          endDate: filters?.endDate?.toLocaleDateString('en-IN'),
+          financialYear: filters?.financialYear,
+          reportType: filters?.reportType
+        }
+      }
+    });
+  }
+
+  // Tax-specific report methods with financial year selection
+  async generateTaxReport(
+    reportName: string, 
+    type: 'html' | 'pdf',
+    filters?: {
+      financialYear?: string;
+      startDate?: Date;
+      endDate?: Date;
+    }
+  ): Promise<void> {
+    const taxReports = {
+      'elss': 'ELSS Investment Summary',
+      'stcg': 'Short Term Capital Gains',
+      'ltcg': 'Long Term Capital Gains',
+      '80c-certificate': '80C Investment Certificate',
+      'form-16': 'Form 16 TDS Certificate',
+      'capital-gains': 'Capital Gains Statement',
+      'annual-investment': 'Annual Investment Statement',
+      'tax-comprehensive': 'Comprehensive Tax Report'
+    };
+
+    await this.generateReport({
+      type,
+      category: 'tax',
+      reportName,
+      data: {
+        reportTitle: taxReports[reportName as keyof typeof taxReports] || reportName,
+        taxData: {
+          ...this.getStatementSpecificData('tax', reportName).taxData,
+          financialYear: filters?.financialYear || '2024-25',
+          reportPeriod: filters?.startDate && filters?.endDate 
+            ? `${filters.startDate.toLocaleDateString('en-IN')} to ${filters.endDate.toLocaleDateString('en-IN')}`
+            : undefined
+        }
       }
     });
   }

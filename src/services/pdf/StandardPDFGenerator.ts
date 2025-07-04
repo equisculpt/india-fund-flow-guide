@@ -54,6 +54,20 @@ export interface StandardPDFData {
     totalTransactions: number;
     lastTransaction: string;
     transactionTypes: string[];
+    startDate?: string;
+    endDate?: string;
+    financialYear?: string;
+    activeSIPs?: number;
+    totalSIPAmount?: number;
+    transactions?: Array<{
+      date: string;
+      type: string;
+      amount: number;
+      units: number;
+      nav: number;
+      fundName: string;
+      folioNumber?: string;
+    }>;
   };
 }
 
@@ -155,8 +169,10 @@ export class StandardPDFGenerator {
         ? { emoji: '📈', title: 'Solid Performance', comment: 'Keep investing steadily.' }
         : { emoji: '🧐', title: 'Scope for Growth', comment: 'Consider reviewing your fund mix.' };
 
-    // Smart pagination - generate pages based on content
-    const pages = this.generateSmartPages(data, insight);
+    // Smart pagination - generate pages based on content and category
+    const pages = data.category === 'transaction' 
+      ? this.generateTransactionPages(data, insight)
+      : this.generateSmartPages(data, insight);
 
     container.innerHTML = `
       <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
@@ -241,6 +257,119 @@ export class StandardPDFGenerator {
     pages += this.generateAnalysisPage(data);
 
     return pages;
+  }
+
+  /**
+   * Generate transaction-specific pages with portfolio overview and detailed transactions
+   */
+  private static generateTransactionPages(data: StandardPDFData, insight: any): string {
+    let pages = '';
+    let pageNumber = 1;
+
+    // Page 1: Portfolio Overview (no chart)
+    pages += `
+      <div class="pdf-page" style="background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 12px; border: 1px solid #e5e7eb; padding: 32px; margin-bottom: 32px; min-height: 1050px; page-break-after: always;">
+        ${this.generatePageHeader(pageNumber, this.calculateTransactionPageCount(data))}
+        
+        <h2 style="font-size: 24px; font-weight: bold; color: #3b82f6; margin: 0 0 24px 0; text-align: center;">📋 Transaction History Report</h2>
+        
+        ${this.generateUserInfoSection(data)}
+        ${this.generatePortfolioSummarySection(data)}
+        ${this.generateTransactionSpecificContent(data).sections}
+        
+        ${this.generatePageFooter(pageNumber, this.calculateTransactionPageCount(data))}
+      </div>
+    `;
+
+    // Page 2+: Detailed Transaction History
+    const transactions = data.transactionData?.transactions || this.generateMockTransactions();
+    const transactionsPerPage = 12; // Fits comfortably with headers/footers
+    
+    for (let i = 0; i < transactions.length; i += transactionsPerPage) {
+      pageNumber++;
+      const pageTransactions = transactions.slice(i, i + transactionsPerPage);
+      
+      pages += `
+        <div class="pdf-page" style="background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 12px; border: 1px solid #e5e7eb; padding: 32px; margin-bottom: 32px; min-height: 1050px; page-break-after: always;">
+          ${this.generatePageHeader(pageNumber, this.calculateTransactionPageCount(data))}
+          
+          <h2 style="font-size: 20px; font-weight: bold; color: #3b82f6; margin: 0 0 24px 0; text-align: center;">
+            📋 Detailed Transaction History ${Math.ceil(i / transactionsPerPage + 1)}
+          </h2>
+          
+          <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 12px; font-weight: bold; color: #374151; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">
+              <div>Date</div>
+              <div>Fund Name</div>
+              <div>Type</div>
+              <div>Amount</div>
+              <div>Units</div>
+              <div>NAV</div>
+              <div>Folio</div>
+              <div>Status</div>
+            </div>
+            
+            ${pageTransactions.map(transaction => `
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
+                <div style="font-weight: 500;">${transaction.date}</div>
+                <div style="font-size: 10px; line-height: 1.2;">${transaction.fundName.substring(0, 25)}${transaction.fundName.length > 25 ? '...' : ''}</div>
+                <div style="color: ${transaction.type === 'Purchase' ? '#22c55e' : '#ef4444'}; font-weight: 500;">${transaction.type}</div>
+                <div style="font-weight: 600;">₹${transaction.amount.toLocaleString('en-IN')}</div>
+                <div>${transaction.units.toFixed(3)}</div>
+                <div>₹${transaction.nav.toFixed(2)}</div>
+                <div style="font-size: 10px;">${transaction.folioNumber || 'N/A'}</div>
+                <div style="color: #22c55e; font-weight: 500;">Success</div>
+              </div>
+            `).join('')}
+          </div>
+          
+          ${this.generatePageFooter(pageNumber, this.calculateTransactionPageCount(data))}
+        </div>
+      `;
+    }
+
+    return pages;
+  }
+
+  private static generateMockTransactions() {
+    // Generate realistic transaction data for demonstration
+    const funds = [
+      'HDFC Top 100 Fund - Direct Growth',
+      'SBI BlueChip Fund - Direct Growth', 
+      'ICICI Pru Focused Bluechip Equity Fund - Direct Growth',
+      'Axis Long Term Equity Fund - Direct Growth',
+      'Mirae Asset Large Cap Fund - Direct Growth'
+    ];
+    
+    const transactions = [];
+    const startDate = new Date('2023-01-01');
+    const endDate = new Date();
+    
+    for (let i = 0; i < 50; i++) {
+      const randomDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
+      const fund = funds[Math.floor(Math.random() * funds.length)];
+      const amount = Math.floor(Math.random() * 50000) + 5000;
+      const nav = Math.floor(Math.random() * 500) + 50;
+      
+      transactions.push({
+        date: randomDate.toLocaleDateString('en-IN'),
+        fundName: fund,
+        type: Math.random() > 0.1 ? 'Purchase' : 'Redemption',
+        amount: amount,
+        units: amount / nav,
+        nav: nav,
+        folioNumber: `${Math.floor(Math.random() * 9000000) + 1000000}/42`
+      });
+    }
+    
+    return transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+
+  private static calculateTransactionPageCount(data: StandardPDFData): number {
+    const transactions = data.transactionData?.transactions || this.generateMockTransactions();
+    const transactionsPerPage = 12;
+    const transactionPages = Math.ceil(transactions.length / transactionsPerPage);
+    return 1 + transactionPages; // Overview page + transaction pages
   }
 
   /**
@@ -696,48 +825,35 @@ export class StandardPDFGenerator {
   }
 
   private static generateTransactionSpecificContent(data: StandardPDFData): { title: string; sections: string } {
-    const transactionData = data.transactionData || {
-      totalTransactions: 24,
-      lastTransaction: '2024-01-10',
-      transactionTypes: ['SIP', 'Redemption', 'Switch']
-    };
-
+    // For transaction reports, we don't show analysis on page 1 - that's handled by transaction pages
     return {
-      title: '📋 Transaction Analysis & History Report',
+      title: '📋 Transaction History Report',
       sections: `
         <div style="background: #dbeafe; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-          <h3 style="font-weight: bold; font-size: 18px; margin: 0 0 8px 0;">📊 Transaction Summary</h3>
+          <h3 style="font-weight: bold; font-size: 18px; margin: 0 0 8px 0;">📊 Portfolio Summary</h3>
           <div style="space-y: 4px; font-size: 14px;">
-            <div><strong>Total Transactions:</strong> ${transactionData.totalTransactions}</div>
-            <div><strong>Last Transaction:</strong> ${transactionData.lastTransaction}</div>
-            <div><strong>Transaction Types:</strong> ${transactionData.transactionTypes.join(', ')}</div>
+            <div><strong>Report Period:</strong> ${data.transactionData?.startDate || 'Portfolio Inception'} to ${data.transactionData?.endDate || 'Current Date'}</div>
+            <div><strong>Total Transactions:</strong> ${data.transactionData?.totalTransactions || 0}</div>
+            <div><strong>Financial Year:</strong> ${data.transactionData?.financialYear || '2024-25'}</div>
           </div>
         </div>
 
         <div style="background: #f0fdf4; padding: 24px; border-radius: 8px; border-left: 4px solid #22c55e;">
-          <h3 style="font-weight: bold; font-size: 18px; margin: 0 0 12px 0;">✅ Transaction Pattern Analysis</h3>
+          <h3 style="font-weight: bold; font-size: 18px; margin: 0 0 12px 0;">💼 Portfolio Overview</h3>
           <div style="space-y: 8px; font-size: 14px;">
-            <div><strong>Investment Frequency:</strong> Regular monthly investments showing excellent discipline.</div>
-            <div><strong>Redemption Pattern:</strong> Minimal redemptions indicate long-term investment approach.</div>
-            <div><strong>Portfolio Rebalancing:</strong> Strategic switches optimizing portfolio performance.</div>
+            <div><strong>Total Investment Value:</strong> ₹${(data.totalInvested || 0).toLocaleString('en-IN')}</div>
+            <div><strong>Current Market Value:</strong> ₹${(data.currentValue || 0).toLocaleString('en-IN')}</div>
+            <div><strong>Absolute Returns:</strong> ₹${((data.currentValue || 0) - (data.totalInvested || 0)).toLocaleString('en-IN')}</div>
+            <div><strong>Overall Returns:</strong> ${(data.returnsPercentage || 0).toFixed(2)}%</div>
           </div>
         </div>
 
         <div style="background: #fef3c7; padding: 24px; border-radius: 8px; border-left: 4px solid #fbbf24;">
-          <h3 style="font-weight: bold; font-size: 18px; margin: 0 0 12px 0;">⚠️ Transaction Efficiency</h3>
+          <h3 style="font-weight: bold; font-size: 18px; margin: 0 0 12px 0;">📈 Investment Pattern</h3>
           <div style="space-y: 8px; font-size: 14px;">
-            <div><strong>Timing Analysis:</strong> Well-timed investments during market volatility.</div>
-            <div><strong>Cost Optimization:</strong> Direct plan usage minimizing expense ratios.</div>
-            <div><strong>Tax Efficiency:</strong> Strategic timing of redemptions for tax optimization.</div>
-          </div>
-        </div>
-
-        <div style="background: #faf5ff; padding: 24px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
-          <h3 style="font-weight: bold; font-size: 18px; margin: 0 0 12px 0;">📈 Future Transaction Strategy</h3>
-          <div style="space-y: 8px; font-size: 14px;">
-            <div><strong>Systematic Approach:</strong> Continue systematic investments for long-term wealth creation.</div>
-            <div><strong>Rebalancing Schedule:</strong> Plan quarterly reviews for portfolio rebalancing.</div>
-            <div><strong>Goal-based Investing:</strong> Align future transactions with specific financial goals.</div>
+            <div><strong>Active SIPs:</strong> ${data.transactionData?.activeSIPs || 0} schemes</div>
+            <div><strong>Monthly SIP Amount:</strong> ₹${(data.transactionData?.totalSIPAmount || 0).toLocaleString('en-IN')}</div>
+            <div><strong>Investment Discipline:</strong> Consistent systematic approach</div>
           </div>
         </div>
       `
