@@ -281,9 +281,9 @@ export class StandardPDFGenerator {
       </div>
     `;
 
-    // Page 2+: Detailed Transaction History
+    // Page 2+: Detailed Transaction History with smart page breaks
     const transactions = data.transactionData?.transactions || this.generateMockTransactions();
-    const transactionsPerPage = 12; // Fits comfortably with headers/footers
+    const transactionsPerPage = 10; // Conservative estimate for proper spacing
     
     for (let i = 0; i < transactions.length; i += transactionsPerPage) {
       pageNumber++;
@@ -294,31 +294,43 @@ export class StandardPDFGenerator {
           ${this.generatePageHeader(pageNumber, this.calculateTransactionPageCount(data))}
           
           <h2 style="font-size: 20px; font-weight: bold; color: #3b82f6; margin: 0 0 24px 0; text-align: center;">
-            📋 Detailed Transaction History ${Math.ceil(i / transactionsPerPage + 1)}
+            📋 Transaction History - Page ${pageNumber - 1}
           </h2>
           
-          <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 12px; font-weight: bold; color: #374151; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">
-              <div>Date</div>
-              <div>Fund Name</div>
-              <div>Type</div>
-              <div>Amount</div>
-              <div>Units</div>
-              <div>NAV</div>
-              <div>Folio</div>
-              <div>Status</div>
+          <!-- Transaction Table -->
+          <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; margin-bottom: 24px;">
+            <!-- Table Header -->
+            <div style="background: #f8fafc; padding: 12px; border-bottom: 2px solid #e5e7eb;">
+              <div style="display: grid; grid-template-columns: 80px 1fr 80px 90px 80px 80px 100px 80px; gap: 8px; font-size: 12px; font-weight: bold; color: #374151;">
+                <div>Date</div>
+                <div>Fund Name</div>
+                <div>Type</div>
+                <div>Amount</div>
+                <div>Units</div>
+                <div>NAV</div>
+                <div>Folio No.</div>
+                <div>Status</div>
+              </div>
             </div>
             
-            ${pageTransactions.map(transaction => `
-              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
-                <div style="font-weight: 500;">${transaction.date}</div>
-                <div style="font-size: 10px; line-height: 1.2;">${transaction.fundName.substring(0, 25)}${transaction.fundName.length > 25 ? '...' : ''}</div>
-                <div style="color: ${transaction.type === 'Purchase' ? '#22c55e' : '#ef4444'}; font-weight: 500;">${transaction.type}</div>
-                <div style="font-weight: 600;">₹${transaction.amount.toLocaleString('en-IN')}</div>
-                <div>${transaction.units.toFixed(3)}</div>
-                <div>₹${transaction.nav.toFixed(2)}</div>
-                <div style="font-size: 10px;">${transaction.folioNumber || 'N/A'}</div>
-                <div style="color: #22c55e; font-weight: 500;">Success</div>
+            <!-- Transaction Rows -->
+            ${pageTransactions.map((transaction, index) => `
+              <div style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; ${index % 2 === 1 ? 'background: #f9fafb;' : 'background: white;'} page-break-inside: avoid;">
+                <!-- First Row: Date, Fund, Type, Amount -->
+                <div style="display: grid; grid-template-columns: 80px 1fr 80px 90px; gap: 8px; margin-bottom: 8px;">
+                  <div style="font-weight: 600; font-size: 13px; color: #374151;">${transaction.date}</div>
+                  <div style="font-weight: 500; font-size: 13px; color: #1f2937; line-height: 1.3;">${transaction.fundName}</div>
+                  <div style="color: ${transaction.type === 'Purchase' ? '#059669' : '#dc2626'}; font-weight: 600; font-size: 12px; background: ${transaction.type === 'Purchase' ? '#d1fae5' : '#fee2e2'}; padding: 2px 6px; border-radius: 4px; text-align: center;">${transaction.type}</div>
+                  <div style="font-weight: 700; font-size: 14px; color: #1f2937; text-align: right;">₹${transaction.amount.toLocaleString('en-IN')}</div>
+                </div>
+                
+                <!-- Second Row: Units, NAV, Folio, Status -->
+                <div style="display: grid; grid-template-columns: 80px 80px 100px 80px; gap: 8px; margin-left: 80px;">
+                  <div style="font-size: 12px; color: #6b7280;">${transaction.units.toFixed(3)}</div>
+                  <div style="font-size: 12px; color: #6b7280;">₹${transaction.nav.toFixed(2)}</div>
+                  <div style="font-size: 11px; color: #6b7280; font-family: monospace;">${transaction.folioNumber || 'N/A'}</div>
+                  <div style="color: #059669; font-weight: 600; font-size: 11px; background: #d1fae5; padding: 2px 6px; border-radius: 4px; text-align: center;">Success</div>
+                </div>
               </div>
             `).join('')}
           </div>
@@ -367,7 +379,7 @@ export class StandardPDFGenerator {
 
   private static calculateTransactionPageCount(data: StandardPDFData): number {
     const transactions = data.transactionData?.transactions || this.generateMockTransactions();
-    const transactionsPerPage = 12;
+    const transactionsPerPage = 10; // Updated to match the new layout
     const transactionPages = Math.ceil(transactions.length / transactionsPerPage);
     return 1 + transactionPages; // Overview page + transaction pages
   }
