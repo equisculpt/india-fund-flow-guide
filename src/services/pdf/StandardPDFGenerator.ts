@@ -137,7 +137,7 @@ export class StandardPDFGenerator {
   }
 
   /**
-   * Create the PDF container with perfect styling and layout
+   * Create the PDF container with perfect styling and layout using smart pagination
    */
   private static createPDFContainer(data: StandardPDFData): HTMLElement {
     const container = document.createElement('div');
@@ -155,80 +155,186 @@ export class StandardPDFGenerator {
         ? { emoji: '📈', title: 'Solid Performance', comment: 'Keep investing steadily.' }
         : { emoji: '🧐', title: 'Scope for Growth', comment: 'Consider reviewing your fund mix.' };
 
+    // Smart pagination - generate pages based on content
+    const pages = this.generateSmartPages(data, insight);
+
     container.innerHTML = `
       <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
-        
-        <!-- PAGE 1 - Overview -->
-        <div class="pdf-page" style="background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 12px; border: 1px solid #e5e7eb; padding: 32px; margin-bottom: 32px; min-height: 1050px; max-height: 1050px; page-break-after: always;">
-          
-          <!-- Header -->
-          <div style="text-align: center; margin-bottom: 24px;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
-              <img 
-                src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png" 
-                alt="SIP Brewery Logo" 
-                style="width: 64px; height: 64px; object-fit: contain;"
-              />
-              <div style="text-align: left;">
-                <h1 style="margin: 0; font-size: 32px; font-weight: bold; color: #1f2937;">SIP Brewery</h1>
-                <p style="margin: 0; font-size: 18px; font-weight: 500; color: #f59e0b;">Brewing Wealth</p>
-              </div>
-            </div>
-            <hr style="margin: 16px 0; border: none; border-top: 1px solid #e5e7eb;" />
-          </div>
-
-          <!-- User Info -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px; margin-bottom: 24px;">
-            <div><strong>Name:</strong> ${data.name}</div>
-            <div><strong>Client Code:</strong> ${data.clientCode}</div>
-            <div><strong>PAN:</strong> ABCDE1234F</div>
-            <div><strong>Phone:</strong> +91-9876543210</div>
-            <div><strong>Email:</strong> investor@sipbrewery.com</div>
-            <div><strong>KYC Status:</strong> Verified</div>
-          </div>
-
-          <!-- Portfolio Summary -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
-            <div style="background: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #fbbf24;">
-              <h3 style="color: #6b7280; font-size: 14px; margin: 0 0 4px 0;">Total Invested</h3>
-              <p style="font-size: 24px; font-weight: bold; color: #374151; margin: 0;">₹${data.totalInvested.toLocaleString('en-IN')}</p>
-            </div>
-            <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
-              <h3 style="color: #6b7280; font-size: 14px; margin: 0 0 4px 0;">Current Value</h3>
-              <p style="font-size: 24px; font-weight: bold; color: #374151; margin: 0;">₹${data.currentValue.toLocaleString('en-IN')}</p>
-            </div>
-            <div style="background: #eff6ff; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-              <h3 style="color: #6b7280; font-size: 14px; margin: 0 0 4px 0;">Returns</h3>
-              <p style="font-size: 24px; font-weight: bold; color: #374151; margin: 0;">${data.returnsPercentage.toFixed(2)}%</p>
-            </div>
-            <div style="background: #faf5ff; padding: 16px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
-              <h3 style="color: #6b7280; font-size: 14px; margin: 0 0 4px 0;">XIRR</h3>
-              <p style="font-size: 24px; font-weight: bold; color: #374151; margin: 0;">${data.xirr.toFixed(2)}%</p>
-            </div>
-          </div>
-
-          <!-- AI Insight -->
-          <div style="background: #f0f9ff; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6; margin-bottom: 24px;">
-            <h3 style="font-weight: bold; font-size: 18px; color: #374151; margin: 0 0 8px 0;">${insight.emoji} ${insight.title}</h3>
-            <p style="font-size: 14px; color: #6b7280; margin: 0;">${insight.comment}</p>
-          </div>
-
-          <!-- Chart Section -->
-          ${this.generateChartSection(data)}
-
-          <!-- Footer -->
-          <div style="font-size: 12px; text-align: center; color: #6b7280; margin-top: auto; padding-top: 24px; border-top: 1px solid #e5e7eb;">
-            <p style="margin: 0;">SIP Brewery © 2024 | AMFI ARN-XXXXX | BSE Member | Page 1 of ${this.calculatePageCount(data)}</p>
-            <p style="margin: 4px 0 0 0;">Generated on: ${new Date().toLocaleDateString('en-IN')} at ${new Date().toLocaleTimeString('en-IN')}</p>
-          </div>
-        </div>
-
-        ${this.generateHoldingsPage(data)}
-        ${this.generateAnalysisPage(data)}
+        ${pages}
       </div>
     `;
 
     return container;
+  }
+
+  /**
+   * Generate pages with smart content distribution
+   */
+  private static generateSmartPages(data: StandardPDFData, insight: any): string {
+    const pageHeight = 1050; // A4 page height in pixels
+    const headerHeight = 120; // Fixed header height
+    const footerHeight = 80; // Fixed footer height
+    const availableHeight = pageHeight - headerHeight - footerHeight;
+    
+    let currentPageHeight = 0;
+    let pageNumber = 1;
+    let pages = '';
+    
+    // Define content sections with estimated heights
+    const sections = [
+      { 
+        name: 'userInfo', 
+        content: this.generateUserInfoSection(data), 
+        height: 120 
+      },
+      { 
+        name: 'portfolioSummary', 
+        content: this.generatePortfolioSummarySection(data), 
+        height: 160 
+      },
+      { 
+        name: 'aiInsight', 
+        content: this.generateAIInsightSection(insight), 
+        height: 120 
+      },
+      { 
+        name: 'chart', 
+        content: this.generateChartSection(data), 
+        height: 320 
+      }
+    ];
+
+    // Start first page
+    let currentPageContent = this.generatePageHeader(pageNumber, this.calculatePageCount(data));
+    currentPageHeight = headerHeight;
+
+    for (const section of sections) {
+      // Check if section fits on current page
+      if (currentPageHeight + section.height <= availableHeight) {
+        // Add to current page
+        currentPageContent += section.content;
+        currentPageHeight += section.height;
+      } else {
+        // Complete current page and start new one
+        currentPageContent += this.generatePageFooter(pageNumber, this.calculatePageCount(data));
+        pages += this.wrapPage(currentPageContent, pageNumber);
+        
+        // Start new page
+        pageNumber++;
+        currentPageContent = this.generatePageHeader(pageNumber, this.calculatePageCount(data));
+        currentPageContent += section.content;
+        currentPageHeight = headerHeight + section.height;
+      }
+    }
+
+    // Complete last page
+    currentPageContent += this.generatePageFooter(pageNumber, this.calculatePageCount(data));
+    pages += this.wrapPage(currentPageContent, pageNumber);
+
+    // Add holdings and analysis pages
+    pages += this.generateHoldingsPage(data);
+    pages += this.generateAnalysisPage(data);
+
+    return pages;
+  }
+
+  /**
+   * Generate page header
+   */
+  private static generatePageHeader(pageNumber: number, totalPages: number): string {
+    return `
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
+          <img 
+            src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png" 
+            alt="SIP Brewery Logo" 
+            style="width: 64px; height: 64px; object-fit: contain;"
+          />
+          <div style="text-align: left;">
+            <h1 style="margin: 0; font-size: 32px; font-weight: bold; color: #1f2937;">SIP Brewery</h1>
+            <p style="margin: 0; font-size: 18px; font-weight: 500; color: #f59e0b;">Brewing Wealth</p>
+          </div>
+        </div>
+        <hr style="margin: 16px 0; border: none; border-top: 1px solid #e5e7eb;" />
+      </div>
+    `;
+  }
+
+  /**
+   * Generate page footer
+   */
+  private static generatePageFooter(pageNumber: number, totalPages: number): string {
+    return `
+      <div style="font-size: 12px; text-align: center; color: #6b7280; margin-top: auto; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+        <p style="margin: 0;">SIP Brewery © 2024 | AMFI ARN-XXXXX | BSE Member | Page ${pageNumber} of ${totalPages}</p>
+        <p style="margin: 4px 0 0 0;">Generated on: ${new Date().toLocaleDateString('en-IN')} at ${new Date().toLocaleTimeString('en-IN')}</p>
+      </div>
+    `;
+  }
+
+  /**
+   * Wrap content in a page container
+   */
+  private static wrapPage(content: string, pageNumber: number): string {
+    return `
+      <div class="pdf-page" style="background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 12px; border: 1px solid #e5e7eb; padding: 32px; margin-bottom: 32px; min-height: 1050px; max-height: 1050px; page-break-after: always;">
+        ${content}
+      </div>
+    `;
+  }
+
+  /**
+   * Generate user info section
+   */
+  private static generateUserInfoSection(data: StandardPDFData): string {
+    return `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px; margin-bottom: 24px;">
+        <div><strong>Name:</strong> ${data.name}</div>
+        <div><strong>Client Code:</strong> ${data.clientCode}</div>
+        <div><strong>PAN:</strong> ABCDE1234F</div>
+        <div><strong>Phone:</strong> +91-9876543210</div>
+        <div><strong>Email:</strong> investor@sipbrewery.com</div>
+        <div><strong>KYC Status:</strong> Verified</div>
+      </div>
+    `;
+  }
+
+  /**
+   * Generate portfolio summary section
+   */
+  private static generatePortfolioSummarySection(data: StandardPDFData): string {
+    return `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+        <div style="background: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #fbbf24;">
+          <h3 style="color: #6b7280; font-size: 14px; margin: 0 0 4px 0;">Total Invested</h3>
+          <p style="font-size: 24px; font-weight: bold; color: #374151; margin: 0;">₹${data.totalInvested.toLocaleString('en-IN')}</p>
+        </div>
+        <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
+          <h3 style="color: #6b7280; font-size: 14px; margin: 0 0 4px 0;">Current Value</h3>
+          <p style="font-size: 24px; font-weight: bold; color: #374151; margin: 0;">₹${data.currentValue.toLocaleString('en-IN')}</p>
+        </div>
+        <div style="background: #eff6ff; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+          <h3 style="color: #6b7280; font-size: 14px; margin: 0 0 4px 0;">Returns</h3>
+          <p style="font-size: 24px; font-weight: bold; color: #374151; margin: 0;">${data.returnsPercentage.toFixed(2)}%</p>
+        </div>
+        <div style="background: #faf5ff; padding: 16px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+          <h3 style="color: #6b7280; font-size: 14px; margin: 0 0 4px 0;">XIRR</h3>
+          <p style="font-size: 24px; font-weight: bold; color: #374151; margin: 0;">${data.xirr.toFixed(2)}%</p>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Generate AI insight section
+   */
+  private static generateAIInsightSection(insight: any): string {
+    return `
+      <div style="background: #f0f9ff; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6; margin-bottom: 24px;">
+        <h3 style="font-weight: bold; font-size: 18px; color: #374151; margin: 0 0 8px 0;">${insight.emoji} ${insight.title}</h3>
+        <p style="font-size: 14px; color: #6b7280; margin: 0;">${insight.comment}</p>
+      </div>
+    `;
   }
 
   private static generateChartSection(data: StandardPDFData): string {
