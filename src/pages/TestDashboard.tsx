@@ -72,12 +72,12 @@ const TestDashboard = () => {
               <StatementPDF
                 name={profile?.full_name || "Test User"}
                 clientCode="SB123456"
-                totalInvested={250000}
-                currentValue={325000}
-                returnsPercentage={30}
-                xirr={18.5}
-                months={['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']}
-                values={[250000, 265000, 280000, 295000, 310000, 325000]}
+                totalInvested={1250000}
+                currentValue={1675000}
+                returnsPercentage={34}
+                xirr={22.5}
+                months={['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'May 2024', 'Jun 2024']}
+                values={[250000, 375000, 520000, 680000, 825000, 950000, 1025000, 1150000, 1280000, 1420000, 1550000, 1675000]}
               />
             </TabsContent>
           </Tabs>

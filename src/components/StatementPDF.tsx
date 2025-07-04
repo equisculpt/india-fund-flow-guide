@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale } from 'chart.js';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import BreweryLogo from './BreweryLogo';
 
 // Register Chart.js components
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale);
