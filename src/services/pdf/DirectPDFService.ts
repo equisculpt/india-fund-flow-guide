@@ -1,4 +1,5 @@
 // DirectPDFService - Browser print-to-PDF for text-selectable documents
+import { SharedPDFTemplate } from './SharedPDFTemplate';
 
 export class DirectPDFService {
   private toast: any;

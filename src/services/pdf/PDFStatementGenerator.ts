@@ -127,10 +127,10 @@ export class PDFStatementGeneratorService {
       
       const pdfBlob = await this.generatePDF(statementType, statementData);
       
-      // Create filename with timestamp and client code
-      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+      // Create filename with consistent naming pattern
+      const timestamp = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
       const clientCode = statementData.userInfo?.clientCode || 'UNKNOWN';
-      const filename = `SIPBrewery-${statementType}-${clientCode}-${timestamp}.pdf`;
+      const filename = `SIP-Brewery-Statement-${clientCode}-${timestamp}.pdf`;
       
       log('Initiating download:', { filename, blobSize: pdfBlob.size });
       

@@ -1,5 +1,6 @@
 import { useToast } from '@/hooks/use-toast';
 import { DirectPDFService } from './DirectPDFService';
+import { SharedPDFTemplate } from './SharedPDFTemplate';
 
 export class WebToPDFService {
   private toast: any;
