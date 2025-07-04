@@ -66,7 +66,7 @@ const StatementPDF: React.FC<Props> = ({
     try {
       console.log('🧪 Generating PDF using Puppeteer service...');
       
-      // Call the Supabase Edge Function for PDF generation
+      // Call the NEW Puppeteer-based Supabase Edge Function
       const response = await fetch('https://pvtrwvvcgkppjlbyvflv.supabase.co/functions/v1/generate-statement-pdf', {
         method: 'POST',
         headers: {
