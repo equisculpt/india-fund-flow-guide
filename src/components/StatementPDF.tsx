@@ -3,6 +3,7 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Title, C
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import BreweryLogo from './BreweryLogo';
+import sipBreweryIcon from '@/assets/sip-brewery-icon.png';
 
 // Register Chart.js components
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale);
@@ -146,7 +147,7 @@ const StatementPDF: React.FC<Props> = ({
             <div className="flex items-center justify-center gap-4 mb-2">
               <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
                 <img 
-                  src="/lovable-uploads/58f434f5-d064-4eb5-b8e6-d12f0a090cdc.png" 
+                  src={sipBreweryIcon} 
                   alt="SIP Brewery Logo" 
                   className="w-10 h-10 object-contain"
                 />
@@ -215,7 +216,7 @@ const StatementPDF: React.FC<Props> = ({
             <div className="flex items-center justify-center gap-4 mb-2">
               <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
                 <img 
-                  src="/lovable-uploads/58f434f5-d064-4eb5-b8e6-d12f0a090cdc.png" 
+                  src={sipBreweryIcon} 
                   alt="SIP Brewery Logo" 
                   className="w-8 h-8 object-contain"
                 />
@@ -293,7 +294,7 @@ const StatementPDF: React.FC<Props> = ({
             <div className="flex items-center justify-center gap-4 mb-2">
               <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
                 <img 
-                  src="/lovable-uploads/58f434f5-d064-4eb5-b8e6-d12f0a090cdc.png" 
+                  src={sipBreweryIcon} 
                   alt="SIP Brewery Logo" 
                   className="w-8 h-8 object-contain"
                 />
