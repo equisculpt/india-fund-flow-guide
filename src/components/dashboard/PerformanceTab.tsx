@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useEffect } from "react";
 
 interface PerformanceTabProps {
   formatCurrency: (amount: number) => string;
@@ -19,6 +20,12 @@ const PerformanceTab = ({ formatCurrency }: PerformanceTabProps) => {
     { month: 'Sep', value: 98000 },
     { month: 'Oct', value: 102450 }
   ];
+
+  useEffect(() => {
+    console.log('PerformanceTab: Component mounted');
+    console.log('PerformanceTab: Data:', performanceData);
+    console.log('PerformanceTab: formatCurrency function:', typeof formatCurrency);
+  }, []);
 
   return (
     <Card>
