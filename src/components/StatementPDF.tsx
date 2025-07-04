@@ -81,22 +81,43 @@ const StatementPDF: React.FC<Props> = ({
           pdf.addPage();
         }
         
-        // Capture each page separately
+        // Capture each page separately with better quality
         const canvas = await html2canvas(pages[i] as HTMLElement, { 
           scale: 2,
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
           width: pages[i].scrollWidth,
-          height: pages[i].scrollHeight
+          height: pages[i].scrollHeight,
+          logging: false,
+          onclone: (clonedDoc) => {
+            // Ensure all styles are properly cloned
+            const clonedElement = clonedDoc.querySelector('.pdf-page') as HTMLElement;
+            if (clonedElement) {
+              clonedElement.style.pageBreakAfter = 'always';
+              clonedElement.style.pageBreakInside = 'avoid';
+            }
+          }
         });
         
-        const imgData = canvas.toDataURL('image/png');
+        const imgData = canvas.toDataURL('image/png', 1.0);
         const imgProps = pdf.getImageProperties(imgData);
         const pdfImgWidth = pageWidth;
         const pdfImgHeight = (imgProps.height * pdfImgWidth) / imgProps.width;
         
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfImgWidth, Math.min(pdfImgHeight, pageHeight));
+        // Handle content that might be taller than one page
+        if (pdfImgHeight > pageHeight) {
+          let yPosition = 0;
+          while (yPosition < pdfImgHeight) {
+            if (yPosition > 0) {
+              pdf.addPage();
+            }
+            pdf.addImage(imgData, 'PNG', 0, -yPosition, pdfImgWidth, pdfImgHeight);
+            yPosition += pageHeight;
+          }
+        } else {
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfImgWidth, pdfImgHeight);
+        }
       }
 
       pdf.save(`SIP-Brewery-Statement-${clientCode}-${new Date().toISOString().slice(0, 10)}.pdf`);
@@ -121,8 +142,15 @@ const StatementPDF: React.FC<Props> = ({
         {/* PAGE 1 - Overview */}
         <div className="pdf-page bg-card shadow-xl rounded-xl border p-8 mb-8" style={{ minHeight: '1050px', maxHeight: '1050px' }}>
           {/* Header */}
+          <div className="text-center mb-6 flex items-center justify-center gap-3">
+            <h1 className="text-3xl font-bold text-primary">SIP Brewery</h1>
+            <div className="bg-primary/10 p-2 rounded-lg">
+              <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+          </div>
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-primary">SIP Brewery 📄</h1>
             <p className="text-sm text-muted-foreground">Brewing Wealth, One SIP at a Time</p>
             <hr className="my-4 border-border" />
           </div>
@@ -176,11 +204,19 @@ const StatementPDF: React.FC<Props> = ({
           </div>
         </div>
 
-        {/* PAGE 2 - Holdings Details */}
-        <div className="pdf-page bg-card shadow-xl rounded-xl border p-8 mb-8" style={{ minHeight: '1050px', maxHeight: '1050px' }}>
+        {/* PAGE 2+ - Holdings Details (Can span multiple pages for large portfolios) */}
+        <div className="pdf-page bg-card shadow-xl rounded-xl border p-8 mb-8" style={{ minHeight: 'auto' }}>
           {/* Header */}
+          <div className="text-center mb-6 flex items-center justify-center gap-3">
+            <h1 className="text-2xl font-bold text-primary">SIP Brewery</h1>
+            <div className="bg-primary/10 p-2 rounded-lg">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+          </div>
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-primary">📊 Portfolio Holdings Breakdown</h1>
+            <h2 className="text-xl font-bold text-primary">📊 Portfolio Holdings Breakdown</h2>
             <hr className="my-4 border-border" />
           </div>
 
@@ -241,11 +277,19 @@ const StatementPDF: React.FC<Props> = ({
           </div>
         </div>
 
-        {/* PAGE 3 - Analysis & Recommendations */}
-        <div className="pdf-page bg-card shadow-xl rounded-xl border p-8" style={{ minHeight: '1050px', maxHeight: '1050px' }}>
+        {/* PAGE 3+ - Analysis & Recommendations (Always starts on new page) */}
+        <div className="pdf-page bg-card shadow-xl rounded-xl border p-8" style={{ minHeight: 'auto' }}>
           {/* Header */}
+          <div className="text-center mb-6 flex items-center justify-center gap-3">
+            <h1 className="text-2xl font-bold text-primary">SIP Brewery</h1>
+            <div className="bg-primary/10 p-2 rounded-lg">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+          </div>
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-primary">💡 Investment Analysis & Recommendations</h1>
+            <h2 className="text-xl font-bold text-primary">💡 Investment Analysis & Recommendations</h2>
             <hr className="my-4 border-border" />
           </div>
 
