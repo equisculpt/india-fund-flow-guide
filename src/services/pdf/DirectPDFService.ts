@@ -1,4 +1,5 @@
-// DirectPDFService - Browser print-to-PDF for text-selectable documents
+// DirectPDFService - Now using standardized beautiful PDF generation
+import { StandardPDFGenerator, StandardPDFData } from './StandardPDFGenerator';
 
 export class DirectPDFService {
   private toast: any;
@@ -8,170 +9,135 @@ export class DirectPDFService {
   }
 
   /**
-   * Simple and reliable direct PDF download
-   * Opens statement, captures it, downloads PDF - all automatic!
+   * Generate PDF using the standardized beautiful process
    */
   async generateDirectPDF(
     statementType: string,
     clientCode: string,
-    additionalParams: Record<string, string> = {}
+    additionalParams: Record<string, any> = {}
   ): Promise<void> {
     try {
-      console.log('DirectPDFService: Starting simple direct PDF capture');
-
-      this.toast({
-        title: "Opening Statement for Capture...",
-        description: "Opening your beautiful statement to capture it as PDF.",
-      });
-
-      // Step 1: Create the statement URL
-      const params = new URLSearchParams({
-        type: statementType,
-        client: clientCode,
-        autoCapture: 'true', // Special flag to indicate auto-capture mode
-        ...additionalParams
-      });
-
-      const baseUrl = window.location.origin;
-      const statementUrl = `${baseUrl}/statement-preview?${params.toString()}`;
-
-      // Step 2: Open statement in new window for capture
-      const newWindow = window.open(statementUrl, '_blank', 'width=1200,height=800');
+      console.log('DirectPDFService: Using standardized beautiful PDF generation');
       
-      if (!newWindow) {
-        throw new Error('Popup blocked - please allow popups and try again');
-      }
+      this.toast({
+        title: "Generating Beautiful PDF...",
+        description: "Creating your statement with consistent styling and charts.",
+      });
 
-      // Step 3: Wait for window to load, then send capture command
-      let captureAttempts = 0;
-      const maxAttempts = 30; // Increased from 10 to 30 (30 seconds total)
-
-      const checkAndCapture = () => {
-        captureAttempts++;
-        
-        if (captureAttempts > maxAttempts) {
-          this.toast({
-            title: "Auto-Capture Timeout",
-            description: "The page is taking longer than expected. Use the Download PDF button on the opened page.",
-            variant: "destructive"
-          });
-          return;
-        }
-
-        try {
-          if (newWindow.document && newWindow.document.readyState === 'complete') {
-            // Additional check - wait for content to be fully rendered
-            const hasContent = newWindow.document.querySelector('.statement-container');
-            
-            if (hasContent) {
-              // Send message to the opened window to trigger capture
-              newWindow.postMessage({ action: 'startCapture' }, '*');
-              
-              this.toast({
-                title: "Auto-Capturing Statement...",
-                description: "Converting your statement to PDF automatically.",
-              });
-
-              // Give it extra time to process
-              setTimeout(() => {
-                this.toast({
-                  title: "PDF Ready!",
-                  description: "Your statement should be downloading now.",
-                });
-              }, 3000);
-            } else {
-              // Content not ready yet, continue waiting
-              setTimeout(checkAndCapture, 1000);
-            }
-          } else {
-            setTimeout(checkAndCapture, 1000);
-          }
-        } catch (error) {
-          // Cross-origin issues - fallback to manual
-          console.log('Auto-capture failed, falling back to manual:', error);
-          this.toast({
-            title: "Manual Download Available",
-            description: "Auto-capture failed. Use the Download PDF button on the opened page.",
-          });
-        }
+      // Prepare standardized data
+      const pdfData: StandardPDFData = {
+        name: additionalParams.userName || 'Test User',
+        clientCode: clientCode,
+        totalInvested: additionalParams.totalInvested || 1250000,
+        currentValue: additionalParams.currentValue || 1675000,
+        returnsPercentage: additionalParams.returnsPercentage || 34,
+        xirr: additionalParams.xirr || 22.5,
+        months: additionalParams.months || ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'May 2024', 'Jun 2024'],
+        values: additionalParams.values || [250000, 375000, 520000, 680000, 825000, 950000, 1025000, 1150000, 1280000, 1420000, 1550000, 1675000],
+        holdings: additionalParams.holdings || this.getMockHoldings(),
       };
 
-      // Start checking after a longer initial delay for complex reports
-      setTimeout(checkAndCapture, 3000); // Increased from 2000 to 3000
+      // Use the standardized PDF generator
+      await StandardPDFGenerator.generatePDF(pdfData);
+
+      this.toast({
+        title: "PDF Generated Successfully!",
+        description: "Your beautiful portfolio statement has been downloaded with consistent styling.",
+      });
 
     } catch (error) {
       console.error('DirectPDFService: Error:', error);
       
       this.toast({
-        title: "Opening Statement Preview",
-        description: error instanceof Error ? error.message : "Use the Download PDF button on the preview page.",
+        title: "PDF Generation Failed",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
         variant: "destructive"
       });
-
-      // Fallback: Open preview normally
-      const params = new URLSearchParams({
-        type: statementType,
-        client: clientCode,
-        ...additionalParams
-      });
-
-      const baseUrl = window.location.origin;
-      const statementUrl = `${baseUrl}/statement-preview?${params.toString()}`;
-      
-      window.open(statementUrl, '_blank');
     }
   }
 
   /**
-   * Capture the current page as PDF using browser's print-to-PDF (preserves text selection)
+   * Capture current page as PDF (fallback method)
    */
   async captureCurrentPageAsPDF(): Promise<void> {
     try {
-      console.log('DirectPDFService: Using browser print-to-PDF for text-selectable PDF');
-
+      console.log('DirectPDFService: Capturing current page as PDF');
+      
       this.toast({
-        title: "Opening Print Dialog...",
-        description: "Use browser's Save as PDF for text-selectable PDF.",
+        title: "Opening Print Dialog",
+        description: "Use 'Save as PDF' in the print dialog for best quality.",
       });
 
-      // Hide the floating buttons during print
-      const floatingButtons = document.querySelectorAll('.no-print');
-      floatingButtons.forEach(btn => {
-        (btn as HTMLElement).style.display = 'none';
-      });
-
-      // Wait a moment for UI updates
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Use browser's native print which creates text-selectable PDFs
+      // Simple browser print - user can save as PDF
       window.print();
 
-      // Show floating buttons again after print dialog closes
       setTimeout(() => {
-        floatingButtons.forEach(btn => {
-          (btn as HTMLElement).style.display = '';
+        this.toast({
+          title: "PDF Ready!",
+          description: "Use the print dialog to save your statement as PDF.",
         });
       }, 1000);
-
-      this.toast({
-        title: "PDF Print Dialog Opened! 📄",
-        description: "Choose 'Save as PDF' in destination to get text-selectable PDF.",
-      });
 
     } catch (error) {
       console.error('DirectPDFService: Print error:', error);
       
       this.toast({
-        title: "Print dialog failed",
-        description: "Please use Ctrl+P to print manually.",
+        title: "Print Error",
+        description: "Unable to open print dialog. Please try again.",
         variant: "destructive"
       });
-
-      // Show floating buttons again
-      const floatingButtons = document.querySelectorAll('.no-print');
-      floatingButtons.forEach(btn => {
-        (btn as HTMLElement).style.display = '';
-      });
     }
+  }
+
+  /**
+   * Mock holdings data for demonstration
+   */
+  private getMockHoldings() {
+    return [
+      {
+        schemeName: 'HDFC Top 100 Fund - Direct Growth',
+        amcName: 'HDFC Mutual Fund',
+        category: 'Large Cap',
+        units: 1234.56,
+        currentNav: 856.32,
+        marketValue: 485673,
+        investedAmount: 350000,
+        pnlPercentage: 38.8,
+        investmentType: 'SIP' as const
+      },
+      {
+        schemeName: 'Axis Small Cap Fund - Direct Growth',
+        amcName: 'Axis Mutual Fund',
+        category: 'Small Cap',
+        units: 876.23,
+        currentNav: 612.45,
+        marketValue: 336789,
+        investedAmount: 250000,
+        pnlPercentage: 34.7,
+        investmentType: 'SIP' as const
+      },
+      {
+        schemeName: 'Mirae Asset Large Cap Fund - Direct',
+        amcName: 'Mirae Asset',
+        category: 'Large Cap',
+        units: 2156.78,
+        currentNav: 298.67,
+        marketValue: 644234,
+        investedAmount: 500000,
+        pnlPercentage: 28.8,
+        investmentType: 'Lumpsum' as const
+      },
+      {
+        schemeName: 'SBI Blue Chip Fund - Direct Growth',
+        amcName: 'SBI Mutual Fund',
+        category: 'Large Cap',
+        units: 934.12,
+        currentNav: 445.89,
+        marketValue: 416567,
+        investedAmount: 300000,
+        pnlPercentage: 38.9,
+        investmentType: 'SIP' as const
+      }
+    ];
   }
 }

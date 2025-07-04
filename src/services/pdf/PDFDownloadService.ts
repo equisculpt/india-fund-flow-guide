@@ -1,6 +1,7 @@
 
 import { useToast } from '@/hooks/use-toast';
 import { DirectPDFService } from './DirectPDFService';
+import { StandardPDFGenerator, StandardPDFData } from './StandardPDFGenerator';
 
 export class PDFDownloadService {
   private directPDFService: DirectPDFService;
@@ -11,10 +12,10 @@ export class PDFDownloadService {
 
   async downloadPDFStatement(statementType: string, params?: any): Promise<void> {
     try {
-      console.log('PDFDownloadService: Using browser print-to-PDF method for', statementType);
+      console.log('PDFDownloadService: Using standardized beautiful PDF generation for', statementType);
       
-      // Use DirectPDFService for text-selectable PDF generation
-      const mockClientCode = 'SB123456';
+      // Use DirectPDFService which now uses StandardPDFGenerator
+      const mockClientCode = params?.clientCode || 'SB123456';
       await this.directPDFService.generateDirectPDF(statementType, mockClientCode, params || {});
       
       console.log('PDF statement generation completed successfully');

@@ -43,16 +43,16 @@ export class WebToPDFService {
   }
 
   /**
-   * Generate statement PDF with query parameters
+   * Generate statement PDF using standardized beautiful process
    */
   async generateStatementPDF(
     statementType: string,
     clientCode: string,
     additionalParams: Record<string, string> = {}
   ): Promise<void> {
-    console.log('WebToPDFService: Using direct PDF capture and download');
+    console.log('WebToPDFService: Using standardized beautiful PDF generation');
     
-    // Use the new direct PDF service that captures and downloads automatically
+    // Use the updated DirectPDFService that now uses StandardPDFGenerator
     await this.directPDFService.generateDirectPDF(statementType, clientCode, additionalParams);
   }
 
