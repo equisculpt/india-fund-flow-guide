@@ -64,63 +64,54 @@ const StatementPDF: React.FC<Props> = ({
 
   const downloadPDF = async () => {
     try {
-      console.log('🧪 Generating PDF using Puppeteer service...');
+      console.log('🎨 Generating beautiful PDF using browser rendering...');
       
-      // Call the NEW Puppeteer-based Supabase Edge Function
-      const response = await fetch('https://pvtrwvvcgkppjlbyvflv.supabase.co/functions/v1/generate-statement-pdf', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2dHJ3dnZjZ2twcGpsYnl2Zmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MDE0NTYsImV4cCI6MjA2NTQ3NzQ1Nn0.PW1tXy6_aKnbBj5vXEvtYYoClLJClLYbuVJiw9paEco`,
-        },
-        body: JSON.stringify({
-          name,
-          clientCode,
-          totalInvested,
-          currentValue,
-          returnsPercentage,
-          xirr,
-          months,
-          values
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`PDF generation failed: ${response.status}`);
-      }
-
-      // Get the PDF blob and trigger download
-      const pdfBlob = await response.blob();
-      const url = window.URL.createObjectURL(pdfBlob);
-      
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `SIP-Brewery-Statement-${clientCode}-${new Date().toISOString().slice(0, 10)}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      // Clean up the URL object
-      window.URL.revokeObjectURL(url);
-      
-      console.log('✅ PDF downloaded successfully');
-    } catch (error) {
-      console.error('❌ PDF generation error:', error);
-      
-      // Fallback to client-side generation if server fails
-      console.log('🔄 Falling back to client-side PDF generation...');
       if (!captureRef.current) return;
       
-      const canvas = await html2canvas(captureRef.current, { scale: 2 });
+      // Use html2canvas to capture the beautiful styled content
+      const canvas = await html2canvas(captureRef.current, { 
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        width: captureRef.current.scrollWidth,
+        height: captureRef.current.scrollHeight
+      });
+      
       const imgData = canvas.toDataURL('image/png');
 
+      // Create PDF with proper sizing
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = 210;
+      const pdfWidth = 210; // A4 width in mm
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      
+      // If content is too long, split into multiple pages
+      const pageHeight = 297; // A4 height in mm
+      let position = 0;
+      
+      while (position < pdfHeight) {
+        if (position > 0) {
+          pdf.addPage();
+        }
+        
+        pdf.addImage(
+          imgData, 
+          'PNG', 
+          0, 
+          -position, 
+          pdfWidth, 
+          pdfHeight
+        );
+        
+        position += pageHeight;
+      }
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`SIPBrewery-Statement-${clientCode}.pdf`);
+      pdf.save(`SIP-Brewery-Statement-${clientCode}-${new Date().toISOString().slice(0, 10)}.pdf`);
+      console.log('✅ Beautiful PDF downloaded successfully');
+      
+    } catch (error) {
+      console.error('❌ PDF generation error:', error);
     }
   };
 
