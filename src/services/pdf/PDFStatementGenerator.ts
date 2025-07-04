@@ -105,53 +105,42 @@ export const generateStatementPDF = async (options: GenerateStatementPDFOptions)
   }
 };
 
+import { DirectPDFService } from './DirectPDFService';
+
 export class PDFStatementGeneratorService {
-  async generatePDF(statementType: string, statementData: StatementData): Promise<Blob> {
-    log('PDFStatementGeneratorService: generatePDF called', { 
+  private directPDFService: DirectPDFService;
+
+  constructor(toast?: any) {
+    this.directPDFService = new DirectPDFService(toast || (() => {}));
+  }
+
+  async generatePDF(statementType: string, statementData: StatementData): Promise<void> {
+    log('PDFStatementGeneratorService: Using standardized PDF generation', { 
       statementType,
       userInfo: statementData.userInfo?.name || 'Unknown'
     });
-    return generateStatementPDF({
-      statementType,
-      statementData,
-      generatedAt: new Date()
-    });
+    
+    // Use standardized PDF generation
+    await this.directPDFService.generateDirectPDF(
+      statementType, 
+      statementData.userInfo?.clientCode || 'SB' + Date.now().toString().slice(-6),
+      {
+        userName: statementData.userInfo?.name,
+        totalInvested: statementData.portfolio?.totalInvested,
+        currentValue: statementData.portfolio?.currentValue,
+        holdings: statementData.holdings
+      }
+    );
   }
 
   async downloadPDF(statementType: string, statementData: StatementData): Promise<void> {
     try {
-      log('Starting PDF download process:', { 
-        statementType,
-        clientCode: statementData.userInfo?.clientCode
-      });
+      log('PDFStatementGeneratorService: Using standardized PDF download process');
       
-      const pdfBlob = await this.generatePDF(statementType, statementData);
+      // Use standardized PDF generation and download
+      await this.generatePDF(statementType, statementData);
       
-      // Create filename with timestamp and client code
-      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-      const clientCode = statementData.userInfo?.clientCode || 'UNKNOWN';
-      const filename = `SIPBrewery-${statementType}-${clientCode}-${timestamp}.pdf`;
-      
-      log('Initiating download:', { filename, blobSize: pdfBlob.size });
-      
-      try {
-        downloadBlobAsFile(pdfBlob, filename);
-        log('PDF download completed successfully');
-      } catch (downloadError: any) {
-        error('Primary download failed, attempting fallback:', downloadError);
-        
-        // Fallback: Open PDF in new window/tab
-        const url = URL.createObjectURL(pdfBlob);
-        const newWindow = window.open(url, '_blank');
-        
-        if (!newWindow) {
-          throw new Error('Download failed and popup was blocked. Please allow popups and try again.');
-        }
-        
-        // Clean up URL after a delay to allow window to load
-        setTimeout(() => URL.revokeObjectURL(url), 3000);
-        log('PDF opened in new window as fallback');
-      }
+      log('PDF download completed successfully');
       
     } catch (err: any) {
       error('Critical error in PDF download process:', {
