@@ -42,8 +42,15 @@ serve(async (req) => {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       @page {
-        margin: 100px 50px;
+        margin: 80px 40px;
         size: A4;
+      }
+      
+      @media print {
+        .page-break {
+          page-break-before: always;
+          break-before: page;
+        }
       }
       
       body {
@@ -56,10 +63,10 @@ serve(async (req) => {
       
       .header {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 70px;
+        top: -80px;
+        left: -40px;
+        right: -40px;
+        height: 60px;
         background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
         display: flex;
@@ -126,18 +133,19 @@ serve(async (req) => {
       
       .footer {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 50px;
+        bottom: -80px;
+        left: -40px;
+        right: -40px;
+        height: 40px;
         background: #f8f9fa;
         border-top: 2px solid #f59e0b;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 11px;
         color: #6b7280;
         z-index: 1000;
+        padding: 0 40px;
       }
       
       .watermark {
@@ -153,8 +161,9 @@ serve(async (req) => {
       }
       
       .content {
-        margin: 100px 0;
-        padding: 40px;
+        margin: 20px 0;
+        padding: 20px;
+        min-height: calc(100vh - 160px);
       }
       
       .title {
@@ -311,7 +320,11 @@ serve(async (req) => {
       }
       
       .page-break {
-        page-break-after: always;
+        page-break-before: always;
+        break-before: page;
+        height: 0;
+        margin: 0;
+        padding: 0;
       }
       
       .section-header {
@@ -433,12 +446,12 @@ serve(async (req) => {
         </div>
     </div>
 
-    <!-- Page Break -->
+    <!-- Page Break to Force Page 2 -->
     <div class="page-break"></div>
 
     <!-- Page 2: Holdings Details -->
     <div class="content">
-        <div class="section-header">📊 Portfolio Holdings</div>
+        <div class="section-header">📊 Portfolio Holdings Breakdown</div>
         
         <table class="holdings-table">
             <thead>
@@ -517,12 +530,12 @@ serve(async (req) => {
         </div>
     </div>
 
-    <!-- Page Break -->
+    <!-- Page Break to Force Page 3 -->
     <div class="page-break"></div>
 
     <!-- Page 3: Transaction History -->
     <div class="content">
-        <div class="section-header">📋 Recent Transaction History</div>
+        <div class="section-header">📋 Recent Transaction History & Analysis</div>
         
         <table class="transaction-table">
             <thead>
@@ -700,11 +713,12 @@ serve(async (req) => {
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
+      preferCSSPageSize: true,
       margin: {
-        top: '100px',
-        bottom: '100px',
-        left: '50px',
-        right: '50px'
+        top: '80px',
+        bottom: '80px',
+        left: '40px',
+        right: '40px'
       },
       displayHeaderFooter: false // We handle headers/footers in HTML
     });
