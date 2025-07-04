@@ -755,6 +755,9 @@ serve(async (req) => {
       
       console.log('PDF generated successfully using jsPDF, size:', pdfBuffer.byteLength, 'bytes');
 
+      // Generate filename
+      const timestamp = new Date().toISOString().slice(0, 10);
+      const filename = `SIP-Brewery-Statement-${clientCode}-${timestamp}.pdf`;
       
       // Return the PDF with proper headers for direct download
       return new Response(new Uint8Array(pdfBuffer), {
@@ -770,10 +773,6 @@ serve(async (req) => {
       console.error('PDF generation error:', pdfError);
       throw pdfError;
     }
-
-    // Generate filename
-    const timestamp = new Date().toISOString().slice(0, 10);
-    const filename = `SIP-Brewery-Statement-${clientCode}-${timestamp}.pdf`;
 
   } catch (error) {
     console.error('Error generating PDF:', error);
