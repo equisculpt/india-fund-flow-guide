@@ -543,6 +543,369 @@ export type Database = {
         }
         Relationships: []
       }
+      bse_api_logs: {
+        Row: {
+          api_endpoint: string
+          created_at: string
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          request_method: string
+          request_payload: Json | null
+          response_payload: Json | null
+          response_status: number | null
+          user_id: string | null
+        }
+        Insert: {
+          api_endpoint: string
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          request_method: string
+          request_payload?: Json | null
+          response_payload?: Json | null
+          response_status?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          api_endpoint?: string
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          request_method?: string
+          request_payload?: Json | null
+          response_payload?: Json | null
+          response_status?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      bse_clients: {
+        Row: {
+          bank_account_number: string | null
+          client_code: string
+          client_name: string
+          created_at: string
+          email: string
+          fatca_status: string | null
+          id: string
+          ifsc_code: string | null
+          kyc_status: string | null
+          mobile_number: string
+          pan_number: string
+          registration_status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bank_account_number?: string | null
+          client_code: string
+          client_name: string
+          created_at?: string
+          email: string
+          fatca_status?: string | null
+          id?: string
+          ifsc_code?: string | null
+          kyc_status?: string | null
+          mobile_number: string
+          pan_number: string
+          registration_status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bank_account_number?: string | null
+          client_code?: string
+          client_name?: string
+          created_at?: string
+          email?: string
+          fatca_status?: string | null
+          id?: string
+          ifsc_code?: string | null
+          kyc_status?: string | null
+          mobile_number?: string
+          pan_number?: string
+          registration_status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      bse_holdings: {
+        Row: {
+          available_units: number
+          client_code: string
+          created_at: string
+          folio_number: string
+          holding_units: number
+          id: string
+          invested_value: number | null
+          last_transaction_date: string | null
+          market_value: number | null
+          nav_date: string | null
+          pledged_units: number
+          price: number | null
+          scheme_code: string
+          scheme_name: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          available_units?: number
+          client_code: string
+          created_at?: string
+          folio_number: string
+          holding_units?: number
+          id?: string
+          invested_value?: number | null
+          last_transaction_date?: string | null
+          market_value?: number | null
+          nav_date?: string | null
+          pledged_units?: number
+          price?: number | null
+          scheme_code: string
+          scheme_name?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          available_units?: number
+          client_code?: string
+          created_at?: string
+          folio_number?: string
+          holding_units?: number
+          id?: string
+          invested_value?: number | null
+          last_transaction_date?: string | null
+          market_value?: number | null
+          nav_date?: string | null
+          pledged_units?: number
+          price?: number | null
+          scheme_code?: string
+          scheme_name?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      bse_orders: {
+        Row: {
+          all_redeem: string | null
+          amount: number | null
+          bse_order_id: string | null
+          client_code: string
+          created_at: string
+          dp_transaction: string | null
+          folio_number: string | null
+          id: string
+          nav: number | null
+          order_date: string
+          order_number: string | null
+          order_status: string | null
+          order_type: string
+          order_value: number | null
+          quantity: number | null
+          rejection_reason: string | null
+          remarks: string | null
+          scheme_code: string
+          scheme_name: string | null
+          settlement_type: string | null
+          transaction_type: string
+          units_allotted: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          all_redeem?: string | null
+          amount?: number | null
+          bse_order_id?: string | null
+          client_code: string
+          created_at?: string
+          dp_transaction?: string | null
+          folio_number?: string | null
+          id?: string
+          nav?: number | null
+          order_date?: string
+          order_number?: string | null
+          order_status?: string | null
+          order_type: string
+          order_value?: number | null
+          quantity?: number | null
+          rejection_reason?: string | null
+          remarks?: string | null
+          scheme_code: string
+          scheme_name?: string | null
+          settlement_type?: string | null
+          transaction_type: string
+          units_allotted?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          all_redeem?: string | null
+          amount?: number | null
+          bse_order_id?: string | null
+          client_code?: string
+          created_at?: string
+          dp_transaction?: string | null
+          folio_number?: string | null
+          id?: string
+          nav?: number | null
+          order_date?: string
+          order_number?: string | null
+          order_status?: string | null
+          order_type?: string
+          order_value?: number | null
+          quantity?: number | null
+          rejection_reason?: string | null
+          remarks?: string | null
+          scheme_code?: string
+          scheme_name?: string | null
+          settlement_type?: string | null
+          transaction_type?: string
+          units_allotted?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      bse_sips: {
+        Row: {
+          bank_account_number: string | null
+          client_code: string
+          created_at: string
+          end_date: string | null
+          first_order_today: string | null
+          folio_number: string | null
+          frequency: string
+          id: string
+          ifsc_code: string | null
+          installment_amount: number
+          mandate_id: string | null
+          registration_date: string | null
+          remarks: string | null
+          scheme_code: string
+          scheme_name: string | null
+          sip_amount: number
+          sip_date: number
+          sip_reg_id: string | null
+          sip_status: string | null
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bank_account_number?: string | null
+          client_code: string
+          created_at?: string
+          end_date?: string | null
+          first_order_today?: string | null
+          folio_number?: string | null
+          frequency: string
+          id?: string
+          ifsc_code?: string | null
+          installment_amount: number
+          mandate_id?: string | null
+          registration_date?: string | null
+          remarks?: string | null
+          scheme_code: string
+          scheme_name?: string | null
+          sip_amount: number
+          sip_date: number
+          sip_reg_id?: string | null
+          sip_status?: string | null
+          start_date: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bank_account_number?: string | null
+          client_code?: string
+          created_at?: string
+          end_date?: string | null
+          first_order_today?: string | null
+          folio_number?: string | null
+          frequency?: string
+          id?: string
+          ifsc_code?: string | null
+          installment_amount?: number
+          mandate_id?: string | null
+          registration_date?: string | null
+          remarks?: string | null
+          scheme_code?: string
+          scheme_name?: string | null
+          sip_amount?: number
+          sip_date?: number
+          sip_reg_id?: string | null
+          sip_status?: string | null
+          start_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      bse_transactions: {
+        Row: {
+          amount: number | null
+          balance_units: number | null
+          client_code: string
+          created_at: string
+          folio_number: string | null
+          id: string
+          nav: number | null
+          order_id: string | null
+          scheme_code: string
+          scheme_name: string | null
+          settlement_date: string | null
+          source: string | null
+          total_amount: number | null
+          transaction_date: string
+          transaction_type: string
+          units: number | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number | null
+          balance_units?: number | null
+          client_code: string
+          created_at?: string
+          folio_number?: string | null
+          id?: string
+          nav?: number | null
+          order_id?: string | null
+          scheme_code: string
+          scheme_name?: string | null
+          settlement_date?: string | null
+          source?: string | null
+          total_amount?: number | null
+          transaction_date: string
+          transaction_type: string
+          units?: number | null
+          user_id: string
+        }
+        Update: {
+          amount?: number | null
+          balance_units?: number | null
+          client_code?: string
+          created_at?: string
+          folio_number?: string | null
+          id?: string
+          nav?: number | null
+          order_id?: string | null
+          scheme_code?: string
+          scheme_name?: string | null
+          settlement_date?: string | null
+          source?: string | null
+          total_amount?: number | null
+          transaction_date?: string
+          transaction_type?: string
+          units?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       commissions: {
         Row: {
           agent_id: string | null
