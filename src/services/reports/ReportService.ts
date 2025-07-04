@@ -38,8 +38,49 @@ export class ReportService {
     await this.directPDFService.generateDirectPDF(reportType, clientCode, {
       reportName: config.reportName,
       category: config.category,
+      statementType: reportType,
+      reportTitle: config.data?.reportTitle || config.reportName,
+      ...this.getStatementSpecificData(config.category, config.reportName),
       ...config.data
     });
+  }
+
+  private getStatementSpecificData(category: string, reportName: string): any {
+    switch (category) {
+      case 'tax':
+        return {
+          taxData: {
+            financialYear: '2024-25',
+            elssInvestment: 50000,
+            taxSaved: 15000,
+            capitalGains: {
+              shortTerm: 25000,
+              longTerm: 45000,
+              taxable: 55000
+            }
+          }
+        };
+      case 'sip':
+        return {
+          sipData: {
+            activeSIPs: 4,
+            totalSIPAmount: 15000,
+            nextInstallmentDate: '2024-01-15'
+          }
+        };
+      case 'transaction':
+        return {
+          transactionData: {
+            totalTransactions: 24,
+            lastTransaction: '2024-01-10',
+            transactionTypes: ['SIP', 'Redemption', 'Switch']
+          }
+        };
+      case 'performance':
+        return {};
+      default:
+        return {};
+    }
   }
 
   private async generateHTMLReport(config: ReportConfig): Promise<void> {

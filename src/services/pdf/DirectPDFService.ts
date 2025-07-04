@@ -32,9 +32,15 @@ export class DirectPDFService {
         currentValue: additionalParams.currentValue || 1675000,
         returnsPercentage: additionalParams.returnsPercentage || 34,
         xirr: additionalParams.xirr || 22.5,
+        statementType: additionalParams.statementType || statementType,
+        category: additionalParams.category,
+        reportTitle: additionalParams.reportTitle,
         months: additionalParams.months || ['Jul 2023', 'Aug 2023', 'Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023', 'Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'May 2024', 'Jun 2024'],
         values: additionalParams.values || [250000, 375000, 520000, 680000, 825000, 950000, 1025000, 1150000, 1280000, 1420000, 1550000, 1675000],
         holdings: additionalParams.holdings || this.getMockHoldings(),
+        taxData: additionalParams.taxData,
+        sipData: additionalParams.sipData,
+        transactionData: additionalParams.transactionData,
       };
 
       // Use the standardized PDF generator
