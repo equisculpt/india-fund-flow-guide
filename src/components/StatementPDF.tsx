@@ -66,10 +66,11 @@ const StatementPDF: React.FC<Props> = ({
       console.log('🧪 Generating PDF using Puppeteer service...');
       
       // Call the Supabase Edge Function for PDF generation
-      const response = await fetch('/functions/v1/generate-statement-pdf', {
+      const response = await fetch('https://pvtrwvvcgkppjlbyvflv.supabase.co/functions/v1/generate-statement-pdf', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2dHJ3dnZjZ2twcGpsYnl2Zmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MDE0NTYsImV4cCI6MjA2NTQ3NzQ1Nn0.PW1tXy6_aKnbBj5vXEvtYYoClLJClLYbuVJiw9paEco`,
         },
         body: JSON.stringify({
           name,
