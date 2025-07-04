@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from '@react-pdf/renderer';
+import { View, Text, Image } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { styles } from '../styles/pdfStyles';
 
@@ -46,9 +46,10 @@ export const PDFHeader: React.FC<PDFHeaderProps> = ({
     <View style={styles.header}>
       <View style={styles.logoSection}>
         <View style={styles.mainLogo}>
-          <View style={[styles.sipBreweryLogo, { backgroundColor: '#FFB800', borderRadius: 8, justifyContent: 'center', alignItems: 'center' }]}>
-            <Text style={{ color: '#FFFFFF', fontSize: 20, fontWeight: 'bold' }}>SB</Text>
-          </View>
+          <Image 
+            style={styles.sipBreweryLogo}
+            src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png"
+          />
           <View style={styles.brandingText}>
             <Text style={styles.companyName}>SIP Brewery</Text>
             <Text style={styles.tagline}>Brewing Wealth, One SIP at a Time</Text>

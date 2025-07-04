@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from '@react-pdf/renderer';
+import { View, Text, Image } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { modernStyles } from '../../styles/modernPDFStyles';
 
@@ -19,17 +19,14 @@ export const ModernPDFHeader: React.FC<ModernPDFHeaderProps> = ({
   <View style={modernStyles.header} fixed>
     <View style={modernStyles.logoSection}>
       <View style={modernStyles.mainLogo}>
-        <View style={{
-          width: 60,
-          height: 60,
-          backgroundColor: '#FFB800',
-          borderRadius: 12,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginRight: 15,
-        }}>
-          <Text style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 'bold' }}>SB</Text>
-        </View>
+        <Image 
+          style={{
+            width: 60,
+            height: 60,
+            marginRight: 15,
+          }}
+          src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png"
+        />
         <View>
           <Text style={modernStyles.companyName}>SIP Brewery</Text>
           <Text style={modernStyles.tagline}>Brewing Wealth, One SIP at a Time</Text>

@@ -27,13 +27,11 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
 
   return (
     <div className="flex items-center space-x-2">
-      <div className={`bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-lg ${sizeClasses[size]} font-bold ${textSizeClasses[size]} relative overflow-hidden shadow-lg`}>
-        <div className="absolute inset-0 bg-gradient-to-t from-amber-600 to-transparent opacity-50"></div>
-        <div className="relative z-10 flex items-center justify-center h-full">
-          <Beer className={`${iconSizeClasses[size]} drop-shadow-sm`} />
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 to-amber-300 opacity-70"></div>
-      </div>
+      <img 
+        src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png" 
+        alt="SIP Brewery Logo" 
+        className={`${sizeClasses[size]} object-contain drop-shadow-lg`}
+      />
       {showText && (
         <div className="flex flex-col">
           <span className={`${textSizeClasses[size]} font-bold text-gray-800 leading-tight`}>
