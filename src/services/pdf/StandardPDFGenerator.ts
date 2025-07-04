@@ -172,45 +172,45 @@ export class StandardPDFGenerator {
    */
   private static generateSmartPages(data: StandardPDFData, insight: any): string {
     const pageHeight = 1050; // A4 page height in pixels
-    const headerHeight = 120; // Fixed header height
-    const footerHeight = 80; // Fixed footer height
-    const availableHeight = pageHeight - headerHeight - footerHeight;
+    const headerHeight = 150; // Fixed header height with margins
+    const footerHeight = 120; // Fixed footer height with margins  
+    const availableContentHeight = pageHeight - headerHeight - footerHeight;
     
     let currentPageHeight = 0;
     let pageNumber = 1;
     let pages = '';
     
-    // Define content sections with estimated heights
+    // Define content sections with accurate heights including margins
     const sections = [
       { 
         name: 'userInfo', 
         content: this.generateUserInfoSection(data), 
-        height: 120 
+        height: 140 // Includes margins
       },
       { 
         name: 'portfolioSummary', 
         content: this.generatePortfolioSummarySection(data), 
-        height: 160 
+        height: 200 // Includes margins between cards
       },
       { 
         name: 'aiInsight', 
         content: this.generateAIInsightSection(insight), 
-        height: 120 
+        height: 140 // Includes margins
       },
       { 
         name: 'chart', 
         content: this.generateChartSection(data), 
-        height: 320 
+        height: 380 // Chart + title + margins + summary text
       }
     ];
 
     // Start first page
     let currentPageContent = this.generatePageHeader(pageNumber, this.calculatePageCount(data));
-    currentPageHeight = headerHeight;
+    currentPageHeight = 0; // Reset since we account for header in available height
 
     for (const section of sections) {
-      // Check if section fits on current page
-      if (currentPageHeight + section.height <= availableHeight) {
+      // Check if section fits on current page (including space for footer)
+      if (currentPageHeight + section.height <= availableContentHeight) {
         // Add to current page
         currentPageContent += section.content;
         currentPageHeight += section.height;
@@ -223,7 +223,7 @@ export class StandardPDFGenerator {
         pageNumber++;
         currentPageContent = this.generatePageHeader(pageNumber, this.calculatePageCount(data));
         currentPageContent += section.content;
-        currentPageHeight = headerHeight + section.height;
+        currentPageHeight = section.height; // Reset to just this section's height
       }
     }
 
