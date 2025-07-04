@@ -243,10 +243,58 @@ export class StandardPDFGenerator {
       `;
     }
 
+    // Generate SVG chart instead of canvas for better PDF compatibility
+    const maxValue = Math.max(...data.values);
+    const minValue = Math.min(...data.values);
+    const chartWidth = 500;
+    const chartHeight = 200;
+    const padding = 40;
+
+    // Generate SVG path for the line chart
+    const points = data.months.map((month, index) => {
+      const x = padding + (index * (chartWidth - 2 * padding)) / (data.months.length - 1);
+      const y = chartHeight - padding - ((data.values[index] - minValue) / (maxValue - minValue)) * (chartHeight - 2 * padding);
+      return `${x},${y}`;
+    }).join(' ');
+
     return `
       <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); padding: 16px; margin-bottom: auto;">
         <h2 style="font-size: 18px; font-weight: 600; color: #374151; margin: 0 0 16px 0;">Portfolio Trend (Last 12 Months)</h2>
-        <canvas id="portfolio-chart" width="500" height="300"></canvas>
+        <svg width="${chartWidth}" height="${chartHeight}" style="border: 1px solid #e5e7eb; border-radius: 8px;">
+          <!-- Grid lines -->
+          <defs>
+            <pattern id="grid" width="50" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 50 0 L 0 0 0 40" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+          
+          <!-- Chart line -->
+          <polyline points="${points}" fill="none" stroke="#3B82F6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          
+          <!-- Data points -->
+          ${data.months.map((month, index) => {
+            const x = padding + (index * (chartWidth - 2 * padding)) / (data.months.length - 1);
+            const y = chartHeight - padding - ((data.values[index] - minValue) / (maxValue - minValue)) * (chartHeight - 2 * padding);
+            return `<circle cx="${x}" cy="${y}" r="4" fill="#3B82F6"/>`;
+          }).join('')}
+          
+          <!-- Y-axis labels -->
+          <text x="5" y="25" font-size="10" fill="#6b7280">₹${(maxValue/100000).toFixed(1)}L</text>
+          <text x="5" y="${chartHeight - 10}" font-size="10" fill="#6b7280">₹${(minValue/100000).toFixed(1)}L</text>
+          
+          <!-- X-axis labels -->
+          ${data.months.map((month, index) => {
+            if (index % 2 === 0) { // Show every other month to avoid crowding
+              const x = padding + (index * (chartWidth - 2 * padding)) / (data.months.length - 1);
+              return `<text x="${x}" y="${chartHeight - 5}" font-size="10" fill="#6b7280" text-anchor="middle">${month.substring(0, 3)}</text>`;
+            }
+            return '';
+          }).join('')}
+        </svg>
+        <div style="text-align: center; margin-top: 8px; font-size: 12px; color: #6b7280;">
+          Portfolio Growth: ₹${(data.values[0]/100000).toFixed(1)}L → ₹${(data.values[data.values.length-1]/100000).toFixed(1)}L
+        </div>
       </div>
     `;
   }
