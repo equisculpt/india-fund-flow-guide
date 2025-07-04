@@ -184,69 +184,60 @@ const StatementPDF: React.FC<Props> = ({
             <hr className="my-4 border-border" />
           </div>
 
-          <div className="space-y-4 flex-1">
-            <div className="bg-card border rounded-lg p-4">
-              <h3 className="font-bold text-lg mb-2 text-blue-600">HDFC Top 100 Fund - Direct Growth</h3>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><strong>Investment Type:</strong> SIP</div>
+          <div className="space-y-3 flex-1">
+            <div className="bg-card border rounded-lg p-3">
+              <h3 className="font-bold text-base mb-2 text-blue-600">HDFC Top 100 Fund - Direct Growth</h3>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div><strong>Type:</strong> SIP</div>
                 <div><strong>Units:</strong> 1,234.56</div>
                 <div><strong>NAV:</strong> ₹856.32</div>
                 <div><strong>Invested:</strong> ₹3,50,000</div>
-                <div><strong>Current Value:</strong> ₹4,85,673</div>
-                <div className="text-green-600 font-bold col-span-2"><strong>Returns:</strong> +₹1,35,673 (38.8%)</div>
+                <div><strong>Current:</strong> ₹4,85,673</div>
+                <div className="text-green-600 font-bold"><strong>Returns:</strong> +38.8%</div>
               </div>
             </div>
 
-            <div className="bg-card border rounded-lg p-4">
-              <h3 className="font-bold text-lg mb-2 text-blue-600">Axis Small Cap Fund - Direct Growth</h3>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><strong>Investment Type:</strong> SIP</div>
+            <div className="bg-card border rounded-lg p-3">
+              <h3 className="font-bold text-base mb-2 text-blue-600">Axis Small Cap Fund - Direct Growth</h3>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div><strong>Type:</strong> SIP</div>
                 <div><strong>Units:</strong> 876.23</div>
                 <div><strong>NAV:</strong> ₹612.45</div>
                 <div><strong>Invested:</strong> ₹2,50,000</div>
-                <div><strong>Current Value:</strong> ₹3,36,789</div>
-                <div className="text-green-600 font-bold col-span-2"><strong>Returns:</strong> +₹86,789 (34.7%)</div>
+                <div><strong>Current:</strong> ₹3,36,789</div>
+                <div className="text-green-600 font-bold"><strong>Returns:</strong> +34.7%</div>
               </div>
             </div>
 
-            <div className="bg-card border rounded-lg p-4">
-              <h3 className="font-bold text-lg mb-2 text-blue-600">Mirae Asset Large Cap Fund - Direct</h3>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><strong>Investment Type:</strong> Lumpsum</div>
+            <div className="bg-card border rounded-lg p-3">
+              <h3 className="font-bold text-base mb-2 text-blue-600">Mirae Asset Large Cap Fund - Direct</h3>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div><strong>Type:</strong> Lumpsum</div>
                 <div><strong>Units:</strong> 2,156.78</div>
                 <div><strong>NAV:</strong> ₹298.67</div>
                 <div><strong>Invested:</strong> ₹5,00,000</div>
-                <div><strong>Current Value:</strong> ₹6,44,234</div>
-                <div className="text-green-600 font-bold col-span-2"><strong>Returns:</strong> +₹1,44,234 (28.8%)</div>
+                <div><strong>Current:</strong> ₹6,44,234</div>
+                <div className="text-green-600 font-bold"><strong>Returns:</strong> +28.8%</div>
               </div>
             </div>
 
-            <div className="bg-card border rounded-lg p-4">
-              <h3 className="font-bold text-lg mb-2 text-blue-600">SBI Blue Chip Fund - Direct Growth</h3>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><strong>Investment Type:</strong> SIP</div>
+            <div className="bg-card border rounded-lg p-3">
+              <h3 className="font-bold text-base mb-2 text-blue-600">SBI Blue Chip Fund - Direct Growth</h3>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div><strong>Type:</strong> SIP</div>
                 <div><strong>Units:</strong> 934.12</div>
                 <div><strong>NAV:</strong> ₹445.89</div>
                 <div><strong>Invested:</strong> ₹3,00,000</div>
-                <div><strong>Current Value:</strong> ₹4,16,567</div>
-                <div className="text-green-600 font-bold col-span-2"><strong>Returns:</strong> +₹1,16,567 (38.9%)</div>
-              </div>
-            </div>
-
-            <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-lg border-l-4 border-yellow-500">
-              <h3 className="font-bold text-lg mb-2">💡 Portfolio Analysis</h3>
-              <div className="space-y-1 text-sm">
-                <div><strong>Asset Allocation:</strong> Large Cap (45%), Mid Cap (25%), Small Cap (20%), Flexi Cap (10%)</div>
-                <div><strong>Risk Level:</strong> Moderate to High</div>
-                <div><strong>Diversification:</strong> Well-balanced across market capitalizations</div>
+                <div><strong>Current:</strong> ₹4,16,567</div>
+                <div className="text-green-600 font-bold"><strong>Returns:</strong> +38.9%</div>
               </div>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="text-xs text-center text-muted-foreground mt-auto pt-6 border-t border-border">
+          <div className="text-xs text-center text-muted-foreground pt-4 border-t border-border">
             <p>SIP Brewery © 2024 | AMFI ARN-XXXXX | BSE Member | Page 2 of 3</p>
-            <p className="mt-1">All amounts are in Indian Rupees. Returns are calculated based on current NAV.</p>
+            <p className="mt-1">All amounts in ₹. Returns calculated on current NAV.</p>
           </div>
         </div>
 
@@ -258,8 +249,17 @@ const StatementPDF: React.FC<Props> = ({
             <hr className="my-4 border-border" />
           </div>
 
-          <div className="space-y-6 flex-1">
-            <div className="bg-blue-50 dark:bg-blue-950/20 p-6 rounded-lg border-l-4 border-blue-500">
+          <div className="space-y-4 flex-1">
+            <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-lg border-l-4 border-yellow-500">
+              <h3 className="font-bold text-lg mb-2">💡 Portfolio Analysis Summary</h3>
+              <div className="space-y-1 text-sm">
+                <div><strong>Asset Allocation:</strong> Large Cap (45%), Mid Cap (25%), Small Cap (20%), Flexi Cap (10%)</div>
+                <div><strong>Risk Level:</strong> Moderate to High</div>
+                <div><strong>Diversification:</strong> Well-balanced across market capitalizations</div>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border-l-4 border-blue-500">
               <h3 className="font-bold text-lg mb-3">🎯 Investment Goals & Progress</h3>
               <div className="space-y-2 text-sm">
                 <div><strong>Current Progress:</strong> You're on track to achieve your financial goals with consistent SIP investments.</div>
