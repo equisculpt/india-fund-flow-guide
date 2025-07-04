@@ -4,7 +4,9 @@ import { useTestAuth } from '@/contexts/TestAuthContext';
 import { Navigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import TestPortfolioDashboard from '@/components/TestPortfolioDashboard';
+import StatementPDF from '@/components/StatementPDF';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LogOut, User } from 'lucide-react';
 
 const TestDashboard = () => {
@@ -56,7 +58,29 @@ const TestDashboard = () => {
 
         {/* Dashboard Content */}
         <div className="container mx-auto px-4 py-8">
-          <TestPortfolioDashboard />
+          <Tabs defaultValue="dashboard" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="dashboard">Portfolio Dashboard</TabsTrigger>
+              <TabsTrigger value="statement">PDF Statement Test</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="dashboard" className="mt-6">
+              <TestPortfolioDashboard />
+            </TabsContent>
+            
+            <TabsContent value="statement" className="mt-6">
+              <StatementPDF
+                name={profile?.full_name || "Test User"}
+                clientCode="SB123456"
+                totalInvested={250000}
+                currentValue={325000}
+                returnsPercentage={30}
+                xirr={18.5}
+                months={['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']}
+                values={[250000, 265000, 280000, 295000, 310000, 325000]}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </Layout>

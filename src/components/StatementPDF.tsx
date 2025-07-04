@@ -62,17 +62,64 @@ const StatementPDF: React.FC<Props> = ({
   }, [months, values]);
 
   const downloadPDF = async () => {
-    if (!captureRef.current) return;
-    const canvas = await html2canvas(captureRef.current, { scale: 2 });
-    const imgData = canvas.toDataURL('image/png');
+    try {
+      console.log('🧪 Generating PDF using Puppeteer service...');
+      
+      // Call the Supabase Edge Function for PDF generation
+      const response = await fetch('/functions/v1/generate-statement-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          clientCode,
+          totalInvested,
+          currentValue,
+          returnsPercentage,
+          xirr,
+          months,
+          values
+        }),
+      });
 
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = 210;
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      if (!response.ok) {
+        throw new Error(`PDF generation failed: ${response.status}`);
+      }
 
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`SIPBrewery-Statement-${clientCode}.pdf`);
+      // Get the PDF blob and trigger download
+      const pdfBlob = await response.blob();
+      const url = window.URL.createObjectURL(pdfBlob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `SIP-Brewery-Statement-${clientCode}-${new Date().toISOString().slice(0, 10)}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the URL object
+      window.URL.revokeObjectURL(url);
+      
+      console.log('✅ PDF downloaded successfully');
+    } catch (error) {
+      console.error('❌ PDF generation error:', error);
+      
+      // Fallback to client-side generation if server fails
+      console.log('🔄 Falling back to client-side PDF generation...');
+      if (!captureRef.current) return;
+      
+      const canvas = await html2canvas(captureRef.current, { scale: 2 });
+      const imgData = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = 210;
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`SIPBrewery-Statement-${clientCode}.pdf`);
+    }
   };
 
   // Emoji Insights
