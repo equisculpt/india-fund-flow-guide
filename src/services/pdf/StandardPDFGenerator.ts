@@ -168,7 +168,7 @@ export class StandardPDFGenerator {
   }
 
   /**
-   * Generate pages with smart content distribution
+   * Generate pages with smart content distribution and splittable sections
    */
   private static generateSmartPages(data: StandardPDFData, insight: any): string {
     const pageHeight = 1050; // A4 page height in pixels
@@ -179,61 +179,145 @@ export class StandardPDFGenerator {
     let currentPageHeight = 0;
     let pageNumber = 1;
     let pages = '';
-    
-    // Define content sections with accurate heights including margins
+    let currentPageContent = this.generatePageHeader(pageNumber, this.calculatePageCount(data));
+
+    // Define content sections - some can be split, others cannot
     const sections = [
       { 
         name: 'userInfo', 
         content: this.generateUserInfoSection(data), 
-        height: 140 // Includes margins
+        height: 140,
+        canSplit: false
       },
       { 
         name: 'portfolioSummary', 
         content: this.generatePortfolioSummarySection(data), 
-        height: 200 // Includes margins between cards
+        height: 200,
+        canSplit: false
       },
       { 
         name: 'aiInsight', 
         content: this.generateAIInsightSection(insight), 
-        height: 140 // Includes margins
+        height: 140,
+        canSplit: false
       },
       { 
         name: 'chart', 
         content: this.generateChartSection(data), 
-        height: 380 // Chart + title + margins + summary text
+        height: 380,
+        canSplit: false
       }
     ];
 
-    // Start first page
-    let currentPageContent = this.generatePageHeader(pageNumber, this.calculatePageCount(data));
-    currentPageHeight = 0; // Reset since we account for header in available height
-
     for (const section of sections) {
-      // Check if section fits on current page (including space for footer)
+      // Check if section fits on current page
       if (currentPageHeight + section.height <= availableContentHeight) {
         // Add to current page
         currentPageContent += section.content;
         currentPageHeight += section.height;
       } else {
-        // Complete current page and start new one
-        currentPageContent += this.generatePageFooter(pageNumber, this.calculatePageCount(data));
-        pages += this.wrapPage(currentPageContent, pageNumber);
+        // Complete current page only if there's content
+        if (currentPageHeight > 0) {
+          currentPageContent += this.generatePageFooter(pageNumber, this.calculatePageCount(data));
+          pages += this.wrapPage(currentPageContent, pageNumber);
+          pageNumber++;
+        }
         
         // Start new page
-        pageNumber++;
         currentPageContent = this.generatePageHeader(pageNumber, this.calculatePageCount(data));
         currentPageContent += section.content;
-        currentPageHeight = section.height; // Reset to just this section's height
+        currentPageHeight = section.height;
       }
     }
 
-    // Complete last page
-    currentPageContent += this.generatePageFooter(pageNumber, this.calculatePageCount(data));
-    pages += this.wrapPage(currentPageContent, pageNumber);
+    // Complete last page only if there's content
+    if (currentPageHeight > 0) {
+      currentPageContent += this.generatePageFooter(pageNumber, this.calculatePageCount(data));
+      pages += this.wrapPage(currentPageContent, pageNumber);
+    }
 
-    // Add holdings and analysis pages
-    pages += this.generateHoldingsPage(data);
+    // Add holdings and analysis pages with smart splitting
+    pages += this.generateSmartHoldingsPages(data);
     pages += this.generateAnalysisPage(data);
+
+    return pages;
+  }
+
+  /**
+   * Generate holdings pages with smart splitting for large portfolios
+   */
+  private static generateSmartHoldingsPages(data: StandardPDFData): string {
+    const holdings = data.holdings || [];
+    const pageHeight = 1050;
+    const headerHeight = 150;
+    const footerHeight = 120;
+    const availableContentHeight = pageHeight - headerHeight - footerHeight;
+    const holdingItemHeight = 80; // Each holding card height including margins
+    
+    if (holdings.length === 0) {
+      return this.generateHoldingsPage(data); // Use existing method for empty state
+    }
+
+    let pages = '';
+    let currentPageHeight = 0;
+    let pageNumber = this.calculatePageCount(data) - 1; // Start from holdings page number
+    let currentPageContent = '';
+    let holdingsToRender: any[] = [];
+
+    // Calculate how many holdings can fit per page
+    const holdingsPerPage = Math.floor(availableContentHeight / holdingItemHeight);
+
+    for (let i = 0; i < holdings.length; i += holdingsPerPage) {
+      const pageHoldings = holdings.slice(i, i + holdingsPerPage);
+      pageNumber++;
+      
+      currentPageContent = `
+        <!-- Holdings Page ${pageNumber - (this.calculatePageCount(data) - 2)} -->
+        <div class="pdf-page" style="background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 12px; border: 1px solid #e5e7eb; padding: 32px; margin-bottom: 32px; min-height: auto; page-break-after: always;">
+          
+          <!-- Header -->
+          <div style="text-align: center; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
+              <img 
+                src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png" 
+                alt="SIP Brewery Logo" 
+                style="width: 48px; height: 48px; object-fit: contain;"
+              />
+              <div style="text-align: left;">
+                <h1 style="margin: 0; font-size: 24px; font-weight: bold; color: #1f2937;">SIP Brewery</h1>
+                <p style="margin: 0; font-size: 16px; font-weight: 500; color: #f59e0b;">Brewing Wealth</p>
+              </div>
+            </div>
+            <h2 style="font-size: 20px; font-weight: bold; color: #3b82f6; margin: 16px 0 0 0;">📊 Portfolio Holdings ${i > 0 ? `(Page ${Math.ceil((i + 1) / holdingsPerPage)})` : 'Breakdown'}</h2>
+            <hr style="margin: 16px 0; border: none; border-top: 1px solid #e5e7eb;" />
+          </div>
+
+          <div style="space-y: 12px; flex: 1;">
+            ${pageHoldings.map(holding => `
+              <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                <h3 style="font-weight: bold; font-size: 16px; margin: 0 0 8px 0; color: #1e40af;">${holding.schemeName}</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-size: 12px;">
+                  <div><strong>Type:</strong> ${holding.investmentType}</div>
+                  <div><strong>Units:</strong> ${holding.units.toFixed(3)}</div>
+                  <div><strong>NAV:</strong> ₹${holding.currentNav.toFixed(2)}</div>
+                  <div><strong>Invested:</strong> ₹${holding.investedAmount.toLocaleString('en-IN')}</div>
+                  <div><strong>Current:</strong> ₹${holding.marketValue.toLocaleString('en-IN')}</div>
+                  <div style="color: ${holding.pnlPercentage >= 0 ? '#22c55e' : '#ef4444'}; font-weight: bold;"><strong>Returns:</strong> ${holding.pnlPercentage >= 0 ? '+' : ''}${holding.pnlPercentage.toFixed(1)}%</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Footer -->
+          <div style="font-size: 12px; text-align: center; color: #6b7280; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+            <p style="margin: 0;">SIP Brewery © 2024 | AMFI ARN-XXXXX | BSE Member | Page ${pageNumber}</p>
+            <p style="margin: 4px 0 0 0;">All amounts in ₹. Returns calculated on current NAV.</p>
+          </div>
+        </div>
+      `;
+      
+      pages += currentPageContent;
+    }
 
     return pages;
   }
@@ -747,6 +831,12 @@ export class StandardPDFGenerator {
   }
 
   private static calculatePageCount(data: StandardPDFData): number {
-    return 3; // Overview + Holdings + Analysis
+    const holdings = data.holdings || [];
+    const holdingItemHeight = 80;
+    const availableContentHeight = 1050 - 150 - 120; // page - header - footer
+    const holdingsPerPage = Math.floor(availableContentHeight / holdingItemHeight);
+    const holdingsPages = holdings.length > 0 ? Math.ceil(holdings.length / holdingsPerPage) : 1;
+    
+    return 1 + holdingsPages + 1; // Overview + Holdings + Analysis
   }
 }
