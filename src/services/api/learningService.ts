@@ -11,10 +11,6 @@ interface LearningModule {
   progress: number;
 }
 
-interface LearningModulesResponse {
-  modules: LearningModule[];
-}
-
 interface Question {
   id: string;
   question: string;
@@ -23,24 +19,16 @@ interface Question {
 }
 
 interface LearningSession {
-  id: string;
-  title: string;
-  content: string;
-  questions: Question[];
-}
-
-interface StartSessionResponse {
   sessionId: string;
-  module: LearningSession;
+  module: {
+    id: string;
+    title: string;
+    content: string;
+    questions: Question[];
+  };
 }
 
-interface SubmitAnswerRequest {
-  sessionId: string;
-  questionId: string;
-  answer: string;
-}
-
-interface SubmitAnswerResponse {
+interface QuizResponse {
   correct: boolean;
   explanation: string;
   points: number;
@@ -48,27 +36,86 @@ interface SubmitAnswerResponse {
 }
 
 export class LearningService extends BaseApiService {
+  // Learning Modules
   async getLearningModules(params?: {
     category?: string;
+    difficulty?: string;
     page?: number;
     limit?: number;
-  }): Promise<LearningModulesResponse> {
+  }): Promise<{
+    modules: LearningModule[];
+    pagination?: {
+      page: number;
+      limit: number;
+      total: number;
+      pages: number;
+    };
+  }> {
     const queryParams = new URLSearchParams();
-    if (params?.category) queryParams.set('category', params.category);
-    if (params?.page) queryParams.set('page', params.page.toString());
-    if (params?.limit) queryParams.set('limit', params.limit.toString());
-
-    const endpoint = `/api/learning/modules${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    return this.get<LearningModulesResponse>(endpoint);
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) queryParams.set(key, value.toString());
+      });
+    }
+    return this.get(`/api/learning/modules?${queryParams.toString()}`);
   }
 
-  async startLearningSession(moduleId: string): Promise<StartSessionResponse> {
-    return this.post<StartSessionResponse>('/api/learning/start-session', { moduleId });
+  // Learning Sessions
+  async startLearningSession(moduleId: string): Promise<LearningSession> {
+    return this.post('/api/learning/start-session', { moduleId });
   }
 
-  async submitAnswer(answerData: SubmitAnswerRequest): Promise<SubmitAnswerResponse> {
-    return this.post<SubmitAnswerResponse>('/api/learning/submit-answer', answerData);
+  async submitAnswer(params: {
+    sessionId: string;
+    questionId: string;
+    answer: string;
+  }): Promise<QuizResponse> {
+    return this.post('/api/learning/submit-answer', params);
+  }
+
+  async completeLearningSession(sessionId: string): Promise<{
+    completed: boolean;
+    score: number;
+    totalQuestions: number;
+    correctAnswers: number;
+    certificateUrl?: string;
+  }> {
+    return this.post('/api/learning/complete-session', { sessionId });
+  }
+
+  // Progress Tracking
+  async getLearningProgress(): Promise<{
+    totalModules: number;
+    completedModules: number;
+    totalPoints: number;
+    level: number;
+    certificates: any[];
+  }> {
+    return this.get('/api/learning/progress');
+  }
+
+  async getLearningPath(goal: string): Promise<{
+    path: LearningModule[];
+    estimatedDuration: string;
+    difficulty: string;
+  }> {
+    return this.get(`/api/learning/path?goal=${goal}`);
+  }
+
+  // Certificates
+  async getCertificates(): Promise<any[]> {
+    return this.get('/api/learning/certificates');
+  }
+
+  async downloadCertificate(certificateId: string): Promise<Blob> {
+    return this.download(`/api/learning/certificates/${certificateId}/download`);
   }
 }
 
 export const learningService = new LearningService();
+
+// Export individual functions for backward compatibility
+export const getLearningModules = (params?: any) => learningService.getLearningModules(params);
+export const startLearningSession = (moduleId: string) => learningService.startLearningSession(moduleId);
+export const submitAnswer = (params: any) => learningService.submitAnswer(params);
+export const getLearningProgress = () => learningService.getLearningProgress();

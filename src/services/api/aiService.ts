@@ -1,30 +1,21 @@
 import { BaseApiService } from './baseApiService';
 
-interface PortfolioInsight {
+interface AIInsight {
   type: string;
   title: string;
   description: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: 'high' | 'medium' | 'low';
   confidence: number;
-  action: string;
-  expectedImpact: string;
+  action?: string;
+  expectedImpact?: string;
 }
 
-interface Recommendation {
-  type: 'BUY' | 'SELL' | 'HOLD' | 'FUND_SWITCH';
+interface AIRecommendation {
+  type: string;
   fund?: string;
-  fromFund?: string;
-  toFund?: string;
   amount?: number;
   reason: string;
   confidence: number;
-  expectedReturn?: number;
-  risk?: string;
-}
-
-interface PortfolioInsightsResponse {
-  insights: PortfolioInsight[];
-  recommendations: Recommendation[];
 }
 
 interface MarketAnalysis {
@@ -33,8 +24,9 @@ interface MarketAnalysis {
   factors: string[];
 }
 
-interface PersonalizedRecommendationsResponse {
-  recommendations: Recommendation[];
+interface AIPortfolioInsightsResponse {
+  insights: AIInsight[];
+  recommendations: AIRecommendation[];
   marketAnalysis: MarketAnalysis;
 }
 
@@ -48,45 +40,56 @@ interface AGIContext {
     volatility: string;
     sentiment: string;
   };
-}
-
-interface AGIInitializeResponse {
-  agiContext: AGIContext;
   autonomousMode: boolean;
 }
 
 interface MarketPrediction {
   market: string;
-  direction: 'up' | 'down' | 'neutral';
+  direction: 'up' | 'down' | 'sideways';
   probability: number;
   confidence: number;
   factors: string[];
 }
 
-interface MarketPredictionsResponse {
-  timeframe: string;
-  predictions: MarketPrediction[];
-  confidence: number;
-  generatedAt: string;
-}
-
 export class AIService extends BaseApiService {
-  async getPortfolioInsights(): Promise<PortfolioInsightsResponse> {
-    return this.get<PortfolioInsightsResponse>('/api/ai/portfolio-insights');
+  // AI Portfolio Insights
+  async getPortfolioInsights(): Promise<AIPortfolioInsightsResponse> {
+    return this.get('/api/ai/portfolio-insights');
   }
 
-  async getPersonalizedRecommendations(userId: string): Promise<PersonalizedRecommendationsResponse> {
-    return this.get<PersonalizedRecommendationsResponse>(`/api/agi/recommendations/${userId}`);
+  async getPersonalizedRecommendations(userId: string): Promise<any> {
+    return this.get(`/api/agi/recommendations/${userId}`);
   }
 
-  async initializeAGI(userId: string): Promise<AGIInitializeResponse> {
-    return this.post<AGIInitializeResponse>('/api/agi/initialize', { userId });
+  // AGI System
+  async initializeAGI(userId: string): Promise<{ agiContext: AGIContext }> {
+    return this.post('/api/agi/initialize', { userId });
   }
 
-  async getMarketPredictions(timeframe: string = '30d'): Promise<MarketPredictionsResponse> {
-    const endpoint = `/api/agi/predictions?timeframe=${timeframe}`;
-    return this.get<MarketPredictionsResponse>(endpoint);
+  async getMarketPredictions(timeframe: string = '30d'): Promise<{
+    timeframe: string;
+    predictions: MarketPrediction[];
+    confidence: number;
+    generatedAt: string;
+  }> {
+    return this.get(`/api/agi/predictions?timeframe=${timeframe}`);
+  }
+
+  // AI Fund Analysis
+  async getAIFundAnalysis(fundCode: string): Promise<any> {
+    return this.post('/api/ai/fund-analysis', { fundCode });
+  }
+
+  async getFundComparison(fundCodes: string[]): Promise<any> {
+    return this.post('/api/ai/fund-comparison', { funds: fundCodes });
   }
 }
 
 export const aiService = new AIService();
+
+// Export individual functions for backward compatibility
+export const getPortfolioInsights = () => aiService.getPortfolioInsights();
+export const getPersonalizedRecommendations = (userId: string) => aiService.getPersonalizedRecommendations(userId);
+export const initializeAGI = (userId: string) => aiService.initializeAGI(userId);
+export const getMarketPredictions = (timeframe?: string) => aiService.getMarketPredictions(timeframe);
+export const getAIFundAnalysis = (fundCode: string) => aiService.getAIFundAnalysis(fundCode);

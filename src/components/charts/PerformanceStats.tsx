@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react';
+import { analyticsService } from '@/services/api/analyticsService';
+
 interface ChartDataPoint {
   date: string;
   fundPercentage: number;
@@ -31,35 +34,56 @@ const PerformanceStats = ({
   irr,
   fundData 
 }: PerformanceStatsProps) => {
-  const calculatePerformance = (data: ChartDataPoint[]) => {
-    if (data.length < 2) return { return: 0, volatility: 0, sipReturn: 0, totalInvested: 0, sipValue: 0 };
+  const [performanceData, setPerformanceData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchPerformanceData = async () => {
+      if (!fundData?.schemeCode) return;
+      
+      setLoading(true);
+      try {
+        // Use backend API for performance analytics
+        const data = await analyticsService.getPerformanceAnalytics({
+          fundCode: fundData.schemeCode,
+          period: period
+        });
+        setPerformanceData(data);
+      } catch (error) {
+        console.error('Error fetching performance data:', error);
+        // Fallback to local calculation if backend fails
+        setPerformanceData(calculateLocalPerformance());
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPerformanceData();
+  }, [fundData?.schemeCode, period]);
+
+  const calculateLocalPerformance = () => {
+    if (chartData.length < 2) return { return: 0, volatility: 0, sipReturn: 0, totalInvested: 0, sipValue: 0 };
     
-    const lastPoint = data[data.length - 1];
+    const lastPoint = chartData[chartData.length - 1];
     
-    // ALWAYS use the CORRECTED calculated performance from fundData - this is the authoritative source
+    // Use fundData for authoritative performance
     let actualReturn = 0;
     if (fundData) {
       switch (period) {
         case '1Y':
           actualReturn = fundData.returns1Y || 0;
-          console.log('PerformanceStats: Using CORRECTED 1Y return from fundData:', actualReturn);
           break;
         case '3Y':
           actualReturn = fundData.returns3Y || 0;
-          console.log('PerformanceStats: Using CORRECTED 3Y return from fundData:', actualReturn);
           break;
         case '5Y':
           actualReturn = fundData.returns5Y || 0;
-          console.log('PerformanceStats: Using CORRECTED 5Y return from fundData:', actualReturn);
           break;
         default:
-          // For other periods, use chart data but this should be avoided
           actualReturn = lastPoint.fundPercentage;
-          console.log('PerformanceStats: Using chart data for period:', period, 'return:', actualReturn);
       }
     } else {
       actualReturn = lastPoint.fundPercentage;
-      console.log('PerformanceStats: No fundData available, using chart data:', actualReturn);
     }
     
     // Calculate SIP returns
@@ -71,15 +95,15 @@ const PerformanceStats = ({
     const sipReturn = totalInvested > 0 ? ((sipValue - totalInvested) / totalInvested) * 100 : 0;
     
     // Calculate volatility
-    const returns = data.slice(1).map((point, i) =>
-      point.fundPercentage - data[i].fundPercentage
+    const returns = chartData.slice(1).map((point, i) =>
+      point.fundPercentage - chartData[i].fundPercentage
     );
     const avgReturn = returns.reduce((sum, r) => sum + r, 0) / returns.length;
     const variance = returns.reduce((sum, r) => sum + Math.pow(r - avgReturn, 2), 0) / returns.length;
     const volatility = Math.sqrt(variance * 252);
     
     return { 
-      return: actualReturn, // Use the CORRECTED performance data
+      return: actualReturn,
       volatility: Math.min(volatility, 50),
       sipReturn,
       totalInvested, 
@@ -87,26 +111,27 @@ const PerformanceStats = ({
     };
   };
 
-  const calculateRealisticIRR = (data: ChartDataPoint[]) => {
-    if (data.length < 2) return 0;
+  const calculateRealisticIRR = () => {
+    // Use backend-calculated XIRR if available
+    if (performanceData?.metrics?.xirr) {
+      return performanceData.metrics.xirr;
+    }
     
-    // Use CORRECTED XIRR from fundData for consistency
+    // Use fundData XIRR
     if (fundData) {
       switch (period) {
         case '1Y':
-          console.log('PerformanceStats: Using CORRECTED 1Y XIRR from fundData:', fundData.xirr1Y);
           return fundData.xirr1Y || 0;
         case '3Y':
-          console.log('PerformanceStats: Using CORRECTED 3Y XIRR from fundData:', fundData.xirr3Y);
           return fundData.xirr3Y || 0;
         case '5Y':
-          console.log('PerformanceStats: Using CORRECTED 5Y XIRR from fundData:', fundData.xirr5Y);
           return fundData.xirr5Y || 0;
       }
     }
     
-    // Fallback calculation if no fundData
-    const lastPoint = data[data.length - 1];
+    // Fallback calculation
+    if (chartData.length < 2) return 0;
+    const lastPoint = chartData[chartData.length - 1];
     const totalReturn = lastPoint.fundPercentage;
     const years = getDaysForPeriod(period) / 365;
     
@@ -116,28 +141,22 @@ const PerformanceStats = ({
     return cagr * 100;
   };
 
-  const calculateSIPCAGR = (data: ChartDataPoint[]) => {
-    if (data.length < 2) return 0;
-    
-    const lastPoint = data[data.length - 1];
-    const totalInvested = lastPoint.totalInvested || 0;
-    const currentValue = lastPoint.fundSIPValue || 0;
-    const years = getDaysForPeriod(period) / 365;
-    
-    if (years <= 0 || totalInvested <= 0 || currentValue <= 0) return 0;
-    
-    // For SIP, use a more sophisticated XIRR-like calculation
-    // Simplified approach: assume average investment was made at mid-point
-    const avgInvestmentPeriod = years / 2;
-    if (avgInvestmentPeriod <= 0) return 0;
-    
-    const sipCAGR = Math.pow(currentValue / totalInvested, 1 / avgInvestmentPeriod) - 1;
-    return sipCAGR * 100;
-  };
+  // Use backend data if available, otherwise fallback to local calculation
+  const performance = performanceData?.metrics || calculateLocalPerformance();
+  const realisticIRR = calculateRealisticIRR();
 
-  const performance = calculatePerformance(chartData);
-  const realisticIRR = calculateRealisticIRR(chartData);
-  const sipCAGR = calculateSIPCAGR(chartData);
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="text-center p-3 bg-gray-50 rounded-lg animate-pulse">
+            <div className="h-4 bg-gray-200 rounded mb-2"></div>
+            <div className="h-6 bg-gray-200 rounded"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -147,19 +166,19 @@ const PerformanceStats = ({
       </div>
       <div className="text-center p-3 bg-green-50 rounded-lg">
         <div className="text-sm text-muted-foreground">Performance ({period})</div>
-        <div className={`text-xl font-bold ${performance.return >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-          {performance.return >= 0 ? '+' : ''}{performance.return.toFixed(2)}%
+        <div className={`text-xl font-bold ${(performance.totalReturn || performance.return || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {(performance.totalReturn || performance.return || 0) >= 0 ? '+' : ''}{(performance.totalReturn || performance.return || 0).toFixed(2)}%
         </div>
       </div>
       <div className="text-center p-3 bg-purple-50 rounded-lg">
         <div className="text-sm text-muted-foreground">Monthly SIP Returns</div>
-        <div className={`text-xl font-bold ${performance.sipReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-          {performance.sipReturn >= 0 ? '+' : ''}{performance.sipReturn.toFixed(2)}%
+        <div className={`text-xl font-bold ${(performance.sipReturn || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {(performance.sipReturn || 0) >= 0 ? '+' : ''}{(performance.sipReturn || 0).toFixed(2)}%
         </div>
       </div>
       <div className="text-center p-3 bg-orange-50 rounded-lg">
         <div className="text-sm text-muted-foreground">SIP Portfolio Value</div>
-        <div className="text-xl font-bold text-orange-600">₹{performance.sipValue?.toLocaleString() || '0'}</div>
+        <div className="text-xl font-bold text-orange-600">₹{(performance.sipValue || 0).toLocaleString()}</div>
       </div>
       <div className="text-center p-3 bg-indigo-50 rounded-lg">
         <div className="text-sm text-muted-foreground">XIRR/IRR ({period})</div>

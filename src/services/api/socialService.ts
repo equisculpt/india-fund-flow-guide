@@ -1,6 +1,6 @@
 import { BaseApiService } from './baseApiService';
 
-interface LeaderboardUser {
+interface LeaderboardEntry {
   rank: number;
   userId: string;
   name: string;
@@ -8,25 +8,6 @@ interface LeaderboardUser {
   score: number;
   return: number;
   investedAmount: number;
-}
-
-interface LeaderboardResponse {
-  leaderboard: LeaderboardUser[];
-  userRank: {
-    rank: number;
-    score: number;
-  };
-}
-
-interface SharePortfolioRequest {
-  message: string;
-  platform: 'whatsapp' | 'twitter' | 'facebook';
-}
-
-interface SharePortfolioResponse {
-  shareId: string;
-  shareUrl: string;
-  message: string;
 }
 
 interface Achievement {
@@ -38,34 +19,78 @@ interface Achievement {
   points: number;
 }
 
-interface AchievementsResponse {
-  achievements: Achievement[];
-  totalPoints: number;
-  level: number;
+interface ShareResponse {
+  shareId: string;
+  shareUrl: string;
+  message: string;
 }
 
 export class SocialService extends BaseApiService {
-  async getLeaderboard(params?: {
-    type?: string;
+  // Leaderboard
+  async getLeaderboard(params: {
+    type: 'daily' | 'weekly' | 'monthly' | 'yearly';
     page?: number;
     limit?: number;
-  }): Promise<LeaderboardResponse> {
+  }): Promise<{
+    leaderboard: LeaderboardEntry[];
+    userRank: { rank: number; score: number };
+  }> {
     const queryParams = new URLSearchParams();
-    if (params?.type) queryParams.set('type', params.type);
-    if (params?.page) queryParams.set('page', params.page.toString());
-    if (params?.limit) queryParams.set('limit', params.limit.toString());
-
-    const endpoint = `/api/social/leaderboard${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    return this.get<LeaderboardResponse>(endpoint);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) queryParams.set(key, value.toString());
+    });
+    return this.get(`/api/social/leaderboard?${queryParams.toString()}`);
   }
 
-  async sharePortfolio(shareData: SharePortfolioRequest): Promise<SharePortfolioResponse> {
-    return this.post<SharePortfolioResponse>('/api/social/share-portfolio', shareData);
+  // Portfolio Sharing
+  async sharePortfolio(params: {
+    message: string;
+    platform: 'whatsapp' | 'twitter' | 'facebook' | 'linkedin';
+  }): Promise<ShareResponse> {
+    return this.post('/api/social/share-portfolio', params);
   }
 
-  async getAchievements(): Promise<AchievementsResponse> {
-    return this.get<AchievementsResponse>('/api/social/achievements');
+  // Achievements & Gamification
+  async getAchievements(): Promise<{
+    achievements: Achievement[];
+    totalPoints: number;
+    level: number;
+  }> {
+    return this.get('/api/social/achievements');
+  }
+
+  async getUserStats(): Promise<{
+    totalPoints: number;
+    level: number;
+    rank: number;
+    achievements: number;
+    referrals: number;
+  }> {
+    return this.get('/api/social/user-stats');
+  }
+
+  // Social Interactions
+  async followUser(userId: string): Promise<any> {
+    return this.post('/api/social/follow', { userId });
+  }
+
+  async unfollowUser(userId: string): Promise<any> {
+    return this.post('/api/social/unfollow', { userId });
+  }
+
+  async getFollowers(): Promise<any> {
+    return this.get('/api/social/followers');
+  }
+
+  async getFollowing(): Promise<any> {
+    return this.get('/api/social/following');
   }
 }
 
 export const socialService = new SocialService();
+
+// Export individual functions for backward compatibility
+export const getLeaderboard = (params: any) => socialService.getLeaderboard(params);
+export const sharePortfolio = (params: any) => socialService.sharePortfolio(params);
+export const getAchievements = () => socialService.getAchievements();
+export const getUserStats = () => socialService.getUserStats();

@@ -152,6 +152,53 @@ export class AnalyticsService extends BaseApiService {
   async getAdminDashboard(): Promise<any> {
     return this.get('/api/analytics/admin-dashboard');
   }
+
+  async getFundComparison(params: {
+    funds: string[];
+    period: string;
+    investmentAmount: number;
+  }): Promise<any> {
+    return this.post('/api/analytics/fund-comparison', params);
+  }
+
+  async getBenchmarkComparison(params: {
+    fundCode: string;
+    benchmark: string;
+    period: string;
+  }): Promise<any> {
+    return this.post('/api/analytics/benchmark-comparison', params);
+  }
+
+  async getNavHistory(params: {
+    fundCode: string;
+    period: string;
+    includeIndicators?: boolean;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) queryParams.set(key, value.toString());
+    });
+    return this.get(`/api/analytics/nav-history?${queryParams.toString()}`);
+  }
+
+  async calculateTaxImplications(params: {
+    redemptionAmount: number;
+    purchaseAmount: number;
+    holdingPeriod: number;
+    fundType: string;
+  }): Promise<any> {
+    return this.post('/api/analytics/tax-calculations', params);
+  }
+
+  async getPortfolioComparison(params: {
+    portfolios: Array<{
+      name: string;
+      funds: string[];
+    }>;
+    period: string;
+  }): Promise<any> {
+    return this.post('/api/analytics/portfolio-comparison', params);
+  }
 }
 
 export const analyticsService = new AnalyticsService();
