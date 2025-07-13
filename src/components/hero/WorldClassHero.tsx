@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, TrendingUp, Shield, Users, Search, BarChart3, Target, Sparkles } from 'lucide-react';
+import { Brain, TrendingUp, Shield, Users, Search, BarChart3, Target, Sparkles, Award, Eye, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -141,7 +141,7 @@ const WorldClassHero = () => {
               <span className="font-semibold">₹500Cr+ AUM</span>
             </div>
             <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-accent" />
+              <Star className="h-5 w-5 text-accent" />
               <span className="font-semibold">4.9★ Rated</span>
             </div>
           </div>
