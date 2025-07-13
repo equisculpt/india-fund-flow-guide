@@ -1,7 +1,7 @@
 import React from 'react';
 import WorldClassHero from './hero/WorldClassHero';
 import AIAnalysisPreview from './features/AIAnalysisPreview';
-import FundComparisonPreview from './features/FundComparisonPreview';
+import WorldClassFundComparison from './features/WorldClassFundComparison';
 import { Shield } from "lucide-react";
 
 const HeroSection = () => {
@@ -13,7 +13,7 @@ const HeroSection = () => {
       <div>
         <WorldClassHero />
         <AIAnalysisPreview />
-        <FundComparisonPreview />
+        <WorldClassFundComparison />
       
         {/* Enhanced Compliance Notice */}
         <section className="py-12 bg-muted/30">
