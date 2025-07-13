@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Shield, CreditCard, FileText, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { portfolioService } from "@/services/api/portfolioService";
+import { ApiError } from "@/services/api/baseApiService";
 
 interface FundInvestmentProps {
   fundName?: string;
@@ -34,29 +36,24 @@ const BSEStarMFIntegration = ({ fundName, fundCode, onInvestmentSuccess }: FundI
         sipFrequency
       });
 
-      // TODO: Implement actual BSE Star MF API integration through Supabase edge function
-      const response = await fetch('/api/bse-star-mf/invest', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fundCode,
-          amount: parseFloat(investmentAmount),
-          investmentType,
-          frequency: sipFrequency
-        })
-      });
+      const investmentRequest = {
+        fundCode: fundCode || 'DEFAULT_FUND',
+        amount: parseFloat(investmentAmount),
+        type: investmentType.toLowerCase() as 'lumpsum' | 'sip',
+        paymentMode: 'upi' as const,
+        sipDetails: investmentType === 'SIP' ? {
+          frequency: sipFrequency === 'yearly' ? 'quarterly' : sipFrequency as 'monthly' | 'quarterly',
+          duration: 12
+        } : undefined
+      };
 
-      if (response.ok) {
-        toast({
-          title: "Investment Successful!",
-          description: `Your ${investmentType} of ₹${investmentAmount} has been processed successfully.`,
-        });
-        onInvestmentSuccess?.();
-      } else {
-        throw new Error('Investment failed');
-      }
+      const response = await portfolioService.invest(investmentRequest);
+      
+      toast({
+        title: "Investment Successful!",
+        description: `Your ${investmentType} of ₹${investmentAmount} has been processed successfully. Order ID: ${response.orderId}`,
+      });
+      onInvestmentSuccess?.();
     } catch (error) {
       console.error("BSE Star MF investment error:", error);
       toast({

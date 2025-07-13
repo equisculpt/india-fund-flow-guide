@@ -1,6 +1,8 @@
 
 import { useToast } from '@/hooks/use-toast';
 import { bseStarMFService } from '@/services/bseStarMFService';
+import { portfolioService } from '@/services/api/portfolioService';
+import { ApiError } from '@/services/api/baseApiService';
 
 export class SIPOperationService {
   private toast: ReturnType<typeof useToast>['toast'];
