@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eye, EyeOff, Download } from "lucide-react";
+import { Eye, EyeOff, Download, Sparkles } from "lucide-react";
 import { TEST_USER_DATA } from '@/services/testData';
 import { useNavigate } from 'react-router-dom';
 import XIRRAnalytics from './XIRRAnalytics';
@@ -20,6 +20,7 @@ import PerformanceTab from './dashboard/PerformanceTab';
 import AllocationTab from './dashboard/AllocationTab';
 import ReferralBanner from './dashboard/ReferralBanner';
 import PDFDebugger from './debug/PDFDebugger';
+import EnhancedDashboard from './EnhancedDashboard';
 
 const TestPortfolioDashboard = () => {
   const [hideBalance, setHideBalance] = useState(false);
@@ -58,8 +59,12 @@ const TestPortfolioDashboard = () => {
 
       <QuickActionCards handleInvestMore={handleInvestMore} />
 
-      <Tabs defaultValue="holdings" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-11">
+      <Tabs defaultValue="enhanced" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-12">
+          <TabsTrigger value="enhanced" className="flex items-center gap-1">
+            <Sparkles className="h-3 w-3" />
+            Enhanced
+          </TabsTrigger>
           <TabsTrigger value="holdings">Holdings</TabsTrigger>
           <TabsTrigger value="sip-center">SIP Center</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
@@ -72,6 +77,10 @@ const TestPortfolioDashboard = () => {
           <TabsTrigger value="settings">Settings</TabsTrigger>
           <TabsTrigger value="pdf-debug">PDF Debug</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="enhanced">
+          <EnhancedDashboard />
+        </TabsContent>
 
         <TabsContent value="holdings">
           <HoldingsTab formatCurrency={formatCurrency} handleInvestMore={handleInvestMore} />

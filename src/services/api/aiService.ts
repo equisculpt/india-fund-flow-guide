@@ -57,8 +57,21 @@ export class AIService extends BaseApiService {
     return this.get('/api/ai/portfolio-insights');
   }
 
-  async getPersonalizedRecommendations(userId: string): Promise<any> {
-    return this.get(`/api/agi/recommendations/${userId}`);
+  async getPersonalizedRecommendations(userId?: string): Promise<any> {
+    const endpoint = userId ? `/api/agi/recommendations/${userId}` : '/api/agi/recommendations';
+    return this.get(endpoint);
+  }
+
+  async getMarketTrends(): Promise<any> {
+    return this.get('/api/agi/market-trends');
+  }
+
+  async analyzeFund(fundCode: string): Promise<any> {
+    return this.get(`/api/agi/analyze-fund/${fundCode}`);
+  }
+
+  async getSimilarFunds(fundCode: string): Promise<any> {
+    return this.get(`/api/agi/similar-funds/${fundCode}`);
   }
 
   // AGI System

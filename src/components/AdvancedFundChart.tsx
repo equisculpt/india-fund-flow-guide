@@ -6,7 +6,9 @@ import PerformanceStats from './charts/PerformanceStats';
 import AdvancedFundHeader from './charts/AdvancedFundHeader';
 import ChartGrid from './charts/ChartGrid';
 import AnalysisTabs from './charts/AnalysisTabs';
-import { useAdvancedFundData } from './charts/hooks/useAdvancedFundData';
+import { analyticsService } from '@/services/api/analyticsService';
+import { aiService } from '@/services/api/aiService';
+import { useQuery } from '@tanstack/react-query';
 
 interface FundComparison {
   id: string;
@@ -52,16 +54,47 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
     }
   ]);
 
-  const {
-    chartData,
-    loading,
-    availableFunds,
-    calculatePerformance,
-    calculateIRR
-  } = useAdvancedFundData(primaryFund, period, sipAmount, fundComparisons);
+  // Fetch chart data from backend
+  const { data: chartData, isLoading: chartLoading } = useQuery({
+    queryKey: ['chartData', primaryFund.schemeCode, period, sipAmount],
+    queryFn: () => analyticsService.getChartData({
+      type: 'fund',
+      period,
+      fundCode: primaryFund.schemeCode
+    })
+  });
 
-  const performance = calculatePerformance(chartData);
-  const irr = calculateIRR(chartData);
+  // Fetch performance analytics from backend
+  const { data: performanceData, isLoading: performanceLoading } = useQuery({
+    queryKey: ['performance', primaryFund.schemeCode, period],
+    queryFn: () => analyticsService.getPerformanceAnalytics({
+      period,
+      fundCode: primaryFund.schemeCode
+    })
+  });
+
+  // Fetch AI analysis from backend
+  const { data: aiAnalysis } = useQuery({
+    queryKey: ['aiAnalysis', primaryFund.schemeCode],
+    queryFn: () => aiService.analyzeFund(primaryFund.schemeCode)
+  });
+
+  // Fetch fund comparison data
+  const { data: availableFunds } = useQuery({
+    queryKey: ['availableFunds', primaryFund.category],
+    queryFn: () => aiService.getSimilarFunds(primaryFund.schemeCode)
+  });
+
+  // Transform backend data to expected format
+  const performance = performanceData ? {
+    return: performanceData.metrics?.totalReturn || 0,
+    volatility: performanceData.metrics?.volatility || 0,
+    sipReturn: 0
+  } : { return: 0, volatility: 0, sipReturn: 0 };
+
+  const irr = performanceData?.metrics?.sharpeRatio || 0;
+
+  const loading = chartLoading || performanceLoading;
 
   console.log('AdvancedFundChart: primaryFund data received:', primaryFund);
   console.log('AdvancedFundChart: AI analysis present?', !!primaryFund.aiScore);
@@ -110,33 +143,33 @@ const AdvancedFundChart = ({ primaryFund, className = "" }: AdvancedFundChartPro
           />
 
           <ChartGrid
-            chartData={chartData}
+            chartData={Array.isArray(chartData) ? chartData : (chartData as any)?.data || []}
             fundComparisons={fundComparisons}
             sipAmount={sipAmount}
           />
 
           <div className="mt-4">
-            <PerformanceStats
-              chartData={chartData}
-              sipAmount={sipAmount}
-              period={period}
-              primaryFundNav={primaryFund.nav}
-              getDaysForPeriod={(p) => {
-                const days = {
-                  '1M': 30, '3M': 90, '6M': 180, '1Y': 365, 
-                  '3Y': 1095, '5Y': 1825, '10Y': 3650
-                };
-                return days[p] || 365;
-              }}
-              irr={irr}
-              fundData={primaryFund}
-            />
+          <PerformanceStats
+            chartData={Array.isArray(chartData) ? chartData : (chartData as any)?.data || []}
+            sipAmount={sipAmount}
+            period={period}
+            primaryFundNav={primaryFund.nav}
+            getDaysForPeriod={(p) => {
+              const days = {
+                '1M': 30, '3M': 90, '6M': 180, '1Y': 365, 
+                '3Y': 1095, '5Y': 1825, '10Y': 3650
+              };
+              return days[p] || 365;
+            }}
+            irr={irr}
+            fundData={{...primaryFund, ...aiAnalysis}}
+          />
           </div>
         </CardContent>
       </Card>
 
       {/* Comprehensive Analysis Tabs - Pass the complete primaryFund data with AI analysis */}
-      <AnalysisTabs fundData={primaryFund} combinedFundData={primaryFund} />
+      <AnalysisTabs fundData={primaryFund} combinedFundData={{...primaryFund, ...aiAnalysis}} />
     </div>
   );
 };

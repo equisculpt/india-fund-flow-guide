@@ -27,6 +27,10 @@ interface ShareResponse {
 
 export class SocialService extends BaseApiService {
   // Leaderboard
+  async getMarketSentiment(): Promise<any> {
+    return this.get('/api/social/market-sentiment');
+  }
+
   async getLeaderboard(params: {
     type: 'daily' | 'weekly' | 'monthly' | 'yearly';
     page?: number;

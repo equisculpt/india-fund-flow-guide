@@ -27,6 +27,10 @@ export class VoiceService extends BaseApiService {
     return this.post('/api/voice/start-session', params);
   }
 
+  async getVoiceStatus(): Promise<any> {
+    return this.get('/api/voice/status');
+  }
+
   async sendVoiceMessage(params: {
     sessionId: string;
     audio?: string;

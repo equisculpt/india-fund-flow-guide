@@ -116,6 +116,9 @@ export class RegionalService extends BaseApiService {
   }> {
     return this.post('/api/regional/currency-convert', params);
   }
+  async getLocalizedContent(language: string): Promise<any> {
+    return this.get(`/api/regional/content?lang=${language}`);
+  }
 }
 
 export const regionalService = new RegionalService();
