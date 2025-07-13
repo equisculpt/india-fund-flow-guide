@@ -1,129 +1,204 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useFundIRR, useSIPReturns } from '@/hooks/useMutualFundAnalytics';
-import { format, subYears, subMonths } from 'date-fns';
+import { Plus, Trash2, Calculator } from 'lucide-react';
+import { analyticsService } from '@/services/api/analyticsService';
+import { toast } from 'sonner';
+
+interface Transaction {
+  id: string;
+  date: string;
+  amount: number;
+  type: 'investment' | 'redemption';
+}
 
 const IRRCalculator = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('1Y');
-  const [selectedFund, setSelectedFund] = useState('');
-
-  const getPeriodDates = (period: string) => {
-    const endDate = new Date();
-    let startDate: Date;
-
-    switch (period) {
-      case '6M':
-        startDate = subMonths(endDate, 6);
-        break;
-      case '1Y':
-        startDate = subYears(endDate, 1);
-        break;
-      case '3Y':
-        startDate = subYears(endDate, 3);
-        break;
-      case '5Y':
-        startDate = subYears(endDate, 5);
-        break;
-      default:
-        startDate = subYears(endDate, 1);
+  const [transactions, setTransactions] = useState<Transaction[]>([
+    {
+      id: '1',
+      date: '2024-01-01',
+      amount: -10000,
+      type: 'investment'
     }
+  ]);
+  const [result, setResult] = useState<any>(null);
+  const [isCalculating, setIsCalculating] = useState(false);
 
-    return {
-      startDate: format(startDate, 'yyyy-MM-dd'),
-      endDate: format(endDate, 'yyyy-MM-dd')
+  const addTransaction = () => {
+    const newTransaction: Transaction = {
+      id: Date.now().toString(),
+      date: '',
+      amount: 0,
+      type: 'investment'
     };
+    setTransactions([...transactions, newTransaction]);
   };
 
-  const { startDate, endDate } = getPeriodDates(selectedPeriod);
-  
-  const { data: irrData, isLoading: irrLoading } = useFundIRR(
-    selectedFund, 
-    startDate, 
-    endDate
-  );
+  const removeTransaction = (id: string) => {
+    setTransactions(transactions.filter(t => t.id !== id));
+  };
 
-  const { data: sipReturns, isLoading: sipLoading } = useSIPReturns(
-    'user-id', // This should come from auth context
-    selectedFund,
-    startDate,
-    endDate
-  );
+  const updateTransaction = (id: string, field: keyof Transaction, value: any) => {
+    setTransactions(transactions.map(t => 
+      t.id === id ? { ...t, [field]: value } : t
+    ));
+  };
+
+  const calculateXIRR = async () => {
+    if (transactions.length < 2) {
+      toast.error('Please add at least 2 transactions');
+      return;
+    }
+
+    const validTransactions = transactions.filter(t => t.date && t.amount !== 0);
+    if (validTransactions.length < 2) {
+      toast.error('Please ensure all transactions have valid dates and amounts');
+      return;
+    }
+
+    setIsCalculating(true);
+    try {
+      const response = await analyticsService.calculateXIRR({
+        transactions: validTransactions.map(t => ({
+          date: t.date,
+          amount: t.type === 'investment' ? -Math.abs(t.amount) : Math.abs(t.amount),
+          type: t.type
+        }))
+      }) as any;
+
+      if (response.success) {
+        setResult(response.data);
+        toast.success('XIRR calculated successfully');
+      } else {
+        toast.error('Failed to calculate XIRR');
+      }
+    } catch (error) {
+      // Fallback to local calculation
+      const localResult = calculateLocalXIRR(validTransactions);
+      setResult(localResult);
+      toast.warning('Using local calculation as fallback');
+    } finally {
+      setIsCalculating(false);
+    }
+  };
+
+  // Fallback local XIRR calculation
+  const calculateLocalXIRR = (txns: Transaction[]) => {
+    const totalInvested = txns
+      .filter(t => t.type === 'investment')
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    
+    const totalRedemption = txns
+      .filter(t => t.type === 'redemption')
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+    const totalReturn = totalRedemption - totalInvested;
+    const simpleReturn = totalReturn / totalInvested * 100;
+
+    return {
+      xirr: simpleReturn,
+      totalInvested,
+      finalValue: totalRedemption,
+      totalReturn,
+      annualizedReturn: simpleReturn
+    };
+  };
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>IRR & XIRR Calculator</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Calculator className="h-5 w-5" />
+            XIRR Calculator
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium">Select Period</label>
-              <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="6M">6 Months</SelectItem>
-                  <SelectItem value="1Y">1 Year</SelectItem>
-                  <SelectItem value="3Y">3 Years</SelectItem>
-                  <SelectItem value="5Y">5 Years</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <label className="text-sm font-medium">Select Fund</label>
-              <Select value={selectedFund} onValueChange={setSelectedFund}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a fund" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="120601">SBI Small Cap Fund</SelectItem>
-                  <SelectItem value="118989">HDFC Top 100 Fund</SelectItem>
-                  <SelectItem value="101206">Axis Long Term Equity</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-3">
+            {transactions.map((transaction, index) => (
+              <div key={transaction.id} className="grid grid-cols-12 gap-2 items-end">
+                <div className="col-span-3">
+                  <Label htmlFor={`date-${transaction.id}`}>Date</Label>
+                  <Input
+                    id={`date-${transaction.id}`}
+                    type="date"
+                    value={transaction.date}
+                    onChange={(e) => updateTransaction(transaction.id, 'date', e.target.value)}
+                  />
+                </div>
+                <div className="col-span-3">
+                  <Label htmlFor={`amount-${transaction.id}`}>Amount (₹)</Label>
+                  <Input
+                    id={`amount-${transaction.id}`}
+                    type="number"
+                    value={transaction.amount}
+                    onChange={(e) => updateTransaction(transaction.id, 'amount', Number(e.target.value))}
+                  />
+                </div>
+                <div className="col-span-3">
+                  <Label htmlFor={`type-${transaction.id}`}>Type</Label>
+                  <Select 
+                    value={transaction.type} 
+                    onValueChange={(value) => updateTransaction(transaction.id, 'type', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="investment">Investment</SelectItem>
+                      <SelectItem value="redemption">Redemption</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="col-span-3">
+                  {transactions.length > 1 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeTransaction(transaction.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
 
-          {selectedFund && (
-            <div className="grid md:grid-cols-3 gap-4 mt-6">
-              <Card>
-                <CardContent className="pt-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {irrLoading ? '...' : `${irrData?.toFixed(2) || '0'}%`}
-                    </div>
-                    <div className="text-sm text-gray-600">Lumpsum IRR</div>
-                  </div>
-                </CardContent>
-              </Card>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={addTransaction}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Transaction
+            </Button>
+            <Button onClick={calculateXIRR} disabled={isCalculating}>
+              {isCalculating ? 'Calculating...' : 'Calculate XIRR'}
+            </Button>
+          </div>
 
-              <Card>
-                <CardContent className="pt-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">
-                      {sipLoading ? '...' : `${sipReturns?.xirr?.toFixed(2) || '0'}%`}
-                    </div>
-                    <div className="text-sm text-gray-600">SIP XIRR</div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600">
-                      {sipLoading ? '...' : `₹${sipReturns?.absolute_returns?.toLocaleString() || '0'}`}
-                    </div>
-                    <div className="text-sm text-gray-600">Absolute Returns</div>
-                  </div>
-                </CardContent>
-              </Card>
+          {result && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <h4 className="font-semibold text-blue-900 mb-3">XIRR Results</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-sm text-blue-700">Total Invested</div>
+                  <div className="font-semibold">₹{result.totalInvested?.toLocaleString()}</div>
+                </div>
+                <div>
+                  <div className="text-sm text-blue-700">Final Value</div>
+                  <div className="font-semibold">₹{result.finalValue?.toLocaleString()}</div>
+                </div>
+                <div>
+                  <div className="text-sm text-blue-700">Total Return</div>
+                  <div className="font-semibold text-green-600">₹{result.totalReturn?.toLocaleString()}</div>
+                </div>
+                <div>
+                  <div className="text-sm text-blue-700">XIRR (Annualized)</div>
+                  <div className="font-semibold text-blue-900">{result.xirr?.toFixed(2)}%</div>
+                </div>
+              </div>
             </div>
           )}
         </CardContent>

@@ -1,17 +1,73 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { analyticsService } from '@/services/api/analyticsService';
+import { toast } from 'sonner';
 
 const InvestmentCalculator = () => {
   const [monthlyInvestment, setMonthlyInvestment] = useState(5000);
   const [years, setYears] = useState(10);
   const [expectedReturn, setExpectedReturn] = useState(12);
+  const [result, setResult] = useState({ totalInvested: 0, expectedValue: 0, totalReturns: 0, projections: [] });
+  const [chartData, setChartData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const calculateSIP = () => {
+  useEffect(() => {
+    fetchSIPCalculation();
+  }, [monthlyInvestment, years, expectedReturn]);
+
+  const fetchSIPCalculation = async () => {
+    setIsLoading(true);
+    try {
+      const response = await analyticsService.calculateSIP({
+        monthlyAmount: monthlyInvestment,
+        duration: years * 12,
+        expectedReturn: expectedReturn
+      });
+
+      if (response.success) {
+        setResult({
+          totalInvested: response.data.totalInvested,
+          expectedValue: response.data.expectedValue,
+          totalReturns: response.data.totalReturns,
+          projections: response.data.projections || []
+        });
+
+        // Generate chart data from projections
+        const yearlyData = [];
+        for (let year = 1; year <= years; year++) {
+          const monthIndex = year * 12 - 1;
+          const projection = response.data.projections[monthIndex];
+          if (projection) {
+            yearlyData.push({
+              year,
+              invested: projection.invested,
+              value: Math.round(projection.value)
+            });
+          }
+        }
+        setChartData(yearlyData);
+      }
+    } catch (error) {
+      toast.error('Failed to calculate SIP projections');
+      // Fallback to local calculation
+      const localResult = calculateLocalSIP();
+      setResult({
+        ...localResult,
+        projections: []
+      });
+      setChartData(generateLocalChartData());
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fallback local calculation
+  const calculateLocalSIP = () => {
     const monthlyRate = expectedReturn / 100 / 12;
     const totalMonths = years * 12;
     const futureValue = monthlyInvestment * (((1 + monthlyRate) ** totalMonths - 1) / monthlyRate) * (1 + monthlyRate);
@@ -19,13 +75,13 @@ const InvestmentCalculator = () => {
     const totalGains = futureValue - totalInvested;
     
     return {
-      futureValue: Math.round(futureValue),
+      expectedValue: Math.round(futureValue),
       totalInvested,
-      totalGains: Math.round(totalGains)
+      totalReturns: Math.round(totalGains)
     };
   };
 
-  const generateChartData = () => {
+  const generateLocalChartData = () => {
     const data = [];
     for (let year = 1; year <= years; year++) {
       const monthlyRate = expectedReturn / 100 / 12;
@@ -41,9 +97,6 @@ const InvestmentCalculator = () => {
     }
     return data;
   };
-
-  const result = calculateSIP();
-  const chartData = generateChartData();
 
   return (
     <div className="grid lg:grid-cols-2 gap-8">
@@ -136,11 +189,11 @@ const InvestmentCalculator = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-blue-700">Total Gains:</span>
-                <span className="font-semibold text-green-600">₹{result.totalGains.toLocaleString()}</span>
+                <span className="font-semibold text-green-600">₹{result.totalReturns.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-lg border-t pt-2">
                 <span className="text-blue-900 font-semibold">Maturity Value:</span>
-                <span className="font-bold text-blue-900">₹{result.futureValue.toLocaleString()}</span>
+                <span className="font-bold text-blue-900">₹{result.expectedValue.toLocaleString()}</span>
               </div>
             </div>
           </div>

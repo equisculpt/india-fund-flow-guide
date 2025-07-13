@@ -57,6 +57,36 @@ interface PerformanceAnalytics {
   metrics: PerformanceMetrics;
 }
 
+interface SIPCalculationResponse {
+  monthlyAmount: number;
+  duration: number;
+  totalInvested: number;
+  expectedValue: number;
+  totalReturns: number;
+  projections: Array<{
+    month: number;
+    invested: number;
+    value: number;
+    returns: number;
+  }>;
+}
+
+interface GoalInvestmentResponse {
+  targetAmount: number;
+  timeHorizon: number;
+  currentSavings: number;
+  requiredMonthlySIP: number;
+  projectedValue: number;
+  shortfall: number;
+}
+
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  error?: string;
+}
+
 export class AnalyticsService extends BaseApiService {
   async getDashboardOverview(): Promise<DashboardOverview> {
     return this.get<DashboardOverview>('/api/dashboard/overview');
@@ -72,6 +102,51 @@ export class AnalyticsService extends BaseApiService {
 
     const endpoint = `/api/analytics/performance${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
     return this.get<PerformanceAnalytics>(endpoint);
+  }
+
+  async calculateSIP(params: {
+    monthlyAmount: number;
+    duration: number;
+    expectedReturn: number;
+    fundCode?: string;
+  }): Promise<ApiResponse<SIPCalculationResponse>> {
+    return this.post<ApiResponse<SIPCalculationResponse>>('/api/analytics/calculate-sip', params);
+  }
+
+  async calculateGoalInvestment(params: {
+    targetAmount: number;
+    timeHorizon: number;
+    expectedReturn: number;
+    currentSavings: number;
+  }): Promise<ApiResponse<GoalInvestmentResponse>> {
+    return this.post<ApiResponse<GoalInvestmentResponse>>('/api/analytics/goal-investment', params);
+  }
+
+  async calculateRiskProfiling(type: 'personal' | 'portfolio' | 'market') {
+    return this.get(`/api/analytics/risk-profiling?type=${type}`);
+  }
+
+  async getChartData(params: {
+    type: 'portfolio' | 'fund' | 'allocation' | 'sip';
+    period?: string;
+    fundCode?: string;
+    userId?: string;
+  }) {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) queryParams.set(key, value);
+    });
+    return this.get(`/api/analytics/chart-data?${queryParams.toString()}`);
+  }
+
+  async calculateXIRR(params: {
+    transactions: Array<{
+      date: string;
+      amount: number;
+      type: 'investment' | 'redemption';
+    }>;
+  }) {
+    return this.post('/api/analytics/xirr', params);
   }
 }
 

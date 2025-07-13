@@ -1,11 +1,15 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PortfolioAnalyticsDashboard from '@/components/dashboard/PortfolioAnalyticsDashboard';
 import IRRCalculator from '@/components/dashboard/IRRCalculator';
 import StatementGenerator from '@/components/dashboard/StatementGenerator';
 import AIInsightsManager from '@/components/dashboard/AIInsightsManager';
 import KYCGuard from '@/components/KYCGuard';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { RefreshCw, TrendingUp, TrendingDown, Calculator, FileText, Brain } from 'lucide-react';
+import { analyticsService } from '@/services/api/analyticsService';
 import { toast } from 'sonner';
 
 const UserDashboard = () => {

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Home, GraduationCap, Car, Plane, Baby, Heart } from "lucide-react";
+import { analyticsService } from '@/services/api/analyticsService';
+import { toast } from 'sonner';
 
 interface Goal {
   id: string;
@@ -16,6 +18,7 @@ interface Goal {
   timeline: number;
   icon: React.ReactNode;
   category: string;
+  requiredMonthlySIP?: number;
 }
 
 const GoalBasedInvesting = () => {
@@ -70,10 +73,54 @@ const GoalBasedInvesting = () => {
     return Math.min((current / target) * 100, 100);
   };
 
+  // Calculate SIP for goals using backend API
+  useEffect(() => {
+    const calculateSIPForGoals = async () => {
+      const updatedGoals = await Promise.all(
+        goals.map(async (goal) => {
+          try {
+            const response = await analyticsService.calculateGoalInvestment({
+              targetAmount: goal.targetAmount,
+              timeHorizon: goal.timeline,
+              expectedReturn: 12,
+              currentSavings: goal.currentAmount
+            });
+
+            if (response.success) {
+              return {
+                ...goal,
+                requiredMonthlySIP: response.data.requiredMonthlySIP
+              };
+            }
+          } catch (error) {
+            // Fallback to local calculation
+            const monthsRemaining = goal.timeline * 12;
+            const amountNeeded = goal.targetAmount - goal.currentAmount;
+            const monthlyReturn = 0.12 / 12;
+            const sip = (amountNeeded * monthlyReturn) / ((Math.pow(1 + monthlyReturn, monthsRemaining) - 1));
+            
+            return {
+              ...goal,
+              requiredMonthlySIP: Math.round(sip)
+            };
+          }
+          return goal;
+        })
+      );
+      
+      setGoals(updatedGoals);
+    };
+
+    if (goals.length > 0 && !goals[0].requiredMonthlySIP) {
+      calculateSIPForGoals();
+    }
+  }, [goals]);
+
   const calculateMonthlySIP = (target: number, current: number, years: number) => {
+    // This is now just a fallback for immediate display
     const monthsRemaining = years * 12;
     const amountNeeded = target - current;
-    const annualReturn = 0.12; // Assuming 12% annual return
+    const annualReturn = 0.12;
     const monthlyReturn = annualReturn / 12;
     
     const sip = (amountNeeded * monthlyReturn) / ((Math.pow(1 + monthlyReturn, monthsRemaining) - 1));
@@ -203,7 +250,7 @@ const GoalBasedInvesting = () => {
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Required SIP:</span>
                   <span className="font-medium text-blue-600">
-                    ₹{calculateMonthlySIP(goal.targetAmount, goal.currentAmount, goal.timeline).toLocaleString()}/month
+                    ₹{(goal.requiredMonthlySIP || calculateMonthlySIP(goal.targetAmount, goal.currentAmount, goal.timeline)).toLocaleString()}/month
                   </span>
                 </div>
               </div>
