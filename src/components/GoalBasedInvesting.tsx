@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Home, GraduationCap, Car, Plane, Baby, Heart } from "lucide-react";
-import { analyticsService } from '@/services/api/analyticsService';
+import { analyticsService, calculateGoalInvestment } from '@/services/api/analyticsService';
 import { toast } from 'sonner';
 
 interface Goal {
@@ -94,10 +94,14 @@ const GoalBasedInvesting = () => {
             }
           } catch (error) {
             // Fallback to local calculation
-            const monthsRemaining = goal.timeline * 12;
-            const amountNeeded = goal.targetAmount - goal.currentAmount;
-            const monthlyReturn = 0.12 / 12;
-            const sip = (amountNeeded * monthlyReturn) / ((Math.pow(1 + monthlyReturn, monthsRemaining) - 1));
+            // Calculate required SIP using backend API
+            const sipResult = await calculateGoalInvestment({
+              targetAmount: goal.targetAmount,
+              currentAmount: goal.currentAmount,
+              timeHorizon: goal.timeline,
+              expectedReturn: 12
+            });
+            const sip = sipResult.data.requiredMonthlySIP;
             
             return {
               ...goal,

@@ -148,6 +148,25 @@ export class AnalyticsService extends BaseApiService {
   }) {
     return this.post('/api/analytics/xirr', params);
   }
+
+  async getAdminDashboard(): Promise<any> {
+    return this.get('/api/analytics/admin-dashboard');
+  }
 }
 
 export const analyticsService = new AnalyticsService();
+
+// Export individual functions for backward compatibility
+export const calculateGoalInvestment = (params: {
+  targetAmount: number;
+  currentAmount: number;
+  timeHorizon: number;
+  expectedReturn: number;
+}) => analyticsService.calculateGoalInvestment({
+  targetAmount: params.targetAmount,
+  timeHorizon: params.timeHorizon,
+  expectedReturn: params.expectedReturn,
+  currentSavings: params.currentAmount
+});
+
+export const getAdminDashboard = () => analyticsService.getAdminDashboard();

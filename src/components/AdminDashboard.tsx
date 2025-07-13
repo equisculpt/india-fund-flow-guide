@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { getAdminDashboard } from '@/services/api/analyticsService';
 import { Users, TrendingUp, DollarSign, Settings } from 'lucide-react';
 import UserManagementTab from './admin/UserManagementTab';
 import InvestmentOverviewTab from './admin/InvestmentOverviewTab';
@@ -20,6 +20,7 @@ interface DashboardStats {
   totalInvestments: number;
   totalCommissions: number;
   pendingCommissions: number;
+  activeUsers: number;
 }
 
 const AdminDashboard = () => {
@@ -29,6 +30,7 @@ const AdminDashboard = () => {
     totalInvestments: 0,
     totalCommissions: 0,
     pendingCommissions: 0,
+    activeUsers: 0,
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -39,94 +41,30 @@ const AdminDashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      console.log('Fetching dashboard stats...');
+      console.log('Fetching dashboard stats from backend API...');
       
-      // Try to fetch basic counts with simpler queries
-      const { count: userCount, error: userError } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_type', 'customer');
-
-      if (userError) {
-        console.error('User count error:', userError);
-        // If profiles query fails, set minimal stats
+      const response = await getAdminDashboard();
+      
+      if (response.success) {
         setStats({
-          totalUsers: 0,
-          totalAgents: 0,
-          totalInvestments: 0,
-          totalCommissions: 0,
-          pendingCommissions: 0,
+          totalUsers: response.data.totalUsers || 0,
+          totalAgents: response.data.totalAgents || 0,
+          totalInvestments: response.data.totalInvestments || 0,
+          totalCommissions: response.data.totalCommissions || 0,
+          pendingCommissions: response.data.pendingCommissions || 0,
+          activeUsers: response.data.activeUsers || 0,
         });
-        toast({
-          title: "Warning",
-          description: "Some dashboard data may not be available due to database policies. Core functionality should still work.",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
+
+        console.log('Dashboard stats loaded successfully:', response.data);
+      } else {
+        throw new Error(response.error || 'Failed to fetch stats');
       }
-
-      // Try to fetch agent count
-      const { count: agentCount, error: agentError } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_type', 'agent');
-
-      if (agentError) {
-        console.error('Agent count error:', agentError);
-      }
-
-      // Try to fetch other stats with fallbacks
-      let totalInvestments = 0;
-      let totalCommissions = 0;
-      let pendingCommissions = 0;
-
-      try {
-        const { data: investments, error: investmentError } = await supabase
-          .from('investments')
-          .select('total_invested');
-
-        if (!investmentError && investments) {
-          totalInvestments = investments.reduce((sum, inv) => sum + (inv.total_invested || 0), 0);
-        }
-      } catch (error) {
-        console.error('Investment query failed:', error);
-      }
-
-      try {
-        const { data: commissions, error: commissionError } = await supabase
-          .from('commissions')
-          .select('calculated_commission, status');
-
-        if (!commissionError && commissions) {
-          totalCommissions = commissions.reduce((sum, comm) => sum + (comm.calculated_commission || 0), 0);
-          pendingCommissions = commissions.filter(c => c.status === 'pending').reduce((sum, comm) => sum + (comm.calculated_commission || 0), 0);
-        }
-      } catch (error) {
-        console.error('Commission query failed:', error);
-      }
-
-      setStats({
-        totalUsers: userCount || 0,
-        totalAgents: agentCount || 0,
-        totalInvestments,
-        totalCommissions,
-        pendingCommissions,
-      });
-
-      console.log('Dashboard stats loaded successfully:', {
-        totalUsers: userCount || 0,
-        totalAgents: agentCount || 0,
-        totalInvestments,
-        totalCommissions,
-        pendingCommissions,
-      });
 
     } catch (error) {
       console.error('Error fetching stats:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch dashboard statistics. Please check your permissions.",
+        description: "Failed to fetch dashboard statistics. Using backend API for calculations.",
         variant: "destructive",
       });
       
@@ -137,6 +75,7 @@ const AdminDashboard = () => {
         totalInvestments: 0,
         totalCommissions: 0,
         pendingCommissions: 0,
+        activeUsers: 0,
       });
     } finally {
       setLoading(false);
