@@ -93,8 +93,10 @@ const WorldClassHero = () => {
             Invest Smarter.<br />
             Grow Faster.
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-            India's Most Advanced Mutual Fund Platform
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-300">
+            <span className="inline-block animate-pulse bg-gradient-primary bg-clip-text text-transparent font-semibold">
+              India's Most Advanced Mutual Fund Platform
+            </span>
           </p>
           <p className="text-lg md:text-xl text-foreground/80 mb-12 max-w-4xl mx-auto">
             AI-powered insights, transparent analytics, and effortless investing. 
