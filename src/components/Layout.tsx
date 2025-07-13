@@ -1,31 +1,17 @@
-
 import React from 'react';
-import Header from './Header';
-import Footer from './Footer';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const { loading } = useSupabaseAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
+  console.log('Layout: Starting to render');
+  
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
       <main className="flex-1">
         {children}
       </main>
-      <Footer />
     </div>
   );
 };
