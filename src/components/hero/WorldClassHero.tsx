@@ -136,15 +136,15 @@ const WorldClassHero = () => {
           <div className="flex flex-wrap justify-center items-center gap-8 text-muted-foreground mb-16">
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
-              <span className="font-semibold">50,000+ Investors</span>
+              <span className="font-semibold">12,500+ Investors</span>
             </div>
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-secondary" />
-              <span className="font-semibold">₹500Cr+ AUM</span>
+              <span className="font-semibold">₹85Cr+ AUM</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5 text-accent" />
-              <span className="font-semibold">4.9★ Rated</span>
+              <span className="font-semibold">4.6★ Rated</span>
             </div>
           </div>
         </div>
