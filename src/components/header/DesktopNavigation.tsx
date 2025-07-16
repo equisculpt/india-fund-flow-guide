@@ -14,7 +14,8 @@ const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsC
     <nav className="hidden lg:flex items-center space-x-8">
       <button
         onClick={handleBrowseFundsClick}
-        className="text-red-500 hover:text-yellow-300 font-bold text-xl font-heading transition-all duration-300 hover:scale-105 px-4 py-2 rounded-lg hover:bg-white/10 relative group"
+        className="text-white font-bold text-xl font-heading transition-all duration-300 hover:scale-105 px-4 py-2 rounded-lg relative group"
+        style={{ backgroundColor: 'lime', color: 'black', border: '3px solid red' }}
       >
         Browse Funds
         <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-yellow-300 to-yellow-500 group-hover:w-full transition-all duration-300"></div>
