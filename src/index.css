@@ -7,66 +7,68 @@
 
 @layer base {
   :root {
-    /* Consistent Dark Luxury Theme with High Contrast */
-    --background: 220 26% 8%;       /* Deep Navy Background */
-    --foreground: 50 100% 95%;      /* Cream White Text */
-    --card: 220 26% 12%;            /* Slightly lighter navy for cards */
-    --card-foreground: 50 100% 95%;
-    --popover: 220 26% 12%;         /* Navy for popovers */
-    --popover-foreground: 50 100% 95%;
+    /* Navy Blue Luxury Theme with Innovation */
+    --background: 210 50% 8%;        /* Rich Navy Blue */
+    --foreground: 0 0% 98%;          /* Pure White Text */
+    --card: 210 45% 12%;             /* Lighter navy for cards */
+    --card-foreground: 0 0% 98%;
+    --popover: 210 40% 15%;          /* Navy for popovers */
+    --popover-foreground: 0 0% 98%;
     
-    /* High Contrast Primary - Rich Brown */
-    --primary: 30 40% 25%;          /* Rich Dark Brown */
-    --primary-foreground: 50 100% 95%;
-    --primary-glow: 35 60% 45%;     /* Brighter Brown */
+    /* Innovation: Electric Blue Accents */
+    --primary: 200 100% 45%;         /* Electric Blue */
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 200 100% 60%;    /* Bright Electric Blue */
     
-    /* High Contrast Secondary - Bright Gold */
-    --secondary: 45 100% 70%;       /* Bright Champagne Gold */
-    --secondary-foreground: 30 40% 15%;
-    --secondary-glow: 50 100% 80%;  /* Very Bright Gold */
+    /* Innovation: Platinum Silver */
+    --secondary: 220 10% 85%;        /* Platinum Silver */
+    --secondary-foreground: 210 50% 8%;
+    --secondary-glow: 220 20% 95%;   /* Bright Silver */
     
-    /* High Contrast Accent - Warm Copper */
-    --accent: 25 80% 60%;           /* Warm Copper */
-    --accent-foreground: 220 26% 8%;
+    /* Innovation: Cyan Accent */
+    --accent: 180 100% 50%;          /* Bright Cyan */
+    --accent-foreground: 210 50% 8%;
     
-    /* Muted with High Contrast */
-    --muted: 220 20% 15%;           /* Darker muted sections */
-    --muted-foreground: 50 40% 80%; /* High contrast muted text */
+    /* High Contrast Muted */
+    --muted: 210 30% 20%;           /* Navy muted sections */
+    --muted-foreground: 220 10% 85%; /* Light muted text */
     
-    /* Status colors with High Contrast */
-    --destructive: 0 72% 60%;
-    --destructive-foreground: 50 100% 95%;
-    --success: 140 60% 55%;
-    --success-foreground: 50 100% 95%;
-    --warning: 38 92% 65%;
-    --warning-foreground: 30 40% 15%;
-    --info: 217 91% 70%;
-    --info-foreground: 50 100% 95%;
+    /* Status colors with Navy Theme */
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 120 60% 50%;
+    --success-foreground: 0 0% 98%;
+    --warning: 45 100% 60%;
+    --warning-foreground: 210 50% 8%;
+    --info: 200 100% 60%;
+    --info-foreground: 0 0% 98%;
     
-    /* High Contrast UI elements */
-    --border: 220 20% 25%;          /* Lighter borders for visibility */
-    --input: 220 20% 18%;           /* Input field styling */
-    --ring: 45 100% 70%;            /* Gold focus rings */
+    /* Innovation: Glass Navy UI */
+    --border: 210 30% 25%;          /* Visible navy borders */
+    --input: 210 40% 15%;           /* Navy input fields */
+    --ring: 200 100% 60%;           /* Electric blue focus */
     
-    /* Chart colors with High Contrast */
-    --chart-1: 30 40% 25%;          /* Rich Brown */
-    --chart-2: 45 100% 70%;         /* Bright Gold */
-    --chart-3: 25 80% 60%;          /* Warm Copper */
-    --chart-4: 35 60% 45%;          /* Bright Brown */
-    --chart-5: 50 100% 80%;         /* Very Bright Gold */
+    /* Innovation: Navy Chart Colors */
+    --chart-1: 200 100% 45%;        /* Electric Blue */
+    --chart-2: 220 10% 85%;         /* Platinum Silver */
+    --chart-3: 180 100% 50%;        /* Bright Cyan */
+    --chart-4: 200 100% 60%;        /* Bright Electric Blue */
+    --chart-5: 220 20% 95%;         /* Very Bright Silver */
     
-    /* High Contrast Gradients */
+    /* Innovation: Navy Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-glow)));
-    --gradient-luxury: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--accent)) 100%);
-    --gradient-accent: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--secondary)) 100%);
-    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    --gradient-navy: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--primary)) 50%, hsl(var(--accent)) 100%);
+    --gradient-accent: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    --gradient-menu: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 245, 255, 0.98) 100%);
     
-    /* High Contrast Shadows & Glows */
-    --shadow-glow: 0 0 40px hsl(var(--secondary) / 0.6);
-    --shadow-success: 0 10px 30px -10px hsl(var(--secondary) / 0.7);
+    /* Innovation: Navy Glow Effects */
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.6);
+    --shadow-success: 0 10px 30px -10px hsl(var(--primary) / 0.7);
     --shadow-luxury: 0 20px 40px -15px hsl(var(--primary) / 0.5);
-    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.6);
+    --shadow-glass: 0 8px 32px rgba(0, 50, 100, 0.4);
+    --shadow-electric: 0 0 60px hsl(var(--primary-glow) / 0.8);
 
     --radius: 0.75rem;
   }
@@ -114,40 +116,59 @@
     @apply font-heading font-semibold;
   }
   
-  /* Scrollbar styling for luxury feel */
+  /* Innovation: Scrollbar styling for navy theme */
   ::-webkit-scrollbar {
     width: 8px;
   }
   
   ::-webkit-scrollbar-track {
-    @apply bg-muted/30;
+    @apply bg-blue-100/30;
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-primary/60 rounded-full;
+    @apply bg-blue-600/60 rounded-full;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary/80;
+    @apply bg-blue-700/80;
   }
   
-  /* Selection styling */
+  /* Innovation: Selection styling */
   ::selection {
-    @apply bg-secondary/30 text-foreground;
+    @apply bg-blue-500/30 text-white;
   }
   
-  /* Focus ring improvements */
+  /* Innovation: Focus ring improvements */
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-background;
+    @apply outline-none ring-2 ring-blue-500/50 ring-offset-2 ring-offset-background;
   }
   
-  /* Smooth transitions for interactive elements */
+  /* Innovation: Smooth transitions for interactive elements */
   a, button, [role="button"] {
     @apply transition-all duration-300;
   }
   
-  /* Enhanced link hover effects */
+  /* Innovation: Enhanced link hover effects */
   a:hover {
-    @apply text-primary;
+    @apply text-blue-600;
+  }
+  
+  /* Innovation: Custom animations */
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 }

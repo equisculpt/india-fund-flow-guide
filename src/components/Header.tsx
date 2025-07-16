@@ -43,8 +43,8 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-gradient-glass backdrop-blur-xl border-b border-secondary/30 shadow-luxury">
-        <div className="absolute inset-0 bg-background/95"></div>
+      <header className="sticky top-0 z-50 bg-gradient-menu backdrop-blur-xl border-b border-blue-200/30 shadow-electric">
+        <div className="absolute inset-0 bg-white/95 backdrop-blur-xl"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -63,8 +63,7 @@ const Header = () => {
               {/* Test Login Link */}
               <Link 
                 to="/test-login" 
-                className="text-foreground hover:text-secondary font-semibold bg-gradient-glass backdrop-blur-md px-4 py-2 rounded-xl border border-secondary/40 hover:border-secondary/60 transition-all duration-300 hover:scale-105 shadow-glass hover:shadow-glow"
-                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
+                className="text-blue-800 hover:text-blue-600 font-semibold bg-gradient-to-r from-blue-50 to-cyan-50 backdrop-blur-md px-4 py-2 rounded-xl border border-blue-200 hover:border-blue-300 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-blue-200/50"
               >
                 Test Login
               </Link>
@@ -89,8 +88,7 @@ const Header = () => {
             <div className="lg:hidden flex items-center space-x-2">
               <Link 
                 to="/test-login"
-                className="text-foreground hover:text-secondary font-medium bg-gradient-glass backdrop-blur-md px-3 py-2 rounded-lg text-sm border border-secondary/30 hover:border-secondary/50 transition-all duration-300"
-                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
+                className="text-blue-800 hover:text-blue-600 font-medium bg-gradient-to-r from-blue-50 to-white px-3 py-2 rounded-lg text-sm border border-blue-200 hover:border-blue-300 transition-all duration-300 shadow-md"
               >
                 Test
               </Link>

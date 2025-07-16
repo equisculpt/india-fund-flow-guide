@@ -14,19 +14,19 @@ const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsC
     <nav className="hidden lg:flex items-center space-x-6">
       <button
         onClick={handleBrowseFundsClick}
-        className="text-gray-700 hover:text-blue-600 transition-colors"
+        className="text-blue-800 hover:text-blue-600 font-semibold transition-all duration-300 hover:scale-105 px-3 py-2 rounded-lg hover:bg-blue-50/50"
       >
         Browse Funds
       </button>
       <button
         onClick={handleFundComparisonClick}
-        className="text-gray-700 hover:text-blue-600 transition-colors"
+        className="text-blue-800 hover:text-blue-600 font-semibold transition-all duration-300 hover:scale-105 px-3 py-2 rounded-lg hover:bg-blue-50/50"
       >
         Compare Funds
       </button>
       <Link
         to="/sip-calculator"
-        className="text-gray-700 hover:text-blue-600 transition-colors"
+        className="text-blue-800 hover:text-blue-600 font-semibold transition-all duration-300 hover:scale-105 px-3 py-2 rounded-lg hover:bg-blue-50/50"
       >
         SIP Calculator
       </Link>
@@ -34,13 +34,13 @@ const DesktopNavigation = ({ user, handleFundComparisonClick, handleBrowseFundsC
         <>
           <Link
             to="/dashboard"
-            className="text-gray-700 hover:text-blue-600 transition-colors"
+            className="text-blue-800 hover:text-blue-600 font-semibold transition-all duration-300 hover:scale-105 px-3 py-2 rounded-lg hover:bg-blue-50/50"
           >
             Dashboard
           </Link>
           <Link
             to="/referral"
-            className="text-gray-700 hover:text-blue-600 transition-colors"
+            className="text-blue-800 hover:text-blue-600 font-semibold transition-all duration-300 hover:scale-105 px-3 py-2 rounded-lg hover:bg-blue-50/50"
           >
             Referral
           </Link>
