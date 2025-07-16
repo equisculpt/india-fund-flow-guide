@@ -105,20 +105,12 @@ const WorldClassHero = () => {
               Grow Faster.
             </span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-300" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.6)' }}>
-            <span className="inline-block font-bold text-foreground relative">
-              <span className="absolute inset-0 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent animate-pulse" style={{
-                filter: 'drop-shadow(0 0 20px hsl(var(--primary) / 0.9))',
-                WebkitTextStroke: '0.5px hsl(var(--primary) / 0.4)'
-              }}>
-                India&apos;s Most Advanced Mutual Fund Platform
-              </span>
-              <span className="relative bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent" style={{
-                filter: 'drop-shadow(0 0 20px hsl(var(--primary) / 0.9))',
-                WebkitTextStroke: '0.5px hsl(var(--primary) / 0.4)'
-              }}>
-                India&apos;s Most Advanced Mutual Fund Platform
-              </span>
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-300">
+            <span className="inline-block font-bold text-foreground relative" style={{
+              textShadow: '0 0 20px hsl(var(--primary) / 0.8), 0 0 40px hsl(var(--secondary) / 0.6), 0 2px 8px rgba(0,0,0,0.8)',
+              filter: 'drop-shadow(0 0 15px hsl(var(--primary) / 0.7))'
+            }}>
+              India&apos;s Most Advanced Mutual Fund Platform
             </span>
           </p>
           <p className="text-lg md:text-xl text-foreground mb-12 max-w-4xl mx-auto font-medium" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
