@@ -109,7 +109,8 @@ const PremiumHero = () => {
           </h1>
           
           {/* Clean Subheadline */}
-          <p className="text-2xl md:text-3xl font-serif mb-12 max-w-4xl mx-auto leading-relaxed text-white" style={{
+          <p className="text-2xl md:text-3xl font-serif mb-12 max-w-4xl mx-auto leading-relaxed" style={{
+            color: '#FFD700',
             textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
           }}>
             India's Most Advanced Mutual Fund Platform
@@ -119,15 +120,16 @@ const PremiumHero = () => {
           <div className="flex justify-center mb-16">
             <button 
               onClick={handleInvestNow}
-              className="group px-12 py-6 text-xl font-bold font-heading rounded-full transition-all duration-500 hover:scale-105 relative overflow-hidden bg-white/10 backdrop-blur-md border border-white/30 hover:border-cyan-400/60 text-white hover:shadow-[0_0_40px_rgba(255,215,0,0.3)]"
+              className="group px-12 py-6 text-xl font-bold font-heading rounded-full transition-all duration-500 hover:scale-105 relative overflow-hidden"
               style={{
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
-                backdropFilter: 'blur(20px)',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
+                background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1))',
+                border: '2px solid',
+                borderImage: 'linear-gradient(90deg, #FFD700, #00F5D4) 1',
+                color: '#FFD700',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)'
               }}
             >
               <span className="relative z-10">Get Started</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full"></div>
             </button>
           </div>
         </div>
