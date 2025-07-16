@@ -57,8 +57,8 @@ const Header = () => {
           <div className="flex items-center justify-between h-full">
             {/* Logo Section */}
             <Link to="/" className="flex items-center space-x-3">
-              {/* Premium Beer Mug Icon */}
-              <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center" style={{
+              {/* Premium Beer Mug Icon - Original Size */}
+              <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center p-2" style={{
                 background: 'linear-gradient(135deg, #FFD54F 0%, #FFC107 50%, #FF8F00 100%)',
                 boxShadow: '0 8px 32px rgba(255, 213, 79, 0.6), 0 0 20px rgba(255, 193, 7, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3)',
                 border: '2px solid rgba(255, 255, 255, 0.2)'
@@ -66,10 +66,10 @@ const Header = () => {
                 {/* Gradient overlay for premium look */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 to-transparent"></div>
                 
-                {/* Premium Beer Mug SVG */}
+                {/* Premium Beer Mug SVG - Larger Size */}
                 <svg 
-                  width="24" 
-                  height="24" 
+                  width="32" 
+                  height="32" 
                   viewBox="0 0 24 24" 
                   fill="none" 
                   className="relative z-10"
