@@ -17,27 +17,29 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gradient-to-b from-background to-muted border-t border-primary/20">
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
+      <div className="container mx-auto px-4 py-12 relative">
+        {/* Luxury background effects */}
+        <div className="absolute inset-0 bg-gradient-glass opacity-30"></div>
+        <div className="grid md:grid-cols-4 gap-8 relative z-10">
           {/* Company Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4">SIP Brewery</h3>
-            <p className="text-gray-300 mb-4">
-              India's trusted AMFI registered mutual fund distributor offering regular mutual funds with professional advisory.
+            <h3 className="text-xl font-bold mb-4 bg-gradient-secondary bg-clip-text text-transparent">SIP Brewery</h3>
+            <p className="text-foreground/80 mb-4 leading-relaxed">
+              India&apos;s trusted AMFI registered mutual fund distributor offering regular mutual funds with professional advisory.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-secondary transition-all duration-300 hover:scale-110">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-secondary transition-all duration-300 hover:scale-110">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-secondary transition-all duration-300 hover:scale-110">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-secondary transition-all duration-300 hover:scale-110">
                 <Instagram className="h-5 w-5" />
               </a>
             </div>
@@ -45,47 +47,47 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-lg font-semibold mb-4 text-foreground">Quick Links</h4>
             <ul className="space-y-2">
-              <li><Link to="/about" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
-              <li><Link to="/public-funds" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Mutual Funds</Link></li>
-              <li><Link to="/community" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Community</Link></li>
-              <li><Link to="/fund-comparison" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Fund Comparison</Link></li>
+              <li><Link to="/about" onClick={handleLinkClick} className="text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link to="/public-funds" onClick={handleLinkClick} className="text-muted-foreground hover:text-primary transition-colors">Mutual Funds</Link></li>
+              <li><Link to="/community" onClick={handleLinkClick} className="text-muted-foreground hover:text-primary transition-colors">Community</Link></li>
+              <li><Link to="/fund-comparison" onClick={handleLinkClick} className="text-muted-foreground hover:text-primary transition-colors">Fund Comparison</Link></li>
             </ul>
           </div>
 
           {/* Legal */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Legal</h4>
+            <h4 className="text-lg font-semibold mb-4 text-foreground">Legal</h4>
             <ul className="space-y-2">
-              <li><Link to="/terms" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link to="/privacy" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/risk-disclosure" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Risk Disclosure</Link></li>
-              <li><Link to="/contact" onClick={handleLinkClick} className="text-gray-300 hover:text-white transition-colors">Grievance Redressal</Link></li>
+              <li><Link to="/terms" onClick={handleLinkClick} className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
+              <li><Link to="/privacy" onClick={handleLinkClick} className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/risk-disclosure" onClick={handleLinkClick} className="text-muted-foreground hover:text-primary transition-colors">Risk Disclosure</Link></li>
+              <li><Link to="/contact" onClick={handleLinkClick} className="text-muted-foreground hover:text-primary transition-colors">Grievance Redressal</Link></li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
+            <h4 className="text-lg font-semibold mb-4 text-foreground">Contact Us</h4>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <Mail className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-300">hello@equisculpt.in</span>
+                <Mail className="h-4 w-4 text-accent" />
+                <span className="text-muted-foreground">hello@equisculpt.in</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-300">+91 7760997030</span>
+                <Phone className="h-4 w-4 text-accent" />
+                <span className="text-muted-foreground">+91 7760997030</span>
               </div>
               <div className="flex items-center space-x-3">
-                <MapPin className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-300">Hyderabad, India</span>
+                <MapPin className="h-4 w-4 text-accent" />
+                <span className="text-muted-foreground">Hyderabad, India</span>
               </div>
             </div>
             <Link 
               to="/contact"
               onClick={handleLinkClick}
-              className="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
+              className="inline-block mt-4 bg-gradient-secondary hover:bg-secondary-glow text-secondary-foreground px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 shadow-glass"
             >
               Contact Us
             </Link>
@@ -100,11 +102,11 @@ const Footer = () => {
       <TrademarkNotice />
 
       {/* Copyright */}
-      <div className="bg-gray-800 py-4 text-center border-t border-gray-700">
+      <div className="bg-gradient-to-r from-muted/50 to-muted/30 py-4 text-center border-t border-primary/20">
         <div className="container mx-auto px-4">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} SIP Brewery. All rights reserved. | 
-            Powered by Equisculpt Ventures Pvt. Ltd.
+            Powered by <span className="text-accent font-semibold">Equisculpt Ventures Pvt. Ltd.</span>
           </p>
         </div>
       </div>

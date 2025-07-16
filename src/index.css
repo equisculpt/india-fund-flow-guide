@@ -107,9 +107,47 @@
   body {
     @apply bg-background text-foreground font-body;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-semibold;
+  }
+  
+  /* Scrollbar styling for luxury feel */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/60 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/80;
+  }
+  
+  /* Selection styling */
+  ::selection {
+    @apply bg-secondary/30 text-foreground;
+  }
+  
+  /* Focus ring improvements */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-background;
+  }
+  
+  /* Smooth transitions for interactive elements */
+  a, button, [role="button"] {
+    @apply transition-all duration-300;
+  }
+  
+  /* Enhanced link hover effects */
+  a:hover {
+    @apply text-primary;
   }
 }

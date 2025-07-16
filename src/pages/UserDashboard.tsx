@@ -25,19 +25,26 @@ const UserDashboard = () => {
 
   return (
     <KYCGuard requireKYC={true}>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Investment Dashboard</h1>
-            <p className="text-gray-600">Complete portfolio analytics and statement management</p>
+            <h1 className="text-3xl font-heading font-bold bg-gradient-hero bg-clip-text text-transparent" style={{ 
+              filter: 'drop-shadow(0 0 15px hsl(var(--secondary-glow) / 0.6))',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+            }}>
+              Investment Dashboard
+            </h1>
+            <p className="text-foreground/80 leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}>
+              Complete portfolio analytics and statement management
+            </p>
           </div>
 
           <Tabs defaultValue="analytics" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="analytics">Portfolio Analytics</TabsTrigger>
-              <TabsTrigger value="calculations">IRR/XIRR Calculator</TabsTrigger>
-              <TabsTrigger value="statements">Generate Statements</TabsTrigger>
-              <TabsTrigger value="ai-insights">AI Insights</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4 bg-gradient-glass backdrop-blur-xl border border-primary/20 shadow-glass">
+              <TabsTrigger value="analytics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Portfolio Analytics</TabsTrigger>
+              <TabsTrigger value="calculations" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">IRR/XIRR Calculator</TabsTrigger>
+              <TabsTrigger value="statements" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Generate Statements</TabsTrigger>
+              <TabsTrigger value="ai-insights" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">AI Insights</TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">

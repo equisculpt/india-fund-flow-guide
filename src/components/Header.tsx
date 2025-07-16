@@ -43,8 +43,9 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b shadow-sm">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-50 bg-gradient-glass backdrop-blur-xl border-b border-primary/20 shadow-luxury">
+        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/98 to-background/95"></div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
@@ -62,7 +63,7 @@ const Header = () => {
               {/* Test Login Link */}
               <Link 
                 to="/test-login" 
-                className="text-orange-600 hover:text-orange-700 font-medium bg-orange-50 px-3 py-1 rounded-full border border-orange-200 hover:bg-orange-100 transition-colors"
+                className="text-accent hover:text-accent/80 font-semibold bg-gradient-glass backdrop-blur-md px-4 py-2 rounded-xl border border-accent/30 hover:border-accent/50 transition-all duration-300 hover:scale-105 shadow-glass"
               >
                 Test Login
               </Link>
@@ -109,7 +110,7 @@ const Header = () => {
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
             <div className="lg:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gradient-glass backdrop-blur-xl border-t border-primary/20">
                 <MobileNavigation 
                   isMenuOpen={isMobileMenuOpen}
                   user={user}
@@ -119,7 +120,7 @@ const Header = () => {
                 />
 
                 {/* Mobile User Menu */}
-                <div className="pt-4 border-t border-gray-200">
+                <div className="pt-4 border-t border-primary/20">
                   <SupabaseUserMenu 
                     user={user}
                     signOut={signOut}
