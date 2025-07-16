@@ -43,39 +43,108 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10">
-        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/80 to-background/60 backdrop-blur-xl"></div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2">
-              <BreweryLogo />
+      <header className="fixed top-0 left-0 right-0 z-50" style={{
+        background: 'linear-gradient(90deg, #0B132B 0%, #2E0F5C 100%)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+        height: '76px'
+      }}>
+        {/* Glassmorphism overlay */}
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 h-full">
+          <div className="flex items-center justify-between h-full">
+            {/* Logo Section */}
+            <Link to="/" className="flex items-center space-x-3">
+              {/* Beer Mug Icon */}
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{
+                background: 'linear-gradient(135deg, #FFD54F 0%, #FFC107 100%)',
+                boxShadow: '0 4px 16px rgba(255, 213, 79, 0.3)'
+              }}>
+                <div className="text-slate-800 text-xl font-bold">🍺</div>
+              </div>
+              
+              {/* Logo Text */}
+              <div className="flex flex-col">
+                <div className="text-xl font-black" style={{
+                  background: 'linear-gradient(90deg, #FFD700 0%, #E6B800 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  fontFamily: 'Poppins, sans-serif',
+                  textShadow: '0 2px 8px rgba(255, 215, 0, 0.3)'
+                }}>
+                  SIP Brewery
+                </div>
+                <div className="text-xs italic font-serif" style={{
+                  color: '#FFD700',
+                  fontFamily: 'serif',
+                  textShadow: '0 1px 4px rgba(0, 0, 0, 0.5)'
+                }}>
+                  Brewing Wealth
+                </div>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
-              <DesktopNavigation 
-                user={user}
-                handleFundComparisonClick={handleFundComparisonClick}
-                handleBrowseFundsClick={handleBrowseFundsClick}
-              />
+            <div className="hidden lg:flex items-center space-x-8 flex-1 justify-end">
+              {/* Search Bar */}
+              <div className="relative max-w-md w-full">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5" style={{ color: '#00F5D4' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search mutual funds..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border-0 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-300"
+                    style={{
+                      background: '#050B14',
+                      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                    }}
+                  />
+                </div>
+              </div>
 
-              {/* Test Login Link */}
-              <Link 
-                to="/test-login" 
-                className="glass-button text-foreground hover:text-secondary font-semibold px-6 py-3 rounded-xl hover:shadow-glow transition-all duration-300 hover:scale-105"
+              {/* Navigation Menu Items */}
+              <nav className="flex items-center space-x-6">
+                <DesktopNavigation 
+                  user={user}
+                  handleFundComparisonClick={handleFundComparisonClick}
+                  handleBrowseFundsClick={handleBrowseFundsClick}
+                />
+              </nav>
+
+              {/* Test Button */}
+              <button
+                onClick={() => handleNavigation('/test-login')}
+                className="group relative px-6 py-2.5 rounded-full border transition-all duration-300 ease-in-out hover:scale-105"
+                style={{
+                  background: 'transparent',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: '#FFFFFF',
+                  fontWeight: '600',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #FFD700 0%, #E6B800 100%)';
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(255, 215, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.color = '#1a1a1a';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.boxShadow = 'none';
+                  e.currentTarget.style.color = '#FFFFFF';
+                }}
               >
-                Test Login
-              </Link>
-            </nav>
+                Test
+              </button>
 
-            {/* Desktop Search */}
-            <div className="hidden lg:flex items-center flex-1 max-w-lg mx-8">
-              <EnhancedFundSearch placeholder="Search mutual funds..." />
-            </div>
-
-            {/* Desktop Actions */}
-            <div className="hidden lg:flex items-center space-x-4">
+              {/* User Menu */}
               <SupabaseUserMenu 
                 user={user}
                 signOut={signOut}
@@ -85,15 +154,20 @@ const Header = () => {
             </div>
 
             {/* Mobile menu button */}
-            <div className="lg:hidden flex items-center space-x-2">
-              <Link 
-                to="/test-login"
-                className="glass-button text-foreground hover:text-secondary font-medium px-4 py-2 rounded-lg text-sm transition-all duration-300 hover:scale-105"
+            <div className="lg:hidden flex items-center space-x-3">
+              <button
+                onClick={() => handleNavigation('/test-login')}
+                className="px-4 py-2 rounded-lg border text-white font-medium text-sm transition-all duration-300"
+                style={{
+                  background: 'transparent',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  backdropFilter: 'blur(10px)'
+                }}
               >
                 Test
-              </Link>
+              </button>
               <button
-                className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-white hover:text-cyan-400 transition-colors duration-300"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label="Toggle menu"
               >
@@ -102,31 +176,48 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Mobile Search Bar */}
-          <div className="lg:hidden px-2 pb-2">
-            <EnhancedFundSearch placeholder="Search mutual funds..." />
-          </div>
-
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
             <div className="lg:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gradient-glass backdrop-blur-xl border-t border-primary/20">
-                <MobileNavigation 
-                  isMenuOpen={isMobileMenuOpen}
-                  user={user}
-                  handleNavigation={handleNavigation}
-                  handleFundComparisonClick={handleFundComparisonClick}
-                  handleBrowseFundsClick={handleBrowseFundsClick}
-                />
+              <div className="absolute top-full left-0 right-0 backdrop-blur-xl border-t border-white/10" style={{
+                background: 'linear-gradient(135deg, rgba(11, 19, 43, 0.95) 0%, rgba(46, 15, 92, 0.95) 100%)'
+              }}>
+                <div className="px-4 py-4 space-y-4">
+                  {/* Mobile Search */}
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg className="h-4 w-4" style={{ color: '#00F5D4' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search mutual funds..."
+                      className="w-full pl-9 pr-4 py-2 rounded-lg border-0 text-white placeholder-gray-400 text-sm"
+                      style={{
+                        background: '#050B14',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                      }}
+                    />
+                  </div>
 
-                {/* Mobile User Menu */}
-                <div className="pt-4 border-t border-primary/20">
-                  <SupabaseUserMenu 
+                  <MobileNavigation 
+                    isMenuOpen={isMobileMenuOpen}
                     user={user}
-                    signOut={signOut}
-                    setShowLoginModal={setShowLoginModal}
-                    setIsMenuOpen={setIsMobileMenuOpen}
+                    handleNavigation={handleNavigation}
+                    handleFundComparisonClick={handleFundComparisonClick}
+                    handleBrowseFundsClick={handleBrowseFundsClick}
                   />
+
+                  {/* Mobile User Menu */}
+                  <div className="pt-4 border-t border-white/10">
+                    <SupabaseUserMenu 
+                      user={user}
+                      signOut={signOut}
+                      setShowLoginModal={setShowLoginModal}
+                      setIsMenuOpen={setIsMobileMenuOpen}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
