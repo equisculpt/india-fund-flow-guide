@@ -66,109 +66,71 @@ const PremiumHero = () => {
   ];
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-hero">
-      {/* Premium Background Effects */}
+    <section className="relative min-h-screen overflow-hidden" style={{
+      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #7209b7 100%)'
+    }}>
+      {/* Exact Background Pattern */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Floating Animated Particles */}
-        <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-secondary rounded-full opacity-60 animate-floating-particles"></div>
-        <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-accent rounded-full opacity-70 animate-floating-particles" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/3 left-1/3 w-5 h-5 bg-secondary-glow rounded-full opacity-50 animate-floating-particles" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute top-1/2 right-1/3 w-2 h-2 bg-primary-glow rounded-full opacity-80 animate-floating-particles" style={{ animationDelay: '6s' }}></div>
-        
-        {/* Luxury Gradient Orbs */}
-        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-primary rounded-full blur-3xl opacity-20 animate-float"></div>
-        <div className="absolute top-40 right-20 w-80 h-80 bg-gradient-secondary rounded-full blur-3xl opacity-30 animate-float" style={{ animationDelay: '3s' }}></div>
-        <div className="absolute bottom-40 left-1/2 w-72 h-72 bg-gradient-glow rounded-full blur-3xl opacity-25 animate-float" style={{ animationDelay: '5s' }}></div>
-        
-        {/* Premium Glass Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background/30 via-transparent to-background/20"></div>
+        {/* Subtle overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-black/10 to-black/20"></div>
       </div>
 
       <div className="container mx-auto px-4 py-20 relative z-10">
-        {/* Premium Trust Badge */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center glass-panel px-8 py-4 rounded-full mb-8 group hover:shadow-glow transition-all duration-500">
-            <Shield className="h-6 w-6 mr-3 text-accent animate-pulse" />
-            <span className="text-foreground font-semibold font-heading">
-              🏆 AMFI Registered • SEBI Compliant • 12,500+ Happy Investors
+        {/* Premium Trust Badge - Exact Match */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center px-8 py-4 rounded-full border-2 border-cyan-400/50 bg-black/20 backdrop-blur-sm mb-12">
+            <span className="text-white font-medium text-lg">
+              🏆 AMFI Registered | SEBI Compliant | 3000+ Funds
             </span>
-            <Sparkles className="h-6 w-6 ml-3 text-secondary animate-bounce" />
           </div>
         </div>
 
-        {/* Hero Content */}
+        {/* Hero Content - Exact Match */}
         <div className="text-center max-w-6xl mx-auto mb-20">
-          <h1 className="text-6xl md:text-8xl font-heading font-black mb-8 leading-tight">
-            <span className="block text-foreground mb-4" style={{ 
-              background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F0F0 50%, #E0E0E0 100%)',
+          <h1 className="text-7xl md:text-9xl font-heading font-black mb-8 leading-tight">
+            <span className="block mb-4" style={{ 
+              background: 'linear-gradient(90deg, #FFD700 0%, #FFED4A 25%, #68D391 50%, #4FD1C7 75%, #63B3ED 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               color: 'transparent',
-              filter: 'drop-shadow(0 4px 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.6))',
-              textShadow: '0 0 40px rgba(255, 255, 255, 0.9), 0 2px 8px rgba(0, 0, 0, 0.8)'
+              filter: 'drop-shadow(0 4px 20px rgba(255, 215, 0, 0.6))'
             }}>
               Invest Smarter.
             </span>
-            <span className="block text-foreground" style={{ 
-              background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F0F0 50%, #E0E0E0 100%)',
+            <span className="block" style={{ 
+              background: 'linear-gradient(90deg, #FFD700 0%, #FFED4A 25%, #68D391 50%, #4FD1C7 75%, #63B3ED 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               color: 'transparent',
-              filter: 'drop-shadow(0 4px 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.6))',
-              textShadow: '0 0 40px rgba(255, 255, 255, 0.9), 0 2px 8px rgba(0, 0, 0, 0.8)'
+              filter: 'drop-shadow(0 4px 20px rgba(79, 209, 197, 0.6))'
             }}>
-              Grow Faster.
+              Grow Faster
             </span>
           </h1>
           
-          <p className="text-2xl md:text-3xl font-serif text-muted-foreground mb-6 max-w-4xl mx-auto leading-relaxed" style={{
-            filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))'
+          <p className="text-3xl md:text-4xl font-serif mb-12 max-w-4xl mx-auto leading-relaxed" style={{
+            color: '#FFD700',
+            filter: 'drop-shadow(0 2px 8px rgba(255, 215, 0, 0.4))',
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
           }}>
-            <span className="text-secondary font-medium">India's Most Advanced</span> Mutual Fund Platform
-          </p>
-          
-          <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-4xl mx-auto font-body opacity-90">
-            Experience the future of investing with AI-powered insights, real-time analytics, 
-            and a platform trusted by thousands of smart investors.
+            India's Most Advanced Mutual Fund Platform
           </p>
 
-          {/* Premium CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+          {/* Premium CTA Button - Exact Match */}
+          <div className="flex justify-center mb-16">
             <Button 
               onClick={handleInvestNow}
               size="lg" 
-              className="group bg-gradient-secondary hover:bg-secondary-glow text-secondary-foreground px-10 py-6 text-xl font-bold font-heading rounded-2xl shadow-gold hover:shadow-neon transition-all duration-500 hover:scale-105 relative overflow-hidden"
+              className="group px-12 py-6 text-2xl font-bold font-heading rounded-full border-2 transition-all duration-500 hover:scale-105 relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%)',
+                borderImage: 'linear-gradient(90deg, #FFD700, #4FD1C7) 1',
+                color: '#FFD700',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)'
+              }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[400%] transition-transform duration-1000"></div>
-              <Target className="h-6 w-6 mr-3 relative z-10" />
-              <span className="relative z-10">Start Brewing Wealth</span>
-              <ArrowRight className="h-6 w-6 ml-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
+              Get Started
             </Button>
-            
-            <Button 
-              onClick={scrollToAIAnalysis}
-              size="lg" 
-              className="glass-button text-foreground hover:text-secondary px-10 py-6 text-xl font-bold font-heading rounded-2xl hover:shadow-glow transition-all duration-500 hover:scale-105"
-            >
-              <Brain className="h-6 w-6 mr-3" />
-              Explore AI Analytics
-            </Button>
-          </div>
-
-          {/* Premium Trust Indicators */}
-          <div className="flex flex-wrap justify-center items-center gap-12 text-muted-foreground mb-16">
-            <div className="flex items-center gap-3 group hover:text-secondary transition-colors duration-300">
-              <Users className="h-6 w-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-              <span className="font-semibold font-heading text-lg">12,500+ Investors</span>
-            </div>
-            <div className="flex items-center gap-3 group hover:text-secondary transition-colors duration-300">
-              <TrendingUp className="h-6 w-6 text-accent group-hover:scale-110 transition-transform duration-300" />
-              <span className="font-semibold font-heading text-lg">₹85Cr+ AUM</span>
-            </div>
-            <div className="flex items-center gap-3 group hover:text-secondary transition-colors duration-300">
-              <Star className="h-6 w-6 text-secondary group-hover:scale-110 transition-transform duration-300" />
-              <span className="font-semibold font-heading text-lg">4.8★ Rated</span>
-            </div>
           </div>
         </div>
 
