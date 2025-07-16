@@ -90,21 +90,38 @@ const WorldClassHero = () => {
 
         {/* Hero Content */}
         <div className="text-center max-w-6xl mx-auto mb-20">
-          <h1 className="text-5xl md:text-7xl font-heading font-bold bg-gradient-hero bg-clip-text text-transparent mb-6 leading-tight" style={{ 
-            filter: 'drop-shadow(0 0 20px hsl(var(--secondary-glow) / 0.6)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
-            textShadow: '0 0 30px hsl(var(--secondary-glow) / 0.8)'
-          }}>
-            Invest Smarter.<br />
-            Grow Faster.
-          </h1>
-          <p className="text-xl md:text-2xl text-foreground/90 mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-300" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
-            <span className="inline-block animate-pulse bg-gradient-primary bg-clip-text text-transparent font-semibold" style={{ 
-              filter: 'drop-shadow(0 0 15px hsl(var(--primary-glow) / 0.8))'
+          <h1 className="text-5xl md:text-7xl font-heading font-extrabold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-secondary via-secondary-glow to-accent bg-clip-text text-transparent" style={{ 
+              filter: 'drop-shadow(0 0 25px hsl(var(--secondary) / 0.8)) drop-shadow(0 2px 6px rgba(0,0,0,0.4))',
+              WebkitTextStroke: '1px hsl(var(--secondary) / 0.3)'
             }}>
-              India's Most Advanced Mutual Fund Platform
+              Invest Smarter.
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-accent via-secondary-glow to-secondary bg-clip-text text-transparent" style={{ 
+              filter: 'drop-shadow(0 0 25px hsl(var(--secondary) / 0.8)) drop-shadow(0 2px 6px rgba(0,0,0,0.4))',
+              WebkitTextStroke: '1px hsl(var(--secondary) / 0.3)'
+            }}>
+              Grow Faster.
+            </span>
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-300" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.6)' }}>
+            <span className="inline-block font-bold text-foreground relative">
+              <span className="absolute inset-0 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent animate-pulse" style={{
+                filter: 'drop-shadow(0 0 20px hsl(var(--primary) / 0.9))',
+                WebkitTextStroke: '0.5px hsl(var(--primary) / 0.4)'
+              }}>
+                India&apos;s Most Advanced Mutual Fund Platform
+              </span>
+              <span className="relative bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent" style={{
+                filter: 'drop-shadow(0 0 20px hsl(var(--primary) / 0.9))',
+                WebkitTextStroke: '0.5px hsl(var(--primary) / 0.4)'
+              }}>
+                India&apos;s Most Advanced Mutual Fund Platform
+              </span>
             </span>
           </p>
-          <p className="text-lg md:text-xl text-foreground/85 mb-12 max-w-4xl mx-auto" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.4)' }}>
+          <p className="text-lg md:text-xl text-foreground mb-12 max-w-4xl mx-auto font-medium" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
             AI-powered insights, transparent analytics, and effortless investing. 
             Join thousands of smart investors who trust our platform for their financial growth.
           </p>
