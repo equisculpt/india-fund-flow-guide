@@ -40,14 +40,25 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
       </div>
       {showText && (
         <div className="flex flex-col">
-          <span className={`${textSizeClasses[size]} font-bold font-heading bg-gradient-gold bg-clip-text text-transparent leading-tight animate-liquid-gold`} style={{ 
+          <span className={`${textSizeClasses[size]} font-bold font-heading leading-tight`} style={{ 
+            background: 'linear-gradient(135deg, #FF6B35 0%, #F7931E 25%, #FFD700 50%, #FF8C42 75%, #D2691E 100%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
             backgroundSize: '200% 200%',
-            filter: 'drop-shadow(0 2px 8px rgba(255, 215, 0, 0.5))'
+            animation: 'liquid-gold 3s ease-in-out infinite',
+            filter: 'drop-shadow(0 2px 8px rgba(255, 107, 53, 0.8)) drop-shadow(0 0 15px rgba(255, 215, 0, 0.6))',
+            textShadow: '0 0 20px rgba(255, 140, 66, 0.9), 0 2px 4px rgba(0, 0, 0, 0.8)'
           }}>
             SIP Brewery
           </span>
-          <span className="text-xs text-secondary/90 font-medium font-serif -mt-1" style={{ 
-            filter: 'drop-shadow(0 1px 4px rgba(255, 215, 0, 0.3))'
+          <span className="text-sm font-medium font-serif -mt-1" style={{ 
+            background: 'linear-gradient(90deg, #FF8C42 0%, #FFD700 50%, #D2691E 100%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
+            filter: 'drop-shadow(0 1px 4px rgba(255, 140, 66, 0.7))',
+            textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)'
           }}>
             Brewing Wealth
           </span>
