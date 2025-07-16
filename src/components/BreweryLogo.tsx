@@ -27,19 +27,19 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
 
   return (
     <div className="flex items-center space-x-2">
-      <div className={`bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-lg ${sizeClasses[size]} font-bold ${textSizeClasses[size]} relative overflow-hidden shadow-lg`}>
-        <div className="absolute inset-0 bg-gradient-to-t from-amber-600 to-transparent opacity-50"></div>
+      <div className={`bg-gradient-secondary backdrop-blur-md text-background rounded-lg ${sizeClasses[size]} font-bold ${textSizeClasses[size]} relative overflow-hidden shadow-glow border border-secondary/30`}>
+        <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent opacity-50"></div>
         <div className="relative z-10 flex items-center justify-center h-full">
-          <Beer className={`${iconSizeClasses[size]} drop-shadow-sm`} />
+          <Beer className={`${iconSizeClasses[size]} drop-shadow-lg text-background`} />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 to-amber-300 opacity-70"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary-glow to-secondary opacity-80"></div>
       </div>
       {showText && (
         <div className="flex flex-col">
-          <span className={`${textSizeClasses[size]} font-bold text-gray-800 leading-tight`}>
+          <span className={`${textSizeClasses[size]} font-bold text-secondary leading-tight drop-shadow-sm`}>
             SIP Brewery
           </span>
-          <span className="text-xs text-amber-600 font-medium -mt-1">
+          <span className="text-xs text-secondary/80 font-medium -mt-1 drop-shadow-sm">
             Brewing Wealth
           </span>
         </div>
