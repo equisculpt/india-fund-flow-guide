@@ -57,12 +57,62 @@ const Header = () => {
           <div className="flex items-center justify-between h-full">
             {/* Logo Section */}
             <Link to="/" className="flex items-center space-x-3">
-              {/* Beer Mug Icon */}
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{
-                background: 'linear-gradient(135deg, #FFD54F 0%, #FFC107 100%)',
-                boxShadow: '0 4px 16px rgba(255, 213, 79, 0.3)'
+              {/* Premium Beer Mug Icon */}
+              <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center" style={{
+                background: 'linear-gradient(135deg, #FFD54F 0%, #FFC107 50%, #FF8F00 100%)',
+                boxShadow: '0 8px 32px rgba(255, 213, 79, 0.6), 0 0 20px rgba(255, 193, 7, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3)',
+                border: '2px solid rgba(255, 255, 255, 0.2)'
               }}>
-                <div className="text-slate-800 text-xl font-bold">🍺</div>
+                {/* Gradient overlay for premium look */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 to-transparent"></div>
+                
+                {/* Premium Beer Mug SVG */}
+                <svg 
+                  width="24" 
+                  height="24" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  className="relative z-10"
+                  style={{
+                    filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))'
+                  }}
+                >
+                  {/* Mug body */}
+                  <path
+                    d="M6 4h8c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                    fill="#2C3E50"
+                    stroke="#1A252F"
+                    strokeWidth="1"
+                  />
+                  {/* Mug handle */}
+                  <path
+                    d="M16 8v4c1.1 0 2-.9 2-2s-.9-2-2-2z"
+                    fill="#2C3E50"
+                    stroke="#1A252F"
+                    strokeWidth="1"
+                  />
+                  {/* Foam/Beer */}
+                  <path
+                    d="M5 6h10v8c0 .5-.4 1-1 1H6c-.6 0-1-.5-1-1V6z"
+                    fill="#F39C12"
+                  />
+                  {/* Foam top */}
+                  <ellipse
+                    cx="10"
+                    cy="6"
+                    rx="5"
+                    ry="1.5"
+                    fill="#FFF"
+                    opacity="0.9"
+                  />
+                  {/* Bubbles */}
+                  <circle cx="8" cy="10" r="0.8" fill="#FFE082" opacity="0.7" />
+                  <circle cx="12" cy="8" r="0.6" fill="#FFE082" opacity="0.7" />
+                  <circle cx="9" cy="12" r="0.5" fill="#FFE082" opacity="0.7" />
+                </svg>
+                
+                {/* Glow effect */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-yellow-300/20 to-orange-400/20 animate-pulse"></div>
               </div>
               
               {/* Logo Text */}
