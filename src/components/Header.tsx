@@ -55,74 +55,75 @@ const Header = () => {
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 h-full">
           <div className="flex items-center justify-between h-full">
-            {/* Logo Section - EXACT Reference Match */}
-            <Link to="/" className="flex items-center">
-              {/* Sophisticated Glassmorphic Container - Reference Perfect */}
-              <div className="relative rounded-3xl px-8 py-4 flex items-center space-x-4" style={{
-                background: 'linear-gradient(135deg, rgba(11, 19, 43, 0.4) 0%, rgba(46, 15, 92, 0.3) 100%)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1px solid transparent',
-                backgroundImage: `
-                  linear-gradient(135deg, rgba(11, 19, 43, 0.4), rgba(46, 15, 92, 0.3)),
-                  linear-gradient(135deg, #FFD700 0%, #FF8F00 20%, #FFD700 40%, #FFA000 60%, #FFD700 80%, #FF8F00 100%)
-                `,
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'content-box, border-box',
-                boxShadow: `
-                  0 8px 32px rgba(0, 0, 0, 0.4), 
-                  0 0 80px rgba(255, 215, 0, 0.15), 
-                  inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                `
-              }}>
-                {/* Premium Mug Icon Container */}
-                <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center" style={{
-                  background: 'linear-gradient(135deg, #FFD700 0%, #FF8F00 100%)',
-                  boxShadow: '0 4px 16px rgba(255, 215, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.2)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)'
-                }}>
-                  {/* Premium Beer Mug Icon */}
-                  <svg 
-                    width="20" 
-                    height="20" 
-                    viewBox="0 0 24 24" 
-                    fill="none"
-                    style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}
-                  >
-                    <path
-                      d="M5 7h10v9c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V7z"
-                      fill="#1a1a1a"
-                      stroke="#000"
-                      strokeWidth="1"
-                    />
-                    <path
-                      d="M15 9v4c1 0 2-.5 2-1.5v-1c0-1-.5-1.5-2-1.5z"
-                      fill="#1a1a1a"
-                      stroke="#000"
-                      strokeWidth="1"
-                    />
-                    <rect x="6" y="8" width="8" height="6" fill="#8B4513" />
-                    <ellipse cx="10" cy="8" rx="4" ry="1" fill="#F5DEB3" opacity="0.9" />
-                  </svg>
+            {/* World-Class SIP Brewery Logo - Complete Redesign */}
+            <Link to="/" className="flex items-center group">
+              <div className="flex items-center space-x-3 transition-all duration-300 group-hover:scale-105">
+                {/* Premium Logo Mark */}
+                <div className="relative">
+                  {/* Main Icon Container */}
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center relative overflow-hidden" style={{
+                    background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #92400E 100%)',
+                    boxShadow: '0 4px 20px rgba(245, 158, 11, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                  }}>
+                    {/* Elegant Beer Glass Icon */}
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                      {/* Glass body */}
+                      <path 
+                        d="M7 4h8l-1 14H8L7 4z" 
+                        fill="#1F2937" 
+                        stroke="#111827" 
+                        strokeWidth="0.5"
+                      />
+                      {/* Beer liquid */}
+                      <path 
+                        d="M7.2 6h7.6l-0.8 10H8L7.2 6z" 
+                        fill="#92400E"
+                      />
+                      {/* Foam top */}
+                      <ellipse 
+                        cx="11" 
+                        cy="6" 
+                        rx="4" 
+                        ry="1.2" 
+                        fill="#FEF3C7" 
+                        opacity="0.9"
+                      />
+                      {/* Foam bubbles */}
+                      <circle cx="9" cy="6.5" r="0.4" fill="#FFFFFF" opacity="0.7"/>
+                      <circle cx="13" cy="6.2" r="0.3" fill="#FFFFFF" opacity="0.7"/>
+                      <circle cx="11" cy="6.8" r="0.2" fill="#FFFFFF" opacity="0.7"/>
+                    </svg>
+                    
+                    {/* Subtle shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent rounded-xl"></div>
+                  </div>
+                  
+                  {/* Ambient glow */}
+                  <div className="absolute inset-0 bg-amber-500/30 rounded-xl blur-md -z-10 group-hover:bg-amber-400/40 transition-colors duration-300"></div>
                 </div>
-                
-                {/* Refined Logo Text */}
+
+                {/* Brand Typography */}
                 <div className="flex flex-col">
-                  <div className="text-xl font-bold leading-tight" style={{
-                    background: 'linear-gradient(90deg, #FFD700 0%, #FFA000 100%)',
+                  {/* Main Brand Name */}
+                  <div className="text-xl font-bold tracking-tight" style={{
+                    background: 'linear-gradient(90deg, #FBBF24 0%, #F59E0B 50%, #D97706 100%)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    fontFamily: 'Poppins, sans-serif',
-                    filter: 'drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5))'
+                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                    fontWeight: '700',
+                    letterSpacing: '-0.025em'
                   }}>
                     SIP Brewery
                   </div>
-                  <div className="text-sm italic font-serif leading-tight" style={{
-                    color: '#FFD700',
-                    opacity: 0.85,
-                    fontFamily: 'serif',
-                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.7)'
+                  
+                  {/* Elegant Tagline */}
+                  <div className="text-xs font-medium" style={{
+                    color: '#D1D5DB',
+                    fontFamily: 'ui-serif, Georgia, serif',
+                    fontStyle: 'italic',
+                    letterSpacing: '0.025em',
+                    marginTop: '-2px'
                   }}>
                     Brewing Wealth
                   </div>
