@@ -60,13 +60,13 @@ const Header = () => {
               <div className="flex items-center space-x-3 transition-all duration-300 group-hover:scale-105">
                 {/* Premium Logo Mark */}
                 <div className="relative">
-                  {/* Main Icon Container */}
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center relative overflow-hidden" style={{
+                  {/* Main Icon Container - Much Larger */}
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center relative overflow-hidden" style={{
                     background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #92400E 100%)',
                     boxShadow: '0 4px 20px rgba(245, 158, 11, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
                   }}>
-                    {/* Elegant Beer Glass Icon */}
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    {/* Elegant Beer Glass Icon - Much Larger */}
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
                       {/* Glass body */}
                       <path 
                         d="M7 4h8l-1 14H8L7 4z" 
