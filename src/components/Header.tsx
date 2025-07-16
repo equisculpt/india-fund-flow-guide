@@ -55,20 +55,22 @@ const Header = () => {
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 h-full">
           <div className="flex items-center justify-between h-full">
-            {/* Use the uploaded logo image directly */}
-            <Link to="/" className="flex items-center group justify-start">
-              <img 
-                src="/lovable-uploads/29ef2888-33a0-4d86-bd99-68a1b0d8fa38.png" 
-                alt="SIP Brewery - Brewing Wealth" 
-                className="transition-all duration-300 group-hover:scale-105"
-                style={{
-                  width: '600px',
-                  height: '150px',
-                  objectFit: 'contain',
-                  filter: 'drop-shadow(0 4px 20px rgba(245, 158, 11, 0.3))'
-                }}
-              />
-            </Link>
+            {/* Logo - Fixed to left side */}
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center group">
+                <img 
+                  src="/lovable-uploads/29ef2888-33a0-4d86-bd99-68a1b0d8fa38.png" 
+                  alt="SIP Brewery - Brewing Wealth" 
+                  className="transition-all duration-300 group-hover:scale-105"
+                  style={{
+                    width: '300px',
+                    height: '75px',
+                    objectFit: 'contain',
+                    filter: 'drop-shadow(0 4px 20px rgba(245, 158, 11, 0.3))'
+                  }}
+                />
+              </Link>
+            </div>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-8 flex-1 justify-end">
