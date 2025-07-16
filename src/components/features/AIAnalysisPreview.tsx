@@ -69,7 +69,7 @@ const AIAnalysisPreview = () => {
 
   return (
     <section id="ai-analysis-preview" className="py-20" style={{
-      background: 'linear-gradient(135deg, #ff0000 0%, #00ff00 100%)'
+      background: 'linear-gradient(135deg, #3A0CA3 0%, #2d1b69 50%, #1e1852 100%)'
     }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
