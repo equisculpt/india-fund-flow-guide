@@ -67,14 +67,19 @@ const WorldClassHero = () => {
   ];
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-muted via-background to-muted py-20 overflow-hidden">
-      {/* Background Effects */}
+    <section className="relative min-h-screen bg-background py-20 overflow-hidden">
+      {/* SipBrewery Luxury Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-30">
-          <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-primary rounded-full blur-3xl opacity-20"></div>
-          <div className="absolute top-60 right-20 w-80 h-80 bg-gradient-secondary rounded-full blur-3xl opacity-20"></div>
-          <div className="absolute bottom-40 left-1/3 w-72 h-72 bg-gradient-accent rounded-full blur-3xl opacity-20"></div>
-        </div>
+        {/* Animated gradient orbs */}
+        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-primary rounded-full blur-3xl opacity-30 animate-float"></div>
+        <div className="absolute top-60 right-20 w-80 h-80 bg-gradient-secondary rounded-full blur-3xl opacity-40 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-40 left-1/3 w-72 h-72 bg-gradient-accent rounded-full blur-3xl opacity-35 animate-float" style={{ animationDelay: '4s' }}></div>
+        
+        {/* Luxury particle effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+        
+        {/* Glass morphism overlay */}
+        <div className="absolute inset-0 bg-gradient-glass backdrop-blur-[1px]"></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -103,21 +108,20 @@ const WorldClassHero = () => {
             Join thousands of smart investors who trust our platform for their financial growth.
           </p>
 
-          {/* CTA Buttons */}
+          {/* Luxury Glassmorphism CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
             <Button 
               onClick={scrollToAIAnalysis}
               size="lg" 
-              className="bg-primary hover:bg-primary-glow text-primary-foreground px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-gradient-glass backdrop-blur-md border border-primary/30 text-primary hover:bg-primary/20 hover:border-primary/50 px-8 py-4 text-lg font-semibold rounded-xl shadow-glass hover:shadow-luxury transition-all duration-300 hover:scale-105 animate-glow-pulse"
             >
               <Brain className="h-5 w-5 mr-2" />
               Explore AI Analysis
             </Button>
             <Button 
               onClick={scrollToComparison}
-              variant="outline" 
               size="lg"
-              className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300"
+              className="bg-gradient-glass backdrop-blur-md border border-secondary/30 text-secondary hover:bg-secondary/20 hover:border-secondary/50 px-8 py-4 text-lg font-semibold rounded-xl shadow-glass hover:shadow-luxury transition-all duration-300 hover:scale-105"
             >
               <TrendingUp className="h-5 w-5 mr-2" />
               Compare Funds
@@ -125,10 +129,11 @@ const WorldClassHero = () => {
             <Button 
               onClick={handleInvestNow}
               size="lg"
-              className="bg-gradient-secondary hover:opacity-90 text-secondary-foreground px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-gradient-secondary hover:bg-gradient-accent text-secondary-foreground px-8 py-4 text-lg font-semibold rounded-xl shadow-luxury hover:shadow-glow transition-all duration-300 hover:scale-105 relative overflow-hidden"
             >
-              <Target className="h-5 w-5 mr-2" />
-              Invest Now
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-shimmer"></div>
+              <Target className="h-5 w-5 mr-2 relative z-10" />
+              <span className="relative z-10">Start Brewing Wealth</span>
             </Button>
           </div>
 
@@ -149,13 +154,13 @@ const WorldClassHero = () => {
           </div>
         </div>
 
-        {/* Key Features */}
+        {/* Luxury Glassmorphism Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
           {features.map((feature, index) => (
-            <Card key={index} className="border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg group">
+            <Card key={index} className="bg-gradient-glass backdrop-blur-md border border-primary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-luxury group hover:scale-105">
               <CardContent className="p-6 text-center">
-                <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                  <feature.icon className="h-8 w-8 text-primary" />
+                <div className="bg-gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:shadow-glow transition-all duration-300 animate-glow-pulse">
+                  <feature.icon className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <h3 className="font-heading font-semibold text-lg mb-3 text-foreground">{feature.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>

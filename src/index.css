@@ -7,31 +7,31 @@
 
 @layer base {
   :root {
-    /* World-class color palette */
-    --background: 0 0% 100%;
-    --foreground: 237 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 237 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 237 47% 11%;
+    /* SipBrewery Luxury Finance + Futuristic Café Palette */
+    --background: 222 72% 11%;  /* Deep Navy */
+    --foreground: 46 100% 97%;  /* Off-white */
+    --card: 222 50% 12%;        /* Slightly lighter navy for cards */
+    --card-foreground: 46 100% 97%;
+    --popover: 222 60% 13%;     /* Navy for popovers */
+    --popover-foreground: 46 100% 97%;
     
-    /* Deep Blue - Trust & Stability */
-    --primary: 237 69% 31%;
-    --primary-foreground: 0 0% 98%;
-    --primary-glow: 237 69% 45%;
+    /* Royal Purple - Primary Brand */
+    --primary: 262 89% 34%;     /* Royal Purple */
+    --primary-foreground: 46 100% 97%;
+    --primary-glow: 262 100% 50%; /* Brighter purple for glow effects */
     
-    /* Emerald Green - Growth & Success */
-    --secondary: 167 100% 36%;
-    --secondary-foreground: 0 0% 98%;
-    --secondary-glow: 167 100% 50%;
+    /* Champagne Gold - Premium Success */
+    --secondary: 51 100% 50%;   /* Champagne Gold */
+    --secondary-foreground: 222 72% 11%;
+    --secondary-glow: 51 100% 70%; /* Brighter gold for glow */
     
-    /* Light backgrounds */
-    --muted: 220 14% 96%;
-    --muted-foreground: 215 16% 47%;
+    /* Muted luxury backgrounds */
+    --muted: 222 40% 15%;       /* Darker navy for muted sections */
+    --muted-foreground: 46 20% 70%; /* Muted off-white */
     
-    /* Accent Yellow - Highlights */
-    --accent: 51 100% 50%;
-    --accent-foreground: 237 47% 11%;
+    /* Neon Teal - Modern Highlights */
+    --accent: 174 100% 48%;     /* Neon Teal */
+    --accent-foreground: 222 72% 11%;
     
     /* Status colors */
     --destructive: 0 72% 51%;
@@ -43,27 +43,30 @@
     --info: 217 91% 60%;
     --info-foreground: 0 0% 98%;
     
-    /* UI elements */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 237 69% 31%;
+    /* UI elements - Luxury styling */
+    --border: 222 30% 20%;      /* Subtle luxury borders */
+    --input: 222 30% 18%;       /* Input field styling */
+    --ring: 51 100% 50%;        /* Gold focus rings */
     
-    /* Chart colors */
-    --chart-1: 237 69% 31%;
-    --chart-2: 167 100% 36%;
-    --chart-3: 51 100% 50%;
-    --chart-4: 217 91% 60%;
-    --chart-5: 0 72% 51%;
+    /* Chart colors - SipBrewery palette */
+    --chart-1: 262 89% 34%;     /* Royal Purple */
+    --chart-2: 51 100% 50%;     /* Champagne Gold */
+    --chart-3: 174 100% 48%;    /* Neon Teal */
+    --chart-4: 262 100% 50%;    /* Bright Purple */
+    --chart-5: 51 100% 70%;     /* Bright Gold */
     
-    /* Gradients */
+    /* Luxury Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-glow)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
-    --gradient-accent: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--warning)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--accent)) 100%);
+    --gradient-accent: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--secondary)) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
     
-    /* Shadows */
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.3);
-    --shadow-success: 0 10px 30px -10px hsl(var(--secondary) / 0.4);
+    /* Luxury Shadows & Glows */
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.4);
+    --shadow-success: 0 10px 30px -10px hsl(var(--secondary) / 0.5);
+    --shadow-luxury: 0 20px 40px -15px hsl(var(--primary) / 0.3);
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
     
     --radius: 0.75rem;
   }
