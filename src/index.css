@@ -7,72 +7,67 @@
 
 @layer base {
   :root {
-    /* SipBrewery Luxury Finance + Futuristic Café Palette */
-    --background: 222 72% 11%;  /* Deep Navy */
-    --foreground: 46 100% 97%;  /* Off-white */
-    --card: 222 50% 12%;        /* Slightly lighter navy for cards */
-    --card-foreground: 46 100% 97%;
-    --popover: 222 60% 13%;     /* Navy for popovers */
-    --popover-foreground: 46 100% 97%;
+    /* Consistent Dark Luxury Theme with High Contrast */
+    --background: 220 26% 8%;       /* Deep Navy Background */
+    --foreground: 50 100% 95%;      /* Cream White Text */
+    --card: 220 26% 12%;            /* Slightly lighter navy for cards */
+    --card-foreground: 50 100% 95%;
+    --popover: 220 26% 12%;         /* Navy for popovers */
+    --popover-foreground: 50 100% 95%;
     
-    /* Louis Vuitton Inspired Luxury Palette */
-    --primary: 25 45% 25%;        /* Rich Brown Leather */
-    --primary-foreground: 46 100% 97%;
-    --primary-glow: 35 65% 45%;   /* Warm Golden Brown */
+    /* High Contrast Primary - Rich Brown */
+    --primary: 30 40% 25%;          /* Rich Dark Brown */
+    --primary-foreground: 50 100% 95%;
+    --primary-glow: 35 60% 45%;     /* Brighter Brown */
     
-    /* Champagne Gold - LV Gold */
-    --secondary: 45 85% 65%;      /* Luxurious Champagne Gold */
-    --secondary-foreground: 25 45% 15%;
-    --secondary-glow: 45 100% 75%; /* Bright LV Gold */
+    /* High Contrast Secondary - Bright Gold */
+    --secondary: 45 100% 70%;       /* Bright Champagne Gold */
+    --secondary-foreground: 30 40% 15%;
+    --secondary-glow: 50 100% 80%;  /* Very Bright Gold */
     
-    /* Deep Burgundy - LV Accent */
-    --burgundy: 0 45% 35%;        /* Deep Burgundy */
-    --burgundy-glow: 0 55% 45%;   /* Bright Burgundy */
+    /* High Contrast Accent - Warm Copper */
+    --accent: 25 80% 60%;           /* Warm Copper */
+    --accent-foreground: 220 26% 8%;
     
-    /* Muted luxury backgrounds */
-    --muted: 222 40% 15%;       /* Darker navy for muted sections */
-    --muted-foreground: 46 20% 70%; /* Muted off-white */
+    /* Muted with High Contrast */
+    --muted: 220 20% 15%;           /* Darker muted sections */
+    --muted-foreground: 50 40% 80%; /* High contrast muted text */
     
-    /* Neon Teal - Modern Highlights */
-    --accent: 174 100% 48%;     /* Neon Teal */
-    --accent-foreground: 222 72% 11%;
+    /* Status colors with High Contrast */
+    --destructive: 0 72% 60%;
+    --destructive-foreground: 50 100% 95%;
+    --success: 140 60% 55%;
+    --success-foreground: 50 100% 95%;
+    --warning: 38 92% 65%;
+    --warning-foreground: 30 40% 15%;
+    --info: 217 91% 70%;
+    --info-foreground: 50 100% 95%;
     
-    /* Status colors */
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-    --success: 140 60% 47%;
-    --success-foreground: 0 0% 98%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 237 47% 11%;
-    --info: 217 91% 60%;
-    --info-foreground: 0 0% 98%;
+    /* High Contrast UI elements */
+    --border: 220 20% 25%;          /* Lighter borders for visibility */
+    --input: 220 20% 18%;           /* Input field styling */
+    --ring: 45 100% 70%;            /* Gold focus rings */
     
-    /* UI elements - Luxury styling */
-    --border: 222 30% 20%;      /* Subtle luxury borders */
-    --input: 222 30% 18%;       /* Input field styling */
-    --ring: 51 100% 50%;        /* Gold focus rings */
+    /* Chart colors with High Contrast */
+    --chart-1: 30 40% 25%;          /* Rich Brown */
+    --chart-2: 45 100% 70%;         /* Bright Gold */
+    --chart-3: 25 80% 60%;          /* Warm Copper */
+    --chart-4: 35 60% 45%;          /* Bright Brown */
+    --chart-5: 50 100% 80%;         /* Very Bright Gold */
     
-    /* Chart colors - SipBrewery palette */
-    --chart-1: 262 89% 34%;     /* Royal Purple */
-    --chart-2: 51 100% 50%;     /* Champagne Gold */
-    --chart-3: 174 100% 48%;    /* Neon Teal */
-    --chart-4: 262 100% 50%;    /* Bright Purple */
-    --chart-5: 51 100% 70%;     /* Bright Gold */
-    
-    /* Luxury Gradients - LV Inspired */
+    /* High Contrast Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-glow)));
-    --gradient-lv: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--burgundy)) 100%);
+    --gradient-luxury: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--accent)) 100%);
     --gradient-accent: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--secondary)) 100%);
-    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-    --gradient-light: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
     
-    /* Luxury Shadows & Glows */
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.4);
-    --shadow-success: 0 10px 30px -10px hsl(var(--secondary) / 0.5);
-    --shadow-luxury: 0 20px 40px -15px hsl(var(--primary) / 0.3);
-    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
-    
+    /* High Contrast Shadows & Glows */
+    --shadow-glow: 0 0 40px hsl(var(--secondary) / 0.6);
+    --shadow-success: 0 10px 30px -10px hsl(var(--secondary) / 0.7);
+    --shadow-luxury: 0 20px 40px -15px hsl(var(--primary) / 0.5);
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.6);
+
     --radius: 0.75rem;
   }
 

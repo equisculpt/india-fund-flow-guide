@@ -43,8 +43,8 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-gradient-to-r from-amber-950/95 via-yellow-900/95 to-red-950/95 backdrop-blur-xl border-b border-amber-400/30 shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-900/80 via-yellow-700/80 to-red-900/80"></div>
+      <header className="sticky top-0 z-50 bg-gradient-glass backdrop-blur-xl border-b border-secondary/30 shadow-luxury">
+        <div className="absolute inset-0 bg-background/95"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -63,7 +63,8 @@ const Header = () => {
               {/* Test Login Link */}
               <Link 
                 to="/test-login" 
-                className="text-amber-300 hover:text-amber-200 font-semibold bg-gradient-to-r from-amber-900/80 to-red-900/80 backdrop-blur-md px-4 py-2 rounded-xl border border-amber-400/40 hover:border-amber-300/60 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-amber-500/20"
+                className="text-foreground hover:text-secondary font-semibold bg-gradient-glass backdrop-blur-md px-4 py-2 rounded-xl border border-secondary/40 hover:border-secondary/60 transition-all duration-300 hover:scale-105 shadow-glass hover:shadow-glow"
+                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
               >
                 Test Login
               </Link>
@@ -88,7 +89,8 @@ const Header = () => {
             <div className="lg:hidden flex items-center space-x-2">
               <Link 
                 to="/test-login"
-                className="text-orange-600 hover:text-orange-700 font-medium bg-orange-50 px-2 py-1 rounded text-sm border border-orange-200"
+                className="text-foreground hover:text-secondary font-medium bg-gradient-glass backdrop-blur-md px-3 py-2 rounded-lg text-sm border border-secondary/30 hover:border-secondary/50 transition-all duration-300"
+                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
               >
                 Test
               </Link>

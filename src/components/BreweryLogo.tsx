@@ -27,22 +27,27 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
 
   return (
     <div className="flex items-center space-x-2">
-      <div className={`bg-gradient-to-br from-amber-900 via-yellow-600 to-red-900 backdrop-blur-md text-white rounded-lg ${sizeClasses[size]} font-bold ${textSizeClasses[size]} relative overflow-hidden shadow-2xl border border-amber-400/30`}>
-        <div className="absolute inset-0 bg-gradient-to-t from-amber-950/80 via-yellow-700/60 to-red-800/40"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-amber-300/20 to-transparent"></div>
+      <div className={`bg-gradient-secondary backdrop-blur-md text-secondary-foreground rounded-lg ${sizeClasses[size]} font-bold ${textSizeClasses[size]} relative overflow-hidden shadow-luxury border border-secondary/40`}>
+        <div className="absolute inset-0 bg-gradient-to-t from-secondary/90 via-secondary/70 to-secondary-glow/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-secondary-glow/30 to-transparent"></div>
         <div className="relative z-10 flex items-center justify-center h-full">
-          <Beer className={`${iconSizeClasses[size]} drop-shadow-2xl text-amber-100`} />
+          <Beer className={`${iconSizeClasses[size]} drop-shadow-2xl text-secondary-foreground`} />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 opacity-90"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-200/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
-        <div className="absolute top-1 left-1 right-1 h-px bg-gradient-to-r from-transparent via-amber-300/60 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary-glow via-secondary to-secondary-glow opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-secondary-glow/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute top-1 left-1 right-1 h-px bg-gradient-to-r from-transparent via-secondary-glow/80 to-transparent"></div>
       </div>
       {showText && (
         <div className="flex flex-col">
-          <span className={`${textSizeClasses[size]} font-bold bg-gradient-to-r from-amber-700 via-yellow-600 to-red-800 bg-clip-text text-transparent leading-tight drop-shadow-sm`} style={{ fontFamily: 'serif' }}>
+          <span className={`${textSizeClasses[size]} font-bold text-secondary leading-tight drop-shadow-lg`} style={{ 
+            fontFamily: 'serif',
+            textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 20px hsl(var(--secondary) / 0.8)'
+          }}>
             SIP Brewery
           </span>
-          <span className="text-xs text-amber-600 font-medium -mt-1 drop-shadow-sm">
+          <span className="text-xs text-secondary/90 font-medium -mt-1 drop-shadow-lg" style={{ 
+            textShadow: '0 1px 2px rgba(0,0,0,0.6)'
+          }}>
             Brewing Wealth
           </span>
         </div>
