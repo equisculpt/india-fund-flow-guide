@@ -81,12 +81,13 @@ const PlatformComparisonTable = () => {
   const monthYear = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
+    <section className="py-16 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Feature Comparison (Public Data)</h2>
-            <p className="text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4 text-foreground">Feature Comparison (Public Data)</h2>
+            <p className="text-muted-foreground max-w-3xl mx-auto">
               SipBrewery is an AMFI-registered mutual fund distributor offering only regular plans. We disclose all commissions transparently. 
               Other platforms may offer direct plans with no trail commission. However, we believe in delivering meaningful tools, research, 
               and human support — funded by what we earn. No hidden fees, no random fund lists, just honest investing.

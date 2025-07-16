@@ -54,17 +54,17 @@ const Header = () => {
         <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 h-full">
-          <div className="flex items-center justify-between h-full">
+          <div className="flex items-center h-full">
             {/* Logo - Fixed to left side */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 mr-auto">
               <Link to="/" className="flex items-center group">
                 <img 
                   src="/lovable-uploads/29ef2888-33a0-4d86-bd99-68a1b0d8fa38.png" 
                   alt="SIP Brewery - Brewing Wealth" 
                   className="transition-all duration-300 group-hover:scale-105"
                   style={{
-                    width: '300px',
-                    height: '75px',
+                    width: '400px',
+                    height: '100px',
                     objectFit: 'contain',
                     filter: 'drop-shadow(0 4px 20px rgba(245, 158, 11, 0.3))'
                   }}
