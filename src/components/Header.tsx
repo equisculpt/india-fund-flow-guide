@@ -43,8 +43,8 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-gradient-glass backdrop-blur-xl border-b border-primary/20 shadow-luxury">
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/98 to-background/95"></div>
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-amber-950/95 via-yellow-900/95 to-red-950/95 backdrop-blur-xl border-b border-amber-400/30 shadow-2xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-900/80 via-yellow-700/80 to-red-900/80"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -63,7 +63,7 @@ const Header = () => {
               {/* Test Login Link */}
               <Link 
                 to="/test-login" 
-                className="text-accent hover:text-accent/80 font-semibold bg-gradient-glass backdrop-blur-md px-4 py-2 rounded-xl border border-accent/30 hover:border-accent/50 transition-all duration-300 hover:scale-105 shadow-glass"
+                className="text-amber-300 hover:text-amber-200 font-semibold bg-gradient-to-r from-amber-900/80 to-red-900/80 backdrop-blur-md px-4 py-2 rounded-xl border border-amber-400/40 hover:border-amber-300/60 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-amber-500/20"
               >
                 Test Login
               </Link>

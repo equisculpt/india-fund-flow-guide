@@ -15,15 +15,19 @@
     --popover: 222 60% 13%;     /* Navy for popovers */
     --popover-foreground: 46 100% 97%;
     
-    /* Royal Purple - Primary Brand */
-    --primary: 262 89% 34%;     /* Royal Purple */
+    /* Louis Vuitton Inspired Luxury Palette */
+    --primary: 25 45% 25%;        /* Rich Brown Leather */
     --primary-foreground: 46 100% 97%;
-    --primary-glow: 262 100% 50%; /* Brighter purple for glow effects */
+    --primary-glow: 35 65% 45%;   /* Warm Golden Brown */
     
-    /* Champagne Gold - Premium Success */
-    --secondary: 51 100% 50%;   /* Champagne Gold */
-    --secondary-foreground: 222 72% 11%;
-    --secondary-glow: 51 100% 70%; /* Brighter gold for glow */
+    /* Champagne Gold - LV Gold */
+    --secondary: 45 85% 65%;      /* Luxurious Champagne Gold */
+    --secondary-foreground: 25 45% 15%;
+    --secondary-glow: 45 100% 75%; /* Bright LV Gold */
+    
+    /* Deep Burgundy - LV Accent */
+    --burgundy: 0 45% 35%;        /* Deep Burgundy */
+    --burgundy-glow: 0 55% 45%;   /* Bright Burgundy */
     
     /* Muted luxury backgrounds */
     --muted: 222 40% 15%;       /* Darker navy for muted sections */
@@ -55,12 +59,13 @@
     --chart-4: 262 100% 50%;    /* Bright Purple */
     --chart-5: 51 100% 70%;     /* Bright Gold */
     
-    /* Luxury Gradients */
+    /* Luxury Gradients - LV Inspired */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-glow)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--accent)) 100%);
+    --gradient-lv: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--burgundy)) 100%);
     --gradient-accent: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--secondary)) 100%);
     --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    --gradient-light: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%);
     
     /* Luxury Shadows & Glows */
     --shadow-glow: 0 0 40px hsl(var(--primary) / 0.4);

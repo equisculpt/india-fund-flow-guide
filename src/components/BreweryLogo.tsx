@@ -27,20 +27,22 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
 
   return (
     <div className="flex items-center space-x-2">
-      <div className={`bg-gradient-to-br from-primary via-secondary to-accent backdrop-blur-md text-white rounded-lg ${sizeClasses[size]} font-bold ${textSizeClasses[size]} relative overflow-hidden shadow-luxury border border-white/20`}>
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-secondary/40 to-accent/30"></div>
+      <div className={`bg-gradient-to-br from-amber-900 via-yellow-600 to-red-900 backdrop-blur-md text-white rounded-lg ${sizeClasses[size]} font-bold ${textSizeClasses[size]} relative overflow-hidden shadow-2xl border border-amber-400/30`}>
+        <div className="absolute inset-0 bg-gradient-to-t from-amber-950/80 via-yellow-700/60 to-red-800/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-amber-300/20 to-transparent"></div>
         <div className="relative z-10 flex items-center justify-center h-full">
-          <Beer className={`${iconSizeClasses[size]} drop-shadow-lg text-white`} />
+          <Beer className={`${iconSizeClasses[size]} drop-shadow-2xl text-amber-100`} />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-accent via-secondary-glow to-primary opacity-90"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-200/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute top-1 left-1 right-1 h-px bg-gradient-to-r from-transparent via-amber-300/60 to-transparent"></div>
       </div>
       {showText && (
         <div className="flex flex-col">
-          <span className={`${textSizeClasses[size]} font-bold bg-gradient-to-r from-secondary via-accent to-primary bg-clip-text text-transparent leading-tight drop-shadow-sm`}>
+          <span className={`${textSizeClasses[size]} font-bold bg-gradient-to-r from-amber-700 via-yellow-600 to-red-800 bg-clip-text text-transparent leading-tight drop-shadow-sm`} style={{ fontFamily: 'serif' }}>
             SIP Brewery
           </span>
-          <span className="text-xs text-accent font-medium -mt-1 drop-shadow-sm">
+          <span className="text-xs text-amber-600 font-medium -mt-1 drop-shadow-sm">
             Brewing Wealth
           </span>
         </div>
