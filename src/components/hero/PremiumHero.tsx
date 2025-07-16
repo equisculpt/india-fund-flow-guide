@@ -67,7 +67,7 @@ const PremiumHero = () => {
 
   return (
     <section className="relative min-h-screen overflow-hidden" style={{
-      background: 'linear-gradient(135deg, #0B132B 0%, #3A0CA3 100%)'
+      background: 'linear-gradient(135deg, #0B132B 0%, #3A0CA3 50%, #1a1a2e 100%)'
     }}>
       {/* Soft radial light effect behind text */}
       <div className="absolute inset-0 overflow-hidden">

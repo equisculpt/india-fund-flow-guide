@@ -68,9 +68,10 @@ const AIAnalysisPreview = () => {
   };
 
   return (
-    <section id="ai-analysis-preview" className="py-20 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
-      <div className="container mx-auto px-4 relative z-10">
+    <section id="ai-analysis-preview" className="py-20" style={{
+      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
+    }}>
+      <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">
             AI-Powered Fund Analysis
