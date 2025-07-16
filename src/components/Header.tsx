@@ -58,7 +58,7 @@ const Header = () => {
             {/* Logo - Custom Design with Beer Mug Icon */}
             <div className="flex-shrink-0 mr-auto">
               <Link to="/" className="flex items-center group">
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
                   {/* Beer Mug Icon */}
                   <div className="relative">
                     <img 
