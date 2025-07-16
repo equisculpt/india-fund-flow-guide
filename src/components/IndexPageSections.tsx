@@ -16,11 +16,12 @@ const IndexPageSections = ({ onRiskProfilingComplete }: IndexPageSectionsProps) 
   return (
     <>
       {/* Fund Comparison Tool */}
-      <section id="fund-comparison" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section id="fund-comparison" className="py-16 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">AI Fund Comparison</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4 text-foreground">AI Fund Comparison</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               Compare mutual funds with AI-powered analysis. Get insights on portfolio quality, recent performance trends, and market conditions.
             </p>
           </div>
@@ -29,11 +30,12 @@ const IndexPageSections = ({ onRiskProfilingComplete }: IndexPageSectionsProps) 
       </section>
 
       {/* SIP Calculator */}
-      <section id="sip-calculator" className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
+      <section id="sip-calculator" className="py-16 bg-gradient-to-br from-card via-background to-card relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-accent/5 via-transparent to-primary/5"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">SIP Calculator</h2>
-            <p className="text-gray-600">Calculate the potential returns on your SIP investments.</p>
+            <h2 className="text-3xl font-bold mb-4 text-foreground">SIP Calculator</h2>
+            <p className="text-muted-foreground">Calculate the potential returns on your SIP investments.</p>
           </div>
           <InvestmentCalculator />
         </div>
@@ -41,21 +43,23 @@ const IndexPageSections = ({ onRiskProfilingComplete }: IndexPageSectionsProps) 
 
       {/* Goal-Based Investing - Only for authenticated users */}
       {user ? (
-        <section id="goal-investing" className="py-16 bg-white">
-          <div className="container mx-auto px-4">
+        <section id="goal-investing" className="py-16 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
+          <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4">Goal-Based Investing</h2>
-              <p className="text-gray-600">Plan your investments to achieve your financial goals.</p>
+              <h2 className="text-3xl font-bold mb-4 text-foreground">Goal-Based Investing</h2>
+              <p className="text-muted-foreground">Plan your investments to achieve your financial goals.</p>
             </div>
             <GoalBasedInvesting />
           </div>
         </section>
       ) : (
-        <section id="goal-investing" className="py-16 bg-white">
-          <div className="container mx-auto px-4">
+        <section id="goal-investing" className="py-16 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
+          <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4">Goal-Based Investing</h2>
-              <p className="text-gray-600 mb-6">Plan your investments to achieve your financial goals.</p>
+              <h2 className="text-3xl font-bold mb-4 text-foreground">Goal-Based Investing</h2>
+              <p className="text-muted-foreground mb-6">Plan your investments to achieve your financial goals.</p>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 max-w-md mx-auto">
                 <p className="text-blue-800 mb-4">Sign in to access goal-based investment planning features</p>
                 <Button className="bg-blue-600 hover:bg-blue-700">

@@ -55,80 +55,16 @@ const Header = () => {
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 h-full">
           <div className="flex items-center justify-between h-full">
-            {/* World-Class SIP Brewery Logo - Complete Redesign */}
+            {/* Use the uploaded logo image directly */}
             <Link to="/" className="flex items-center group">
-              <div className="flex items-center space-x-3 transition-all duration-300 group-hover:scale-105">
-                {/* Premium Logo Mark */}
-                <div className="relative">
-                  {/* Main Icon Container - Much Larger */}
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center relative overflow-hidden" style={{
-                    background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #92400E 100%)',
-                    boxShadow: '0 4px 20px rgba(245, 158, 11, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-                  }}>
-                    {/* Elegant Beer Glass Icon - Much Larger */}
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                      {/* Glass body */}
-                      <path 
-                        d="M7 4h8l-1 14H8L7 4z" 
-                        fill="#1F2937" 
-                        stroke="#111827" 
-                        strokeWidth="0.5"
-                      />
-                      {/* Beer liquid */}
-                      <path 
-                        d="M7.2 6h7.6l-0.8 10H8L7.2 6z" 
-                        fill="#92400E"
-                      />
-                      {/* Foam top */}
-                      <ellipse 
-                        cx="11" 
-                        cy="6" 
-                        rx="4" 
-                        ry="1.2" 
-                        fill="#FEF3C7" 
-                        opacity="0.9"
-                      />
-                      {/* Foam bubbles */}
-                      <circle cx="9" cy="6.5" r="0.4" fill="#FFFFFF" opacity="0.7"/>
-                      <circle cx="13" cy="6.2" r="0.3" fill="#FFFFFF" opacity="0.7"/>
-                      <circle cx="11" cy="6.8" r="0.2" fill="#FFFFFF" opacity="0.7"/>
-                    </svg>
-                    
-                    {/* Subtle shine effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent rounded-xl"></div>
-                  </div>
-                  
-                  {/* Ambient glow */}
-                  <div className="absolute inset-0 bg-amber-500/30 rounded-xl blur-md -z-10 group-hover:bg-amber-400/40 transition-colors duration-300"></div>
-                </div>
-
-                {/* Brand Typography */}
-                <div className="flex flex-col">
-                  {/* Main Brand Name */}
-                  <div className="text-xl font-bold tracking-tight" style={{
-                    background: 'linear-gradient(90deg, #FBBF24 0%, #F59E0B 50%, #D97706 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    fontFamily: 'system-ui, -apple-system, sans-serif',
-                    fontWeight: '700',
-                    letterSpacing: '-0.025em'
-                  }}>
-                    SIP Brewery
-                  </div>
-                  
-                  {/* Elegant Tagline */}
-                  <div className="text-xs font-medium" style={{
-                    color: '#D1D5DB',
-                    fontFamily: 'ui-serif, Georgia, serif',
-                    fontStyle: 'italic',
-                    letterSpacing: '0.025em',
-                    marginTop: '-2px'
-                  }}>
-                    Brewing Wealth
-                  </div>
-                </div>
-              </div>
+              <img 
+                src="/lovable-uploads/29ef2888-33a0-4d86-bd99-68a1b0d8fa38.png" 
+                alt="SIP Brewery - Brewing Wealth" 
+                className="h-12 w-auto transition-all duration-300 group-hover:scale-105"
+                style={{
+                  filter: 'drop-shadow(0 4px 20px rgba(245, 158, 11, 0.3))'
+                }}
+              />
             </Link>
 
             {/* Desktop Navigation */}
