@@ -78,11 +78,12 @@ const Header = () => {
                       backgroundClip: 'text',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                      textShadow: '0 2px 8px rgba(255, 215, 0, 0.3)',
+                      textShadow: '0 0 20px rgba(255, 215, 0, 0.8), 0 2px 8px rgba(255, 215, 0, 0.4)',
                       fontFamily: 'system-ui, -apple-system, sans-serif',
                       fontWeight: '800',
                       letterSpacing: '-0.02em',
-                      animation: 'subtleGoldenShine 4s ease-in-out infinite'
+                      animation: 'shinyGoldenText 3s ease-in-out infinite',
+                      filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.5))'
                     }}>
                       SIP Brewery
                     </h1>
