@@ -55,20 +55,47 @@ const Header = () => {
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 h-full">
           <div className="flex items-center h-full">
-            {/* Logo - Fixed to left side */}
+            {/* Logo - Custom Design with Beer Mug Icon */}
             <div className="flex-shrink-0 mr-auto">
               <Link to="/" className="flex items-center group">
-                <img 
-                  src="/lovable-uploads/29ef2888-33a0-4d86-bd99-68a1b0d8fa38.png" 
-                  alt="SIP Brewery - Brewing Wealth" 
-                  className="transition-all duration-300 group-hover:scale-105"
-                  style={{
-                    width: '400px',
-                    height: '100px',
-                    objectFit: 'contain',
-                    filter: 'drop-shadow(0 4px 20px rgba(245, 158, 11, 0.3))'
-                  }}
-                />
+                <div className="flex items-center space-x-4">
+                  {/* Beer Mug Icon */}
+                  <div className="relative">
+                    <img 
+                      src="/lovable-uploads/c7ac4baf-8a3f-49ee-ae5e-0750d3f9115e.png" 
+                      alt="SIP Brewery Icon" 
+                      className="w-16 h-16 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+                      style={{
+                        filter: 'drop-shadow(0 4px 20px rgba(255, 215, 0, 0.4))'
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Text Logo */}
+                  <div className="flex flex-col">
+                    <h1 className="text-3xl font-bold leading-tight transition-all duration-300" style={{
+                      background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)',
+                      backgroundClip: 'text',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 2px 8px rgba(255, 215, 0, 0.3)',
+                      fontFamily: 'system-ui, -apple-system, sans-serif',
+                      fontWeight: '800',
+                      letterSpacing: '-0.02em'
+                    }}>
+                      SIP Brewery
+                    </h1>
+                    <p className="text-sm font-medium tracking-wide" style={{
+                      color: '#E6E6FA',
+                      textShadow: '0 1px 3px rgba(0, 0, 0, 0.5)',
+                      fontFamily: 'system-ui, -apple-system, sans-serif',
+                      letterSpacing: '0.1em',
+                      fontWeight: '500'
+                    }}>
+                      Brewing Wealth
+                    </p>
+                  </div>
+                </div>
               </Link>
             </div>
 
