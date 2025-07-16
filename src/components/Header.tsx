@@ -43,8 +43,8 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-gradient-menu backdrop-blur-xl border-b border-blue-200/30 shadow-electric">
-        <div className="absolute inset-0 bg-white/95 backdrop-blur-xl"></div>
+      <header className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10">
+        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/80 to-background/60 backdrop-blur-xl"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -63,7 +63,7 @@ const Header = () => {
               {/* Test Login Link */}
               <Link 
                 to="/test-login" 
-                className="text-blue-800 hover:text-blue-600 font-semibold bg-gradient-to-r from-blue-50 to-cyan-50 backdrop-blur-md px-4 py-2 rounded-xl border border-blue-200 hover:border-blue-300 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-blue-200/50"
+                className="glass-button text-foreground hover:text-secondary font-semibold px-6 py-3 rounded-xl hover:shadow-glow transition-all duration-300 hover:scale-105"
               >
                 Test Login
               </Link>
@@ -88,7 +88,7 @@ const Header = () => {
             <div className="lg:hidden flex items-center space-x-2">
               <Link 
                 to="/test-login"
-                className="text-blue-800 hover:text-blue-600 font-medium bg-gradient-to-r from-blue-50 to-white px-3 py-2 rounded-lg text-sm border border-blue-200 hover:border-blue-300 transition-all duration-300 shadow-md"
+                className="glass-button text-foreground hover:text-secondary font-medium px-4 py-2 rounded-lg text-sm transition-all duration-300 hover:scale-105"
               >
                 Test
               </Link>
