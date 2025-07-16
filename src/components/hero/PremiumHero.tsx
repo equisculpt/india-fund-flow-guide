@@ -67,74 +67,68 @@ const PremiumHero = () => {
 
   return (
     <section className="relative min-h-screen overflow-hidden" style={{
-      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #7209b7 100%)'
+      background: 'linear-gradient(135deg, #0B132B 0%, #3A0CA3 100%)'
     }}>
-      {/* Exact Background Pattern */}
+      {/* Soft radial light effect behind text */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Subtle overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-black/10 to-black/20"></div>
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-gradient-to-br from-white/5 to-transparent blur-3xl"></div>
       </div>
 
       <div className="container mx-auto px-4 py-20 relative z-10">
-        {/* Premium Trust Badge - Exact Match */}
+        {/* Glassmorphic Trust Badge */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center px-8 py-4 rounded-full border-2 border-cyan-400/50 bg-black/20 backdrop-blur-sm mb-12">
+          <div className="inline-flex items-center px-8 py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:border-cyan-400/50 transition-all duration-300 mb-12 hover:shadow-[0_0_30px_rgba(0,245,212,0.3)]">
             <span className="text-white font-medium text-lg">
               🏆 AMFI Registered | SEBI Compliant | 3000+ Funds
             </span>
           </div>
         </div>
 
-        {/* Hero Content - Exact Match */}
+        {/* Sharp, Clean Hero Content */}
         <div className="text-center max-w-6xl mx-auto mb-20">
-          <h1 className="text-7xl md:text-9xl font-heading font-black mb-8 leading-tight">
+          {/* Sharp Headline with Gold + Neon Teal Gradient */}
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-heading font-black mb-8 leading-tight">
             <span className="block mb-4" style={{ 
-              background: 'linear-gradient(90deg, #FFD700 0%, #FFED4A 25%, #68D391 50%, #4FD1C7 75%, #63B3ED 100%)',
+              background: 'linear-gradient(90deg, #FFD700 0%, #00F5D4 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
-              color: '#FFD700',
               WebkitTextFillColor: 'transparent',
-              textShadow: '0 4px 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4)',
-              filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))'
+              filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.4))'
             }}>
               Invest Smarter.
             </span>
             <span className="block" style={{ 
-              background: 'linear-gradient(90deg, #FFD700 0%, #FFED4A 25%, #68D391 50%, #4FD1C7 75%, #63B3ED 100%)',
+              background: 'linear-gradient(90deg, #FFD700 0%, #00F5D4 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
-              color: '#4FD1C7',
               WebkitTextFillColor: 'transparent',
-              textShadow: '0 4px 20px rgba(79, 209, 197, 0.6), 0 0 40px rgba(79, 209, 197, 0.4)',
-              filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))'
+              filter: 'drop-shadow(0 0 20px rgba(0, 245, 212, 0.4))'
             }}>
               Grow Faster
             </span>
           </h1>
           
-          <p className="text-3xl md:text-4xl font-serif mb-12 max-w-4xl mx-auto leading-relaxed" style={{
-            color: '#FFD700',
-            filter: 'drop-shadow(0 2px 8px rgba(255, 215, 0, 0.4))',
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+          {/* Clean Subheadline */}
+          <p className="text-2xl md:text-3xl font-serif mb-12 max-w-4xl mx-auto leading-relaxed text-white" style={{
+            textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
           }}>
             India's Most Advanced Mutual Fund Platform
           </p>
 
-          {/* Premium CTA Button - Exact Match */}
+          {/* Glassmorphic CTA Button */}
           <div className="flex justify-center mb-16">
-            <Button 
+            <button 
               onClick={handleInvestNow}
-              size="lg" 
-              className="group px-12 py-6 text-2xl font-bold font-heading rounded-full border-2 transition-all duration-500 hover:scale-105 relative overflow-hidden"
+              className="group px-12 py-6 text-xl font-bold font-heading rounded-full transition-all duration-500 hover:scale-105 relative overflow-hidden bg-white/10 backdrop-blur-md border border-white/30 hover:border-cyan-400/60 text-white hover:shadow-[0_0_40px_rgba(255,215,0,0.3)]"
               style={{
-                background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%)',
-                borderImage: 'linear-gradient(90deg, #FFD700, #4FD1C7) 1',
-                color: '#FFD700',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)'
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
+                backdropFilter: 'blur(20px)',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
               }}
             >
-              Get Started
-            </Button>
+              <span className="relative z-10">Get Started</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full"></div>
+            </button>
           </div>
         </div>
 
