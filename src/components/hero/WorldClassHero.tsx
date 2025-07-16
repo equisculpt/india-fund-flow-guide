@@ -83,27 +83,28 @@ const WorldClassHero = () => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Trust Badge */}
+        {/* Enhanced Trust Badge with HeroBadge component */}
         <div className="text-center mb-8">
-          <Badge className="bg-primary/10 text-primary border-primary/20 text-sm font-semibold px-6 py-2">
-            <Shield className="h-4 w-4 mr-2" />
-            🎉 AMFI Registered | SEBI Compliant | 3000+ Funds | Real Human Support
-            <Sparkles className="h-4 w-4 ml-2 text-accent" />
-          </Badge>
+          {/* This will be rendered by HeroBadge component instead */}
         </div>
 
         {/* Hero Content */}
         <div className="text-center max-w-6xl mx-auto mb-20">
-          <h1 className="text-5xl md:text-7xl font-heading font-bold bg-gradient-hero bg-clip-text text-transparent mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-heading font-bold bg-gradient-hero bg-clip-text text-transparent mb-6 leading-tight" style={{ 
+            filter: 'drop-shadow(0 0 20px hsl(var(--secondary-glow) / 0.6)) drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+            textShadow: '0 0 30px hsl(var(--secondary-glow) / 0.8)'
+          }}>
             Invest Smarter.<br />
             Grow Faster.
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-300">
-            <span className="inline-block animate-pulse bg-gradient-primary bg-clip-text text-transparent font-semibold">
+          <p className="text-xl md:text-2xl text-foreground/90 mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-300" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
+            <span className="inline-block animate-pulse bg-gradient-primary bg-clip-text text-transparent font-semibold" style={{ 
+              filter: 'drop-shadow(0 0 15px hsl(var(--primary-glow) / 0.8))'
+            }}>
               India's Most Advanced Mutual Fund Platform
             </span>
           </p>
-          <p className="text-lg md:text-xl text-foreground/80 mb-12 max-w-4xl mx-auto">
+          <p className="text-lg md:text-xl text-foreground/85 mb-12 max-w-4xl mx-auto" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.4)' }}>
             AI-powered insights, transparent analytics, and effortless investing. 
             Join thousands of smart investors who trust our platform for their financial growth.
           </p>
@@ -113,7 +114,8 @@ const WorldClassHero = () => {
             <Button 
               onClick={scrollToAIAnalysis}
               size="lg" 
-              className="bg-gradient-glass backdrop-blur-md border border-primary/30 text-primary hover:bg-primary/20 hover:border-primary/50 px-8 py-4 text-lg font-semibold rounded-xl shadow-glass hover:shadow-luxury transition-all duration-300 hover:scale-105 animate-glow-pulse"
+              className="bg-gradient-glass backdrop-blur-md border border-foreground/20 text-foreground hover:bg-foreground/10 hover:border-primary/50 hover:text-primary px-8 py-4 text-lg font-bold rounded-xl shadow-glass hover:shadow-glow transition-all duration-300 hover:scale-105 animate-glow-pulse"
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
             >
               <Brain className="h-5 w-5 mr-2" />
               Explore AI Analysis
@@ -121,7 +123,8 @@ const WorldClassHero = () => {
             <Button 
               onClick={scrollToComparison}
               size="lg"
-              className="bg-gradient-glass backdrop-blur-md border border-secondary/30 text-secondary hover:bg-secondary/20 hover:border-secondary/50 px-8 py-4 text-lg font-semibold rounded-xl shadow-glass hover:shadow-luxury transition-all duration-300 hover:scale-105"
+              className="bg-gradient-glass backdrop-blur-md border border-foreground/20 text-foreground hover:bg-foreground/10 hover:border-secondary/50 hover:text-secondary px-8 py-4 text-lg font-bold rounded-xl shadow-glass hover:shadow-glow transition-all duration-300 hover:scale-105"
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
             >
               <TrendingUp className="h-5 w-5 mr-2" />
               Compare Funds
@@ -129,9 +132,13 @@ const WorldClassHero = () => {
             <Button 
               onClick={handleInvestNow}
               size="lg"
-              className="bg-gradient-secondary hover:bg-gradient-accent text-secondary-foreground px-8 py-4 text-lg font-semibold rounded-xl shadow-luxury hover:shadow-glow transition-all duration-300 hover:scale-105 relative overflow-hidden"
+              className="bg-gradient-secondary hover:bg-secondary-glow text-background px-8 py-4 text-lg font-bold rounded-xl shadow-luxury hover:shadow-glow transition-all duration-300 hover:scale-105 relative overflow-hidden"
+              style={{ 
+                textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+                filter: 'drop-shadow(0 0 10px hsl(var(--secondary-glow) / 0.6))'
+              }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-shimmer"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 animate-shimmer"></div>
               <Target className="h-5 w-5 mr-2 relative z-10" />
               <span className="relative z-10">Start Brewing Wealth</span>
             </Button>
