@@ -144,8 +144,8 @@ const AIAnalysisPreview = () => {
                 {/* AI Score */}
                 <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg">
                   <div>
-                    <p className="text-sm text-muted-foreground">AI Investment Score</p>
-                    <p className="text-2xl font-bold text-primary">{currentAnalysis.aiScore}/100</p>
+                    <p className="text-sm text-foreground font-medium">AI Investment Score</p>
+                    <p className="text-2xl font-bold text-foreground">{currentAnalysis.aiScore}/100</p>
                   </div>
                   <Badge className={getRecommendationColor(currentAnalysis.recommendation)}>
                     {currentAnalysis.recommendation}

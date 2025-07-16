@@ -80,10 +80,10 @@ const EnhancedDashboard = () => {
         {quickStats.map((stat, index) => (
           <Card key={index}>
             <CardContent className="p-4">
-              <div className="text-sm text-gray-600">{stat.label}</div>
-              <div className="text-xl font-bold">{formatCurrency(stat.value)}</div>
+              <div className="text-sm text-muted-foreground">{stat.label}</div>
+              <div className="text-xl font-bold text-foreground">{formatCurrency(stat.value)}</div>
               <div className={`text-xs flex items-center gap-1 mt-1 ${
-                stat.positive ? 'text-green-600' : 'text-red-600'
+                stat.positive ? 'text-success' : 'text-destructive'
               }`}>
                 <TrendingUp className="h-3 w-3" />
                 {stat.change}

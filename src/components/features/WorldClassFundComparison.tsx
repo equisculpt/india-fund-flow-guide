@@ -448,7 +448,7 @@ const WorldClassFundComparison = () => {
                 <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="h-4 w-4 text-primary" />
-                    <span className="font-semibold text-primary">Most Stable</span>
+                    <span className="font-semibold text-foreground">Most Stable</span>
                   </div>
                   <p className="text-sm text-foreground">ICICI Bluechip Fund (7.9/10) - Lowest volatility</p>
                 </div>
