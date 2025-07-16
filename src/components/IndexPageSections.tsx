@@ -16,9 +16,10 @@ const IndexPageSections = ({ onRiskProfilingComplete }: IndexPageSectionsProps) 
   return (
     <>
       {/* Fund Comparison Tool */}
-      <section id="fund-comparison" className="py-16 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
-        <div className="container mx-auto px-4 relative z-10">
+      <section id="fund-comparison" className="py-16" style={{
+        background: 'linear-gradient(135deg, #2d1b69 0%, #3A0CA3 50%, #1e1852 100%)'
+      }}>
+        <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-foreground">AI Fund Comparison</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -30,9 +31,10 @@ const IndexPageSections = ({ onRiskProfilingComplete }: IndexPageSectionsProps) 
       </section>
 
       {/* SIP Calculator */}
-      <section id="sip-calculator" className="py-16 bg-gradient-to-br from-card via-background to-card relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-accent/5 via-transparent to-primary/5"></div>
-        <div className="container mx-auto px-4 relative z-10">
+      <section id="sip-calculator" className="py-16" style={{
+        background: 'linear-gradient(135deg, #1e1852 0%, #0f1a3d 50%, #0B132B 100%)'
+      }}>
+        <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4 text-foreground">SIP Calculator</h2>
             <p className="text-muted-foreground">Calculate the potential returns on your SIP investments.</p>
@@ -43,9 +45,10 @@ const IndexPageSections = ({ onRiskProfilingComplete }: IndexPageSectionsProps) 
 
       {/* Goal-Based Investing - Only for authenticated users */}
       {user ? (
-        <section id="goal-investing" className="py-16 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
-          <div className="container mx-auto px-4 relative z-10">
+        <section id="goal-investing" className="py-16" style={{
+          background: 'linear-gradient(135deg, #0B132B 0%, #1a0f3a 50%, #2d1b69 100%)'
+        }}>
+          <div className="container mx-auto px-4">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4 text-foreground">Goal-Based Investing</h2>
               <p className="text-muted-foreground">Plan your investments to achieve your financial goals.</p>
@@ -54,9 +57,10 @@ const IndexPageSections = ({ onRiskProfilingComplete }: IndexPageSectionsProps) 
           </div>
         </section>
       ) : (
-        <section id="goal-investing" className="py-16 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
-          <div className="container mx-auto px-4 relative z-10">
+        <section id="goal-investing" className="py-16" style={{
+          background: 'linear-gradient(135deg, #0B132B 0%, #1a0f3a 50%, #2d1b69 100%)'
+        }}>
+          <div className="container mx-auto px-4">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4 text-foreground">Goal-Based Investing</h2>
               <p className="text-muted-foreground mb-6">Plan your investments to achieve your financial goals.</p>

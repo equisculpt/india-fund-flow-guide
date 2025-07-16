@@ -81,9 +81,10 @@ const PlatformComparisonTable = () => {
   const monthYear = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
-    <section className="py-16 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-16" style={{
+      background: 'linear-gradient(135deg, #2d1b69 0%, #3A0CA3 50%, #1e1852 100%)'
+    }}>
+      <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-foreground">Feature Comparison (Public Data)</h2>

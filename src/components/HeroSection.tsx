@@ -17,9 +17,10 @@ const HeroSection = () => {
         <WorldClassFundComparison />
       
         {/* Premium Regulatory Compliance Section */}
-        <section className="py-20 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
-          <div className="container mx-auto px-4 relative z-10">
+        <section className="py-20" style={{
+          background: 'linear-gradient(135deg, #1e1852 0%, #0f1a3d 50%, #0B132B 100%)'
+        }}>
+          <div className="container mx-auto px-4">
             <div className="glass-panel rounded-3xl p-12 border-white/10 shadow-luxury max-w-6xl mx-auto">
               <div className="text-center mb-12">
                 <div className="inline-flex items-center bg-gradient-secondary p-6 rounded-3xl border border-secondary/30 shadow-gold mb-8 animate-glow-pulse">

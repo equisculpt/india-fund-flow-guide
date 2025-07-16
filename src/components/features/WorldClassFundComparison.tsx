@@ -224,9 +224,10 @@ const WorldClassFundComparison = () => {
   };
 
   return (
-    <section id="fund-comparison-preview" className="py-20 bg-gradient-to-br from-background via-card to-background relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
-      <div className="container mx-auto px-4 relative z-10">
+    <section id="fund-comparison-preview" className="py-20" style={{
+      background: 'linear-gradient(135deg, #1e1852 0%, #0f1a3d 50%, #0B132B 100%)'
+    }}>
+      <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">
             World-Class Fund Comparison
