@@ -92,8 +92,10 @@ const PremiumHero = () => {
               background: 'linear-gradient(90deg, #FFD700 0%, #FFED4A 25%, #68D391 50%, #4FD1C7 75%, #63B3ED 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
-              color: 'transparent',
-              filter: 'drop-shadow(0 4px 20px rgba(255, 215, 0, 0.6))'
+              color: '#FFD700',
+              WebkitTextFillColor: 'transparent',
+              textShadow: '0 4px 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4)',
+              filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))'
             }}>
               Invest Smarter.
             </span>
@@ -101,8 +103,10 @@ const PremiumHero = () => {
               background: 'linear-gradient(90deg, #FFD700 0%, #FFED4A 25%, #68D391 50%, #4FD1C7 75%, #63B3ED 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
-              color: 'transparent',
-              filter: 'drop-shadow(0 4px 20px rgba(79, 209, 197, 0.6))'
+              color: '#4FD1C7',
+              WebkitTextFillColor: 'transparent',
+              textShadow: '0 4px 20px rgba(79, 209, 197, 0.6), 0 0 40px rgba(79, 209, 197, 0.4)',
+              filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))'
             }}>
               Grow Faster
             </span>
