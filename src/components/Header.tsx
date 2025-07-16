@@ -60,8 +60,11 @@ const Header = () => {
               <img 
                 src="/lovable-uploads/29ef2888-33a0-4d86-bd99-68a1b0d8fa38.png" 
                 alt="SIP Brewery - Brewing Wealth" 
-                className="h-12 w-auto transition-all duration-300 group-hover:scale-105"
+                className="transition-all duration-300 group-hover:scale-105"
                 style={{
+                  width: '500px',
+                  height: '125px',
+                  objectFit: 'contain',
                   filter: 'drop-shadow(0 4px 20px rgba(245, 158, 11, 0.3))'
                 }}
               />
