@@ -99,17 +99,23 @@ const PremiumHero = () => {
         {/* Hero Content */}
         <div className="text-center max-w-6xl mx-auto mb-20">
           <h1 className="text-6xl md:text-8xl font-heading font-black mb-8 leading-tight">
-            <span className="block bg-gradient-gold bg-clip-text text-transparent animate-liquid-gold" style={{ 
-              backgroundSize: '200% 200%',
-              filter: 'drop-shadow(0 4px 20px rgba(255, 215, 0, 0.4))',
-              textShadow: '0 0 30px rgba(255, 215, 0, 0.3)'
+            <span className="block text-foreground mb-4" style={{ 
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F0F0 50%, #E0E0E0 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              color: 'transparent',
+              filter: 'drop-shadow(0 4px 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.6))',
+              textShadow: '0 0 40px rgba(255, 255, 255, 0.9), 0 2px 8px rgba(0, 0, 0, 0.8)'
             }}>
               Invest Smarter.
             </span>
-            <span className="block bg-gradient-glow bg-clip-text text-transparent animate-liquid-gold" style={{ 
-              backgroundSize: '200% 200%',
-              animationDelay: '1s',
-              filter: 'drop-shadow(0 4px 20px rgba(58, 12, 163, 0.4))'
+            <span className="block text-foreground" style={{ 
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F0F0 50%, #E0E0E0 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              color: 'transparent',
+              filter: 'drop-shadow(0 4px 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.6))',
+              textShadow: '0 0 40px rgba(255, 255, 255, 0.9), 0 2px 8px rgba(0, 0, 0, 0.8)'
             }}>
               Grow Faster.
             </span>

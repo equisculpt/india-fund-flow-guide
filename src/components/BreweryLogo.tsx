@@ -36,7 +36,6 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
         <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-secondary-glow via-secondary to-secondary-glow opacity-90 animate-shimmer"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-secondary-glow/50 to-transparent opacity-0 hover:opacity-100 transition-all duration-500 animate-shimmer"></div>
         <div className="absolute top-1 left-1 right-1 h-px bg-gradient-to-r from-transparent via-secondary-glow/90 to-transparent"></div>
-        <div className="absolute -inset-1 bg-gradient-secondary rounded-2xl opacity-40 blur-lg animate-pulse"></div>
       </div>
       {showText && (
         <div className="flex flex-col">
@@ -52,12 +51,8 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
           }}>
             SIP Brewery
           </span>
-          <span className="text-sm font-medium font-serif -mt-1" style={{ 
-            background: 'linear-gradient(90deg, #FF8C42 0%, #FFD700 50%, #D2691E 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-            filter: 'drop-shadow(0 1px 4px rgba(255, 140, 66, 0.7))',
+          <span className="text-sm text-secondary/90 font-medium font-serif -mt-1" style={{ 
+            filter: 'drop-shadow(0 1px 4px rgba(255, 215, 0, 0.3))',
             textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)'
           }}>
             Brewing Wealth
