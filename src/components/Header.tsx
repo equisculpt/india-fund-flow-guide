@@ -82,8 +82,7 @@ const Header = () => {
                       fontFamily: 'system-ui, -apple-system, sans-serif',
                       fontWeight: '800',
                       letterSpacing: '-0.02em',
-                      animation: 'shinyGoldenText 3s ease-in-out infinite',
-                      filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.5))'
+                      filter: 'brightness(1.15) saturate(1.2) drop-shadow(0 0 15px rgba(255, 215, 0, 0.7))'
                     }}>
                       SIP Brewery
                     </h1>
