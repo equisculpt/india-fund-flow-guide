@@ -22,15 +22,17 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="py-8 md:py-12 bg-white mobile-optimized">
+    <section className="py-8 md:py-12 mobile-optimized" style={{
+      background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'
+    }}>
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">Frequently Asked Questions - SIP Investment India</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8 text-white">Frequently Asked Questions - SIP Investment India</h2>
           <div className="space-y-4 md:space-y-6">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-gray-50 p-4 md:p-6 rounded-lg">
-                <h3 className="text-lg md:text-xl font-semibold mb-3">{faq.question}</h3>
-                <p className="text-gray-700 text-sm md:text-base">{faq.answer}</p>
+              <div key={index} className="bg-white/10 backdrop-blur-md p-4 md:p-6 rounded-lg border border-white/20">
+                <h3 className="text-lg md:text-xl font-semibold mb-3 text-yellow-400">{faq.question}</h3>
+                <p className="text-gray-300 text-sm md:text-base">{faq.answer}</p>
               </div>
             ))}
           </div>
