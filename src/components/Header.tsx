@@ -73,17 +73,25 @@ const Header = () => {
                   
                   {/* Text Logo */}
                   <div className="flex flex-col">
-                    <h1 className="text-3xl font-bold leading-tight transition-all duration-300" style={{
-                      background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)',
+                    <h1 className="text-3xl font-bold leading-tight transition-all duration-300 relative overflow-hidden" style={{
+                      background: 'linear-gradient(135deg, #FFD700 0%, #FFC107 25%, #FF8F00 50%, #FFD700 75%, #FFF176 100%)',
+                      backgroundSize: '200% 100%',
                       backgroundClip: 'text',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                      textShadow: '0 2px 8px rgba(255, 215, 0, 0.3)',
+                      textShadow: '0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4)',
                       fontFamily: 'system-ui, -apple-system, sans-serif',
                       fontWeight: '800',
-                      letterSpacing: '-0.02em'
+                      letterSpacing: '-0.02em',
+                      animation: 'shimmer 3s ease-in-out infinite',
+                      filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.6))'
                     }}>
                       SIP Brewery
+                      {/* Sexy glow overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-200 to-transparent opacity-0 animate-pulse" style={{
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)',
+                        animation: 'sweep 4s ease-in-out infinite'
+                      }}></div>
                     </h1>
                     <p className="text-sm font-medium tracking-wide" style={{
                       color: '#E6E6FA',
