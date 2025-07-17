@@ -1,14 +1,14 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useBackendAuth } from '@/contexts/BackendAuthContext';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const { loading } = useSupabaseAuth();
+  const { loading } = useBackendAuth();
 
   if (loading) {
     return (
