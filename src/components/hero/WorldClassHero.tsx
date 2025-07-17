@@ -3,12 +3,12 @@ import { Brain, TrendingUp, Shield, Users, Search, BarChart3, Target, Sparkles, 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useBackendAuth } from '@/contexts/BackendAuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const WorldClassHero = () => {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
-  const { user } = useSupabaseAuth();
+  const { user } = useBackendAuth();
   const navigate = useNavigate();
 
   const handleInvestNow = () => {

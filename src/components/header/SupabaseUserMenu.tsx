@@ -11,10 +11,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Settings, UserCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { User as SupabaseUser } from '@supabase/supabase-js';
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  kycStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
+  riskProfile: string;
+}
 
 interface SupabaseUserMenuProps {
-  user: SupabaseUser | null;
+  user: User | null;
   signOut: () => Promise<void>;
   setShowLoginModal: (show: boolean) => void;
   setIsMenuOpen: (open: boolean) => void;
@@ -37,8 +43,8 @@ const SupabaseUserMenu = ({ user, signOut, setShowLoginModal, setIsMenuOpen }: S
     setIsMenuOpen(false);
   };
 
-  const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
-  const userAvatar = user.user_metadata?.avatar_url;
+  const userName = user.name || user.email?.split('@')[0] || 'User';
+  const userAvatar = null; // We'll handle avatar later
 
   return (
     <DropdownMenu>

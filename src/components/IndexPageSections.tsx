@@ -3,7 +3,7 @@ import React from 'react';
 import InvestmentCalculator from '@/components/InvestmentCalculator';
 import GoalBasedInvesting from '@/components/GoalBasedInvesting';
 import TopLevelFundComparison from '@/components/TopLevelFundComparison';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useBackendAuth } from '@/contexts/BackendAuthContext';
 import { Button } from '@/components/ui/button';
 
 interface IndexPageSectionsProps {
@@ -11,7 +11,7 @@ interface IndexPageSectionsProps {
 }
 
 const IndexPageSections = ({ onRiskProfilingComplete }: IndexPageSectionsProps) => {
-  const { user } = useSupabaseAuth();
+  const { user } = useBackendAuth();
 
   return (
     <>

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useBackendAuth } from '@/contexts/BackendAuthContext';
 import { Menu, X } from 'lucide-react';
 import BreweryLogo from './BreweryLogo';
 import DesktopNavigation from './header/DesktopNavigation';
@@ -11,7 +11,7 @@ import EnhancedFundSearch from './EnhancedFundSearch';
 import SupabaseLoginModal from './auth/SupabaseLoginModal';
 
 const Header = () => {
-  const { user, signOut } = useSupabaseAuth();
+  const { user, signOut } = useBackendAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();

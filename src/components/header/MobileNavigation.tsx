@@ -1,11 +1,17 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { User as SupabaseUser } from '@supabase/supabase-js';
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  kycStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
+  riskProfile: string;
+}
 
 interface MobileNavigationProps {
   isMenuOpen: boolean;
-  user: SupabaseUser | null;
+  user: User | null;
   handleNavigation: (path: string) => void;
   handleFundComparisonClick: () => void;
   handleBrowseFundsClick: () => void;
