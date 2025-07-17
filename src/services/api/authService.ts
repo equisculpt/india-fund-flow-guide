@@ -59,13 +59,13 @@ interface RefreshTokenRequest {
 
 export class AuthService extends BaseApiService {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
-    const response = await this.post<AuthResponse>('/api/auth/login', credentials);
+    const response = await this.post<AuthResponse>('/auth/login', credentials);
     this.setAuthToken(response.token);
     return response;
   }
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
-    const response = await this.post<AuthResponse>('/api/auth/register', userData);
+    const response = await this.post<AuthResponse>('/auth/register', userData);
     this.setAuthToken(response.token);
     return response;
   }
@@ -77,29 +77,41 @@ export class AuthService extends BaseApiService {
   }
 
   async refreshToken(refreshToken: string): Promise<AuthResponse> {
-    const response = await this.post<AuthResponse>('/api/auth/refresh', { refreshToken });
+    const response = await this.post<AuthResponse>('/auth/refresh', { refreshToken });
     this.setAuthToken(response.token);
     return response;
   }
 
   async getProfile(): Promise<UserProfile> {
-    return this.get<UserProfile>('/api/auth/profile');
+    return this.get<UserProfile>('/auth/profile');
+  }
+
+  async checkAuth(): Promise<{ success: boolean; data: any }> {
+    return this.get('/auth/check');
+  }
+
+  async getKYCStatus(): Promise<{ kycStatus: string }> {
+    return this.get('/auth/kyc/status');
+  }
+
+  async updateKYCStatus(kycStatus: string): Promise<{ message: string }> {
+    return this.put('/auth/kyc/status', { kycStatus });
   }
 
   async updateProfile(updates: Partial<UserProfile>): Promise<UserProfile> {
-    return this.put<UserProfile>('/api/auth/profile', updates);
+    return this.put<UserProfile>('/auth/profile', updates);
   }
 
   async forgotPassword(email: ForgotPasswordRequest): Promise<{ message: string }> {
-    return this.post('/api/auth/forgot-password', email);
+    return this.post('/auth/forgot-password', email);
   }
 
   async resetPassword(data: ResetPasswordRequest): Promise<{ message: string }> {
-    return this.post('/api/auth/reset-password', data);
+    return this.post('/auth/reset-password', data);
   }
 
   async changePassword(data: ChangePasswordRequest): Promise<{ message: string }> {
-    return this.put('/api/auth/change-password', data);
+    return this.put('/auth/change-password', data);
   }
 
   isAuthenticated(): boolean {

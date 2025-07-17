@@ -89,7 +89,7 @@ interface ApiResponse<T> {
 
 export class AnalyticsService extends BaseApiService {
   async getDashboardOverview(): Promise<DashboardOverview> {
-    return this.get<DashboardOverview>('/api/dashboard/overview');
+    return this.get<DashboardOverview>('/dashboard/overview');
   }
 
   async getPerformanceAnalytics(params?: {
@@ -100,7 +100,7 @@ export class AnalyticsService extends BaseApiService {
     if (params?.period) queryParams.set('period', params.period);
     if (params?.fundCode) queryParams.set('fundCode', params.fundCode);
 
-    const endpoint = `/api/analytics/performance${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const endpoint = `/analytics/performance${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
     return this.get<PerformanceAnalytics>(endpoint);
   }
 
@@ -110,7 +110,7 @@ export class AnalyticsService extends BaseApiService {
     expectedReturn: number;
     fundCode?: string;
   }): Promise<ApiResponse<SIPCalculationResponse>> {
-    return this.post<ApiResponse<SIPCalculationResponse>>('/api/analytics/calculate-sip', params);
+    return this.post<ApiResponse<SIPCalculationResponse>>('/analytics/sip-projections', params);
   }
 
   async calculateGoalInvestment(params: {
@@ -119,11 +119,11 @@ export class AnalyticsService extends BaseApiService {
     expectedReturn: number;
     currentSavings: number;
   }): Promise<ApiResponse<GoalInvestmentResponse>> {
-    return this.post<ApiResponse<GoalInvestmentResponse>>('/api/analytics/goal-investment', params);
+    return this.post<ApiResponse<GoalInvestmentResponse>>('/analytics/goal-based-investment', params);
   }
 
   async calculateRiskProfiling(type: 'personal' | 'portfolio' | 'market') {
-    return this.get(`/api/analytics/risk-profiling?type=${type}`);
+    return this.get(`/analytics/risk-profiling?type=${type}`);
   }
 
   async getChartData(params: {
@@ -136,7 +136,7 @@ export class AnalyticsService extends BaseApiService {
     Object.entries(params).forEach(([key, value]) => {
       if (value) queryParams.set(key, value);
     });
-    return this.get(`/api/analytics/chart-data?${queryParams.toString()}`);
+    return this.post(`/analytics/chart-data`, params);
   }
 
   async calculateXIRR(params: {
@@ -158,7 +158,7 @@ export class AnalyticsService extends BaseApiService {
     period: string;
     investmentAmount: number;
   }): Promise<any> {
-    return this.post('/api/analytics/fund-comparison', params);
+    return this.post('/analytics/compare-funds', params);
   }
 
   async getBenchmarkComparison(params: {

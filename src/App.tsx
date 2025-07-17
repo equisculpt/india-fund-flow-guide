@@ -4,8 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
-import { SupabaseAuthProvider } from "@/contexts/SupabaseAuthContext";
-import { TestAuthProvider } from "@/contexts/TestAuthContext";
+import { BackendAuthProvider } from "@/contexts/BackendAuthContext";
 import Index from "./pages/Index";
 import FundDetailsPage from "./pages/FundDetailsPage";
 import FundComparisonPage from "./pages/FundComparisonPage";
@@ -28,6 +27,7 @@ import VeedaClinicalResearchIPOBlog from "./pages/VeedaClinicalResearchIPOBlog";
 import NBFCSectorDeepDiveBlog from "./pages/NBFCSectorDeepDiveBlog";
 import HowFundManagersMakeMoneyBlog from "./pages/HowFundManagersMakeMoneyBlog";
 
+import BackendLogin from "./pages/BackendLogin";
 import TestLogin from "./pages/TestLogin";
 import TestDashboard from "./pages/TestDashboard";
 import StatementPreviewPage from "./pages/StatementPreviewPage";
@@ -37,13 +37,15 @@ const queryClient = new QueryClient();
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
-      <TestAuthProvider>
-        <SupabaseAuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+      <BackendAuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
               <Routes>
+                {/* Authentication Routes */}
+                <Route path="/login" element={<BackendLogin />} />
+                
                 {/* Test Routes */}
                 <Route path="/test-login" element={<TestLogin />} />
                 <Route path="/test-dashboard" element={<TestDashboard />} />
@@ -77,8 +79,7 @@ const App = () => (
               </Routes>
             </BrowserRouter>
           </TooltipProvider>
-        </SupabaseAuthProvider>
-      </TestAuthProvider>
+      </BackendAuthProvider>
     </QueryClientProvider>
   </HelmetProvider>
 );
