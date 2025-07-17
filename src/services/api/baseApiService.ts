@@ -22,9 +22,7 @@ export class BaseApiService {
   private authToken: string | null = null;
 
   constructor() {
-    this.baseUrl = import.meta.env.DEV 
-      ? 'http://localhost:3000' 
-      : 'https://api.sipbrewery.com';
+    this.baseUrl = 'https://api.sipbrewery.com/api';
   }
 
   setAuthToken(token: string) {
