@@ -12,7 +12,8 @@ import {
   Globe,
   Smartphone,
   Eye,
-  EyeOff
+  EyeOff,
+  Settings
 } from 'lucide-react';
 import PortfolioAnalyticsDashboard from './dashboard/PortfolioAnalyticsDashboard';
 import AIInsightsDashboard from './AIInsightsDashboard';
@@ -21,6 +22,8 @@ import LearningEducationCenter from './LearningEducationCenter';
 import { useQuery } from '@tanstack/react-query';
 import { voiceService } from '@/services/api/voiceService';
 import { regionalService } from '@/services/api/regionalService';
+import { ApiHealthCheck } from './ApiHealthCheck';
+import { ApiConfigurationSummary } from './ApiConfigurationSummary';
 
 const EnhancedDashboard = () => {
   const [hideBalance, setHideBalance] = useState(false);
@@ -137,9 +140,12 @@ const EnhancedDashboard = () => {
         </CardContent>
       </Card>
 
+      {/* API Health Check */}
+      <ApiHealthCheck />
+
       {/* Enhanced Tabs */}
       <Tabs defaultValue="analytics" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5 h-12">
+        <TabsList className="grid w-full grid-cols-6 h-12">
           <TabsTrigger value="analytics" className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
             Analytics
@@ -159,6 +165,10 @@ const EnhancedDashboard = () => {
           <TabsTrigger value="voice" className="flex items-center gap-2">
             <Mic className="h-4 w-4" />
             Voice Chat
+          </TabsTrigger>
+          <TabsTrigger value="api-config" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            API Config
           </TabsTrigger>
         </TabsList>
 
@@ -201,6 +211,12 @@ const EnhancedDashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="api-config">
+          <div className="space-y-4">
+            <ApiConfigurationSummary />
+          </div>
         </TabsContent>
       </Tabs>
     </div>
