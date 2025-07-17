@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
+import { useBackendAuth } from "@/contexts/BackendAuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { handleGoogleSignup, handleGoogleLogin } from "@/services/googleAuthService";
 import LoginTab from "./auth/LoginTab";
@@ -17,7 +17,7 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
 
-  const { signIn, signUp } = useSupabaseAuth();
+  const { signIn, signUp } = useBackendAuth();
   const { toast } = useToast();
 
   const handleGoogleAuth = async () => {
@@ -94,10 +94,14 @@ const EnhancedLoginModal = ({ isOpen, onClose }: EnhancedLoginModalProps) => {
 
     setIsLoading(true);
     try {
-      await signUp(email, password, {
-        full_name: name,
-        phone: phone,
-        user_type: userType
+      await signUp({
+        name,
+        email,
+        phone: phone || '',
+        password,
+        riskProfile: 'moderate',
+        investmentGoals: [],
+        timeHorizon: 'medium-term'
       });
       
       toast({

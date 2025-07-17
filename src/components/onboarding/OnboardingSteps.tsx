@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import RiskProfiling from "../RiskProfiling";
 import RiskProfileResults from "../RiskProfileResults";
 import DigioKYCVerification from "./DigioKYCVerification";
-import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
+import { useBackendAuth } from "@/contexts/BackendAuthContext";
 
 interface OnboardingStepsProps {
   clientData: any;
@@ -31,7 +31,7 @@ const OnboardingSteps = ({ clientData, setClientData, socialLoginUser }: Onboard
   const [riskProfile, setRiskProfile] = useState<RiskProfile | null>(null);
   const [otp, setOtp] = useState("");
   const { toast } = useToast();
-  const { updateKYCStatus } = useSupabaseAuth();
+  const { updateKYCStatus } = useBackendAuth();
 
   const handleSendOTP = async () => {
     if (!clientData.phone) {
@@ -98,7 +98,7 @@ const OnboardingSteps = ({ clientData, setClientData, socialLoginUser }: Onboard
 
   const handleFinalizeOnboarding = async () => {
     // Mark KYC as verified in the database
-    await updateKYCStatus('verified');
+    await updateKYCStatus('APPROVED');
     
     toast({
       title: "Welcome to SIP Brewery!",

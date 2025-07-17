@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useBackendAuth } from '@/contexts/BackendAuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps) => {
-  const { user, loading } = useSupabaseAuth();
+  const { user, loading } = useBackendAuth();
   const navigate = useNavigate();
 
   useEffect(() => {

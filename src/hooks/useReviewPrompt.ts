@@ -1,15 +1,15 @@
 
 import { useEffect, useState } from 'react';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useBackendAuth } from '@/contexts/BackendAuthContext';
 import { supabase } from '@/integrations/supabase/client';
 
 export const useReviewPrompt = () => {
   const [shouldShowReview, setShouldShowReview] = useState(false);
-  const { user, profile } = useSupabaseAuth();
+  const { user, profile } = useBackendAuth();
 
   useEffect(() => {
     const checkReviewStatus = async () => {
-      if (!user || !profile || profile.user_type !== 'customer') {
+      if (!user || !profile) {
         return;
       }
 

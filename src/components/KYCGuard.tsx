@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useBackendAuth } from '@/contexts/BackendAuthContext';
 import { useNavigate } from 'react-router-dom';
 
 interface KYCGuardProps {
@@ -9,7 +9,7 @@ interface KYCGuardProps {
 }
 
 const KYCGuard = ({ children, requireKYC = true }: KYCGuardProps) => {
-  const { user, profile, loading, isKYCRequired } = useSupabaseAuth();
+  const { user, profile, loading, isKYCRequired } = useBackendAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
