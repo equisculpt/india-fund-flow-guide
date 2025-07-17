@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Brain, TrendingUp, Shield, Users, Target, Sparkles, Star, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useBackendAuth } from '@/contexts/BackendAuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const PremiumHero = () => {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
-  const { user } = useSupabaseAuth();
+  const { user } = useBackendAuth();
   const navigate = useNavigate();
 
   const handleInvestNow = () => {
