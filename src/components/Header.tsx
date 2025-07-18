@@ -58,7 +58,37 @@ const Header = () => {
             {/* Logo - Custom Design with Beer Mug Icon */}
             <div className="flex-shrink-0 mr-auto">
               <Link to="/" className="flex items-center group">
-                <BreweryLogo size="md" showText={true} />
+                <div className="flex items-center space-x-2">
+                  {/* Beer Mug Icon - Made Bigger */}
+                  <div className="relative">
+                    <BreweryLogo size="md" showText={false} />
+                  </div>
+                  
+                  {/* Text Logo */}
+                  <div className="flex flex-col">
+                    <h1 className="text-3xl font-bold leading-tight" style={{
+                      background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)',
+                      backgroundClip: 'text',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      fontFamily: 'system-ui, -apple-system, sans-serif',
+                      fontWeight: '800',
+                      letterSpacing: '-0.02em',
+                      filter: 'brightness(1.15) saturate(1.2)'
+                    }}>
+                      SIP Brewery
+                    </h1>
+                    <p className="text-sm font-medium tracking-wide" style={{
+                      color: '#E6E6FA',
+                      textShadow: '0 1px 3px rgba(0, 0, 0, 0.5)',
+                      fontFamily: 'system-ui, -apple-system, sans-serif',
+                      letterSpacing: '0.1em',
+                      fontWeight: '500'
+                    }}>
+                      Brewing Wealth
+                    </p>
+                  </div>
+                </div>
               </Link>
             </div>
 
