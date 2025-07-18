@@ -34,16 +34,16 @@ const Layout = ({ children }: LayoutProps) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen w-full flex flex-col bg-background">
       <PerformanceMonitor />
       <Header />
-      <main className="flex-1 relative container" style={{ contain: 'layout style paint' }}>
+      <main className="flex-1 relative w-full" style={{ contain: 'layout style paint' }}>
         {/* Optimized background effects */}
         <div 
-          className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none"
+          className="absolute inset-0 w-full bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none"
           style={{ willChange: 'auto' }}
         ></div>
-        <div className="relative z-10">
+        <div className="relative z-10 w-full">
           {children}
         </div>
       </main>
