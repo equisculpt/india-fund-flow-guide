@@ -31,7 +31,7 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
         <div className="absolute inset-0 bg-gradient-to-br from-secondary/90 via-secondary/70 to-secondary-glow/60"></div>
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-secondary-glow/40 to-transparent animate-pulse"></div>
         <div className="relative z-10 flex items-center justify-center h-full">
-          <Beer className={`${iconSizeClasses[size]} drop-shadow-2xl text-secondary-foreground`} />
+          <Beer className={`${iconSizeClasses[size]} drop-shadow-2xl text-secondary-foreground`} style={{ width: '40px', height: '40px' }} />
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-secondary-glow via-secondary to-secondary-glow opacity-90 animate-shimmer"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-secondary-glow/50 to-transparent opacity-0 hover:opacity-100 transition-all duration-500 animate-shimmer"></div>
