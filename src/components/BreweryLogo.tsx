@@ -8,21 +8,21 @@ interface BreweryLogoProps {
 
 const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
   const sizeClasses = {
-    sm: "w-7 h-7 p-1.5",
-    md: "w-10 h-10 p-2", 
-    lg: "w-14 h-14 p-2.5"
+    sm: "w-6 h-6 p-1",
+    md: "w-8 h-8 p-1.5", 
+    lg: "w-12 h-12 p-2"
   };
 
   const textSizeClasses = {
-    sm: "text-base",
-    md: "text-lg",
-    lg: "text-xl"
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-lg"
   };
 
   const iconSizeClasses = {
-    sm: "h-3.5 w-3.5",
-    md: "h-5 w-5", 
-    lg: "h-7 w-7"
+    sm: "h-3 w-3",
+    md: "h-4 w-4", 
+    lg: "h-6 w-6"
   };
 
   return (
