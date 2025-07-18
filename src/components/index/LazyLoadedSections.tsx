@@ -14,23 +14,35 @@ interface LazyLoadedSectionsProps {
 const LazyLoadedSections = ({ allFunds, onRiskProfilingComplete }: LazyLoadedSectionsProps) => {
   return (
     <>
-      {/* Lazy load remaining sections with proper fallbacks */}
-      <Suspense fallback={<div className="h-64 bg-white flex items-center justify-center"><div className="text-gray-400 text-sm">Loading comparison...</div></div>}>
-        <div className="lazy-load">
+      {/* Optimized lazy loading with reduced DOM size */}
+      <Suspense fallback={
+        <div className="h-64 bg-card/50 flex items-center justify-center" style={{ contain: 'layout' }}>
+          <div className="text-muted-foreground text-sm">Loading comparison...</div>
+        </div>
+      }>
+        <section className="lazy-load" style={{ contain: 'layout style paint' }}>
           <PlatformComparisonTable />
-        </div>
+        </section>
       </Suspense>
 
-      <Suspense fallback={<div className="h-64 bg-gray-50 flex items-center justify-center"><div className="text-gray-400 text-sm">Loading categories...</div></div>}>
-        <div className="lazy-load">
+      <Suspense fallback={
+        <div className="h-64 bg-background flex items-center justify-center" style={{ contain: 'layout' }}>
+          <div className="text-muted-foreground text-sm">Loading categories...</div>
+        </div>
+      }>
+        <section className="lazy-load" style={{ contain: 'layout style paint' }}>
           <FundCategories allFunds={allFunds} />
-        </div>
+        </section>
       </Suspense>
 
-      <Suspense fallback={<div className="h-64 bg-white flex items-center justify-center"><div className="text-gray-400 text-sm">Loading tools...</div></div>}>
-        <div className="lazy-load">
-          <IndexPageSections onRiskProfilingComplete={onRiskProfilingComplete} />
+      <Suspense fallback={
+        <div className="h-64 bg-card/50 flex items-center justify-center" style={{ contain: 'layout' }}>
+          <div className="text-muted-foreground text-sm">Loading tools...</div>
         </div>
+      }>
+        <section className="lazy-load" style={{ contain: 'layout style paint' }}>
+          <IndexPageSections onRiskProfilingComplete={onRiskProfilingComplete} />
+        </section>
       </Suspense>
     </>
   );

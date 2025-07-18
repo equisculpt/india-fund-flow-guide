@@ -1,5 +1,6 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* Load fonts with display=swap to prevent FOIT */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap') layer(fonts);
 
 @tailwind base;
 @tailwind components;
@@ -113,8 +114,15 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', 'Poppins', sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-display: swap;
     overflow-x: hidden;
     scroll-behavior: smooth;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Performance optimizations */
+    contain: layout style paint;
+    will-change: auto;
   }
   
   h1, h2, h3, h4, h5, h6 {
