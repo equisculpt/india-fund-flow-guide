@@ -20,9 +20,9 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
   };
 
   const iconSizeClasses = {
-    sm: "h-4 w-4",
-    md: "h-6 w-6", 
-    lg: "h-8 w-8"
+    sm: "h-5 w-5",
+    md: "h-8 w-8", 
+    lg: "h-10 w-10"
   };
 
   return (
