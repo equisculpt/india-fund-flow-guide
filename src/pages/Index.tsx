@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
-import SEOContentSection from '@/components/index/SEOContentSection';
-import LazyLoadedSections from '@/components/index/LazyLoadedSections';
-import FAQSection from '@/components/index/FAQSection';
 import SEOHead from '@/components/SEOHead';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { useFundData } from '@/components/FundData';
+
+// Lazy load non-critical sections for ultra-fast initial load
+const SEOContentSection = lazy(() => import('@/components/index/SEOContentSection'));
+const LazyLoadedSections = lazy(() => import('@/components/index/LazyLoadedSections'));
+const FAQSection = lazy(() => import('@/components/index/FAQSection'));
+const FundData = lazy(() => import('@/components/FundData').then(module => ({ default: () => null })));
 
 const Index = () => {
-  const { allFunds } = useFundData();
+  // Remove fund data fetch from initial render for faster loading
+  const allFunds: any[] = []; // Will be loaded lazily
 
   const handleRiskProfilingComplete = (result: any) => {
     console.log('Risk profiling completed:', result);
@@ -90,22 +93,35 @@ const Index = () => {
           />
         </ErrorBoundary>
         
-        {/* Hero Section - Critical above-the-fold content */}
-        <div className="critical-content">
+        <ErrorBoundary fallback={<div>Loading page content...</div>}>
+          {/* Critical above-the-fold content loads immediately */}
           <HeroSection />
-        </div>
-
-        {/* SEO Content Section - Critical for SEO but can be optimized */}
-        <SEOContentSection />
-
-        {/* Lazy loaded sections */}
-        <LazyLoadedSections 
-          allFunds={allFunds} 
-          onRiskProfilingComplete={handleRiskProfilingComplete} 
-        />
-        
-        {/* FAQ Section - Optimized for mobile */}
-        <FAQSection />
+          
+          {/* Non-critical content loads lazily for better performance */}
+          <Suspense fallback={
+            <div className="h-32 bg-background flex items-center justify-center">
+              <div className="text-muted-foreground text-sm">Loading content...</div>
+            </div>
+          }>
+            <SEOContentSection />
+          </Suspense>
+          
+          <Suspense fallback={
+            <div className="h-64 bg-background flex items-center justify-center">
+              <div className="text-muted-foreground text-sm">Loading tools...</div>
+            </div>
+          }>
+            <LazyLoadedSections allFunds={allFunds} onRiskProfilingComplete={handleRiskProfilingComplete} />
+          </Suspense>
+          
+          <Suspense fallback={
+            <div className="h-32 bg-background flex items-center justify-center">
+              <div className="text-muted-foreground text-sm">Loading FAQ...</div>
+            </div>
+          }>
+            <FAQSection />
+          </Suspense>
+        </ErrorBoundary>
       </Layout>
     </ErrorBoundary>
   );

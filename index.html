@@ -62,10 +62,102 @@
     <link rel="apple-touch-icon" sizes="60x60" href="/lovable-uploads/9700dd1e-3e64-416b-9034-c04c3a23ad01.png">
     <link rel="apple-touch-icon" sizes="57x57" href="/lovable-uploads/9700dd1e-3e64-416b-9034-c04c3a23ad01.png">
     <link rel="apple-touch-icon" href="/lovable-uploads/9700dd1e-3e64-416b-9034-c04c3a23ad01.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Additional performance hints -->
+    <meta name="application-name" content="SIP Brewery">
+    <meta name="msapplication-TileColor" content="#3A0CA3">
+    <meta name="msapplication-config" content="/browserconfig.xml">
 
     <!-- Cache Control Headers -->
     <meta http-equiv="Cache-Control" content="public, max-age=31536000, immutable">
     <meta http-equiv="Expires" content="31536000">
+    
+    <!-- Performance Optimization -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Advanced SEO Meta Tags -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1">
+    <meta name="google" content="nositelinkssearchbox">
+    <meta name="google" content="notranslate">
+    <meta name="rating" content="general">
+    <meta name="distribution" content="global">
+    <meta name="coverage" content="worldwide">
+    <meta name="target" content="all">
+    <meta name="audience" content="all">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="375">
+    
+    <!-- Geo Tags for India -->
+    <meta name="geo.region" content="IN">
+    <meta name="geo.country" content="India">
+    <meta name="geo.placename" content="India">
+    <meta name="ICBM" content="20.5937, 78.9629">
+    
+    <!-- Additional Performance Meta -->
+    <meta name="referrer" content="origin-when-cross-origin">
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    
+    <!-- JSON-LD Schema for Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FinancialService",
+      "name": "SIP Brewery",
+      "description": "India's #1 SEBI Registered Mutual Fund Investment Platform 2025",
+      "url": "https://sipbrewery.com",
+      "logo": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+      "sameAs": [
+        "https://twitter.com/sipbrewery"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN",
+        "addressRegion": "India"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91-XXXXXXXXXX",
+        "contactType": "customer service",
+        "availableLanguage": ["English", "Hindi"]
+      },
+      "foundingDate": "2023",
+      "founders": {
+        "@type": "Person",
+        "name": "SIP Brewery Team"
+      },
+      "serviceType": "Mutual Fund Investment Platform",
+      "areaServed": "India",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Mutual Fund Investment Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "SIP Investment",
+              "description": "Systematic Investment Plan services starting from ₹500"
+            }
+          },
+          {
+            "@type": "Offer", 
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Mutual Fund Selection",
+              "description": "AI-powered mutual fund recommendations from 3000+ funds"
+            }
+          }
+        ]
+      }
+    }
+    </script>
 
     <!-- Critical CSS inline (for above-the-fold content) -->
     <style>
@@ -149,23 +241,36 @@
     <!-- Preconnect to external domains for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://api.sipbrewery.com" crossorigin>
+    <link rel="preconnect" href="https://pvtrwvvcgkppjlbyvflv.supabase.co" crossorigin>
     
     <!-- DNS prefetch for common mutual fund data sources -->
     <link rel="dns-prefetch" href="//api.mfapi.in">
-    <link rel="dns-prefetch" href="//pvtrwvvcgkppjlbyvflv.supabase.co">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//unpkg.com">
 
     <!-- Preload critical resources with optimized sizing -->
-    <link rel="preload" href="/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png" as="image" type="image/png" media="(min-width: 768px)">
+    <link rel="preload" href="/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png" as="image" type="image/png" media="(min-width: 768px)" fetchpriority="high">
     <link rel="preload" href="/lovable-uploads/c7ac4baf-8a3f-49ee-ae5e-0750d3f9115e.png" as="image" type="image/png" media="(min-width: 768px)">
     <link rel="preload" href="/lovable-uploads/29ef2888-33a0-4d86-bd99-68a1b0d8fa38.png" as="image" type="image/png" media="(min-width: 768px)">
     
-    <!-- Preload fonts -->
-    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Preload critical fonts with optimal loading -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
     <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2" as="font" type="font/woff2" crossorigin>
     
     <!-- Resource hints for better loading -->
-    <link rel="modulepreload" href="/src/main.tsx">
+    <link rel="modulepreload" href="/src/main.tsx" fetchpriority="high">
     <link rel="modulepreload" href="/src/App.tsx">
+    <link rel="modulepreload" href="/src/pages/Index.tsx">
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
     
   </head>
 

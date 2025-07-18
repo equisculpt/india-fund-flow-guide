@@ -19,6 +19,29 @@ const root = createRoot(container);
 // Use startTransition for non-urgent renders
 import { startTransition } from 'react';
 
+// Performance monitoring
+if (typeof window !== 'undefined') {
+  // Monitor performance metrics
+  window.addEventListener('load', () => {
+    const observer = new PerformanceObserver((list) => {
+      const entries = list.getEntries();
+      entries.forEach((entry) => {
+        if (entry.entryType === 'navigation') {
+          const navigationEntry = entry as any;
+          console.log('Navigation timing:', navigationEntry.loadEventEnd - navigationEntry.fetchStart);
+        }
+      });
+    });
+    
+    try {
+      observer.observe({ entryTypes: ['navigation'] });
+    } catch (e) {
+      // Fallback for unsupported browsers
+      console.log('Performance monitoring not supported');
+    }
+  });
+}
+
 startTransition(() => {
   root.render(
     <StrictMode>
@@ -31,4 +54,4 @@ startTransition(() => {
 setTimeout(() => {
   headerFallback?.remove();
   heroPlaceholder?.remove();
-}, 100);
+}, 50);
