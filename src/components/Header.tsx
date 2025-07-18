@@ -66,7 +66,7 @@ const Header = () => {
                   
                   {/* Text Logo */}
                   <div className="flex flex-col">
-                    <h1 className="text-3xl font-bold leading-tight" style={{
+                    <h1 className="text-2xl font-bold leading-tight" style={{
                       background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)',
                       backgroundClip: 'text',
                       WebkitBackgroundClip: 'text',
