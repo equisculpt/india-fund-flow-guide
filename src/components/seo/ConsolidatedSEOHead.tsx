@@ -42,7 +42,16 @@ const ConsolidatedSEOHead = ({
   const finalTitle = title?.trim() || "SIP Brewery - India's #1 SEBI Registered Mutual Fund Investment Platform";
   const finalDescription = description?.trim() || "Start your mutual fund investment journey with SIP Brewery. SEBI registered platform offering 3000+ mutual funds, AI-powered recommendations, and expert guidance. Minimum SIP ₹500.";
   const finalKeywords = keywords?.trim() || "mutual funds india, SIP investment, SEBI registered, best mutual funds 2025, mutual fund calculator, SIP calculator, investment advisor";
-  const finalCanonicalUrl = canonicalUrl?.trim() || `https://sipbrewery.com${location.pathname}`;
+  // Fix canonical URL to prevent conflicts
+  let finalCanonicalUrl = canonicalUrl?.trim() || `https://sipbrewery.com${location.pathname}`;
+  
+  // Ensure homepage uses clean URL without index.html
+  if (finalCanonicalUrl.endsWith('/index.html')) {
+    finalCanonicalUrl = finalCanonicalUrl.replace('/index.html', '/');
+  }
+  if (location.pathname === '/' || location.pathname === '/index.html') {
+    finalCanonicalUrl = 'https://sipbrewery.com/';
+  }
   
   // Enhanced OG image with fallback
   const defaultImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
