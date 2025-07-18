@@ -61,16 +61,8 @@ const Header = () => {
                 <div className="flex items-center space-x-2">
                   {/* Beer Mug Icon */}
                   <div className="relative">
-                    <img 
-                      src="/lovable-uploads/c7ac4baf-8a3f-49ee-ae5e-0750d3f9115e.png" 
-                      alt="SIP Brewery Icon" 
-                      className="w-16 h-16 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-                      loading="eager"
-                      decoding="sync"
-                      style={{
-                        filter: 'drop-shadow(0 4px 20px rgba(255, 215, 0, 0.4))'
-                      }}
-                    />
+                    {/* Optimized Logo Component - no more huge image! */}
+                    <BreweryLogo size="md" showText={false} />
                   </div>
                   
                   {/* Text Logo */}
