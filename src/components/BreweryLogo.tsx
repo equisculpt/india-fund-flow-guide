@@ -49,7 +49,7 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
             filter: 'drop-shadow(0 2px 8px rgba(255, 107, 53, 0.8)) drop-shadow(0 0 15px rgba(255, 215, 0, 0.6))',
             textShadow: '0 0 20px rgba(255, 140, 66, 0.9), 0 2px 4px rgba(0, 0, 0, 0.8)'
           }}>
-            SIP Brewery
+            SIP Brewery™
           </span>
           <span className="text-sm text-secondary/90 font-medium font-serif -mt-1" style={{ 
             filter: 'drop-shadow(0 1px 4px rgba(255, 215, 0, 0.3))',

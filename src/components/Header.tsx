@@ -76,7 +76,7 @@ const Header = () => {
                       letterSpacing: '-0.02em',
                       filter: 'brightness(1.15) saturate(1.2)'
                     }}>
-                      SIP Brewery
+                      SIP Brewery™
                     </h1>
                     <p className="text-sm font-medium tracking-wide cursor-pointer" style={{
                       color: '#E6E6FA',
