@@ -8,9 +8,9 @@ interface BreweryLogoProps {
 
 const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
   const sizeClasses = {
-    sm: "w-8 h-8 p-1",
-    md: "w-16 h-16 p-2", 
-    lg: "w-20 h-20 p-2.5"
+    sm: "w-7 h-7 p-1",
+    md: "w-12 h-12 p-2", 
+    lg: "w-16 h-16 p-2.5"
   };
 
   const textSizeClasses = {
@@ -31,7 +31,7 @@ const BreweryLogo = ({ size = "md", showText = true }: BreweryLogoProps) => {
         <div className="absolute inset-0 bg-gradient-to-br from-secondary/90 via-secondary/70 to-secondary-glow/60"></div>
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-secondary-glow/40 to-transparent animate-pulse"></div>
         <div className="relative z-10 flex items-center justify-center h-full">
-          <Beer className="w-12 h-12 drop-shadow-2xl text-secondary-foreground" style={{ width: '48px', height: '48px', minWidth: '48px', minHeight: '48px' }} />
+          <Beer className="w-8 h-8 drop-shadow-2xl text-secondary-foreground" style={{ width: '32px', height: '32px' }} />
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-secondary-glow via-secondary to-secondary-glow opacity-90 animate-shimmer"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-secondary-glow/50 to-transparent opacity-0 hover:opacity-100 transition-all duration-500 animate-shimmer"></div>
