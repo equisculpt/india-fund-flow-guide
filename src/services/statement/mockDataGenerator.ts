@@ -26,7 +26,7 @@ export class MockDataGenerator {
       mobile: '+91-98765-43210',
       sipBreweryId: `SB-${clientCode}`,
       isVerified: true,
-      avatarUrl: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
+      avatarUrl: '/og-image.png',
       address: '123, MG Road, Bangalore, Karnataka - 560001',
       kycStatus: 'VERIFIED',
       role: 'USER',

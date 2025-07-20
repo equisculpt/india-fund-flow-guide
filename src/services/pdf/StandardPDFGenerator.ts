@@ -420,7 +420,7 @@ export class StandardPDFGenerator {
           <div style="text-align: center; margin-bottom: 24px;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
               <img 
-                src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png" 
+                src="/icon-192.png"
                 alt="SIP Brewery Logo" 
                 style="width: 48px; height: 48px; object-fit: contain;"
               />
@@ -471,7 +471,7 @@ export class StandardPDFGenerator {
       <div style="text-align: center; margin-bottom: 24px;">
         <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
           <img 
-            src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png" 
+            src="/icon-192.png"
             alt="SIP Brewery Logo" 
             style="width: 64px; height: 64px; object-fit: contain;"
           />
@@ -641,7 +641,7 @@ export class StandardPDFGenerator {
         <div style="text-align: center; margin-bottom: 24px;">
           <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
             <img 
-              src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png" 
+              src="/icon-192.png"
               alt="SIP Brewery Logo" 
               style="width: 48px; height: 48px; object-fit: contain;"
             />
@@ -696,7 +696,7 @@ export class StandardPDFGenerator {
         <div style="text-align: center; margin-bottom: 24px;">
           <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
             <img 
-              src="/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png" 
+              src="/icon-192.png" 
               alt="SIP Brewery Logo" 
               style="width: 48px; height: 48px; object-fit: contain;"
             />

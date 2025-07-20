@@ -27,7 +27,7 @@ export const createStructuredData = (canonicalUrl: string) => ({
   "description": "In-depth analysis of Veeda Clinical Research IPO with financial charts, SWOT analysis, and key insights. Educational content only - not investment advice.",
   "image": {
     "@type": "ImageObject",
-    "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+    "url": "https://sipbrewery.com/og-image.png",
     "width": 1200,
     "height": 630
   },
@@ -41,7 +41,7 @@ export const createStructuredData = (canonicalUrl: string) => ({
     "name": "SIP Brewery",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+      "url": "https://sipbrewery.com/og-image.png"
     }
   },
   "datePublished": new Date().toISOString(),

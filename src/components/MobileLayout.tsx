@@ -93,7 +93,7 @@ const MobileLayout = ({ children }: MobileLayoutProps) => {
       };
       
       // Preload logo
-      preloadImage('/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png');
+      preloadImage('/og-image.png');
       
       // Register service worker for caching
       if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {

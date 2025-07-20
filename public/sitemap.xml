@@ -8,7 +8,7 @@
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png</image:loc>
+      <image:loc>https://sipbrewery.com/og-image.png</image:loc>
       <image:title><![CDATA[SIP Brewery - Mutual Fund Investment Platform]]></image:title>
       <image:caption><![CDATA[India's leading SEBI registered mutual fund investment platform]]></image:caption>
     </image:image>
@@ -67,7 +67,7 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png</image:loc>
+      <image:loc>https://sipbrewery.com/og-image.png</image:loc>
       <image:title><![CDATA[HDB Financial Services IPO Analysis]]></image:title>
       <image:caption><![CDATA[Complete financial review and SWOT analysis of HDB Financial Services IPO]]></image:caption>
     </image:image>
@@ -78,7 +78,7 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png</image:loc>
+      <image:loc>https://sipbrewery.com/og-image.png</image:loc>
       <image:title><![CDATA[Veeda Clinical Research IPO Analysis]]></image:title>
       <image:caption><![CDATA[Complete SWOT and financial review of Veeda Clinical Research IPO]]></image:caption>
     </image:image>

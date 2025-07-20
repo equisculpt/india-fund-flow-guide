@@ -35,7 +35,7 @@ const HealthcareSectorOutlookBlog = () => {
       "name": "SIP Brewery",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+        "url": "https://sipbrewery.com/og-image.png"
       }
     },
     "datePublished": publishedTime,
@@ -46,7 +46,7 @@ const HealthcareSectorOutlookBlog = () => {
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+      "url": "https://sipbrewery.com/og-image.png",
       "width": 1200,
       "height": 630
     }

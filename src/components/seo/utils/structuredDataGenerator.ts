@@ -29,7 +29,7 @@ export const generateStructuredData = ({
     "headline": title,
     "description": description,
     "url": canonicalUrl,
-    "logo": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+    "logo": "https://sipbrewery.com/og-image.png",
     "image": ogImage,
   };
 
@@ -45,7 +45,7 @@ export const generateStructuredData = ({
         "name": articlePublisher || "SIP Brewery",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+          "url": "https://sipbrewery.com/og-image.png"
         }
       },
       "datePublished": publishedTime || new Date().toISOString(),

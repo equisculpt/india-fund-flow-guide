@@ -10,7 +10,7 @@ export const staticBlogs: StaticBlog[] = [
     tags: ['NBFC', 'Banking', 'Financial Services', 'Investment Analysis', 'India', '2025'],
     author: 'SIP Brewery Research Team',
     published_at: '2024-12-21T10:00:00Z',
-    featured_image_url: '/lovable-uploads/b16468ef-9745-48f9-a26e-c8c3869b2a13.png',
+    featured_image_url: '/og-image.png',
     route: '/blog/nbfc-sector-analysis-india-2025',
     slug: 'nbfc-sector-analysis-india-2025'
   },
@@ -22,7 +22,7 @@ export const staticBlogs: StaticBlog[] = [
     tags: ['IPO', 'HDB Financial', 'Investment', 'NBFC'],
     author: 'SIP Brewery Research Team',
     published_at: '2024-01-15T10:00:00Z',
-    featured_image_url: '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png',
+    featured_image_url: '/og-image.png',
     route: '/blog/hdb-financial-services-ipo-analysis',
     slug: 'hdb-financial-services-ipo-analysis'
   },
@@ -34,7 +34,7 @@ export const staticBlogs: StaticBlog[] = [
     tags: ['IPO', 'Veeda Clinical', 'Pharmaceutical', 'Research'],
     author: 'SIP Brewery Research Team',
     published_at: '2024-01-10T10:00:00Z',
-    featured_image_url: '/lovable-uploads/b16468ef-9745-48f9-a26e-c8c3869b2a13.png',
+    featured_image_url: '/og-image.png',
     route: '/blog/veeda-clinical-research-ipo-analysis',
     slug: 'veeda-clinical-research-ipo-analysis'
   },

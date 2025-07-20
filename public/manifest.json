@@ -13,20 +13,20 @@
   "categories": ["finance", "business"],
   "screenshots": [
     {
-      "src": "/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+      "src": "/og-image.png",
       "type": "image/png",
       "sizes": "1200x630"
     }
   ],
   "icons": [
     {
-      "src": "/lovable-uploads/9700dd1e-3e64-416b-9034-c04c3a23ad01.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/lovable-uploads/9700dd1e-3e64-416b-9034-c04c3a23ad01.png", 
+      "src": "/icon-512.png", 
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

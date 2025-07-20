@@ -54,7 +54,7 @@ const ConsolidatedSEOHead = ({
   }
   
   // Enhanced OG image with fallback
-  const defaultImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
+  const defaultImage = "https://sipbrewery.com/og-image.png";
   let finalOgImage = ogImage?.trim() || defaultImage;
   if (!finalOgImage.startsWith('http')) {
     finalOgImage = `https://sipbrewery.com${finalOgImage}`;
@@ -70,7 +70,7 @@ const ConsolidatedSEOHead = ({
       "url": "https://sipbrewery.com",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
+        "url": "https://sipbrewery.com/og-image.png",
         "width": 400,
         "height": 400
       },
@@ -131,7 +131,7 @@ const ConsolidatedSEOHead = ({
           "name": "SIP Brewery",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
+            "url": "https://sipbrewery.com/og-image.png"
           }
         },
         "mainEntityOfPage": {
