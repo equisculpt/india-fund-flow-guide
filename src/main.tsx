@@ -1,5 +1,5 @@
 
-import { StrictMode } from 'react'
+import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
@@ -15,9 +15,6 @@ const headerFallback = container.querySelector('.header-fallback');
 const heroPlaceholder = container.querySelector('.hero-placeholder');
 
 const root = createRoot(container);
-
-// Use startTransition for non-urgent renders
-import { startTransition } from 'react';
 
 // Performance monitoring
 if (typeof window !== 'undefined') {
@@ -42,11 +39,8 @@ if (typeof window !== 'undefined') {
   });
 }
 
-startTransition(() => {
-  root.render(
-    <App />
-  );
-});
+// Render the app immediately
+root.render(<App />);
 
 // Clean up placeholders after React takes over
 setTimeout(() => {

@@ -53,8 +53,7 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <BackendAuthProvider>
-        <TooltipProvider>
-          <Toaster />
+        <Toaster />
           <Sonner />
           <BrowserRouter>
             <Suspense fallback={<LoadingFallback />}>
@@ -96,7 +95,6 @@ const App = () => (
               </Routes>
             </Suspense>
             </BrowserRouter>
-          </TooltipProvider>
       </BackendAuthProvider>
     </QueryClientProvider>
   </HelmetProvider>
