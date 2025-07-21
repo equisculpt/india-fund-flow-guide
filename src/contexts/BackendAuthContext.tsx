@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { authService } from '@/services/api/authService';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface User {
   id: string;
@@ -46,21 +46,19 @@ interface BackendAuthContextType {
 
 const BackendAuthContext = React.createContext<BackendAuthContextType | undefined>(undefined);
 
-export const BackendAuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const BackendAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = React.useState<User | null>(null);
   const [profile, setProfile] = React.useState<UserProfile | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [isKYCRequired, setIsKYCRequired] = React.useState(false);
-  const { toast } = useToast();
 
-  const checkKYCStatus = (user: User | null) => {
+  const checkKYCStatus = React.useCallback((user: User | null) => {
     if (!user) return false;
     return user.kycStatus === 'PENDING' || user.kycStatus === 'REJECTED';
-  };
+  }, []);
 
-  const handleAuthError = (error: any) => {
+  const handleAuthError = React.useCallback((error: any) => {
     if (error?.status === 401) {
-      // Token expired, redirect to login
       authService.clearAuthToken();
       setUser(null);
       setProfile(null);
@@ -85,9 +83,9 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
       });
       return;
     }
-  };
+  }, []);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = React.useCallback(async () => {
     try {
       const profile = await authService.getProfile();
       setProfile(profile);
@@ -95,9 +93,9 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
       console.error('Error fetching profile:', error);
       handleAuthError(error);
     }
-  };
+  }, [handleAuthError]);
 
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = React.useCallback(async () => {
     try {
       if (!authService.isAuthenticated()) {
         setLoading(false);
@@ -122,11 +120,11 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchUserProfile, handleAuthError]);
 
   React.useEffect(() => {
     checkAuthStatus();
-  }, []);
+  }, [checkAuthStatus]);
 
   React.useEffect(() => {
     if (user) {
@@ -140,9 +138,9 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
         }
       }
     }
-  }, [user]);
+  }, [user, checkKYCStatus]);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = React.useCallback(async (email: string, password: string) => {
     try {
       setLoading(true);
       const response = await authService.login({ email, password });
@@ -163,9 +161,9 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchUserProfile, handleAuthError]);
 
-  const signUp = async (userData: {
+  const signUp = React.useCallback(async (userData: {
     name: string;
     email: string;
     phone: string;
@@ -194,9 +192,9 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchUserProfile, handleAuthError]);
 
-  const signOut = async () => {
+  const signOut = React.useCallback(async () => {
     try {
       await authService.logout();
       setUser(null);
@@ -212,13 +210,12 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
     } catch (error) {
       console.error('Sign out error:', error);
     }
-  };
+  }, []);
 
-  const updateKYCStatus = async (status: 'PENDING' | 'APPROVED' | 'REJECTED') => {
+  const updateKYCStatus = React.useCallback(async (status: 'PENDING' | 'APPROVED' | 'REJECTED') => {
     try {
       await authService.updateKYCStatus(status);
       
-      // Update user state
       if (user) {
         setUser({ ...user, kycStatus: status });
       }
@@ -237,27 +234,29 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
       console.error('Error updating KYC status:', error);
       handleAuthError(error);
     }
-  };
+  }, [user, handleAuthError]);
 
-  const refreshProfile = async () => {
+  const refreshProfile = React.useCallback(async () => {
     if (user) {
       await fetchUserProfile();
     }
-  };
+  }, [user, fetchUserProfile]);
+
+  const contextValue = React.useMemo(() => ({
+    user,
+    profile,
+    loading,
+    isKYCRequired,
+    isAuthenticated: !!user,
+    signIn,
+    signUp,
+    signOut,
+    updateKYCStatus,
+    refreshProfile,
+  }), [user, profile, loading, isKYCRequired, signIn, signUp, signOut, updateKYCStatus, refreshProfile]);
 
   return (
-    <BackendAuthContext.Provider value={{
-      user,
-      profile,
-      loading,
-      isKYCRequired,
-      isAuthenticated: !!user,
-      signIn,
-      signUp,
-      signOut,
-      updateKYCStatus,
-      refreshProfile,
-    }}>
+    <BackendAuthContext.Provider value={contextValue}>
       {children}
     </BackendAuthContext.Provider>
   );
