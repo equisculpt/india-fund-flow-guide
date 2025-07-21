@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useBackendAuth } from '@/contexts/BackendAuthContext';
 import { useNavigate } from 'react-router-dom';
+import OptimizedImage from '@/components/OptimizedImage';
+import asiBotAnimation from '@/assets/asi-brew-bot-hero-animation.png';
 
 const PremiumHero = () => {
   const [showUserTypeModal, setShowUserTypeModal] = useState(false);
@@ -84,53 +86,113 @@ const PremiumHero = () => {
           </div>
         </div>
 
-        {/* Sharp, Clean Hero Content */}
-        <div className="text-center max-w-6xl mx-auto mb-20">
-          {/* Sharp Headline with Gold + Neon Teal Gradient */}
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-heading font-black mb-8 leading-tight">
-            <span className="block mb-4" style={{ 
-              background: 'linear-gradient(90deg, #FFD700 0%, #00F5D4 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.4))'
+        {/* Hero Content with Left-Right Split */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
+          {/* Left Side - Text and CTA */}
+          <div className="text-left">
+            {/* Sharp Headline with Gold + Neon Teal Gradient */}
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight">
+              <span className="block mb-4" style={{ 
+                background: 'linear-gradient(90deg, #FFD700 0%, #00F5D4 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.4))'
+              }}>
+                Invest Smarter.
+              </span>
+              <span className="block" style={{ 
+                background: 'linear-gradient(90deg, #FFD700 0%, #00F5D4 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                filter: 'drop-shadow(0 0 20px rgba(0, 245, 212, 0.4))'
+              }}>
+                Grow Faster
+              </span>
+            </h1>
+            
+            {/* Clean Subheadline */}
+            <p className="text-xl md:text-2xl font-serif mb-8 leading-relaxed" style={{
+              color: '#FFD700',
+              textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
             }}>
-              Invest Smarter.
-            </span>
-            <span className="block" style={{ 
-              background: 'linear-gradient(90deg, #FFD700 0%, #00F5D4 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              filter: 'drop-shadow(0 0 20px rgba(0, 245, 212, 0.4))'
-            }}>
-              Grow Faster
-            </span>
-          </h1>
-          
-          {/* Clean Subheadline */}
-          <p className="text-2xl md:text-3xl font-serif mb-12 max-w-4xl mx-auto leading-relaxed" style={{
-            color: '#FFD700',
-            textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
-          }}>
-            India's Most Advanced Mutual Fund Platform
-          </p>
+              Meet ASI Brew Bot – Your AI-Powered SIP Assistant
+            </p>
 
-          {/* Glassmorphic CTA Button */}
-          <div className="flex justify-center mb-16">
-            <button 
-              onClick={handleInvestNow}
-              className="group px-12 py-6 text-xl font-bold font-heading rounded-full transition-all duration-500 hover:scale-105 relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1))',
-                border: '2px solid',
-                borderImage: 'linear-gradient(90deg, #FFD700, #00F5D4) 1',
-                color: '#FFD700',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)'
-              }}
-            >
-              <span className="relative z-10">Get Started</span>
-            </button>
+            <p className="text-lg text-white/80 mb-12 leading-relaxed max-w-2xl">
+              Dynamic SIP adapts intelligently to market conditions, helping you earn 
+              <span className="text-secondary font-semibold"> +9.4% higher growth</span> compared 
+              to traditional static SIP investments.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <button 
+                onClick={handleInvestNow}
+                className="group px-8 py-4 text-lg font-bold font-heading rounded-full transition-all duration-500 hover:scale-105 relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1))',
+                  border: '2px solid',
+                  borderImage: 'linear-gradient(90deg, #FFD700, #00F5D4) 1',
+                  color: '#FFD700',
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)'
+                }}
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  Start Dynamic SIP <ArrowRight className="h-5 w-5" />
+                </span>
+              </button>
+              
+              <button 
+                onClick={scrollToComparison}
+                className="px-8 py-4 text-lg font-semibold text-white/90 border border-white/30 rounded-full hover:bg-white/10 transition-all duration-300"
+              >
+                Compare Returns
+              </button>
+            </div>
+
+            {/* Key Stats */}
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div className="text-2xl font-bold text-secondary">₹9.3L</div>
+                <div className="text-sm text-white/70">Dynamic SIP</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-white/60">₹8.5L</div>
+                <div className="text-sm text-white/70">Static SIP</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-accent">+9.4%</div>
+                <div className="text-sm text-white/70">Better Returns</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Animation Video */}
+          <div className="relative">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 p-4">
+              <OptimizedImage
+                src={asiBotAnimation}
+                alt="ASI Brew Bot Dynamic SIP Animation"
+                width={800}
+                height={450}
+                className="w-full h-auto rounded-2xl"
+                priority={true}
+              />
+              
+              {/* Floating Elements */}
+              <div className="absolute top-8 left-8 bg-white/10 backdrop-blur-md rounded-lg px-4 py-2 border border-white/20">
+                <span className="text-white/90 text-sm font-medium">AI Analyzing 1M+ Data Points</span>
+              </div>
+              
+              <div className="absolute bottom-8 right-8 bg-gradient-to-r from-secondary/20 to-accent/20 backdrop-blur-md rounded-lg px-4 py-2 border border-secondary/30">
+                <span className="text-white text-sm font-medium">Dynamic SIP in Action</span>
+              </div>
+            </div>
+            
+            {/* Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-transparent to-accent/20 rounded-3xl blur-2xl -z-10"></div>
           </div>
         </div>
 
