@@ -44,9 +44,7 @@ if (typeof window !== 'undefined') {
 
 startTransition(() => {
   root.render(
-    <StrictMode>
-      <App />
-    </StrictMode>
+    <App />
   );
 });
 

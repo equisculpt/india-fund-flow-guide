@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as React from 'react';
 import { authService } from '@/services/api/authService';
 import { useToast } from '@/hooks/use-toast';
 
@@ -44,13 +44,13 @@ interface BackendAuthContextType {
   refreshProfile: () => Promise<void>;
 }
 
-const BackendAuthContext = createContext<BackendAuthContextType | undefined>(undefined);
+const BackendAuthContext = React.createContext<BackendAuthContextType | undefined>(undefined);
 
 export const BackendAuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isKYCRequired, setIsKYCRequired] = useState(false);
+  const [user, setUser] = React.useState<User | null>(null);
+  const [profile, setProfile] = React.useState<UserProfile | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [isKYCRequired, setIsKYCRequired] = React.useState(false);
   const { toast } = useToast();
 
   const checkKYCStatus = (user: User | null) => {
@@ -124,11 +124,11 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     checkAuthStatus();
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (user) {
       const kycRequired = checkKYCStatus(user);
       setIsKYCRequired(kycRequired);
@@ -264,7 +264,7 @@ export const BackendAuthProvider = ({ children }: { children: React.ReactNode })
 };
 
 export const useBackendAuth = () => {
-  const context = useContext(BackendAuthContext);
+  const context = React.useContext(BackendAuthContext);
   if (!context) {
     throw new Error('useBackendAuth must be used within a BackendAuthProvider');
   }
