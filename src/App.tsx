@@ -1,19 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-// Simple test component without hooks
-const SimpleHome = () => (
-  <div style={{ padding: '20px', textAlign: 'center' }}>
+// Minimal app without hooks to test React loading
+const App = () => (
+  <div style={{ padding: '20px', textAlign: 'center', fontFamily: 'system-ui' }}>
     <h1>SIP Brewery</h1>
     <p>Welcome to India's #1 Mutual Fund Platform</p>
+    <p style={{ color: 'green', marginTop: '20px' }}>✓ React is working!</p>
   </div>
-);
-
-const App = () => (
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<SimpleHome />} />
-    </Routes>
-  </BrowserRouter>
 );
 
 export default App;
