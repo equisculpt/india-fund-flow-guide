@@ -17,7 +17,7 @@ const MobilePerformanceOptimizer = () => {
 
       // Preload critical images
       const criticalImages = [
-        '/og-image.png'
+        '/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png'
       ];
       
       criticalImages.forEach(src => {

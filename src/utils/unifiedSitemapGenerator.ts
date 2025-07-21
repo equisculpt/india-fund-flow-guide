@@ -32,7 +32,7 @@ class UnifiedSitemapGenerator {
         changefreq: 'daily',
         priority: '1.0',
         images: [{
-          loc: `${this.baseUrl}/og-image.png`,
+          loc: `${this.baseUrl}/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png`,
           title: 'SIP Brewery - Mutual Fund Investment Platform',
           caption: 'India\'s leading SEBI registered mutual fund investment platform'
         }]
@@ -97,7 +97,7 @@ class UnifiedSitemapGenerator {
         changefreq: 'weekly',
         priority: '0.8',
         images: [{
-          loc: `${this.baseUrl}/og-image.png`,
+          loc: `${this.baseUrl}/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png`,
           title: 'HDB Financial Services IPO Analysis',
           caption: 'Complete financial review and SWOT analysis of HDB Financial Services IPO'
         }]
@@ -108,7 +108,7 @@ class UnifiedSitemapGenerator {
         changefreq: 'weekly',
         priority: '0.8',
         images: [{
-          loc: `${this.baseUrl}/og-image.png`,
+          loc: `${this.baseUrl}/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png`,
           title: 'Veeda Clinical Research IPO Analysis',
           caption: 'Complete SWOT and financial review of Veeda Clinical Research IPO'
         }]

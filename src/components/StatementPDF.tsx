@@ -3,7 +3,7 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Title, C
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import BreweryLogo from './BreweryLogo';
-import sipBreweryIcon from '../assets/sip-brewery-icon.png';
+import sipBreweryIcon from '/lovable-uploads/884b7fa3-86c8-4d42-8abf-8bd2cc7fcddb.png';
 
 // Register Chart.js components
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale);

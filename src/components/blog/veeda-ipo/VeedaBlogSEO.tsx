@@ -7,7 +7,7 @@ const VeedaBlogSEO = () => {
   const title = "Veeda Clinical Research IPO Analysis 2024 | Complete SWOT & Financial Review | SIP Brewery";
   const description = "In-depth analysis of Veeda Clinical Research IPO with financial charts, SWOT analysis, and key insights. Educational content only - not investment advice. Get complete IPO review here.";
   const keywords = "Veeda Clinical Research IPO, CRO IPO India, clinical research IPO analysis, healthcare IPO 2024, biotech IPO review, SEBI compliant IPO analysis, contract research organization stocks";
-  const ogImage = "https://sipbrewery.com/og-image.png";
+  const ogImage = "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png";
   const publishedTime = "2025-06-21T10:00:00+05:30";
   const modifiedTime = "2025-06-21T10:00:00+05:30";
 

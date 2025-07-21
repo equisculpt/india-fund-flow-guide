@@ -51,7 +51,7 @@ const Index = () => {
             description="Start your mutual fund investment journey with SIP Brewery. SEBI registered platform offering 3000+ mutual funds, AI-powered recommendations, and expert guidance. Minimum SIP ₹500. Join 1M+ investors today."
             keywords="mutual funds india, SIP investment, SEBI registered platform, best mutual funds 2025, mutual fund calculator, SIP calculator, investment advisor, AI mutual fund recommendations, direct mutual funds, regular mutual funds"
             canonicalUrl="https://sipbrewery.com/"
-            ogImage="https://sipbrewery.com/og-image.png"
+            ogImage="https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png"
             ogType="website"
             breadcrumbs={breadcrumbs}
             faqData={homepageFAQData}
@@ -63,7 +63,7 @@ const Index = () => {
               "url": "https://sipbrewery.com",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://sipbrewery.com/og-image.png",
+                "url": "https://sipbrewery.com/lovable-uploads/99e2a29d-6fe9-4d36-bd76-18218c48103e.png",
                 "width": 400,
                 "height": 400
               },
