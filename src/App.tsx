@@ -53,11 +53,8 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <BackendAuthProvider>
-        <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
+        <BrowserRouter>
+          <Routes>
                 {/* Authentication Routes */}
                 <Route path="/login" element={<BackendLogin />} />
                 
@@ -92,9 +89,8 @@ const App = () => (
                 <Route path="/blog/veeda-clinical-research-ipo" element={<VeedaClinicalResearchIPOBlog />} />
                 <Route path="/blog/nbfc-sector-deep-dive" element={<NBFCSectorDeepDiveBlog />} />
                 <Route path="/blog/how-fund-managers-make-money" element={<HowFundManagersMakeMoneyBlog />} />
-              </Routes>
-            </Suspense>
-            </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
       </BackendAuthProvider>
     </QueryClientProvider>
   </HelmetProvider>
