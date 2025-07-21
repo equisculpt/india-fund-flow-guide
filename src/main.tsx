@@ -1,5 +1,5 @@
 
-import React, { StrictMode, startTransition } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
@@ -17,6 +17,7 @@ const heroPlaceholder = container.querySelector('.hero-placeholder');
 const root = createRoot(container);
 
 // Use startTransition for non-urgent renders
+import { startTransition } from 'react';
 
 // Performance monitoring
 if (typeof window !== 'undefined') {
