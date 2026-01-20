@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { mockProfiles, mockInvestments } from '@/services/mockDatabase';
 import { Search, Phone, AlertCircle } from 'lucide-react';
 
 interface UserData {
@@ -45,123 +45,48 @@ const UserManagementTab = () => {
   }, [searchTerm, users]);
 
   const fetchUsers = async () => {
-    try {
-      console.log('Fetching users...');
-      setError(null);
+    setError(null);
+    
+    // Use mock data for prototype
+    const customers = mockProfiles.filter(p => p.user_type === 'customer');
+    const agents = mockProfiles.filter(p => p.user_type === 'agent');
+    
+    const usersWithDetails: UserData[] = customers.map(customer => {
+      // Find agent name
+      const agent = agents.find(a => a.id === 'agent-001'); // Mock assignment
       
-      // Try a simple query first to test if policies work
-      const { data: customers, error: customersError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_type', 'customer')
-        .order('created_at', { ascending: false });
-
-      if (customersError) {
-        console.error('Customers error:', customersError);
-        setError(`Failed to fetch users: ${customersError.message}`);
-        
-        // Show a more user-friendly error
-        if (customersError.message.includes('infinite recursion')) {
-          setError('Database policy issue detected. Admin access may be limited. Please contact system administrator.');
-        }
-        
-        toast({
-          title: "Error",
-          description: "Failed to fetch users due to database configuration issues",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-
-      console.log('Customers fetched successfully:', customers?.length || 0);
-
-      if (!customers || customers.length === 0) {
-        setUsers([]);
-        setLoading(false);
-        return;
-      }
-
-      // Process users with additional data
-      const usersWithDetails = await Promise.all(
-        customers.map(async (customer) => {
-          let agentName = null;
-          let totalInvestments = 0;
-          
-          // Try to get agent name if agent_id exists
-          if (customer.agent_id) {
-            try {
-              const { data: agent } = await supabase
-                .from('profiles')
-                .select('full_name')
-                .eq('id', customer.agent_id)
-                .single();
-              
-              agentName = agent?.full_name;
-            } catch (error) {
-              console.warn('Could not fetch agent name:', error);
-            }
-          }
-
-          // Try to get total investments
-          try {
-            const { data: investments } = await supabase
-              .from('investments')
-              .select('total_invested')
-              .eq('user_id', customer.id);
-
-            totalInvestments = investments?.reduce((sum, inv) => sum + (inv.total_invested || 0), 0) || 0;
-          } catch (error) {
-            console.warn('Could not fetch investments for user:', customer.id, error);
-          }
-
-          return {
-            ...customer,
-            agent_name: agentName,
-            total_investments: totalInvestments
-          };
-        })
-      );
-
-      setUsers(usersWithDetails);
-      console.log('Users processed successfully:', usersWithDetails.length);
+      // Calculate total investments
+      const userInvestments = mockInvestments.filter(inv => inv.user_id === customer.id);
+      const totalInvestments = userInvestments.reduce((sum, inv) => sum + inv.total_invested, 0);
       
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setError(`Unexpected error: ${error.message}`);
-      toast({
-        title: "Error",
-        description: "Failed to fetch users",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+      return {
+        id: customer.id,
+        full_name: customer.full_name,
+        phone: customer.phone,
+        pan_number: 'ABCDE1234F', // Mock PAN
+        kyc_status: customer.kyc_status,
+        user_type: customer.user_type,
+        is_active: customer.is_active,
+        created_at: customer.created_at,
+        agent_name: agent?.full_name || 'Direct',
+        total_investments: totalInvestments
+      };
+    });
+
+    setUsers(usersWithDetails);
+    setLoading(false);
   };
 
   const updateUserStatus = async (userId: string, isActive: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ is_active: isActive })
-        .eq('id', userId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `User ${isActive ? 'activated' : 'deactivated'} successfully`,
-      });
-
-      fetchUsers();
-    } catch (error) {
-      console.error('Error updating user status:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update user status",
-        variant: "destructive",
-      });
-    }
+    // Mock update for prototype
+    setUsers(prev => prev.map(user => 
+      user.id === userId ? { ...user, is_active: isActive } : user
+    ));
+    
+    toast({
+      title: "Success",
+      description: `User ${isActive ? 'activated' : 'deactivated'} successfully`,
+    });
   };
 
   if (loading) {

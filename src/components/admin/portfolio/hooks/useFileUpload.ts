@@ -1,7 +1,6 @@
 
 import { useState, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 interface UploadedFile {
   id: string;
@@ -65,54 +64,24 @@ export const useFileUpload = () => {
     try {
       for (const file of validFiles) {
         setUploadedFiles(prev => prev.map(f => 
-          f.id === file.id ? { ...f, status: 'uploading' } : f
+          f.id === file.id ? { ...f, status: 'uploading' as const } : f
         ));
 
-        try {
-          const fileReader = new FileReader();
-          const fileData = await new Promise<string>((resolve, reject) => {
-            fileReader.onload = () => resolve(fileReader.result as string);
-            fileReader.onerror = reject;
-            fileReader.readAsDataURL(file.file);
-          });
+        // Simulate upload delay for prototype
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-          const { error } = await supabase
-            .from('amc_portfolio_files')
-            .insert({
-              amc_name: file.amc_name,
-              portfolio_date: file.portfolio_date,
-              file_name: file.file.name,
-              file_type: file.file.name.toLowerCase().endsWith('.pdf') ? 'PDF' : 'XLSX',
-              file_size: file.file.size,
-              file_data: fileData,
-              upload_status: 'uploaded'
-            });
+        setUploadedFiles(prev => prev.map(f => 
+          f.id === file.id ? { ...f, status: 'success' as const } : f
+        ));
 
-          if (error) throw error;
-
-          setUploadedFiles(prev => prev.map(f => 
-            f.id === file.id ? { ...f, status: 'success' } : f
-          ));
-
-          toast({
-            title: "Success",
-            description: `${file.amc_name} portfolio uploaded successfully`,
-            duration: 2000,
-          });
-
-        } catch (error) {
-          console.error('Error uploading file:', error);
-          setUploadedFiles(prev => prev.map(f => 
-            f.id === file.id ? { 
-              ...f, 
-              status: 'error',
-              error_message: error instanceof Error ? error.message : 'Upload failed'
-            } : f
-          ));
-        }
+        toast({
+          title: "Success",
+          description: `${file.amc_name} portfolio uploaded successfully`,
+          duration: 2000,
+        });
       }
 
-      const successCount = uploadedFiles.filter(f => f.status === 'success').length;
+      const successCount = validFiles.length;
       toast({
         title: "Processing Complete",
         description: `Uploaded ${successCount} files successfully`,

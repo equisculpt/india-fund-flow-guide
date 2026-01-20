@@ -7,8 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { PlusCircle, MinusCircle, AlertCircle } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 import { toast } from 'sonner';
 
 interface CreateBlogModalProps {
@@ -17,7 +15,6 @@ interface CreateBlogModalProps {
 }
 
 const CreateBlogModal = ({ isOpen, onClose }: CreateBlogModalProps) => {
-  const { user } = useSupabaseAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [excerpt, setExcerpt] = useState('');
@@ -54,35 +51,18 @@ const CreateBlogModal = ({ isOpen, onClose }: CreateBlogModalProps) => {
 
     setIsSubmitting(true);
 
-    try {
-      const { data, error } = await supabase.from('blog_posts').insert({
-        title,
-        content,
-        excerpt: excerpt || content.substring(0, 150) + '...',
-        category,
-        featured_image_url: imageUrl,
-        author_id: user?.id,
-        tags,
-        status: 'draft',
-        moderation_status: 'pending',
-      });
+    // Mock submit for prototype
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-      if (error) throw error;
-
-      toast.success('Blog post submitted for review!');
-      setTitle('');
-      setContent('');
-      setExcerpt('');
-      setCategory('');
-      setImageUrl('');
-      setTags([]);
-      onClose();
-    } catch (error) {
-      console.error('Error submitting blog post:', error);
-      toast.error('Failed to submit blog post');
-    } finally {
-      setIsSubmitting(false);
-    }
+    toast.success('Blog post submitted for review!');
+    setTitle('');
+    setContent('');
+    setExcerpt('');
+    setCategory('');
+    setImageUrl('');
+    setTags([]);
+    onClose();
+    setIsSubmitting(false);
   };
 
   return (

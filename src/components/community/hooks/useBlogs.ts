@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { mockBlogPosts, mockProfiles } from '@/services/mockDatabase';
 import { BlogPost } from '../types/blogTypes';
 
 export const useBlogs = (category: string) => {
@@ -9,41 +8,38 @@ export const useBlogs = (category: string) => {
   const [loading, setLoading] = useState(true);
 
   const fetchBlogs = async () => {
-    try {
-      let query = supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('status', 'published')
-        .eq('moderation_status', 'approved')
-        .order('published_at', { ascending: false });
+    let filteredBlogs = mockBlogPosts.filter(b => 
+      b.status === 'published' && b.moderation_status === 'approved'
+    );
 
-      if (category !== 'all') {
-        query = query.eq('category', category);
-      }
-
-      const { data: blogsData, error } = await query;
-
-      if (error) {
-        console.error('Error fetching blogs:', error);
-        // For now, just set empty array and don't fetch profiles due to RLS issues
-        setBlogs([]);
-        return;
-      }
-
-      // Skip profile fetching due to RLS policy issues
-      // Just use the blog data without profile information
-      const blogsWithoutProfiles = (blogsData || []).map(blog => ({
-        ...blog,
-        profiles: null
-      }));
-
-      setBlogs(blogsWithoutProfiles);
-    } catch (error) {
-      console.error('Error fetching blogs:', error);
-      setBlogs([]);
-    } finally {
-      setLoading(false);
+    if (category !== 'all') {
+      filteredBlogs = filteredBlogs.filter(b => b.category === category);
     }
+
+    const blogsWithProfiles: BlogPost[] = filteredBlogs.map(blog => {
+      const profile = mockProfiles.find(p => p.id === blog.author_id);
+      return {
+        id: blog.id,
+        title: blog.title,
+        content: blog.content,
+        excerpt: blog.content.substring(0, 150) + '...',
+        category: blog.category,
+        featured_image_url: '',
+        author_id: blog.author_id,
+        tags: blog.tags,
+        moderation_status: blog.moderation_status,
+        views_count: 250,
+        published_at: blog.published_at || '',
+        created_at: blog.created_at,
+        edited_by_admin: false,
+        admin_edited_title: null,
+        admin_edited_content: null,
+        profiles: profile ? { full_name: profile.full_name } : null
+      };
+    });
+
+    setBlogs(blogsWithProfiles);
+    setLoading(false);
   };
 
   useEffect(() => {

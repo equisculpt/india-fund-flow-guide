@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
 import { Shield, AlertTriangle, Activity, Users, Clock, Eye, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -24,6 +23,37 @@ interface SecurityStats {
   activeAdmins: number;
 }
 
+// Mock security events for prototype
+const mockSecurityEvents: SecurityEvent[] = [
+  {
+    id: 'event-001',
+    event_type: 'LOGIN_SUCCESS',
+    user_email: 'admin@sipbrewery.com',
+    ip_address: '192.168.1.100',
+    success: true,
+    created_at: new Date().toISOString(),
+    details: { browser: 'Chrome', os: 'Windows' }
+  },
+  {
+    id: 'event-002',
+    event_type: 'LOGIN_FAILED',
+    user_email: 'unknown@test.com',
+    ip_address: '10.0.0.50',
+    success: false,
+    created_at: new Date(Date.now() - 3600000).toISOString(),
+    details: { reason: 'Invalid credentials' }
+  },
+  {
+    id: 'event-003',
+    event_type: 'SESSION_CREATED',
+    user_email: 'amit.patel@agent.com',
+    ip_address: '192.168.1.105',
+    success: true,
+    created_at: new Date(Date.now() - 7200000).toISOString(),
+    details: { session_duration: '2h' }
+  }
+];
+
 const SecurityDashboard = () => {
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [stats, setStats] = useState<SecurityStats>({
@@ -40,69 +70,38 @@ const SecurityDashboard = () => {
   }, []);
 
   const fetchSecurityData = async () => {
-    try {
-      setLoading(true);
+    setLoading(true);
+    
+    // Use mock data for prototype
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    setSecurityEvents(mockSecurityEvents);
+    
+    const totalEvents = mockSecurityEvents.length;
+    const failedLogins = mockSecurityEvents.filter(e => 
+      e.event_type.includes('LOGIN') && !e.success
+    ).length;
+    const successfulLogins = mockSecurityEvents.filter(e => 
+      e.event_type === 'LOGIN_SUCCESS'
+    ).length;
 
-      // Fetch recent security events
-      const { data: events, error: eventsError } = await supabase
-        .from('security_audit_log')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50);
-
-      if (eventsError) throw eventsError;
-
-      setSecurityEvents(events || []);
-
-      // Calculate stats
-      const totalEvents = events?.length || 0;
-      const failedLogins = events?.filter(e => 
-        e.event_type.includes('LOGIN') && !e.success
-      ).length || 0;
-      const successfulLogins = events?.filter(e => 
-        e.event_type === 'LOGIN_SUCCESS'
-      ).length || 0;
-
-      // Get active admin sessions count
-      const { count: activeAdmins } = await supabase
-        .from('admin_sessions')
-        .select('*', { count: 'exact', head: true })
-        .gt('expires_at', new Date().toISOString());
-
-      setStats({
-        totalEvents,
-        failedLogins,
-        successfulLogins,
-        activeAdmins: activeAdmins || 0
-      });
-
-    } catch (error) {
-      console.error('Error fetching security data:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch security data",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+    setStats({
+      totalEvents,
+      failedLogins,
+      successfulLogins,
+      activeAdmins: 3
+    });
+    
+    setLoading(false);
   };
 
   const cleanupSessions = async () => {
-    try {
-      await supabase.rpc('cleanup_expired_sessions');
-      toast({
-        title: "Success",
-        description: "Expired sessions cleaned up",
-      });
-      fetchSecurityData();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to cleanup sessions",
-        variant: "destructive",
-      });
-    }
+    // Mock cleanup for prototype
+    toast({
+      title: "Success",
+      description: "Expired sessions cleaned up",
+    });
+    fetchSecurityData();
   };
 
   const getEventBadgeColor = (eventType: string, success: boolean) => {

@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { Search, Edit, Plus, Upload } from 'lucide-react';
+import { mockMutualFunds, MutualFund } from '@/services/mockDatabase';
+import { Search, Edit, Plus } from 'lucide-react';
 
 interface MutualFundData {
   id: string;
@@ -54,107 +54,75 @@ const MutualFundManagementTab = () => {
   }, [searchTerm, funds]);
 
   const fetchFunds = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('mutual_funds')
-        .select('*')
-        .order('scheme_name');
-
-      if (error) throw error;
-      setFunds(data || []);
-    } catch (error) {
-      console.error('Error fetching funds:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch mutual funds",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+    // Use mock data for prototype
+    const mockData: MutualFundData[] = mockMutualFunds.map(fund => ({
+      id: fund.id,
+      scheme_code: fund.scheme_code,
+      scheme_name: fund.scheme_name,
+      amc_name: fund.amc_name,
+      category: fund.category,
+      nav: fund.nav,
+      commission_rate: fund.commission_rate,
+      is_active: fund.is_active,
+      created_at: new Date().toISOString()
+    }));
+    setFunds(mockData);
+    setLoading(false);
   };
 
   const updateCommissionRate = async (fundId: string, newRate: number) => {
-    try {
-      const { error } = await supabase
-        .from('mutual_funds')
-        .update({ commission_rate: newRate })
-        .eq('id', fundId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Commission rate updated successfully. This will affect new investments.",
-      });
-
-      fetchFunds();
-      setEditingFund(null);
-    } catch (error) {
-      console.error('Error updating commission rate:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update commission rate",
-        variant: "destructive",
-      });
-    }
+    // Mock update for prototype
+    setFunds(prev => prev.map(fund => 
+      fund.id === fundId ? { ...fund, commission_rate: newRate } : fund
+    ));
+    
+    toast({
+      title: "Success",
+      description: "Commission rate updated successfully. This will affect new investments.",
+    });
+    setEditingFund(null);
   };
 
   const addNewFund = async () => {
-    try {
-      const { error } = await supabase
-        .from('mutual_funds')
-        .insert(newFund);
+    // Mock add for prototype
+    const newFundData: MutualFundData = {
+      id: `fund-${Date.now()}`,
+      scheme_code: newFund.scheme_code,
+      scheme_name: newFund.scheme_name,
+      amc_name: newFund.amc_name,
+      category: newFund.category,
+      commission_rate: newFund.commission_rate,
+      is_active: true,
+      created_at: new Date().toISOString()
+    };
+    
+    setFunds(prev => [...prev, newFundData]);
+    
+    toast({
+      title: "Success",
+      description: "New mutual fund added successfully",
+    });
 
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "New mutual fund added successfully",
-      });
-
-      fetchFunds();
-      setShowAddDialog(false);
-      setNewFund({
-        scheme_code: '',
-        scheme_name: '',
-        amc_name: '',
-        category: '',
-        commission_rate: 0,
-      });
-    } catch (error) {
-      console.error('Error adding fund:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add mutual fund",
-        variant: "destructive",
-      });
-    }
+    setShowAddDialog(false);
+    setNewFund({
+      scheme_code: '',
+      scheme_name: '',
+      amc_name: '',
+      category: '',
+      commission_rate: 0,
+    });
   };
 
   const toggleFundStatus = async (fundId: string, isActive: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('mutual_funds')
-        .update({ is_active: !isActive })
-        .eq('id', fundId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `Fund ${!isActive ? 'activated' : 'deactivated'} successfully`,
-      });
-
-      fetchFunds();
-    } catch (error) {
-      console.error('Error updating fund status:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update fund status",
-        variant: "destructive",
-      });
-    }
+    // Mock toggle for prototype
+    setFunds(prev => prev.map(fund => 
+      fund.id === fundId ? { ...fund, is_active: !isActive } : fund
+    ));
+    
+    toast({
+      title: "Success",
+      description: `Fund ${!isActive ? 'activated' : 'deactivated'} successfully`,
+    });
   };
 
   if (loading) {

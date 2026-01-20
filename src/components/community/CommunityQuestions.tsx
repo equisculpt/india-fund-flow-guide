@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, Eye, ThumbsUp, CheckCircle, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { mockCommunityQuestions, mockProfiles } from '@/services/mockDatabase';
 
 interface Question {
   id: string;
@@ -35,45 +34,34 @@ const CommunityQuestions = () => {
   const navigate = useNavigate();
 
   const fetchQuestions = async () => {
-    try {
-      let query = supabase
-        .from('community_questions')
-        .select(`
-          *,
-          community_answers(id, is_expert_answer)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (filter === 'unanswered') {
-        query = query.eq('is_answered', false);
-      } else if (filter === 'expert') {
-        query = query.eq('expert_only', true);
-      }
-
-      const { data: questionsData, error } = await query;
-
-      if (error) throw error;
-
-      // Fetch profiles separately
-      const userIds = questionsData?.map(q => q.user_id) || [];
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', userIds);
-
-      // Combine data with profiles
-      const questionsWithProfiles = (questionsData || []).map(question => ({
-        ...question,
-        profiles: profiles?.find(p => p.id === question.user_id) || null
-      }));
-
-      setQuestions(questionsWithProfiles);
-    } catch (error) {
-      console.error('Error fetching questions:', error);
-      toast.error('Failed to load questions');
-    } finally {
-      setLoading(false);
+    // Use mock data for prototype
+    let filteredQuestions = mockCommunityQuestions;
+    
+    if (filter === 'unanswered') {
+      filteredQuestions = filteredQuestions.filter(q => q.status !== 'answered');
     }
+
+    const questionsWithProfiles: Question[] = filteredQuestions.map(q => {
+      const profile = mockProfiles.find(p => p.id === q.user_id);
+      return {
+        id: q.id,
+        title: q.title,
+        content: q.content,
+        category: q.category,
+        expert_only: false,
+        is_answered: q.status === 'answered',
+        views_count: 150,
+        upvotes_count: q.votes,
+        status: q.status,
+        created_at: q.created_at,
+        user_id: q.user_id,
+        profiles: profile ? { full_name: profile.full_name } : null,
+        community_answers: Array(q.answers_count).fill({ id: '', is_expert_answer: false })
+      };
+    });
+
+    setQuestions(questionsWithProfiles);
+    setLoading(false);
   };
 
   useEffect(() => {
