@@ -1,5 +1,4 @@
 
-import { supabase } from "@/integrations/supabase/client";
 import { ExtendedNAVHistory } from './types';
 
 export class NAVHistoryService {
@@ -7,59 +6,8 @@ export class NAVHistoryService {
     try {
       console.log(`Fetching extended NAV history for scheme: ${schemeCode}, period: ${period}`);
       
-      // Calculate date range based on period
-      const endDate = new Date();
-      const startDate = new Date();
-      
-      switch (period) {
-        case '1W':
-          startDate.setDate(endDate.getDate() - 7);
-          break;
-        case '1M':
-          startDate.setMonth(endDate.getMonth() - 1);
-          break;
-        case '3M':
-          startDate.setMonth(endDate.getMonth() - 3);
-          break;
-        case '6M':
-          startDate.setMonth(endDate.getMonth() - 6);
-          break;
-        case '1Y':
-          startDate.setFullYear(endDate.getFullYear() - 1);
-          break;
-        case '3Y':
-          startDate.setFullYear(endDate.getFullYear() - 3);
-          break;
-        case '5Y':
-          startDate.setFullYear(endDate.getFullYear() - 5);
-          break;
-        case '10Y':
-          startDate.setFullYear(endDate.getFullYear() - 10);
-          break;
-        default:
-          startDate.setFullYear(endDate.getFullYear() - 1);
-      }
-
-      // Try to fetch from database first - using the correct table name
-      const { data, error } = await supabase
-        .from('extended_nav_history')
-        .select('nav_date, nav_value, scheme_code')
-        .eq('scheme_code', schemeCode)
-        .gte('nav_date', startDate.toISOString().split('T')[0])
-        .lte('nav_date', endDate.toISOString().split('T')[0])
-        .order('nav_date', { ascending: true });
-
-      if (error) {
-        console.error('Error fetching NAV history:', error);
-        return this.generateMockNAVHistory(schemeCode, period);
-      }
-
-      if (!data || data.length === 0) {
-        console.log('No NAV history found in database, generating mock data');
-        return this.generateMockNAVHistory(schemeCode, period);
-      }
-
-      return data as ExtendedNAVHistory[];
+      // For prototype, always use mock data
+      return this.generateMockNAVHistory(schemeCode, period);
     } catch (error) {
       console.error('Error in getExtendedNAVHistory:', error);
       return this.generateMockNAVHistory(schemeCode, period);

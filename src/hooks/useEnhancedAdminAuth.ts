@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 interface AdminUser {
   id: string;
@@ -14,6 +13,25 @@ interface SecurityContext {
   userAgent: string;
   timestamp: string;
 }
+
+// Mock admin users for prototype
+const mockAdminUsers: AdminUser[] = [
+  {
+    id: 'admin-1',
+    email: 'admin@sipbrewery.com',
+    full_name: 'Admin User',
+    is_active: true
+  }
+];
+
+// Mock whitelisted emails
+const mockAdminWhitelist = ['admin@sipbrewery.com'];
+
+// Mock sessions storage
+const mockAdminSessions: Record<string, { admin_user_id: string; expires_at: string; ip_address: string; user_agent: string }> = {};
+
+// Mock security logs
+const mockSecurityLogs: any[] = [];
 
 export const useEnhancedAdminAuth = () => {
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
@@ -42,14 +60,16 @@ export const useEnhancedAdminAuth = () => {
   ) => {
     try {
       const context = getSecurityContext();
-      await supabase.rpc('log_security_event', {
-        event_type_param: eventType,
-        user_email_param: userEmail,
-        ip_address_param: context.ipAddress,
-        user_agent_param: context.userAgent,
-        success_param: success,
-        details_param: details ? JSON.stringify(details) : null
+      mockSecurityLogs.push({
+        event_type: eventType,
+        user_email: userEmail,
+        ip_address: context.ipAddress,
+        user_agent: context.userAgent,
+        success,
+        details,
+        timestamp: context.timestamp
       });
+      console.log('Security event logged:', eventType, success);
     } catch (error) {
       console.error('Failed to log security event:', error);
     }
@@ -79,16 +99,7 @@ export const useEnhancedAdminAuth = () => {
 
   const validateAdminWhitelist = async (email: string): Promise<boolean> => {
     try {
-      const { data, error } = await supabase.rpc('validate_admin_access', {
-        admin_email: email
-      });
-      
-      if (error) {
-        console.error('Whitelist validation error:', error);
-        return false;
-      }
-      
-      return data === true;
+      return mockAdminWhitelist.includes(email);
     } catch (error) {
       console.error('Failed to validate admin whitelist:', error);
       return false;
@@ -105,37 +116,24 @@ export const useEnhancedAdminAuth = () => {
 
       console.log('Checking admin session with token:', sessionToken);
 
-      // Clean expired sessions first
-      await supabase.rpc('cleanup_expired_sessions');
-
-      const { data: sessionData, error: sessionError } = await supabase
-        .from('admin_sessions')
-        .select(`
-          admin_user_id,
-          expires_at,
-          ip_address,
-          admin_users!admin_sessions_admin_user_id_fkey (
-            id,
-            email,
-            full_name,
-            is_active
-          )
-        `)
-        .eq('session_token', sessionToken)
-        .gt('expires_at', new Date().toISOString())
-        .single();
-
-      if (sessionError || !sessionData) {
-        console.log('Session validation failed:', sessionError);
+      // Check mock session
+      const session = mockAdminSessions[sessionToken];
+      if (!session || new Date(session.expires_at) < new Date()) {
+        console.log('Session validation failed');
         localStorage.removeItem('admin_session_token');
         setAdminUser(null);
         await logSecurityEvent('SESSION_VALIDATION', undefined, false, { 
           reason: 'Invalid or expired session' 
         });
       } else {
-        console.log('Session validated successfully:', sessionData);
-        setAdminUser(sessionData.admin_users as AdminUser);
-        await logSecurityEvent('SESSION_VALIDATION', sessionData.admin_users.email, true);
+        const user = mockAdminUsers.find(u => u.id === session.admin_user_id);
+        if (user) {
+          console.log('Session validated successfully:', user);
+          setAdminUser(user);
+          await logSecurityEvent('SESSION_VALIDATION', user.email, true);
+        } else {
+          setAdminUser(null);
+        }
       }
     } catch (error) {
       console.error('Error checking admin session:', error);
@@ -175,17 +173,12 @@ export const useEnhancedAdminAuth = () => {
         };
       }
 
-      // Simple password check for demo (in production, use proper hashing)
+      // Simple password check for demo
       if (email === 'admin@sipbrewery.com' && password === 'SecureAdmin2024!') {
-        const { data: adminUser, error: adminError } = await supabase
-          .from('admin_users')
-          .select('id, email, full_name, is_active')
-          .eq('email', email)
-          .eq('is_active', true)
-          .single();
+        const adminUser = mockAdminUsers.find(u => u.email === email && u.is_active);
 
-        if (adminError || !adminUser) {
-          console.error('Admin user lookup failed:', adminError);
+        if (!adminUser) {
+          console.error('Admin user lookup failed');
           await logSecurityEvent('LOGIN_ATTEMPT', email, false, { 
             reason: 'Admin user not found or inactive' 
           });
@@ -198,39 +191,21 @@ export const useEnhancedAdminAuth = () => {
 
         const context = getSecurityContext();
 
-        const { data: sessionData, error: sessionError } = await supabase
-          .from('admin_sessions')
-          .insert({
-            admin_user_id: adminUser.id,
-            session_token: sessionToken,
-            expires_at: expiresAt.toISOString(),
-            ip_address: context.ipAddress,
-            user_agent: context.userAgent
-          })
-          .select()
-          .single();
+        // Store mock session
+        mockAdminSessions[sessionToken] = {
+          admin_user_id: adminUser.id,
+          expires_at: expiresAt.toISOString(),
+          ip_address: context.ipAddress,
+          user_agent: context.userAgent
+        };
 
-        if (sessionError) {
-          console.error('Session creation failed:', sessionError);
-          await logSecurityEvent('LOGIN_ATTEMPT', email, false, { 
-            reason: 'Failed to create session' 
-          });
-          return { success: false, error: 'Failed to create session' };
-        }
-
-        console.log('Session created successfully:', sessionData);
+        console.log('Session created successfully');
         localStorage.setItem('admin_session_token', sessionToken);
         localStorage.removeItem('admin_login_attempts');
         localStorage.removeItem('admin_last_attempt');
         
         // Set the admin user state immediately
         setAdminUser(adminUser);
-        
-        // Update last login time
-        await supabase
-          .from('admin_whitelist')
-          .update({ last_login: new Date().toISOString() })
-          .eq('email', email);
 
         await logSecurityEvent('LOGIN_SUCCESS', email, true, { 
           session_duration: '2 hours' 
@@ -255,7 +230,7 @@ export const useEnhancedAdminAuth = () => {
         
         return { success: false, error: 'Invalid credentials' };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
       await logSecurityEvent('LOGIN_ERROR', email, false, { 
         error: error.message 
@@ -268,10 +243,7 @@ export const useEnhancedAdminAuth = () => {
     try {
       const sessionToken = localStorage.getItem('admin_session_token');
       if (sessionToken) {
-        await supabase
-          .from('admin_sessions')
-          .delete()
-          .eq('session_token', sessionToken);
+        delete mockAdminSessions[sessionToken];
       }
       
       if (adminUser) {

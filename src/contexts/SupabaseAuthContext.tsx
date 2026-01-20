@@ -33,6 +33,9 @@ interface SupabaseAuthContextType {
 
 const SupabaseAuthContext = createContext<SupabaseAuthContextType | undefined>(undefined);
 
+// Mock profiles storage for prototype
+const mockProfiles: Record<string, UserProfile> = {};
+
 export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -104,49 +107,32 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        
-        // If profile doesn't exist, create one for new users
-        if (error.code === 'PGRST116') {
-          const { data: userData} = await supabase.auth.getUser();
-          if (userData.user) {
-            const newProfile = {
-              id: userData.user.id,
-              full_name: userData.user.user_metadata?.full_name || userData.user.user_metadata?.name || '',
-              phone: userData.user.user_metadata?.phone || '',
-              user_type: 'customer' as const,
-              kyc_status: 'pending' as const,
-              is_active: true,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            };
-
-            const { error: insertError } = await supabase
-              .from('profiles')
-              .insert(newProfile);
-
-            if (!insertError) {
-              setProfile(newProfile);
-              return;
-            }
-          }
-        }
-        setProfile(null);
-      } else if (data) {
-        const typedProfile: UserProfile = {
-          ...data,
-          user_type: (data.user_type as 'customer' | 'agent' | 'admin') || 'customer',
-          kyc_status: (data.kyc_status as 'pending' | 'verified' | 'rejected') || 'pending'
-        };
-        setProfile(typedProfile);
+      // For prototype, use mock profile
+      if (mockProfiles[userId]) {
+        setProfile(mockProfiles[userId]);
+        return;
       }
+
+      // Create a mock profile for new users
+      const { data: userData } = await supabase.auth.getUser();
+      if (userData.user) {
+        const newProfile: UserProfile = {
+          id: userData.user.id,
+          full_name: userData.user.user_metadata?.full_name || userData.user.user_metadata?.name || 'Demo User',
+          phone: userData.user.user_metadata?.phone || '',
+          user_type: 'customer',
+          kyc_status: 'pending',
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        mockProfiles[userId] = newProfile;
+        setProfile(newProfile);
+        return;
+      }
+      
+      setProfile(null);
     } catch (error) {
       console.error('Error fetching profile:', error);
       setProfile(null);
@@ -155,12 +141,7 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
 
   const checkTwoFactorStatus = async (userId: string) => {
     try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('pan_number')
-        .eq('id', userId)
-        .single();
-      
+      const profile = mockProfiles[userId];
       if (!profile?.pan_number) {
         setTwoFactorRequired(true);
       } else {
@@ -268,12 +249,10 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
     }
 
     try {
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ pan_number: panNumber })
-        .eq('id', user.id);
-
-      if (updateError) throw updateError;
+      // Update mock profile
+      if (mockProfiles[user.id]) {
+        mockProfiles[user.id].pan_number = panNumber;
+      }
 
       setTwoFactorRequired(false);
       await fetchProfile(user.id);
@@ -305,12 +284,10 @@ export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }
     if (!user) return;
 
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ kyc_status: status })
-        .eq('id', user.id);
-
-      if (error) throw error;
+      // Update mock profile
+      if (mockProfiles[user.id]) {
+        mockProfiles[user.id].kyc_status = status;
+      }
 
       await fetchProfile(user.id);
       

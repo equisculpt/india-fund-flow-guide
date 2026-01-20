@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 interface AdminUser {
   id: string;
@@ -8,6 +7,19 @@ interface AdminUser {
   full_name: string;
   is_active: boolean;
 }
+
+// Mock admin users for prototype
+const mockAdminUsers: AdminUser[] = [
+  {
+    id: 'admin-1',
+    email: 'admin@sipbrewery.com',
+    full_name: 'Admin User',
+    is_active: true
+  }
+];
+
+// Mock sessions storage
+const mockAdminSessions: Record<string, { admin_user_id: string; expires_at: string }> = {};
 
 export const useAdminAuth = () => {
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
@@ -28,32 +40,20 @@ export const useAdminAuth = () => {
 
       console.log('Checking admin session with token:', sessionToken);
 
-      // Check if session exists and is valid
-      const { data: sessionData, error: sessionError } = await supabase
-        .from('admin_sessions')
-        .select(`
-          admin_user_id,
-          expires_at,
-          admin_users!admin_sessions_admin_user_id_fkey (
-            id,
-            email,
-            full_name,
-            is_active
-          )
-        `)
-        .eq('session_token', sessionToken)
-        .gt('expires_at', new Date().toISOString())
-        .single();
-
-      console.log('Admin session check result:', { sessionData, sessionError });
-
-      if (sessionError || !sessionData) {
+      // Check mock session
+      const session = mockAdminSessions[sessionToken];
+      if (!session || new Date(session.expires_at) < new Date()) {
         console.log('No valid admin session found, clearing token');
         localStorage.removeItem('admin_session_token');
         setAdminUser(null);
       } else {
-        console.log('Valid admin session found:', sessionData);
-        setAdminUser(sessionData.admin_users as AdminUser);
+        const user = mockAdminUsers.find(u => u.id === session.admin_user_id);
+        if (user) {
+          console.log('Valid admin session found:', user);
+          setAdminUser(user);
+        } else {
+          setAdminUser(null);
+        }
       }
     } catch (error) {
       console.error('Error checking admin session:', error);
@@ -68,18 +68,12 @@ export const useAdminAuth = () => {
     try {
       console.log('Attempting admin login for:', email);
       
-      // Simple password check for demo (in production, use proper hashing)
+      // Simple password check for demo
       if (email === 'admin@sipbrewery.com' && password === 'admin123') {
-        // Check if admin user exists
-        const { data: adminUser, error: adminError } = await supabase
-          .from('admin_users')
-          .select('id, email, full_name, is_active')
-          .eq('email', email)
-          .eq('is_active', true)
-          .single();
+        const adminUser = mockAdminUsers.find(u => u.email === email && u.is_active);
 
-        if (adminError || !adminUser) {
-          console.error('Admin user not found:', adminError);
+        if (!adminUser) {
+          console.error('Admin user not found');
           return { success: false, error: 'Admin user not found or inactive' };
         }
 
@@ -89,23 +83,11 @@ export const useAdminAuth = () => {
 
         console.log('Creating admin session with token:', sessionToken);
 
-        // Create session
-        const { data: sessionData, error: sessionError } = await supabase
-          .from('admin_sessions')
-          .insert({
-            admin_user_id: adminUser.id,
-            session_token: sessionToken,
-            expires_at: expiresAt.toISOString()
-          })
-          .select()
-          .single();
-
-        console.log('Session creation result:', { sessionData, sessionError });
-
-        if (sessionError) {
-          console.error('Failed to create admin session:', sessionError);
-          return { success: false, error: 'Failed to create session' };
-        }
+        // Store mock session
+        mockAdminSessions[sessionToken] = {
+          admin_user_id: adminUser.id,
+          expires_at: expiresAt.toISOString()
+        };
 
         localStorage.setItem('admin_session_token', sessionToken);
         
@@ -126,10 +108,7 @@ export const useAdminAuth = () => {
     try {
       const sessionToken = localStorage.getItem('admin_session_token');
       if (sessionToken) {
-        await supabase
-          .from('admin_sessions')
-          .delete()
-          .eq('session_token', sessionToken);
+        delete mockAdminSessions[sessionToken];
       }
       localStorage.removeItem('admin_session_token');
       setAdminUser(null);

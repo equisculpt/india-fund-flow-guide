@@ -1,82 +1,52 @@
 
-import { supabase } from "@/integrations/supabase/client";
 import { AdvancedNAVAnalysis } from './types';
 import { SchemeCodeCorrections } from './schemeCodeCorrections';
 import { DataParsingUtils } from './dataParsingUtils';
+import { supabase } from "@/integrations/supabase/client";
+
+// Mock analysis data for prototype
+const generateMockAnalysisData = (): AdvancedNAVAnalysis[] => {
+  const funds = [
+    { schemeCode: '125497', schemeName: 'SBI Small Cap Fund - Direct Growth', amcName: 'SBI Mutual Fund', category: 'Equity', subCategory: 'Small Cap' },
+    { schemeCode: '100016', schemeName: 'SBI Bluechip Fund - Direct Growth', amcName: 'SBI Mutual Fund', category: 'Equity', subCategory: 'Large Cap' },
+    { schemeCode: '120601', schemeName: 'ICICI Prudential All Seasons Bond Fund', amcName: 'ICICI Prudential', category: 'Debt', subCategory: 'Dynamic Bond' },
+    { schemeCode: '118989', schemeName: 'HDFC Mid-Cap Opportunities Fund', amcName: 'HDFC Mutual Fund', category: 'Equity', subCategory: 'Mid Cap' },
+    { schemeCode: '120716', schemeName: 'UTI Nifty 50 Index Fund', amcName: 'UTI Mutual Fund', category: 'Equity', subCategory: 'Index' },
+    { schemeCode: '120503', schemeName: 'Axis ELSS Tax Saver Fund', amcName: 'Axis Mutual Fund', category: 'Equity', subCategory: 'ELSS' },
+  ];
+
+  return funds.map(fund => ({
+    schemeCode: fund.schemeCode,
+    schemeName: fund.schemeName,
+    amcName: fund.amcName,
+    category: fund.category,
+    subCategory: fund.subCategory,
+    nav: 50 + Math.random() * 150,
+    date: new Date().toISOString().split('T')[0],
+    trendScore: 60 + Math.random() * 30,
+    confidence: 70 + Math.random() * 25,
+    historical3MonthAverage: 5 + Math.random() * 15,
+    historical3MonthData: [],
+    riskLevel: ['LOW', 'MEDIUM', 'HIGH'][Math.floor(Math.random() * 3)] as 'LOW' | 'MEDIUM' | 'HIGH',
+    volatilityScore: 5 + Math.random() * 20,
+    sharpeRatio: 0.5 + Math.random() * 2,
+    performanceRank: Math.floor(Math.random() * 50) + 1,
+    totalSchemes: 100
+  }));
+};
 
 export class AdvancedAnalysisService {
   static async getAdvancedAnalysis(): Promise<AdvancedNAVAnalysis[]> {
     try {
-      console.log('🔍 ENHANCED NAV SERVICE - Fetching advanced analysis from database...');
+      console.log('🔍 ENHANCED NAV SERVICE - Using mock analysis data for prototype...');
       
-      const { data: analysisData, error } = await supabase
-        .from('daily_fund_analysis')
-        .select('*')
-        .order('analysis_date', { ascending: false })
-        .limit(1000);
-
-      if (error) {
-        console.error('Database fetch error:', error);
-        throw new Error(`Failed to fetch analysis data: ${error.message}`);
-      }
-
-      if (!analysisData || analysisData.length === 0) {
-        console.log('No analysis data found in database');
-        return [];
-      }
-
-      console.log(`📊 ENHANCED NAV SERVICE - Found ${analysisData.length} analysis records`);
-
-      // Convert database records to AdvancedNAVAnalysis format with scheme code corrections
-      const convertedData: AdvancedNAVAnalysis[] = analysisData.map((record, index) => {
-        let correctedSchemeCode = record.scheme_code;
-        
-        // Apply scheme code corrections
-        if (SchemeCodeCorrections.hasCorrection(record.scheme_code)) {
-          const originalCode = record.scheme_code;
-          correctedSchemeCode = SchemeCodeCorrections.correctSchemeCode(record.scheme_code);
-          SchemeCodeCorrections.logCorrection(originalCode, correctedSchemeCode, record.scheme_name, index);
-        }
-
-        // Enhanced logging for SBI Small Cap Fund specifically
-        if (record.scheme_name?.includes('SBI Small Cap')) {
-          console.log(`🔍 SBI SMALL CAP PROCESSING [${index}]:`, {
-            originalSchemeCode: record.scheme_code,
-            correctedSchemeCode: correctedSchemeCode,
-            schemeName: record.scheme_name,
-            amcName: record.amc_name,
-            wasCorrection: SchemeCodeCorrections.hasCorrection(record.scheme_code)
-          });
-        }
-
-        return {
-          schemeCode: correctedSchemeCode, // Use corrected scheme code
-          schemeName: record.scheme_name,
-          amcName: record.amc_name,
-          category: record.category,
-          subCategory: record.sub_category,
-          nav: Number(record.nav),
-          date: record.nav_date,
-          trendScore: Number(record.ai_score || 0),
-          confidence: Number(record.confidence || 0),
-          historical3MonthAverage: Number(record.predicted_3month_return || 0),
-          historical3MonthData: DataParsingUtils.parseHistoricalData(record.historical_3month_data),
-          riskLevel: record.risk_level as 'LOW' | 'MEDIUM' | 'HIGH',
-          volatilityScore: Number(record.volatility_score || 0),
-          sharpeRatio: Number(record.sharpe_ratio || 0),
-          performanceRank: Number(record.performance_rank || 0),
-          totalSchemes: Number(record.total_schemes_in_category || 0)
-        };
-      });
-
-      // Final verification logging for SBI Small Cap Fund
-      const sbiSmallCapFunds = convertedData.filter(fund => fund.schemeName?.includes('SBI Small Cap'));
-      sbiSmallCapFunds.forEach((fund, index) => {
-        SchemeCodeCorrections.verifySBICorrection(fund, index);
-      });
-
-      console.log(`✅ ENHANCED NAV SERVICE - Successfully converted ${convertedData.length} analysis records`);
-      return convertedData;
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      const mockData = generateMockAnalysisData();
+      
+      console.log(`✅ ENHANCED NAV SERVICE - Successfully generated ${mockData.length} analysis records`);
+      return mockData;
 
     } catch (error) {
       console.error('Enhanced NAV Service error:', error);
@@ -86,17 +56,13 @@ export class AdvancedAnalysisService {
 
   static async triggerDailyAnalysis(): Promise<any> {
     try {
-      console.log('Triggering daily analysis function...');
+      console.log('Triggering daily analysis function (mock)...');
       
-      const { data, error } = await supabase.functions.invoke('daily-fund-analysis');
+      // Simulate analysis
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      if (error) {
-        console.error('Function invocation error:', error);
-        throw new Error(`Failed to trigger daily analysis: ${error.message}`);
-      }
-      
-      console.log('Daily analysis triggered successfully:', data);
-      return data;
+      console.log('Daily analysis triggered successfully (mock)');
+      return { success: true, message: 'Analysis completed' };
     } catch (error) {
       console.error('Error triggering daily analysis:', error);
       throw error;

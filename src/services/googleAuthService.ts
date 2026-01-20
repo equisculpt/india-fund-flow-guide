@@ -1,6 +1,8 @@
 
 import { signInWithGoogle } from './firebase';
-import { supabase } from '@/integrations/supabase/client';
+
+// Mock profiles storage for prototype
+const mockProfiles: Record<string, any> = {};
 
 export const handleGoogleSignup = async () => {
   try {
@@ -12,43 +14,15 @@ export const handleGoogleSignup = async () => {
       throw new Error('No user returned from Google auth');
     }
 
-    // Get the Firebase ID token
-    const idToken = await user.getIdToken();
-    
-    // Check if user already exists in Supabase
-    const { data: existingUser } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('id', user.uid)
-      .single();
-
-    if (!existingUser) {
-      // Create new user profile in Supabase
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: user.uid,
-          full_name: user.displayName || '',
-          phone: user.phoneNumber || '',
-          user_type: 'customer',
-          kyc_status: 'pending'
-        });
-
-      if (profileError) {
-        console.error('Error creating profile:', profileError);
-        throw profileError;
-      }
-    }
-
-    // Set the session in Supabase using the Firebase token
-    const { error: sessionError } = await supabase.auth.setSession({
-      access_token: idToken,
-      refresh_token: idToken, // For simplicity, using the same token
-    });
-
-    if (sessionError) {
-      console.error('Error setting session:', sessionError);
-      // Don't throw here as the user is still authenticated via Firebase
+    // Store mock profile
+    if (!mockProfiles[user.uid]) {
+      mockProfiles[user.uid] = {
+        id: user.uid,
+        full_name: user.displayName || '',
+        phone: user.phoneNumber || '',
+        user_type: 'customer',
+        kyc_status: 'pending'
+      };
     }
 
     return { user, success: true };

@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export interface Question {
@@ -28,10 +27,81 @@ export interface BlogPost {
   created_at: string;
   published_at: string;
   author_id: string;
+  moderation_status?: string;
   profiles?: {
     full_name: string;
   } | null;
 }
+
+// Mock questions for prototype
+const mockQuestions: Question[] = [
+  {
+    id: 'q-1',
+    title: 'Best SIP for beginners?',
+    content: 'I am new to mutual funds. Which SIP should I start with for long-term wealth creation?',
+    category: 'Investment',
+    expert_only: false,
+    is_answered: true,
+    status: 'answered',
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+    user_id: 'user-1',
+    profiles: { full_name: 'Rahul Sharma' }
+  },
+  {
+    id: 'q-2',
+    title: 'How to calculate SIP returns?',
+    content: 'Can someone explain how SIP returns are calculated? I want to understand XIRR.',
+    category: 'Education',
+    expert_only: false,
+    is_answered: false,
+    status: 'pending',
+    created_at: new Date(Date.now() - 86400000).toISOString(),
+    user_id: 'user-2',
+    profiles: { full_name: 'Priya Patel' }
+  },
+  {
+    id: 'q-3',
+    title: 'Tax benefits on ELSS funds',
+    content: 'What are the tax benefits of investing in ELSS funds under Section 80C?',
+    category: 'Tax',
+    expert_only: true,
+    is_answered: true,
+    status: 'answered',
+    created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+    user_id: 'user-3',
+    profiles: { full_name: 'Amit Kumar' }
+  }
+];
+
+// Mock blog posts for prototype
+const mockBlogs: BlogPost[] = [
+  {
+    id: 'blog-1',
+    title: '5 Reasons to Start SIP Today',
+    content: 'Systematic Investment Plans (SIPs) are one of the best ways to build wealth...',
+    status: 'published',
+    category: 'Investment Tips',
+    views_count: 1250,
+    created_at: new Date(Date.now() - 86400000 * 7).toISOString(),
+    published_at: new Date(Date.now() - 86400000 * 6).toISOString(),
+    author_id: 'author-1',
+    moderation_status: 'approved',
+    profiles: { full_name: 'Investment Expert' }
+  },
+  {
+    id: 'blog-2',
+    title: 'Understanding Mutual Fund Categories',
+    content: 'Mutual funds are categorized based on their investment objectives...',
+    status: 'draft',
+    category: 'Education',
+    views_count: 0,
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+    published_at: '',
+    author_id: 'author-2',
+    moderation_status: 'pending',
+    profiles: { full_name: 'Financial Analyst' }
+  }
+];
 
 export const useCommunityData = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -42,63 +112,19 @@ export const useCommunityData = () => {
 
   const fetchCommunityData = async () => {
     try {
-      // Fetch recent questions with manual join
-      const { data: questionsData, error: questionsError } = await supabase
-        .from('community_questions')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10);
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 100));
 
-      if (questionsError) throw questionsError;
-
-      // Fetch profiles for questions
-      const questionIds = questionsData?.map(q => q.user_id) || [];
-      const { data: questionProfiles } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', questionIds);
-
-      // Fetch recent blog posts with manual join
-      const { data: blogsData, error: blogsError } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      if (blogsError) throw blogsError;
-
-      // Fetch profiles for blogs
-      const blogAuthorIds = blogsData?.map(b => b.author_id) || [];
-      const { data: blogProfiles } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', blogAuthorIds);
-
-      // Combine data with profiles
-      const questionsWithProfiles = (questionsData || []).map(question => ({
-        ...question,
-        profiles: questionProfiles?.find(p => p.id === question.user_id) || null
-      }));
-
-      const blogsWithProfiles = (blogsData || []).map(blog => ({
-        ...blog,
-        profiles: blogProfiles?.find(p => p.id === blog.author_id) || null
-      }));
-
-      setQuestions(questionsWithProfiles);
-      setBlogs(blogsWithProfiles);
+      setQuestions(mockQuestions);
+      setBlogs(mockBlogs);
 
       // Count new/unanswered questions
-      const unansweredCount = questionsWithProfiles.filter(q => !q.is_answered).length;
+      const unansweredCount = mockQuestions.filter(q => !q.is_answered).length;
       setNewQuestionsCount(unansweredCount);
 
       // Count pending blogs
-      const { count: pendingCount } = await supabase
-        .from('blog_posts')
-        .select('*', { count: 'exact', head: true })
-        .eq('moderation_status', 'pending');
-
-      setPendingBlogsCount(pendingCount || 0);
+      const pendingCount = mockBlogs.filter(b => b.moderation_status === 'pending').length;
+      setPendingBlogsCount(pendingCount);
     } catch (error) {
       console.error('Error fetching community data:', error);
       toast.error('Failed to load community data');
@@ -109,26 +135,6 @@ export const useCommunityData = () => {
 
   useEffect(() => {
     fetchCommunityData();
-    
-    // Set up real-time subscriptions for notifications
-    const questionsSubscription = supabase
-      .channel('questions')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'community_questions' }, () => {
-        fetchCommunityData();
-      })
-      .subscribe();
-
-    const blogsSubscription = supabase
-      .channel('blogs')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'blog_posts' }, () => {
-        fetchCommunityData();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(questionsSubscription);
-      supabase.removeChannel(blogsSubscription);
-    };
   }, []);
 
   return {
