@@ -1,4 +1,3 @@
-
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
@@ -16,12 +15,8 @@ const heroPlaceholder = container.querySelector('.hero-placeholder');
 
 const root = createRoot(container);
 
-// Use startTransition for non-urgent renders
-import { startTransition } from 'react';
-
 // Performance monitoring
 if (typeof window !== 'undefined') {
-  // Monitor performance metrics
   window.addEventListener('load', () => {
     const observer = new PerformanceObserver((list) => {
       const entries = list.getEntries();
@@ -32,23 +27,28 @@ if (typeof window !== 'undefined') {
         }
       });
     });
-    
+
     try {
       observer.observe({ entryTypes: ['navigation'] });
     } catch (e) {
-      // Fallback for unsupported browsers
       console.log('Performance monitoring not supported');
     }
   });
 }
 
-startTransition(() => {
-  root.render(
-    <StrictMode>
-      <App />
-    </StrictMode>
-  );
-});
+// Render immediately (avoids React dispatcher issues in some environments)
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
+
+// Clean up placeholders after React takes over
+setTimeout(() => {
+  headerFallback?.remove();
+  heroPlaceholder?.remove();
+}, 50);
+
 
 // Clean up placeholders after React takes over
 setTimeout(() => {

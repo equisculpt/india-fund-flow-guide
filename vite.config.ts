@@ -19,6 +19,11 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    // Prevent duplicate React copies (fixes "Cannot read properties of null (reading 'useEffect')")
+    dedupe: ["react", "react-dom"],
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom", "@tanstack/react-query", "react-router-dom"],
   },
   publicDir: 'public',
   assetsInclude: ['**/*.xml', '**/*.txt'],
