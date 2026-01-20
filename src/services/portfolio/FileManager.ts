@@ -8,22 +8,26 @@ const mockUploadedFiles: AMCPortfolioFile[] = [
     file_name: 'SBI_Portfolio_Dec2024.pdf',
     amc_name: 'SBI Mutual Fund',
     file_type: 'pdf',
+    file_size: 245000,
+    file_data: '',
     upload_status: 'processed',
     created_at: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updated_at: new Date(Date.now() - 86400000 * 7).toISOString(),
     portfolio_date: '2024-12-31',
-    file_url: '/uploads/sbi_portfolio.pdf',
-    error_message: null
+    error_message: undefined
   },
   {
     id: 'file-2',
     file_name: 'HDFC_Holdings_Dec2024.xlsx',
     amc_name: 'HDFC Mutual Fund',
     file_type: 'xlsx',
+    file_size: 156000,
+    file_data: '',
     upload_status: 'uploaded',
     created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+    updated_at: new Date(Date.now() - 86400000 * 3).toISOString(),
     portfolio_date: '2024-12-31',
-    file_url: '/uploads/hdfc_holdings.xlsx',
-    error_message: null
+    error_message: undefined
   }
 ];
 
@@ -54,7 +58,7 @@ export class PortfolioFileManager {
       const file = mockUploadedFiles.find(f => f.id === fileId);
       if (file) {
         file.upload_status = status;
-        file.error_message = errorMessage || null;
+        file.error_message = errorMessage;
       }
       console.log(`File ${fileId} status updated to ${status}`);
     } catch (error) {
