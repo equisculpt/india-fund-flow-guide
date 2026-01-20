@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { mockDb } from '@/services/mockDatabase';
 
 interface ContactFormModalProps {
   isOpen: boolean;
@@ -29,30 +28,20 @@ const ContactFormModal = ({ isOpen, onClose }: ContactFormModalProps) => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert([{
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          subject: formData.subject,
-          message: formData.message
-        }]);
-
-      if (error) throw error;
+      await mockDb.insert('contact_submissions', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message
+      });
 
       toast({
         title: "Message sent successfully!",
         description: "We'll get back to you within 24 hours."
       });
 
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
-      });
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       onClose();
     } catch (error) {
       console.error('Error submitting contact form:', error);
@@ -67,10 +56,7 @@ const ContactFormModal = ({ isOpen, onClose }: ContactFormModalProps) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -83,65 +69,26 @@ const ContactFormModal = ({ isOpen, onClose }: ContactFormModalProps) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="name">Full Name *</Label>
-            <Input
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+            <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
           </div>
-          
           <div>
             <Label htmlFor="email">Email Address *</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+            <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
           </div>
-          
           <div>
             <Label htmlFor="phone">Phone Number</Label>
-            <Input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-            />
+            <Input id="phone" name="phone" type="tel" value={formData.phone} onChange={handleChange} />
           </div>
-          
           <div>
             <Label htmlFor="subject">Subject *</Label>
-            <Input
-              id="subject"
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              required
-            />
+            <Input id="subject" name="subject" value={formData.subject} onChange={handleChange} required />
           </div>
-          
           <div>
             <Label htmlFor="message">Message *</Label>
-            <Textarea
-              id="message"
-              name="message"
-              rows={4}
-              value={formData.message}
-              onChange={handleChange}
-              required
-            />
+            <Textarea id="message" name="message" rows={4} value={formData.message} onChange={handleChange} required />
           </div>
-          
           <div className="flex gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Sending...' : 'Send Message'}
             </Button>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,25 +7,18 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FileText, Download, Eye, Edit, Trash2, Plus, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import FileUploadComponent from '@/components/shared/FileUploadComponent';
+import { mockDb, mockUploadedFiles, UploadedFile } from '@/services/mockDatabase';
 
-interface UploadedFile {
-  id: string;
-  filename: string;
+interface FileData extends UploadedFile {
   original_filename: string;
-  file_type: string;
-  file_size: number;
-  extracted_content: string;
+  extracted_content?: string;
   upload_purpose: string;
   is_processed: boolean;
-  created_at: string;
-  user_id: string;
 }
 
 const FileManagementTab = () => {
-  const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
+  const [files, setFiles] = useState<FileData[]>([]);
+  const [selectedFile, setSelectedFile] = useState<FileData | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPurpose, setFilterPurpose] = useState<string>('all');
   const [showUpload, setShowUpload] = useState(false);
@@ -42,13 +34,14 @@ const FileManagementTab = () => {
 
   const fetchFiles = async () => {
     try {
-      const { data, error } = await supabase
-        .from('uploaded_files')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setFiles(data || []);
+      const formattedFiles: FileData[] = mockUploadedFiles.map(file => ({
+        ...file,
+        original_filename: file.file_name,
+        extracted_content: 'Sample extracted content from the file for demo purposes. This would contain the actual text content extracted from PDF or spreadsheet files.',
+        upload_purpose: 'analysis',
+        is_processed: file.upload_status === 'completed'
+      }));
+      setFiles(formattedFiles);
     } catch (error: any) {
       console.error('Error fetching files:', error);
       toast({
@@ -61,16 +54,7 @@ const FileManagementTab = () => {
     }
   };
 
-  const handleFileProcessed = (file: any) => {
-    fetchFiles(); // Refresh the list
-    setShowUpload(false);
-    toast({
-      title: "File uploaded",
-      description: "File has been uploaded and processed successfully",
-    });
-  };
-
-  const generateBlogFromFile = async (file: UploadedFile) => {
+  const generateBlogFromFile = async (file: FileData) => {
     if (!file.extracted_content) {
       toast({
         title: "No content",
@@ -82,7 +66,6 @@ const FileManagementTab = () => {
 
     setIsGeneratingBlog(true);
     try {
-      // Simulate blog generation - in real implementation, this would use AI
       const generatedTitle = `Insights from ${file.original_filename.replace(/\.[^/.]+$/, "")}`;
       const generatedContent = `# ${generatedTitle}
 
@@ -138,28 +121,20 @@ This analysis provides valuable insights that can help inform investment decisio
     }
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-
-      const { error } = await supabase
-        .from('blog_posts')
-        .insert({
-          title: blogTitle,
-          content: blogContent,
-          author_id: user.id,
-          status: 'draft',
-          category: 'analysis',
-          moderation_status: 'approved'
-        });
-
-      if (error) throw error;
+      await mockDb.insert('blog_posts', {
+        title: blogTitle,
+        content: blogContent,
+        author_id: 'admin-001',
+        status: 'draft',
+        category: 'analysis',
+        moderation_status: 'approved'
+      });
 
       toast({
         title: "Blog saved",
         description: "Blog post has been saved as draft successfully",
       });
 
-      // Reset form
       setBlogTitle('');
       setBlogContent('');
       setSelectedFile(null);
@@ -176,12 +151,7 @@ This analysis provides valuable insights that can help inform investment decisio
 
   const deleteFile = async (fileId: string) => {
     try {
-      const { error } = await supabase
-        .from('uploaded_files')
-        .delete()
-        .eq('id', fileId);
-
-      if (error) throw error;
+      await mockDb.delete('uploaded_files', fileId);
 
       setFiles(prev => prev.filter(f => f.id !== fileId));
       if (selectedFile?.id === fileId) {
@@ -242,12 +212,7 @@ This analysis provides valuable insights that can help inform investment decisio
           <CardContent className="space-y-4">
             {showUpload && (
               <div className="p-4 border rounded-lg bg-gray-50">
-                <FileUploadComponent
-                  onFileProcessed={handleFileProcessed}
-                  acceptedTypes={['.pdf', '.xls', '.xlsx', '.doc', '.docx']}
-                  maxFileSize={50}
-                  uploadPurpose="blog"
-                />
+                <p className="text-sm text-gray-600">File upload component would go here</p>
               </div>
             )}
 

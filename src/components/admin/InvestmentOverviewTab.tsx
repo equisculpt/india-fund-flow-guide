@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { mockInvestments, mockProfiles, mockMutualFunds } from '@/services/mockDatabase';
 import { Search, TrendingUp, Calendar } from 'lucide-react';
 
 interface InvestmentData {
@@ -45,72 +44,28 @@ const InvestmentOverviewTab = () => {
 
   const fetchInvestments = async () => {
     try {
-      // First get all investments
-      const { data: investmentsData, error } = await supabase
-        .from('investments')
-        .select('*')
-        .order('created_at', { ascending: false });
+      const formattedInvestments: InvestmentData[] = mockInvestments.map(investment => {
+        const user = mockProfiles.find(p => p.id === investment.user_id);
+        const fund = mockMutualFunds.find(f => f.id === investment.fund_id);
+        const agent = mockProfiles.find(p => p.user_type === 'agent');
+        
+        return {
+          id: investment.id,
+          user_name: user?.full_name || 'Unknown User',
+          user_phone: user?.phone,
+          agent_name: agent?.full_name,
+          fund_name: fund?.scheme_name || investment.fund_name,
+          investment_type: investment.investment_type,
+          amount: investment.amount,
+          total_invested: investment.total_invested,
+          current_value: investment.current_value,
+          status: investment.status,
+          start_date: investment.start_date,
+          created_at: investment.start_date
+        };
+      });
 
-      if (error) throw error;
-
-      // Then get related data for each investment
-      const enrichedInvestments = await Promise.all(
-        investmentsData?.map(async (investment) => {
-          // Get user data
-          let userName = 'Unknown User';
-          let userPhone = '';
-          if (investment.user_id) {
-            const { data: user } = await supabase
-              .from('profiles')
-              .select('full_name, phone')
-              .eq('id', investment.user_id)
-              .single();
-            
-            if (user) {
-              userName = user.full_name;
-              userPhone = user.phone || '';
-            }
-          }
-
-          // Get agent data
-          let agentName = '';
-          if (investment.agent_id) {
-            const { data: agent } = await supabase
-              .from('profiles')
-              .select('full_name')
-              .eq('id', investment.agent_id)
-              .single();
-            
-            if (agent) {
-              agentName = agent.full_name;
-            }
-          }
-
-          // Get fund data
-          let fundName = 'Unknown Fund';
-          if (investment.fund_id) {
-            const { data: fund } = await supabase
-              .from('mutual_funds')
-              .select('scheme_name')
-              .eq('id', investment.fund_id)
-              .single();
-            
-            if (fund) {
-              fundName = fund.scheme_name;
-            }
-          }
-
-          return {
-            ...investment,
-            user_name: userName,
-            user_phone: userPhone,
-            agent_name: agentName,
-            fund_name: fundName,
-          };
-        }) || []
-      );
-
-      setInvestments(enrichedInvestments);
+      setInvestments(formattedInvestments);
     } catch (error) {
       console.error('Error fetching investments:', error);
       toast({

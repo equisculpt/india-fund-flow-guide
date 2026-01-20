@@ -7,13 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileSpreadsheet, FileText, Trash2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-
-interface AMC {
-  id: string;
-  amc_name: string;
-  amc_code: string;
-}
+import { mockDb, mockAMCList, AMC } from '@/services/mockDatabase';
 
 interface UploadedFile {
   id: string;
@@ -33,22 +27,8 @@ export const AMCPortfolioUploader = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    fetchAMCList();
+    setAmcList(mockAMCList);
   }, []);
-
-  const fetchAMCList = async () => {
-    try {
-      const { data, error } = await supabase.rpc('execute_sql' as any, {
-        sql: 'SELECT * FROM amc_list WHERE is_active = true ORDER BY amc_name',
-        params: []
-      });
-
-      if (error) throw error;
-      setAmcList(data || []);
-    } catch (error) {
-      console.error('Error fetching AMC list:', error);
-    }
-  };
 
   const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -64,10 +44,8 @@ export const AMCPortfolioUploader = () => {
         file_type: fileType,
         upload_status: 'pending'
       };
-
       setUploadedFiles(prev => [...prev, newFile]);
     });
-
     event.target.value = '';
   }, []);
 
@@ -87,99 +65,37 @@ export const AMCPortfolioUploader = () => {
     );
 
     if (validFiles.length === 0) {
-      toast({
-        title: "Error",
-        description: "Please add files and fill in all required details",
-        variant: "destructive",
-        duration: 3000,
-      });
+      toast({ title: "Error", description: "Please add files and fill in all required details", variant: "destructive" });
       return;
     }
 
     setIsProcessing(true);
     setProgress(0);
 
-    try {
-      for (let i = 0; i < validFiles.length; i++) {
-        const file = validFiles[i];
-        
+    for (let i = 0; i < validFiles.length; i++) {
+      const file = validFiles[i];
+      setUploadedFiles(prev => prev.map(f => f.id === file.id ? { ...f, upload_status: 'uploading' } : f));
+
+      try {
+        await mockDb.insert('amc_portfolio_files', {
+          amc_name: file.amc_name,
+          portfolio_date: file.portfolio_date,
+          file_name: file.file.name,
+          file_type: file.file_type,
+          file_size: file.file.size
+        });
+
+        setUploadedFiles(prev => prev.map(f => f.id === file.id ? { ...f, upload_status: 'success' } : f));
+        toast({ title: "Success", description: `${file.amc_name} portfolio uploaded successfully` });
+      } catch (error) {
         setUploadedFiles(prev => prev.map(f => 
-          f.id === file.id ? { ...f, upload_status: 'uploading' } : f
+          f.id === file.id ? { ...f, upload_status: 'error', error_message: 'Upload failed' } : f
         ));
-
-        try {
-          const fileReader = new FileReader();
-          const fileData = await new Promise<string>((resolve, reject) => {
-            fileReader.onload = () => resolve(fileReader.result as string);
-            fileReader.onerror = reject;
-            fileReader.readAsDataURL(file.file);
-          });
-
-          const { error } = await supabase.rpc('execute_sql' as any, {
-            sql: `
-              INSERT INTO amc_portfolio_files (
-                amc_name, portfolio_date, file_name, file_type, file_size, file_data, upload_status
-              ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-            `,
-            params: [
-              file.amc_name,
-              file.portfolio_date,
-              file.file.name,
-              file.file_type,
-              file.file.size,
-              fileData,
-              'uploaded'
-            ]
-          });
-
-          if (error) {
-            console.error('Database error:', error);
-            throw new Error('Failed to save file to database');
-          }
-
-          setUploadedFiles(prev => prev.map(f => 
-            f.id === file.id ? { ...f, upload_status: 'success' } : f
-          ));
-
-          toast({
-            title: "Success",
-            description: `${file.amc_name} portfolio uploaded successfully`,
-            duration: 2000,
-          });
-
-        } catch (error) {
-          console.error('Error uploading file:', error);
-          
-          setUploadedFiles(prev => prev.map(f => 
-            f.id === file.id ? { 
-              ...f, 
-              upload_status: 'error',
-              error_message: error instanceof Error ? error.message : 'Upload failed'
-            } : f
-          ));
-        }
-
-        setProgress(((i + 1) / validFiles.length) * 100);
       }
-
-      toast({
-        title: "Processing Complete",
-        description: `Uploaded ${validFiles.filter(f => f.upload_status === 'success').length} files successfully`,
-        duration: 3000,
-      });
-
-    } catch (error) {
-      console.error('Error processing files:', error);
-      toast({
-        title: "Error",
-        description: "Failed to process files",
-        variant: "destructive",
-        duration: 3000,
-      });
-    } finally {
-      setIsProcessing(false);
-      setProgress(100);
+      setProgress(((i + 1) / validFiles.length) * 100);
     }
+
+    setIsProcessing(false);
   };
 
   return (
@@ -187,29 +103,18 @@ export const AMCPortfolioUploader = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5 text-blue-600" />
+            <Upload className="h-5 w-5 text-primary" />
             Upload AMC Portfolio Files
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-              <input
-                type="file"
-                multiple
-                accept=".xlsx,.xls,.pdf"
-                onChange={handleFileUpload}
-                className="hidden"
-                id="file-upload"
-              />
+            <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+              <input type="file" multiple accept=".xlsx,.xls,.pdf" onChange={handleFileUpload} className="hidden" id="file-upload" />
               <label htmlFor="file-upload" className="cursor-pointer">
-                <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <p className="text-lg font-medium text-gray-900">
-                  Upload Portfolio Files
-                </p>
-                <p className="text-sm text-gray-500">
-                  Drag and drop or click to select XLS/XLSX/PDF files
-                </p>
+                <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <p className="text-lg font-medium">Upload Portfolio Files</p>
+                <p className="text-sm text-muted-foreground">Drag and drop or click to select XLS/XLSX/PDF files</p>
               </label>
             </div>
 
@@ -219,86 +124,38 @@ export const AMCPortfolioUploader = () => {
                   <div key={file.id} className="border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        {file.file_type === 'PDF' ? (
-                          <FileText className="h-5 w-5 text-red-600" />
-                        ) : (
-                          <FileSpreadsheet className="h-5 w-5 text-green-600" />
-                        )}
+                        {file.file_type === 'PDF' ? <FileText className="h-5 w-5 text-destructive" /> : <FileSpreadsheet className="h-5 w-5 text-primary" />}
                         <span className="font-medium">{file.file.name}</span>
-                        <Badge variant={
-                          file.upload_status === 'success' ? 'default' :
-                          file.upload_status === 'error' ? 'destructive' :
-                          file.upload_status === 'uploading' ? 'secondary' : 'outline'
-                        }>
+                        <Badge variant={file.upload_status === 'success' ? 'default' : file.upload_status === 'error' ? 'destructive' : 'secondary'}>
                           {file.upload_status}
                         </Badge>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeFile(file.id)}
-                        disabled={file.upload_status === 'uploading'}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => removeFile(file.id)} disabled={file.upload_status === 'uploading'}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div className="space-y-2">
                         <label className="text-sm font-medium">AMC Name</label>
-                        <Select
-                          value={file.amc_name}
-                          onValueChange={(value) => updateFileDetails(file.id, 'amc_name', value)}
-                          disabled={file.upload_status === 'uploading'}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select AMC" />
-                          </SelectTrigger>
+                        <Select value={file.amc_name} onValueChange={(value) => updateFileDetails(file.id, 'amc_name', value)}>
+                          <SelectTrigger><SelectValue placeholder="Select AMC" /></SelectTrigger>
                           <SelectContent>
-                            {amcList.map((amc) => (
-                              <SelectItem key={amc.id} value={amc.amc_name}>
-                                {amc.amc_name}
-                              </SelectItem>
-                            ))}
+                            {amcList.map((amc) => <SelectItem key={amc.id} value={amc.amc_name}>{amc.amc_name}</SelectItem>)}
                           </SelectContent>
                         </Select>
                       </div>
-
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Portfolio Date</label>
-                        <Input
-                          type="date"
-                          value={file.portfolio_date}
-                          onChange={(e) => updateFileDetails(file.id, 'portfolio_date', e.target.value)}
-                          disabled={file.upload_status === 'uploading'}
-                        />
+                        <Input type="date" value={file.portfolio_date} onChange={(e) => updateFileDetails(file.id, 'portfolio_date', e.target.value)} />
                       </div>
                     </div>
-
-                    {file.error_message && (
-                      <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
-                        Error: {file.error_message}
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
             )}
 
-            {isProcessing && (
-              <div className="space-y-2">
-                <Progress value={progress} className="w-full" />
-                <p className="text-sm text-center text-gray-600">
-                  Processing files... {progress.toFixed(0)}%
-                </p>
-              </div>
-            )}
-
-            <Button
-              onClick={processAllFiles}
-              disabled={isProcessing || uploadedFiles.length === 0}
-              className="w-full"
-            >
+            {isProcessing && <Progress value={progress} className="w-full" />}
+            <Button onClick={processAllFiles} disabled={isProcessing || uploadedFiles.length === 0} className="w-full">
               {isProcessing ? "Processing..." : `Upload ${uploadedFiles.length} Files`}
             </Button>
           </div>
