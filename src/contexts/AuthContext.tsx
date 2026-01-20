@@ -1,7 +1,6 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session, AuthError } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import React, { createContext, useContext, useState } from 'react';
+import { mockProfiles } from '@/services/mockDatabase';
 
 interface UserProfile {
   id: string;
@@ -16,198 +15,95 @@ interface UserProfile {
   created_at: string;
 }
 
+interface MockUser {
+  id: string;
+  email: string;
+}
+
 interface AuthContextType {
-  user: User | null;
+  user: MockUser | null;
   profile: UserProfile | null;
-  session: Session | null;
+  session: any | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signUp: (email: string, password: string, userData: { full_name: string; phone: string; user_type: 'customer' | 'agent' }) => Promise<{ error: AuthError | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: any | null }>;
+  signUp: (email: string, password: string, userData: { full_name: string; phone: string; user_type: 'customer' | 'agent' }) => Promise<{ error: any | null }>;
   signOut: () => Promise<void>;
-  signInWithGoogle: () => Promise<{ error: AuthError | null }>;
+  signInWithGoogle: () => Promise<{ error: any | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<MockUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email);
-        
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          // Fetch user profile after auth state change
-          setTimeout(() => {
-            fetchProfile(session.user.id);
-          }, 0);
-        } else {
-          setProfile(null);
-        }
-        
-        setLoading(false);
-      }
-    );
-
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        setProfile(null);
-      } else {
-        const typedProfile: UserProfile = {
-          ...data,
-          user_type: data.user_type as 'customer' | 'agent' | 'admin'
-        };
-        setProfile(typedProfile);
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      setProfile(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [session, setSession] = useState<any | null>(null);
+  const [loading] = useState(false);
 
   const signIn = async (email: string, password: string) => {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+    // Mock sign in for prototype
+    const mockUser = mockProfiles.find(p => p.email === email);
+    if (mockUser) {
+      setUser({ id: mockUser.id, email: mockUser.email || '' });
+      setProfile({
+        id: mockUser.id,
+        user_type: mockUser.user_type,
+        full_name: mockUser.full_name,
+        phone: mockUser.phone,
+        kyc_status: mockUser.kyc_status,
+        referral_code: mockUser.referral_code,
+        commission_rate: mockUser.commission_rate,
+        is_active: mockUser.is_active,
+        created_at: mockUser.created_at
       });
-      
-      console.log('Sign in result:', { user: data.user?.email, error });
-      return { error };
-    } catch (error) {
-      console.error('Sign in error:', error);
-      return { error: error as AuthError };
+      setSession({ user: mockUser });
+      return { error: null };
     }
+    return { error: { message: 'Invalid credentials' } };
   };
 
-  const signUp = async (email: string, password: string, userData: {
-    full_name: string;
-    phone: string;
-    user_type: 'customer' | 'agent';
-  }) => {
-    try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            full_name: userData.full_name,
-            phone: userData.phone,
-            user_type: userData.user_type,
-          }
-        }
-      });
-
-      if (error) {
-        console.error('Sign up error:', error);
-        return { error };
-      }
-
-      // Create profile if user was created
-      if (data.user && !error) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert({
-            id: data.user.id,
-            full_name: userData.full_name,
-            phone: userData.phone,
-            user_type: userData.user_type,
-            kyc_status: 'pending',
-            is_active: true
-          });
-
-        if (profileError) {
-          console.error('Profile creation error:', profileError);
-        }
-      }
-
-      console.log('Sign up result:', { user: data.user?.email, error });
-      return { error };
-    } catch (error) {
-      console.error('Sign up error:', error);
-      return { error: error as AuthError };
-    }
+  const signUp = async (email: string, password: string, userData: any) => {
+    // Mock sign up for prototype
+    const newUser = {
+      id: `user-${Date.now()}`,
+      email
+    };
+    setUser(newUser);
+    setProfile({
+      id: newUser.id,
+      user_type: userData.user_type,
+      full_name: userData.full_name,
+      phone: userData.phone,
+      kyc_status: 'pending',
+      is_active: true,
+      created_at: new Date().toISOString()
+    });
+    return { error: null };
   };
 
   const signInWithGoogle = async () => {
-    try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl
-        }
-      });
-
-      console.log('Google sign in result:', { error });
-      return { error };
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      return { error: error as AuthError };
-    }
+    // Mock Google sign in for prototype
+    const mockUser = mockProfiles[0];
+    setUser({ id: mockUser.id, email: mockUser.email || '' });
+    setProfile({
+      id: mockUser.id,
+      user_type: mockUser.user_type,
+      full_name: mockUser.full_name,
+      phone: mockUser.phone,
+      kyc_status: mockUser.kyc_status,
+      is_active: mockUser.is_active,
+      created_at: mockUser.created_at
+    });
+    return { error: null };
   };
 
   const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Sign out error:', error);
-      }
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  };
-
-  const value = {
-    user,
-    profile,
-    session,
-    loading,
-    signIn,
-    signUp,
-    signInWithGoogle,
-    signOut,
+    setUser(null);
+    setProfile(null);
+    setSession(null);
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, profile, session, loading, signIn, signUp, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

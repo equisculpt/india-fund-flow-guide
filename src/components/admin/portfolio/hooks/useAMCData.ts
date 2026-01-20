@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { mockAMCList } from '@/services/mockDatabase';
 
 interface AMC {
   id: string;
@@ -17,20 +17,10 @@ export const useAMCData = () => {
   }, []);
 
   const fetchAMCList = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('amc_list')
-        .select('*')
-        .eq('is_active', true)
-        .order('amc_name');
-
-      if (error) throw error;
-      setAmcList(data || []);
-    } catch (error) {
-      console.error('Error fetching AMC list:', error);
-    } finally {
-      setLoading(false);
-    }
+    // Use mock data for prototype
+    const activeAMCs = mockAMCList.filter(amc => amc.is_active);
+    setAmcList(activeAMCs);
+    setLoading(false);
   };
 
   return { amcList, loading };

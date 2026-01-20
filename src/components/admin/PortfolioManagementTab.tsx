@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { FileSpreadsheet, RefreshCw, Eye } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { AMCPortfolioParser } from '@/services/AMCPortfolioParser';
+import { mockUploadedFiles } from '@/services/mockDatabase';
 import PortfolioFileUploader from './portfolio/PortfolioFileUploader';
 import PortfolioFileManager from './portfolio/PortfolioFileManager';
 
@@ -42,20 +41,18 @@ const PortfolioManagementTab = () => {
   }, []);
 
   const fetchUploadedFiles = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('amc_portfolio_files')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(20);
-
-      if (error) throw error;
-      setUploadedFiles(data || []);
-    } catch (error) {
-      console.error('Error fetching uploaded files:', error);
-    } finally {
-      setLoading(false);
-    }
+    // Use mock data for prototype
+    const mockData: UploadedFile[] = mockUploadedFiles.map(file => ({
+      id: file.id,
+      amc_name: 'HDFC Mutual Fund',
+      portfolio_date: new Date().toISOString().split('T')[0],
+      file_name: file.file_name,
+      file_type: file.file_type,
+      upload_status: file.upload_status,
+      created_at: file.created_at
+    }));
+    setUploadedFiles(mockData);
+    setLoading(false);
   };
 
   const handleFilesAdded = (files: PendingFile[]) => {
@@ -78,76 +75,39 @@ const PortfolioManagementTab = () => {
 
     setProcessing(true);
 
-    try {
-      // Upload files to database
-      for (const file of validFiles) {
-        setPendingFiles(prev => prev.map(f => 
-          f.id === file.id ? { ...f, upload_status: 'uploading' } : f
-        ));
+    // Simulate processing for prototype
+    for (const file of validFiles) {
+      setPendingFiles(prev => prev.map(f => 
+        f.id === file.id ? { ...f, upload_status: 'uploading' as const } : f
+      ));
 
-        try {
-          const fileReader = new FileReader();
-          const fileData = await new Promise<string>((resolve, reject) => {
-            fileReader.onload = () => resolve(fileReader.result as string);
-            fileReader.onerror = reject;
-            fileReader.readAsDataURL(file.file);
-          });
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-          const { error } = await supabase
-            .from('amc_portfolio_files')
-            .insert({
-              amc_name: file.amc_name,
-              portfolio_date: file.portfolio_date,
-              file_name: file.file.name,
-              file_type: file.file_type,
-              file_size: file.file.size,
-              file_data: fileData,
-              upload_status: 'uploaded'
-            });
+      setPendingFiles(prev => prev.map(f => 
+        f.id === file.id ? { ...f, upload_status: 'success' as const } : f
+      ));
 
-          if (error) throw error;
-
-          setPendingFiles(prev => prev.map(f => 
-            f.id === file.id ? { ...f, upload_status: 'success' } : f
-          ));
-
-        } catch (error) {
-          console.error('Error uploading file:', error);
-          setPendingFiles(prev => prev.map(f => 
-            f.id === file.id ? { 
-              ...f, 
-              upload_status: 'error',
-              error_message: error instanceof Error ? error.message : 'Upload failed'
-            } : f
-          ));
-        }
-      }
-
-      // Process uploaded files
-      const results = await AMCPortfolioParser.processAllUploadedFiles();
-      
-      const successCount = results.filter(r => r.success).length;
-      const errorCount = results.filter(r => !r.success).length;
-      
-      toast({
-        title: "Processing Complete",
-        description: `Successfully processed ${successCount} files. ${errorCount} errors.`,
-        duration: 3000,
-      });
-      
-      await fetchUploadedFiles();
-      setPendingFiles([]);
-
-    } catch (error) {
-      console.error('Error processing files:', error);
-      toast({
-        title: "Error",
-        description: "Failed to process files",
-        variant: "destructive",
-      });
-    } finally {
-      setProcessing(false);
+      // Add to uploaded files
+      const newUploadedFile: UploadedFile = {
+        id: `file-${Date.now()}-${file.id}`,
+        amc_name: file.amc_name,
+        portfolio_date: file.portfolio_date,
+        file_name: file.file.name,
+        file_type: file.file_type,
+        upload_status: 'uploaded',
+        created_at: new Date().toISOString()
+      };
+      setUploadedFiles(prev => [newUploadedFile, ...prev]);
     }
+
+    toast({
+      title: "Processing Complete",
+      description: `Successfully processed ${validFiles.length} files.`,
+      duration: 3000,
+    });
+    
+    setPendingFiles([]);
+    setProcessing(false);
   };
 
   const getStatusBadge = (status: string) => {

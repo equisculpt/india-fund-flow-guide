@@ -1,7 +1,5 @@
 
 import React, { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 import {
   Dialog,
   DialogContent,
@@ -22,7 +20,6 @@ interface AskQuestionModalProps {
 }
 
 const AskQuestionModal = ({ isOpen, onClose }: AskQuestionModalProps) => {
-  const { user } = useSupabaseAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('general');
@@ -41,11 +38,6 @@ const AskQuestionModal = ({ isOpen, onClose }: AskQuestionModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!user) {
-      toast.error('Please login to ask a question');
-      return;
-    }
 
     if (!title.trim() || !content.trim()) {
       toast.error('Please fill in all required fields');
@@ -54,31 +46,16 @@ const AskQuestionModal = ({ isOpen, onClose }: AskQuestionModalProps) => {
 
     setSubmitting(true);
 
-    try {
-      const { error } = await supabase
-        .from('community_questions')
-        .insert({
-          user_id: user.id,
-          title: title.trim(),
-          content: content.trim(),
-          category,
-          expert_only: expertOnly
-        });
+    // Mock submit for prototype
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-      if (error) throw error;
-
-      toast.success('Question posted successfully!');
-      setTitle('');
-      setContent('');
-      setCategory('general');
-      setExpertOnly(false);
-      onClose();
-    } catch (error) {
-      console.error('Error posting question:', error);
-      toast.error('Failed to post question. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
+    toast.success('Question posted successfully!');
+    setTitle('');
+    setContent('');
+    setCategory('general');
+    setExpertOnly(false);
+    onClose();
+    setSubmitting(false);
   };
 
   return (
