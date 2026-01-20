@@ -1,5 +1,5 @@
 
-import { supabase } from '@/integrations/supabase/client';
+// QuarterlyAIInsightsService - Mock implementation for prototype
 
 export class QuarterlyAIInsightsService {
   private static readonly QUARTERLY_REFRESH_KEY = 'quarterly_ai_refresh_';
@@ -52,15 +52,10 @@ export class QuarterlyAIInsightsService {
     try {
       console.log('QuarterlyAIInsightsService: Triggering quarterly AI insights refresh...');
       
-      // Call the Supabase function to generate new insights
-      const { error } = await supabase.rpc('generate_ai_insights', {
-        target_user_id: userId
-      });
-
-      if (error) {
-        console.error('QuarterlyAIInsightsService: Error generating insights:', error);
-        return false;
-      }
+      // Mock: Simulate AI insights generation for prototype
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('QuarterlyAIInsightsService: Mock AI insights generated for user:', userId);
 
       this.markInsightsRefreshed();
       console.log('QuarterlyAIInsightsService: Successfully refreshed quarterly insights');

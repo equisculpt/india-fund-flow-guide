@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { User } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import { mockDb, mockProfiles } from '@/services/mockDatabase';
 
 interface UserProfile {
   id: string;
@@ -16,53 +15,54 @@ interface UserProfile {
   created_at: string;
 }
 
+interface MockUser {
+  id: string;
+  email: string;
+}
+
 export const useSupabaseAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<MockUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
+    // Mock: simulate getting session from localStorage
+    const mockSession = localStorage.getItem('mock_auth_session');
+    if (mockSession) {
+      try {
+        const parsed = JSON.parse(mockSession);
+        setUser(parsed.user);
+        if (parsed.user) {
+          fetchProfile(parsed.user.id);
+        }
+      } catch {
         setLoading(false);
       }
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setProfile(null);
-        setLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
+      // Use mock profiles data directly
+      const data = mockProfiles.find(p => p.id === userId);
 
-      if (error) throw error;
-      
-      // Type assertion to ensure user_type matches our interface
-      const typedProfile: UserProfile = {
-        ...data,
-        user_type: data.user_type as 'customer' | 'agent' | 'admin'
-      };
-      
-      setProfile(typedProfile);
+      if (data) {
+        const typedProfile: UserProfile = {
+          id: data.id,
+          user_type: data.user_type as 'customer' | 'agent' | 'admin',
+          full_name: data.full_name,
+          phone: data.phone,
+          pan_number: undefined,
+          kyc_status: data.kyc_status,
+          referral_code: data.referral_code,
+          commission_rate: data.commission_rate,
+          is_active: data.is_active,
+          created_at: data.created_at
+        };
+        setProfile(typedProfile);
+      }
     } catch (error) {
       console.error('Error fetching profile:', error);
     } finally {
@@ -71,11 +71,19 @@ export const useSupabaseAuth = () => {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
+    // Mock sign in - find user by email in mock data
+    const matchingProfile = mockProfiles.find(p => 
+      p.full_name.toLowerCase().includes(email.split('@')[0].toLowerCase())
+    );
+    
+    if (matchingProfile) {
+      const mockUser = { id: matchingProfile.id, email };
+      setUser(mockUser);
+      localStorage.setItem('mock_auth_session', JSON.stringify({ user: mockUser }));
+      await fetchProfile(matchingProfile.id);
+    } else {
+      throw new Error('Invalid credentials');
+    }
   };
 
   const signUp = async (email: string, password: string, userData: {
@@ -83,31 +91,31 @@ export const useSupabaseAuth = () => {
     phone: string;
     user_type: 'customer' | 'agent' | 'admin';
   }) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    // Mock sign up
+    const newId = `user-${Date.now()}`;
+    const newProfile = {
+      id: newId,
+      full_name: userData.full_name,
+      phone: userData.phone,
+      user_type: userData.user_type,
+      kyc_status: 'pending',
+      is_active: true,
+      created_at: new Date().toISOString()
+    };
 
-    if (error) throw error;
-
-    if (data.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: data.user.id,
-          full_name: userData.full_name,
-          phone: userData.phone,
-          user_type: userData.user_type,
-        });
-
-      if (profileError) throw profileError;
-    }
-
-    return data;
+    await mockDb.insert('profiles', newProfile);
+    
+    const mockUser = { id: newId, email };
+    setUser(mockUser);
+    localStorage.setItem('mock_auth_session', JSON.stringify({ user: mockUser }));
+    
+    return { user: mockUser };
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
+    localStorage.removeItem('mock_auth_session');
   };
 
   return {
