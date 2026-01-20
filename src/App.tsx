@@ -1,3 +1,4 @@
+import React, { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { BackendAuthProvider } from "@/contexts/BackendAuthContext";
 import { TestAuthProvider } from "@/contexts/TestAuthContext";
-import { lazy, Suspense } from "react";
 import LoadingFallback from "@/components/LoadingFallback";
 
 // Critical pages loaded immediately
