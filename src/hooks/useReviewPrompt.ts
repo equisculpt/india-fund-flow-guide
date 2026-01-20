@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from 'react';
 import { useBackendAuth } from '@/contexts/BackendAuthContext';
-import { supabase } from '@/integrations/supabase/client';
 
 export const useReviewPrompt = () => {
   const [shouldShowReview, setShouldShowReview] = useState(false);
@@ -13,31 +12,15 @@ export const useReviewPrompt = () => {
         return;
       }
 
-      // Check if user has already submitted a review
-      const { data: existingReview } = await supabase
-        .from('investor_reviews')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
+      // For prototype, simulate review logic
+      // Check localStorage to see if we should prompt (not too frequently)
+      const lastPromptDate = localStorage.getItem(`reviewPrompt_${user.id}`);
+      const now = new Date();
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-      if (existingReview) {
-        return; // User already reviewed
-      }
-
-      // Check if user has any investments (should have some experience to review)
-      const { data: investments } = await supabase
-        .from('investments')
-        .select('id')
-        .eq('user_id', user.id)
-        .limit(1);
-
-      if (investments && investments.length > 0) {
-        // Check localStorage to see if we should prompt (not too frequently)
-        const lastPromptDate = localStorage.getItem(`reviewPrompt_${user.id}`);
-        const now = new Date();
-        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-        if (!lastPromptDate || new Date(lastPromptDate) < thirtyDaysAgo) {
+      if (!lastPromptDate || new Date(lastPromptDate) < thirtyDaysAgo) {
+        // 30% chance to show review prompt for prototype demo
+        if (Math.random() < 0.3) {
           setShouldShowReview(true);
           localStorage.setItem(`reviewPrompt_${user.id}`, now.toISOString());
         }

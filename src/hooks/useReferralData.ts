@@ -26,52 +26,66 @@ export interface ReferralStats {
   referralCode: string;
 }
 
+// Mock referral data for prototype
+const mockReferralStats: ReferralStats = {
+  totalReferrals: 12,
+  activeReferrals: 8,
+  totalEarnings: 15000,
+  pendingCommission: 3500,
+  referralCode: 'SIPREF2024'
+};
+
+const mockReferralCommissions: ReferralCommission[] = [
+  {
+    id: 'rc-1',
+    referrer_id: 'user-1',
+    referee_id: 'ref-1',
+    investment_id: 'inv-1',
+    commission_amount: 2500,
+    commission_rate: 1.5,
+    max_commission: 5000,
+    status: 'earned',
+    created_at: new Date(Date.now() - 86400000 * 7).toISOString(),
+    paid_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+    referee_profile: { full_name: 'Rahul Sharma' }
+  },
+  {
+    id: 'rc-2',
+    referrer_id: 'user-1',
+    referee_id: 'ref-2',
+    investment_id: 'inv-2',
+    commission_amount: 1500,
+    commission_rate: 1.5,
+    max_commission: 5000,
+    status: 'pending',
+    created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+    paid_at: null,
+    referee_profile: { full_name: 'Priya Patel' }
+  },
+  {
+    id: 'rc-3',
+    referrer_id: 'user-1',
+    referee_id: 'ref-3',
+    investment_id: 'inv-3',
+    commission_amount: 2000,
+    commission_rate: 1.5,
+    max_commission: 5000,
+    status: 'pending',
+    created_at: new Date(Date.now() - 86400000).toISOString(),
+    paid_at: null,
+    referee_profile: { full_name: 'Amit Kumar' }
+  }
+];
+
 export const useReferralStats = () => {
   return useQuery({
     queryKey: ['referral-stats'],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
-      // Get user profile with referral code
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('referral_code, total_referral_earnings')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError) throw profileError;
-
-      // Get referral commissions
-      const { data: commissions, error: commissionsError } = await supabase
-        .from('referral_commissions')
-        .select('*')
-        .eq('referrer_id', user.id);
-
-      if (commissionsError) throw commissionsError;
-
-      // Get referred users count
-      const { data: referredUsers, error: referredError } = await supabase
-        .from('profiles')
-        .select('id, created_at')
-        .eq('referred_by', user.id);
-
-      if (referredError) throw referredError;
-
-      const totalEarnings = profile?.total_referral_earnings || 0;
-      const pendingCommission = commissions
-        ?.filter(c => c.status === 'pending')
-        .reduce((sum, c) => sum + c.commission_amount, 0) || 0;
-
-      return {
-        totalReferrals: referredUsers?.length || 0,
-        activeReferrals: commissions?.filter(c => c.status === 'earned').length || 0,
-        totalEarnings,
-        pendingCommission,
-        referralCode: profile?.referral_code || ''
-      } as ReferralStats;
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return mockReferralStats;
     },
-    enabled: !!supabase.auth.getUser(),
+    enabled: true,
   });
 };
 
@@ -79,25 +93,10 @@ export const useReferralCommissions = () => {
   return useQuery({
     queryKey: ['referral-commissions'],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
-      const { data, error } = await supabase
-        .from('referral_commissions')
-        .select(`
-          *,
-          referee_profile:profiles!referee_id(full_name)
-        `)
-        .eq('referrer_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map(item => ({
-        ...item,
-        referee_profile: item.referee_profile ? { full_name: item.referee_profile.full_name } : null
-      })) as ReferralCommission[];
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return mockReferralCommissions;
     },
-    enabled: !!supabase.auth.getUser(),
+    enabled: true,
   });
 };

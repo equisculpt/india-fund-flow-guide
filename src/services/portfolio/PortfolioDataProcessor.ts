@@ -1,6 +1,8 @@
 
-import { supabase } from '@/integrations/supabase/client';
 import { ParsedPortfolioData } from '../AMCPortfolioParser';
+
+// Mock storage for portfolio data
+const mockPortfolioData: any[] = [];
 
 export class PortfolioDataProcessor {
   static async storePortfolioData(portfolios: ParsedPortfolioData[], sourceFile: any) {
@@ -8,41 +10,36 @@ export class PortfolioDataProcessor {
 
     for (const portfolio of portfolios) {
       try {
-        // Store main portfolio data
-        const { error: portfolioError } = await supabase
-          .from('amfi_portfolio_data')
-          .upsert({
-            scheme_code: portfolio.scheme_code || this.generateSchemeCode(portfolio.scheme_name),
-            scheme_name: portfolio.scheme_name,
-            amc_name: sourceFile.amc_name,
-            portfolio_date: sourceFile.portfolio_date,
-            portfolio_data: {
-              holdings: portfolio.holdings,
-              total_securities: portfolio.total_securities,
-              nav: portfolio.nav,
-              aum: portfolio.aum,
-              metadata: {
-                source_file: sourceFile.file_name,
-                upload_date: sourceFile.created_at,
-                file_type: sourceFile.file_type
-              }
-            },
-            scrape_status: 'success',
-            scrape_source: 'manual_upload'
-          }, { onConflict: 'scheme_code,portfolio_date' });
+        // Store in mock storage
+        const portfolioEntry = {
+          scheme_code: portfolio.scheme_code || this.generateSchemeCode(portfolio.scheme_name),
+          scheme_name: portfolio.scheme_name,
+          amc_name: sourceFile.amc_name,
+          portfolio_date: sourceFile.portfolio_date,
+          portfolio_data: {
+            holdings: portfolio.holdings,
+            total_securities: portfolio.total_securities,
+            nav: portfolio.nav,
+            aum: portfolio.aum,
+            metadata: {
+              source_file: sourceFile.file_name,
+              upload_date: sourceFile.created_at,
+              file_type: sourceFile.file_type
+            }
+          },
+          scrape_status: 'success',
+          scrape_source: 'manual_upload'
+        };
 
-        if (portfolioError) {
-          console.error('Error storing portfolio data:', portfolioError);
-          results.push({ scheme: portfolio.scheme_name, success: false, error: portfolioError.message });
-          continue;
-        }
+        mockPortfolioData.push(portfolioEntry);
+        console.log('Stored portfolio data:', portfolio.scheme_name);
 
         // Store individual holdings
         await this.storeIndividualHoldings(portfolio, sourceFile);
         
         results.push({ scheme: portfolio.scheme_name, success: true });
 
-      } catch (error) {
+      } catch (error: any) {
         console.error(`Error processing portfolio ${portfolio.scheme_name}:`, error);
         results.push({ scheme: portfolio.scheme_name, success: false, error: error.message });
       }
@@ -64,17 +61,7 @@ export class PortfolioDataProcessor {
       market_value: holding.market_value
     }));
 
-    // Upsert holdings data
-    const { error } = await supabase
-      .from('portfolio_holdings')
-      .upsert(holdingsData, { 
-        onConflict: 'scheme_code,portfolio_date,security_name' 
-      });
-
-    if (error) {
-      console.error('Error storing holdings:', error);
-      throw error;
-    }
+    console.log(`Stored ${holdingsData.length} holdings for ${portfolio.scheme_name}`);
   }
 
   private static generateSchemeCode(schemeName: string): string {

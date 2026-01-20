@@ -1,6 +1,5 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 interface BlogViewCount {
   total_views: number;
@@ -8,10 +7,12 @@ interface BlogViewCount {
   last_updated: string;
 }
 
+// Mock blog view counts for prototype
+const mockBlogViewCounts: Record<string, BlogViewCount> = {};
+
 export const useBlogViews = (blogSlug: string) => {
   const [viewCount, setViewCount] = useState<BlogViewCount | null>(null);
   const [loading, setLoading] = useState(true);
-  const channelRef = useRef<any>(null);
   const hasTrackedView = useRef(false);
 
   // Track a view when the hook is used
@@ -26,22 +27,22 @@ export const useBlogViews = (blogSlug: string) => {
         sessionStorage.setItem('blog_session_id', sessionId);
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      const { error } = await supabase.rpc('increment_blog_view_count', {
-        p_blog_slug: blogSlug,
-        p_user_id: user?.id || null,
-        p_ip_address: null, // Server will handle this
-        p_user_agent: navigator.userAgent,
-        p_session_id: sessionId
-      });
-      
-      if (error) {
-        console.error('Error tracking blog view:', error);
-      } else {
-        console.log('Blog view tracked successfully for:', blogSlug);
-        hasTrackedView.current = true;
+      // Update mock view count
+      if (!mockBlogViewCounts[blogSlug]) {
+        mockBlogViewCounts[blogSlug] = {
+          total_views: 0,
+          unique_views: 0,
+          last_updated: new Date().toISOString()
+        };
       }
+
+      mockBlogViewCounts[blogSlug].total_views += 1;
+      mockBlogViewCounts[blogSlug].unique_views += 1;
+      mockBlogViewCounts[blogSlug].last_updated = new Date().toISOString();
+
+      console.log('Blog view tracked successfully for:', blogSlug);
+      hasTrackedView.current = true;
+      setViewCount({ ...mockBlogViewCounts[blogSlug] });
     } catch (error) {
       console.error('Error tracking blog view:', error);
     }
@@ -50,22 +51,20 @@ export const useBlogViews = (blogSlug: string) => {
   // Fetch current view count
   const fetchViewCount = async () => {
     try {
-      const { data, error } = await supabase
-        .from('blog_view_counts')
-        .select('total_views, unique_views, last_updated')
-        .eq('blog_slug', blogSlug)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching view count:', error);
-        return;
-      }
+      const data = mockBlogViewCounts[blogSlug];
 
       if (data) {
         setViewCount(data);
         console.log('View count fetched for', blogSlug, ':', data);
       } else {
-        setViewCount({ total_views: 0, unique_views: 0, last_updated: new Date().toISOString() });
+        // Generate random mock view count for existing blogs
+        const mockData: BlogViewCount = {
+          total_views: Math.floor(Math.random() * 1000) + 50,
+          unique_views: Math.floor(Math.random() * 500) + 30,
+          last_updated: new Date().toISOString()
+        };
+        mockBlogViewCounts[blogSlug] = mockData;
+        setViewCount(mockData);
       }
     } catch (error) {
       console.error('Error fetching view count:', error);
@@ -76,12 +75,6 @@ export const useBlogViews = (blogSlug: string) => {
 
   useEffect(() => {
     console.log('Setting up blog views for:', blogSlug);
-    
-    // Clean up any existing channel first
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current);
-      channelRef.current = null;
-    }
 
     fetchViewCount();
     
@@ -90,33 +83,8 @@ export const useBlogViews = (blogSlug: string) => {
       trackView();
     }, 1000);
 
-    // Create a new channel with a unique name for real-time updates
-    const channelName = `blog-views-${blogSlug}-${Date.now()}`;
-    channelRef.current = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'blog_view_counts',
-          filter: `blog_slug=eq.${blogSlug}`
-        },
-        (payload) => {
-          console.log('Real-time view count update:', payload);
-          if (payload.new) {
-            setViewCount(payload.new as BlogViewCount);
-          }
-        }
-      )
-      .subscribe();
-
     return () => {
       clearTimeout(trackTimer);
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
     };
   }, [blogSlug]);
 

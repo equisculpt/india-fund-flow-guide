@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 export interface InvestorStats {
   total_investors: number;
@@ -24,42 +23,80 @@ export interface InvestorReview {
   } | null;
 }
 
+// Mock investor stats for prototype
+const mockInvestorStats: InvestorStats = {
+  total_investors: 5000,
+  total_amount_invested: 50000000,
+  average_rating: 4.8,
+  total_reviews: 1250,
+  last_updated: new Date().toISOString()
+};
+
+// Mock reviews for prototype
+const mockReviews: InvestorReview[] = [
+  {
+    id: '1',
+    user_id: 'user-1',
+    rating: 5,
+    review_text: 'Excellent platform for mutual fund investments. The AI recommendations are spot on!',
+    investment_amount: 500000,
+    monthly_sip_amount: 10000,
+    is_featured: true,
+    ai_enhanced_text: null,
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+    profiles: { full_name: 'Rahul Sharma' }
+  },
+  {
+    id: '2',
+    user_id: 'user-2',
+    rating: 5,
+    review_text: 'Very user-friendly interface. My portfolio has grown significantly since I started using SIP Brewery.',
+    investment_amount: 250000,
+    monthly_sip_amount: 5000,
+    is_featured: true,
+    ai_enhanced_text: null,
+    created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+    profiles: { full_name: 'Priya Patel' }
+  },
+  {
+    id: '3',
+    user_id: 'user-3',
+    rating: 5,
+    review_text: 'The best investment platform I have used. Highly recommend for beginners and experts alike.',
+    investment_amount: 1000000,
+    monthly_sip_amount: 25000,
+    is_featured: true,
+    ai_enhanced_text: null,
+    created_at: new Date(Date.now() - 86400000 * 7).toISOString(),
+    profiles: { full_name: 'Amit Kumar' }
+  },
+  {
+    id: '4',
+    user_id: 'user-4',
+    rating: 4,
+    review_text: 'Good service and support. The fund comparison tool is very helpful.',
+    investment_amount: 150000,
+    monthly_sip_amount: 3000,
+    is_featured: false,
+    ai_enhanced_text: null,
+    created_at: new Date(Date.now() - 86400000 * 10).toISOString(),
+    profiles: { full_name: 'Sneha Reddy' }
+  }
+];
+
 export const useInvestorStats = () => {
   return useQuery({
     queryKey: ['investor-stats'],
     queryFn: async () => {
-      try {
-        const { data, error } = await supabase
-          .from('investor_stats')
-          .select('*')
-          .single();
-
-        if (error) {
-          console.warn('Failed to fetch investor stats:', error);
-          // Return fallback data instead of throwing
-          return {
-            total_investors: 5000,
-            total_amount_invested: 50000000,
-            average_rating: 4.8
-          };
-        }
-
-        return data;
-      } catch (err) {
-        console.warn('Error in investor stats query:', err);
-        // Return fallback data
-        return {
-          total_investors: 5000,
-          total_amount_invested: 50000000,
-          average_rating: 4.8
-        };
-      }
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return mockInvestorStats;
     },
     staleTime: 1000 * 60 * 15, // 15 minutes
     gcTime: 1000 * 60 * 30, // 30 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    retry: false // Don't retry failed requests
+    retry: false
   });
 };
 
@@ -67,32 +104,11 @@ export const useFeaturedReviews = () => {
   return useQuery({
     queryKey: ['featured-reviews'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('investor_reviews')
-        .select(`
-          *,
-          profiles(full_name)
-        `)
-        .eq('rating', 5)
-        .eq('is_featured', true)
-        .order('created_at', { ascending: false })
-        .limit(10);
-      
-      if (error) throw error;
-      
-      // Type guard to ensure we have valid data
-      const validData = (data || []).filter((item): item is any => {
-        return item && typeof item === 'object' && !('error' in item);
-      });
-      
-      return validData.map((item: any) => ({
-        ...item,
-        profiles: item.profiles && typeof item.profiles === 'object' && 'full_name' in item.profiles 
-          ? { full_name: item.profiles.full_name } 
-          : null
-      })) as InvestorReview[];
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return mockReviews.filter(r => r.is_featured && r.rating === 5);
     },
-    refetchInterval: 60000, // Refetch every minute
+    refetchInterval: 60000,
   });
 };
 
@@ -100,28 +116,9 @@ export const useAllReviews = () => {
   return useQuery({
     queryKey: ['all-reviews'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('investor_reviews')
-        .select(`
-          *,
-          profiles(full_name)
-        `)
-        .order('created_at', { ascending: false })
-        .limit(50);
-      
-      if (error) throw error;
-      
-      // Type guard to ensure we have valid data
-      const validData = (data || []).filter((item): item is any => {
-        return item && typeof item === 'object' && !('error' in item);
-      });
-      
-      return validData.map((item: any) => ({
-        ...item,
-        profiles: item.profiles && typeof item.profiles === 'object' && 'full_name' in item.profiles 
-          ? { full_name: item.profiles.full_name } 
-          : null
-      })) as InvestorReview[];
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return mockReviews;
     },
   });
 };
