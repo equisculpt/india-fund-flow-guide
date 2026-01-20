@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { BackendAuthProvider } from "@/contexts/BackendAuthContext";
+import { TestAuthProvider } from "@/contexts/TestAuthContext";
 import { lazy, Suspense } from "react";
 import LoadingFallback from "@/components/LoadingFallback";
 
@@ -49,6 +50,11 @@ const queryClient = new QueryClient({
   },
 });
 
+// Wrapper component for test routes that need TestAuthProvider
+const TestRouteWrapper = ({ children }: { children: React.ReactNode }) => (
+  <TestAuthProvider>{children}</TestAuthProvider>
+);
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -62,9 +68,9 @@ const App = () => (
                 {/* Authentication Routes */}
                 <Route path="/login" element={<BackendLogin />} />
                 
-                {/* Test Routes */}
-                <Route path="/test-login" element={<TestLogin />} />
-                <Route path="/test-dashboard" element={<TestDashboard />} />
+                {/* Test Routes - wrapped with TestAuthProvider */}
+                <Route path="/test-login" element={<TestRouteWrapper><TestLogin /></TestRouteWrapper>} />
+                <Route path="/test-dashboard" element={<TestRouteWrapper><TestDashboard /></TestRouteWrapper>} />
                 <Route path="/statement-preview" element={<StatementPreviewPage />} />
                 
                 {/* Critical route - loaded immediately */}
