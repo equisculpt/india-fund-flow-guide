@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -8,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { mockDb, mockProfiles, mockCommissions } from '@/services/mockDatabase';
 import { Search, Edit, Users, DollarSign } from 'lucide-react';
 
 interface AgentData {
@@ -46,29 +45,30 @@ const AgentManagementTab = () => {
 
   const fetchAgents = async () => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          clients:profiles!profiles_agent_id_fkey(count),
-          commissions(calculated_commission, status)
-        `)
-        .eq('user_type', 'agent')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const formattedAgents = data?.map(agent => {
-        const totalCommission = agent.commissions?.reduce((sum: number, comm: any) => sum + (comm.calculated_commission || 0), 0) || 0;
-        const pendingCommission = agent.commissions?.filter((c: any) => c.status === 'pending').reduce((sum: number, comm: any) => sum + (comm.calculated_commission || 0), 0) || 0;
+      // Use mock data - filter for agents only
+      const agentProfiles = mockProfiles.filter(p => p.user_type === 'agent');
+      
+      const formattedAgents: AgentData[] = agentProfiles.map(agent => {
+        const agentCommissions = mockCommissions.filter(c => c.agent_id === agent.id);
+        const totalCommission = agentCommissions.reduce((sum, comm) => sum + (comm.amount || 0), 0);
+        const pendingCommission = agentCommissions
+          .filter(c => c.status === 'pending')
+          .reduce((sum, comm) => sum + (comm.amount || 0), 0);
+        
+        const clientCount = mockProfiles.filter(p => p.user_type === 'customer').length;
         
         return {
-          ...agent,
-          client_count: agent.clients?.[0]?.count || 0,
+          id: agent.id,
+          full_name: agent.full_name,
+          phone: agent.phone,
+          commission_rate: agent.commission_rate || 80,
+          is_active: agent.is_active,
+          created_at: agent.created_at,
+          client_count: Math.floor(clientCount / agentProfiles.length),
           total_commission: totalCommission,
           pending_commission: pendingCommission,
         };
-      }) || [];
+      });
 
       setAgents(formattedAgents);
     } catch (error) {
@@ -85,19 +85,17 @@ const AgentManagementTab = () => {
 
   const updateCommissionRate = async (agentId: string, newRate: number) => {
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ commission_rate: newRate })
-        .eq('id', agentId);
-
-      if (error) throw error;
+      await mockDb.update('profiles', agentId, { commission_rate: newRate });
 
       toast({
         title: "Success",
         description: "Commission rate updated successfully",
       });
 
-      fetchAgents();
+      // Update local state
+      setAgents(prev => prev.map(agent => 
+        agent.id === agentId ? { ...agent, commission_rate: newRate } : agent
+      ));
       setEditingAgent(null);
     } catch (error) {
       console.error('Error updating commission rate:', error);

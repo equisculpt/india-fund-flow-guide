@@ -1,24 +1,11 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { supabase } from '@/integrations/supabase/client';
+import { mockDb, mockContactSubmissions, ContactSubmission } from '@/services/mockDatabase';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Phone, User, MessageSquare, Calendar, Eye } from 'lucide-react';
-
-interface ContactSubmission {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  subject: string;
-  message: string;
-  status: string;
-  admin_notes?: string;
-  created_at: string;
-}
 
 const ContactSubmissionsTab = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
@@ -33,12 +20,7 @@ const ContactSubmissionsTab = () => {
 
   const fetchSubmissions = async () => {
     try {
-      const { data, error } = await supabase
-        .from('contact_submissions')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
+      const { data } = await mockDb.getContactSubmissions();
       setSubmissions(data || []);
     } catch (error) {
       console.error('Error fetching submissions:', error);
@@ -54,15 +36,10 @@ const ContactSubmissionsTab = () => {
 
   const updateStatus = async (id: string, status: string) => {
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .update({ status })
-        .eq('id', id);
-
-      if (error) throw error;
+      await mockDb.update('contact_submissions', id, { status });
 
       setSubmissions(prev => 
-        prev.map(sub => sub.id === id ? { ...sub, status } : sub)
+        prev.map(sub => sub.id === id ? { ...sub, status: status as ContactSubmission['status'] } : sub)
       );
 
       toast({
@@ -81,12 +58,7 @@ const ContactSubmissionsTab = () => {
 
   const saveAdminNotes = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .update({ admin_notes: adminNotes })
-        .eq('id', id);
-
-      if (error) throw error;
+      await mockDb.update('contact_submissions', id, { admin_notes: adminNotes });
 
       setSubmissions(prev => 
         prev.map(sub => sub.id === id ? { ...sub, admin_notes: adminNotes } : sub)

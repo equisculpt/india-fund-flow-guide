@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { mockDb } from '@/services/mockDatabase';
 import DigioKYCVerification from './onboarding/DigioKYCVerification';
 import OnboardingHeader from './onboarding/OnboardingHeader';
 import StepIndicator from './onboarding/StepIndicator';
@@ -30,7 +29,6 @@ const AgentClientOnboarding = ({ agentId, socialLoginUser, referralCode }: Agent
     referralCode
   );
 
-  // Process referral code if provided
   useReferralProcessing(referralCode, socialLoginUser);
 
   const handleSubmit = async () => {
@@ -55,26 +53,12 @@ const AgentClientOnboarding = ({ agentId, socialLoginUser, referralCode }: Agent
     if (socialLoginUser) {
       setIsLoading(true);
       try {
-        const { error } = await supabase
-          .from('profiles')
-          .update({
-            full_name: clientData.fullName,
-            phone: clientData.phone,
-            onboarding_source: onboardingSource,
-            is_direct_customer: onboardingSource === 'direct'
-          })
-          .eq('id', socialLoginUser.id);
-
-        if (error) {
-          console.error('Error updating profile:', error);
-          toast({
-            title: "Error",
-            description: "Failed to update profile. Please try again.",
-            variant: "destructive",
-          });
-          setIsLoading(false);
-          return;
-        }
+        await mockDb.update('profiles', socialLoginUser.id, {
+          full_name: clientData.fullName,
+          phone: clientData.phone,
+          onboarding_source: onboardingSource,
+          is_direct_customer: onboardingSource === 'direct'
+        });
 
         toast({
           title: "Profile Updated",

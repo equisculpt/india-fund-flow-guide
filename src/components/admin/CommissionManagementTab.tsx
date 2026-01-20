@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -6,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { mockDb, mockCommissions, mockProfiles, mockMutualFunds } from '@/services/mockDatabase';
 import { Search, DollarSign, Check, X } from 'lucide-react';
 
 interface CommissionData {
@@ -46,26 +45,26 @@ const CommissionManagementTab = () => {
 
   const fetchCommissions = async () => {
     try {
-      const { data, error } = await supabase
-        .from('commissions')
-        .select(`
-          *,
-          agent:agent_id(full_name, phone),
-          fund:fund_id(scheme_name)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const formattedCommissions = data?.map(commission => ({
-        ...commission,
-        agent_name: commission.agent?.full_name || 'Unknown Agent',
-        agent_phone: commission.agent?.phone,
-        fund_name: commission.fund?.scheme_name || 'Unknown Fund',
-        // Use fallback values for new commission structure fields until migration is run
-        commission_tier: (commission as any).commission_tier || 'STANDARD',
-        actual_commission_rate: (commission as any).actual_commission_rate || commission.agent_share_percentage || 80.00,
-      })) || [];
+      const formattedCommissions: CommissionData[] = mockCommissions.map(commission => {
+        const agent = mockProfiles.find(p => p.id === commission.agent_id);
+        const fund = mockMutualFunds.find(f => f.id === commission.fund_id);
+        
+        return {
+          id: commission.id,
+          agent_name: agent?.full_name || 'Unknown Agent',
+          agent_phone: agent?.phone,
+          fund_name: fund?.scheme_name || 'Unknown Fund',
+          investment_amount: commission.amount * 10, // Simulated investment amount
+          base_commission_rate: fund?.commission_rate || 1.0,
+          agent_share_percentage: commission.agent_share_percentage,
+          calculated_commission: commission.amount,
+          commission_tier: commission.agent_share_percentage >= 90 ? 'PREMIUM' : 'STANDARD',
+          actual_commission_rate: commission.agent_share_percentage,
+          status: commission.status,
+          created_at: commission.created_at,
+          payment_date: commission.status === 'paid' ? commission.created_at : undefined,
+        };
+      });
 
       setCommissions(formattedCommissions);
     } catch (error) {
@@ -82,24 +81,22 @@ const CommissionManagementTab = () => {
 
   const updateCommissionStatus = async (commissionId: string, status: 'paid' | 'cancelled') => {
     try {
-      const updateData: any = { status };
-      if (status === 'paid') {
-        updateData.payment_date = new Date().toISOString().split('T')[0];
-      }
-
-      const { error } = await supabase
-        .from('commissions')
-        .update(updateData)
-        .eq('id', commissionId);
-
-      if (error) throw error;
+      await mockDb.update('commissions', commissionId, { 
+        status,
+        payment_date: status === 'paid' ? new Date().toISOString().split('T')[0] : undefined
+      });
 
       toast({
         title: "Success",
         description: `Commission marked as ${status}`,
       });
 
-      fetchCommissions();
+      // Update local state
+      setCommissions(prev => prev.map(comm => 
+        comm.id === commissionId 
+          ? { ...comm, status, payment_date: status === 'paid' ? new Date().toISOString() : undefined } 
+          : comm
+      ));
     } catch (error) {
       console.error('Error updating commission status:', error);
       toast({

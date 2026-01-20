@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { mockDb, mockBlogPosts, mockProfiles, BlogPost } from '@/services/mockDatabase';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,31 +11,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from 'sonner';
 
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  status: string;
-  moderation_status: string;
-  category: string;
-  views_count: number;
-  created_at: string;
-  published_at: string | null;
-  author_id: string;
-  admin_notes: string | null;
-  edited_by_admin: boolean;
-  admin_edited_title: string | null;
-  admin_edited_content: string | null;
-  profiles?: {
-    full_name: string;
-  } | null;
+interface BlogPostWithAuthor extends BlogPost {
+  author_name?: string;
+  views_count?: number;
 }
 
 const BlogModerationTab = () => {
-  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [blogs, setBlogs] = useState<BlogPostWithAuthor[]>([]);
   const [loading, setLoading] = useState(true);
   const [moderationTab, setModerationTab] = useState<'pending' | 'approved' | 'rejected' | 'edited'>('pending');
-  const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
+  const [selectedBlog, setSelectedBlog] = useState<BlogPostWithAuthor | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedContent, setEditedContent] = useState('');
@@ -44,35 +28,23 @@ const BlogModerationTab = () => {
 
   const fetchBlogs = async () => {
     try {
-      let query = supabase
-        .from('blog_posts')
-        .select('*')
-        .order('created_at', { ascending: false });
+      let filteredBlogs = mockBlogPosts.filter(blog => {
+        if (moderationTab === 'edited') {
+          return false; // No edited blogs in mock data
+        }
+        return blog.moderation_status === moderationTab;
+      });
 
-      if (moderationTab !== 'edited') {
-        query = query.eq('moderation_status', moderationTab);
-      } else {
-        query = query.eq('edited_by_admin', true);
-      }
+      const blogsWithAuthor: BlogPostWithAuthor[] = filteredBlogs.map(blog => {
+        const author = mockProfiles.find(p => p.id === blog.author_id);
+        return {
+          ...blog,
+          author_name: author?.full_name || 'Anonymous',
+          views_count: Math.floor(Math.random() * 1000)
+        };
+      });
 
-      const { data: blogsData, error } = await query;
-
-      if (error) throw error;
-
-      // Fetch profiles separately
-      const authorIds = blogsData?.map(b => b.author_id) || [];
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', authorIds);
-
-      // Combine data with profiles
-      const blogsWithProfiles = (blogsData || []).map(blog => ({
-        ...blog,
-        profiles: profiles?.find(p => p.id === blog.author_id) || null
-      }));
-
-      setBlogs(blogsWithProfiles);
+      setBlogs(blogsWithAuthor);
     } catch (error) {
       console.error('Error fetching blogs:', error);
       toast.error('Failed to load blog posts');
@@ -87,18 +59,11 @@ const BlogModerationTab = () => {
 
   const handleApprove = async (blogId: string) => {
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ 
-          moderation_status: 'approved', 
-          status: 'published',
-          published_at: new Date().toISOString(),
-          moderated_by: (await supabase.auth.getUser()).data.user?.id,
-          moderated_at: new Date().toISOString()
-        })
-        .eq('id', blogId);
-
-      if (error) throw error;
+      await mockDb.update('blog_posts', blogId, {
+        moderation_status: 'approved',
+        status: 'published',
+        published_at: new Date().toISOString()
+      });
 
       toast.success('Blog post approved and published!');
       fetchBlogs();
@@ -110,17 +75,10 @@ const BlogModerationTab = () => {
 
   const handleReject = async (blogId: string) => {
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ 
-          moderation_status: 'rejected',
-          moderated_by: (await supabase.auth.getUser()).data.user?.id,
-          moderated_at: new Date().toISOString(),
-          admin_notes: adminNotes
-        })
-        .eq('id', blogId);
-
-      if (error) throw error;
+      await mockDb.update('blog_posts', blogId, {
+        moderation_status: 'rejected',
+        admin_notes: adminNotes
+      });
 
       toast.success('Blog post rejected');
       setAdminNotes('');
@@ -131,11 +89,11 @@ const BlogModerationTab = () => {
     }
   };
 
-  const openEditDialog = (blog: BlogPost) => {
+  const openEditDialog = (blog: BlogPostWithAuthor) => {
     setSelectedBlog(blog);
-    setEditedTitle(blog.admin_edited_title || blog.title);
-    setEditedContent(blog.admin_edited_content || blog.content);
-    setAdminNotes(blog.admin_notes || '');
+    setEditedTitle(blog.title);
+    setEditedContent(blog.content);
+    setAdminNotes('');
     setIsEditDialogOpen(true);
   };
 
@@ -143,50 +101,19 @@ const BlogModerationTab = () => {
     if (!selectedBlog) return;
 
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ 
-          admin_edited_title: editedTitle,
-          admin_edited_content: editedContent,
-          edited_by_admin: true,
-          moderation_status: 'edited',
-          admin_notes: adminNotes,
-          moderated_by: (await supabase.auth.getUser()).data.user?.id,
-          moderated_at: new Date().toISOString()
-        })
-        .eq('id', selectedBlog.id);
+      await mockDb.update('blog_posts', selectedBlog.id, {
+        title: editedTitle,
+        content: editedContent,
+        moderation_status: 'approved',
+        published_at: new Date().toISOString()
+      });
 
-      if (error) throw error;
-
-      toast.success('Blog post edited successfully');
+      toast.success('Blog post edited and published successfully');
       setIsEditDialogOpen(false);
       fetchBlogs();
     } catch (error) {
       console.error('Error editing blog:', error);
       toast.error('Failed to save edited blog post');
-    }
-  };
-
-  const handlePublishEdited = async (blogId: string) => {
-    try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ 
-          moderation_status: 'approved', 
-          status: 'published',
-          published_at: new Date().toISOString(),
-          moderated_by: (await supabase.auth.getUser()).data.user?.id,
-          moderated_at: new Date().toISOString()
-        })
-        .eq('id', blogId);
-
-      if (error) throw error;
-
-      toast.success('Edited blog post published!');
-      fetchBlogs();
-    } catch (error) {
-      console.error('Error publishing edited blog:', error);
-      toast.error('Failed to publish edited blog post');
     }
   };
 
@@ -237,7 +164,7 @@ const BlogModerationTab = () => {
                     blogs.map((blog) => (
                       <div key={blog.id} className="border rounded-lg p-4">
                         <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-medium">{blog.admin_edited_title || blog.title}</h4>
+                          <h4 className="font-medium">{blog.title}</h4>
                           <div className="flex gap-2">
                             <Badge 
                               variant={tab === 'approved' ? 'default' : tab === 'rejected' ? 'destructive' : 'secondary'}
@@ -249,20 +176,12 @@ const BlogModerationTab = () => {
                         </div>
                         
                         <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                          {(blog.admin_edited_content || blog.content).substring(0, 150)}...
+                          {blog.content.substring(0, 150)}...
                         </p>
-                        
-                        {blog.admin_notes && (
-                          <div className="bg-gray-50 p-2 rounded mb-3">
-                            <p className="text-xs text-gray-600">
-                              <span className="font-semibold">Admin Notes:</span> {blog.admin_notes}
-                            </p>
-                          </div>
-                        )}
                         
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-4 text-xs text-gray-500">
-                            <span>By {blog.profiles?.full_name || 'Anonymous'}</span>
+                            <span>By {blog.author_name}</span>
                             <span className="flex items-center gap-1">
                               <Eye className="h-3 w-3" />
                               {blog.views_count} views
@@ -290,25 +209,11 @@ const BlogModerationTab = () => {
                                 <Button 
                                   size="sm" 
                                   variant="destructive"
-                                  onClick={() => {
-                                    setSelectedBlog(blog);
-                                    setAdminNotes('');
-                                    setIsEditDialogOpen(true);
-                                  }}
+                                  onClick={() => handleReject(blog.id)}
                                 >
                                   <X className="h-4 w-4 mr-1" /> Reject
                                 </Button>
                               </>
-                            )}
-                            
-                            {tab === 'edited' && (
-                              <Button 
-                                size="sm" 
-                                onClick={() => handlePublishEdited(blog.id)}
-                                className="bg-green-500 hover:bg-green-600"
-                              >
-                                <Check className="h-4 w-4 mr-1" /> Publish Edited
-                              </Button>
                             )}
 
                             <Button 
@@ -330,80 +235,47 @@ const BlogModerationTab = () => {
         ))}
       </Tabs>
 
-      {/* Edit/Reject Dialog */}
+      {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-4xl max-h-screen overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
-              {selectedBlog?.moderation_status === 'rejected' ? 'Reject Blog Post' : 'Edit Blog Post'}
-            </DialogTitle>
+            <DialogTitle>Edit Blog Post</DialogTitle>
           </DialogHeader>
 
-          {selectedBlog?.moderation_status !== 'rejected' ? (
-            <>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Title</Label>
-                  <Input 
-                    id="title" 
-                    value={editedTitle} 
-                    onChange={(e) => setEditedTitle(e.target.value)} 
-                    className="w-full"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="content">Content</Label>
-                  <Textarea 
-                    id="content" 
-                    value={editedContent} 
-                    onChange={(e) => setEditedContent(e.target.value)} 
-                    className="w-full min-h-[300px]"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="notes">Admin Notes (visible to author)</Label>
-                  <Textarea 
-                    id="notes" 
-                    value={adminNotes} 
-                    onChange={(e) => setAdminNotes(e.target.value)} 
-                    className="w-full"
-                    placeholder="Explain why you edited this post (optional)"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
-                <Button onClick={handleSaveEdit}>Save Changes</Button>
-              </DialogFooter>
-            </>
-          ) : (
-            <>
-              <div>
-                <Label htmlFor="reject-notes">Rejection Reason (visible to author)</Label>
-                <Textarea 
-                  id="reject-notes" 
-                  value={adminNotes} 
-                  onChange={(e) => setAdminNotes(e.target.value)} 
-                  className="w-full"
-                  placeholder="Explain why this post is being rejected"
-                />
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
-                <Button 
-                  variant="destructive" 
-                  onClick={() => {
-                    if (selectedBlog) {
-                      handleReject(selectedBlog.id);
-                      setIsEditDialogOpen(false);
-                    }
-                  }}
-                >
-                  Reject Post
-                </Button>
-              </DialogFooter>
-            </>
-          )}
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="title">Title</Label>
+              <Input 
+                id="title" 
+                value={editedTitle} 
+                onChange={(e) => setEditedTitle(e.target.value)} 
+                className="w-full"
+              />
+            </div>
+            <div>
+              <Label htmlFor="content">Content</Label>
+              <Textarea 
+                id="content" 
+                value={editedContent} 
+                onChange={(e) => setEditedContent(e.target.value)} 
+                className="w-full min-h-[300px]"
+              />
+            </div>
+            <div>
+              <Label htmlFor="notes">Admin Notes (visible to author)</Label>
+              <Textarea 
+                id="notes" 
+                value={adminNotes} 
+                onChange={(e) => setAdminNotes(e.target.value)} 
+                className="w-full"
+                placeholder="Explain why you edited this post (optional)"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSaveEdit}>Save & Publish</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

@@ -2,18 +2,18 @@ import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { mockDb, Profile, MutualFund, Investment, Commission, CommunityQuestion, BlogPost } from '@/services/mockDatabase';
 import ContactSubmissionsTab from './ContactSubmissionsTab';
 import ChatSupportTab from './ChatSupportTab';
 import FileManagementTab from './FileManagementTab';
 
 const AdminPanel = () => {
-  const [profiles, setProfiles] = useState([]);
-  const [mutualFunds, setMutualFunds] = useState([]);
-  const [investments, setInvestments] = useState([]);
-  const [commissions, setCommissions] = useState([]);
-  const [communityQuestions, setCommunityQuestions] = useState([]);
-  const [blogPosts, setBlogPosts] = useState([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [mutualFunds, setMutualFunds] = useState<MutualFund[]>([]);
+  const [investments, setInvestments] = useState<Investment[]>([]);
+  const [commissions, setCommissions] = useState<Commission[]>([]);
+  const [communityQuestions, setCommunityQuestions] = useState<CommunityQuestion[]>([]);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -23,29 +23,21 @@ const AdminPanel = () => {
 
   const fetchData = async () => {
     try {
-      const { data: profilesData, error: profilesError } = await supabase.from('profiles').select('*');
-      if (profilesError) throw profilesError;
-      setProfiles(profilesData || []);
+      const [profilesRes, fundsRes, investmentsRes, commissionsRes, questionsRes, blogsRes] = await Promise.all([
+        mockDb.getProfiles(),
+        mockDb.getMutualFunds(),
+        mockDb.getInvestments(),
+        mockDb.getCommissions(),
+        mockDb.getCommunityQuestions(),
+        mockDb.getBlogPosts()
+      ]);
 
-      const { data: fundsData, error: fundsError } = await supabase.from('mutual_funds').select('*');
-      if (fundsError) throw fundsError;
-      setMutualFunds(fundsData || []);
-
-      const { data: investmentsData, error: investmentsError } = await supabase.from('investments').select('*');
-      if (investmentsError) throw investmentsError;
-      setInvestments(investmentsData || []);
-
-      const { data: commissionsData, error: commissionsError } = await supabase.from('commissions').select('*');
-      if (commissionsError) throw commissionsError;
-      setCommissions(commissionsData || []);
-
-      const { data: questionsData, error: questionsError } = await supabase.from('community_questions').select('*');
-      if (questionsError) throw questionsError;
-      setCommunityQuestions(questionsData || []);
-
-      const { data: blogsData, error: blogsError } = await supabase.from('blog_posts').select('*');
-      if (blogsError) throw blogsError;
-      setBlogPosts(blogsData || []);
+      setProfiles(profilesRes.data || []);
+      setMutualFunds(fundsRes.data || []);
+      setInvestments(investmentsRes.data || []);
+      setCommissions(commissionsRes.data || []);
+      setCommunityQuestions(questionsRes.data || []);
+      setBlogPosts(blogsRes.data || []);
 
     } catch (error: any) {
       console.error("Error fetching data:", error);
